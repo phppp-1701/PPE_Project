@@ -1,0 +1,28 @@
+# Dữ liệu và kết quả nặng: không đưa lên Git, chỉ giữ README
+data/**
+!data/**/
+!data/**/README.md
+!data/videos/video_sources.csv
+outputs/**
+!outputs/**/
+!outputs/**/README.md
+
+# Trọng số mô hình
+*.pt
+*.onnx
+*.engine
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Cơ sở dữ liệu và log khi chạy
+*.db
+*.sqlite3
+*.log
+
+# Hệ điều hành, Word
+Thumbs.db
+~$*

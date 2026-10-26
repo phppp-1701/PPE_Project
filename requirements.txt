@@ -1,0 +1,8 @@
+# Các gói chính của project (khóa phiên bản). Danh sách đầy đủ: requirements-lock.txt
+# Python 3.12; PyTorch bản CUDA 12.8 lấy từ chỉ mục riêng của PyTorch
+--extra-index-url https://download.pytorch.org/whl/cu128
+torch==2.11.0+cu128
+torchvision==0.26.0+cu128
+ultralytics==8.4.189
+opencv-python==5.0.0.93
+pytest==9.1.1
