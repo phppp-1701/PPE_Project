@@ -1,0 +1,47 @@
+# Ánh xạ lớp gốc -> 4 lớp ppe4 (docs/spec.md mục 2.1). Dùng bởi scripts/01_convert_labels.py.
+# Mã lớp gốc lấy từ dữ liệu thật, xem data card trong data/raw/<bộ>/README.md.
+# Lớp không có trong `map` thì bị bỏ.
+
+classes: {0: person, 1: helmet, 2: vest, 3: gloves}
+
+sources:
+  sh17:
+    format: yolo
+    root: data/raw/sh17
+    images: images
+    labels: labels
+    split_lists: {train: train_files.txt, val: val_files.txt}
+    gloves_labeled: true
+    # 0 person, 10 helmet, 16 safety-vest, 9 gloves
+    map: {0: 0, 10: 1, 16: 2, 9: 3}
+
+  chv:
+    format: yolo
+    root: data/raw/chv
+    images: images
+    labels: annotations
+    split_lists: {train: data split/train.txt, val: data split/valid.txt, test: data split/test.txt}
+    gloves_labeled: false   # chưa có nhãn găng, nhóm gán bổ sung bằng CVAT
+    # 0 person, 1 vest, 2-5 mũ xanh/đỏ/trắng/vàng
+    map: {0: 0, 2: 1, 3: 1, 4: 1, 5: 1, 1: 2}
+
+  construction_ppe:
+    format: yolo
+    root: data/raw/construction_ppe
+    images: images/{split}
+    labels: labels/{split}
+    splits: [train, val, test]
+    gloves_labeled: true
+    # 6 Person, 0 helmet, 2 vest, 1 gloves
+    map: {6: 0, 0: 1, 2: 2, 1: 3}
+
+  pictor_ppe:
+    format: pictor          # ảnh<TAB>x1,y1,x2,y2,lớp ... (pixel)
+    root: data/raw/pictor_ppe
+    images: Images
+    label_files: {train: Labels/pictor_ppe_crowdsourced_approach-01_train.txt,
+                  val: Labels/pictor_ppe_crowdsourced_approach-01_valid.txt,
+                  test: Labels/pictor_ppe_crowdsourced_approach-01_test.txt}
+    gloves_labeled: false   # bộ không có găng tay; chỉ dùng kiểm thử ngoài
+    # approach-01: 2 worker, 0 hat, 1 vest
+    map: {2: 0, 0: 1, 1: 2}

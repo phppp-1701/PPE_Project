@@ -1,0 +1,73 @@
+# Quy tắc gán nhãn găng tay cho CHV (CVAT)
+
+Áp dụng cho mọi task `chv_partXX` trong project `CHV gloves`. Cả hai người đọc file này trước khi gán; gặp trường hợp mới thì thống nhất rồi bổ sung vào đây.
+
+## Việc cần làm
+
+Ảnh CHV đã có sẵn hộp `person`, `helmet`, `vest`. Chỉ **vẽ thêm hộp `gloves`**, hoặc gắn tag `reject` cho ảnh cần loại.
+
+## 1. Cái gì là găng tay
+
+| Trường hợp | Gán `gloves`? |
+|---|---|
+| Găng bảo hộ: vải, sợi len, da, cao su, găng phủ hạt, đeo trên tay | Có |
+| Găng đang đeo nhưng chỉ thấy một phần (tay cầm dụng cụ, bị che) | Có, hộp bao phần thấy được |
+| Găng không đeo (cầm trên tay, nhét túi, để dưới đất) | Có, vẫn vẽ nếu nhìn rõ là găng |
+| Tay trần | Không vẽ gì |
+| Ống tay áo dài che kín bàn tay | Không vẽ gì |
+| Bàn tay bị che hoàn toàn (sau lưng, trong túi, sau vật khác) | Không vẽ gì |
+
+Mô hình chỉ học nhận ra găng tay; găng có thuộc người nào hay đang đeo không là việc của bước gán PPE sau này. Vì vậy găng không đeo vẫn gán.
+
+## 2. Cách vẽ hộp
+
+- **Mỗi chiếc găng một hộp.** Hai tay đều đeo găng thì hai hộp, kể cả khi hai tay chồng lên nhau.
+- Hộp **sát mép chiếc găng**, bao từ đầu ngón tay đến cổ găng; không bao cả cẳng tay hay ống tay áo.
+- Găng bị che một phần: hộp **chỉ bao phần nhìn thấy**, không đoán phần bị che.
+- Phóng to (lăn chuột) trước khi vẽ để mép hộp chính xác.
+
+## 3. Khi nào gắn tag `reject` (loại cả ảnh)
+
+Gắn `reject` khi **không thể quyết định** tay có găng hay không, sau khi đã phóng to:
+
+- Người ở quá xa, bàn tay chỉ còn vài điểm ảnh, không phân biệt được găng với tay trần.
+- Ảnh mờ, tối hoặc nhòe đúng chỗ bàn tay.
+- Màu găng gần màu da hoặc nền, không chắc chắn.
+
+Lý do: ảnh có găng mà không được gán sẽ dạy mô hình rằng găng tay là nền. Thà bỏ ảnh còn hơn để nhãn thiếu.
+
+Không gắn `reject` chỉ vì ảnh không có găng; ảnh toàn tay trần là ảnh tốt, giữ lại.
+
+Không gắn `reject` khi người **quá nhỏ hoặc quá xa đến mức không xác định được bàn tay ở đâu**: coi như tay không nhìn thấy và bỏ qua. Cụ thể: **hộp `person` cao dưới khoảng 80 px** (CVAT hiện kích thước khi bấm vào hộp, ví dụ `53.0x53.0px`) thì không xét găng của người đó, không vẽ, không `reject`. Ở cỡ này, khi đưa ảnh về 640 px để huấn luyện, bàn tay chỉ còn vài điểm ảnh. `reject` chỉ dùng khi bàn tay đủ lớn để thấy mà vẫn không phân biệt được găng hay tay trần.
+
+Cách phân biệt tay có găng khi ảnh mờ: bàn tay có màu khác hẳn màu da (đen, xám, xanh, vàng, cam) thì là găng; thấy màu da và ngón tay thì là tay trần; chỉ là một đốm mờ lẫn với áo hoặc nền thì `reject`.
+
+Nếu thấy mình `reject` quá nhiều (hơn khoảng 1/5 số ảnh của một phần), dừng lại và báo nhóm để xem lại quy tắc.
+
+## 4. Hộp có sẵn (person, helmet, vest)
+
+- **Thiếu hộp rõ ràng thì vẽ thêm luôn** (ví dụ người mặc áo phản quang có dải phản quang nhưng không có hộp `vest`). Vẽ theo cùng cách: sát mép phần nhìn thấy. Không cần ghi lại: khi ghép nhãn, script so bản xuất từ CVAT với nhãn gốc và tự liệt kê mọi hộp được thêm.
+- Người ở hậu cảnh bị **mờ do lấy nét** nhưng vẫn nhận ra rõ là người (đủ lớn, thấy dáng người) thì vẽ đủ `person`, `helmet`, `vest` như người bình thường; mũ hoặc người bị mép ảnh cắt thì hộp chỉ bao phần nằm trong ảnh.
+- **Mũ, áo, găng không đeo vẫn vẽ** (mũ cầm trên tay hoặc để dưới đất, áo vắt hoặc để trên đống đồ, găng cầm trên tay), miễn là nhìn rõ. YOLO chỉ học nhận ra vật; việc vật có đang được đeo hay không do bước gán PPE theo vùng cơ thể quyết định. Chốt ngày 27/10/2026.
+- **Không sửa, không xóa hộp có sẵn**, kể cả khi thấy lệch. Hộp lệch ghi vào `data/ppe4/converted/chv/cvat/notes.txt`, mỗi dòng một ảnh, ví dụ:
+  `ppe_0012.jpg  helmet lệch sang phải`
+- **`vest` = áo gile bảo hộ màu huỳnh quang (cam, vàng chanh), có hoặc không có dải phản quang**, kể cả áo lưới. Chốt ngày 27/10/2026 sau khi xem mẫu: SH17 và Construction-PPE đều gán `vest` cho áo huỳnh quang không thấy dải phản quang, còn CHV thì bỏ sót; gặp áo loại này trong CHV mà chưa có hộp thì vẽ thêm. Áo khoác, áo dài tay hoặc áo thun huỳnh quang **có dải phản quang** (áo bảo hộ) cũng tính là `vest`, hộp chỉ bao phần thân áo (vai đến gấu áo), không bao ống tay hay quần. Áo khoác, áo thun, quần áo liền thân màu cam **thường, không có dải phản quang** thì **không** tính.
+- **Trường hợp không chắc** có nên thêm hộp không thì không vẽ, ghi vào `notes.txt` để cả nhóm quyết định.
+- Các ghi chú được xử lý ở bước kiểm tra dữ liệu (`scripts/02_check_data.py`).
+
+## 5. Thao tác
+
+| Phím | Tác dụng |
+|---|---|
+| Biểu tượng hình chữ nhật → Label `gloves` → Shape | Vẽ hộp đầu tiên |
+| **N** | Vẽ tiếp hộp mới với nhãn vừa dùng |
+| Biểu tượng thẻ treo → `reject` → Tag | Gắn tag loại ảnh |
+| **F** / **D** | Ảnh sau / ảnh trước |
+| **Ctrl + S** | Lưu (sau khoảng 10 ảnh) |
+| **Delete** | Xóa hộp đang chọn (chỉ xóa hộp `gloves` mình vẽ) |
+
+## 6. Chia việc
+
+- Người A: các phần lẻ (01, 03, 05, …). Người B: các phần chẵn (02, 04, …).
+- Mỗi phần một task, tên `chv_partXX`, mỗi ảnh chỉ một người gán.
+- Xong một phần: Export task dataset → YOLO 1.1, bỏ tích Save images → đặt tên `chv_partXX_done.zip` → để vào `data/ppe4/converted/chv/cvat/`.
