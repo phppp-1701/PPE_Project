@@ -6,3 +6,4 @@ torchvision==0.26.0+cu128
 ultralytics==8.4.189
 opencv-python==5.0.0.93
 pytest==9.1.1
+cvat-sdk==2.80.0  # chỉ dùng cho scripts/01b_cvat_upload.py (khớp máy chủ app.cvat.ai 2.80.0), giấy phép MIT

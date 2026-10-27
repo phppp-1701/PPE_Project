@@ -68,6 +68,18 @@ Nếu thấy mình `reject` quá nhiều (hơn khoảng 1/5 số ảnh của m�
 
 ## 6. Chia việc
 
-- Người A: các phần lẻ (01, 03, 05, …). Người B: các phần chẵn (02, 04, …).
-- Mỗi phần một task, tên `chv_partXX`, mỗi ảnh chỉ một người gán.
-- Xong một phần: Export task dataset → YOLO 1.1, bỏ tích Save images → đặt tên `chv_partXX_done.zip` → để vào `data/ppe4/converted/chv/cvat/`.
+CHV có 1.330 ảnh, chia thành 3 task trong project `CHV gloves` (Organization `ppeKhoaLuan`):
+
+| Task | Ảnh | Người gán |
+|---|---|---|
+| `chv_part01` | 100 ảnh, `ppe_0000`–`ppe_0099` | Phương (đã xong) |
+| `chv_part02` | 615 ảnh, `ppe_0100`–`ppe_0714` | Huy |
+| `chv_part03` | 615 ảnh, `ppe_0715`–`ppe_1329` | Phương |
+
+Lý do chỉ có 3 task: gói miễn phí của CVAT chỉ cho mỗi Organization tạo **tối đa 3 task**. Ban đầu định chia 14 phần × 100 ảnh, nhưng không tạo được task thứ 4, nên ngày 27/10/2026 gộp 1.230 ảnh còn lại thành 2 task lớn. Không tạo thêm task trong Organization này.
+
+- Mỗi ảnh chỉ một người gán. Task lớn: nhớ **Ctrl + S** thường xuyên, có thể gán nhiều buổi.
+- Xong một task, export **hai bản** (Actions → Export task dataset, bỏ tích Save images):
+  1. Định dạng **YOLO 1.1** → đặt tên `chv_partXX_done.zip`.
+  2. Định dạng **CVAT for images 1.1** → đặt tên `chv_partXX_done_cvat.zip`. Bản này giữ tag `reject`; YOLO 1.1 chỉ lưu hộp nên có thể làm mất tag.
+- Để cả hai file vào `data/ppe4/converted/chv/cvat/` trên máy của Phương. Thư mục `data/` không đưa lên Git, nên Huy gửi hai file zip và các dòng ghi chú (`notes.txt`) cho Phương qua Drive hoặc tin nhắn.

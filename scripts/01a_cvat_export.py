@@ -3,6 +3,7 @@
 Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
     python scripts/01a_cvat_export.py --source chv                  # mỗi phần 100 ảnh
     python scripts/01a_cvat_export.py --source chv --part-size 50 --overwrite
+    python scripts/01a_cvat_export.py --source chv --part-sizes 100,615,615 --overwrite   # kích thước từng phần
 
 Đọc data/ppe4/converted/<bộ>/index.csv và labels/ (kết quả của 01_convert_labels.py), ảnh gốc trong data/raw/.
 Ghi vào data/ppe4/converted/<bộ>/cvat/:
@@ -14,7 +15,6 @@ Thứ tự lớp trong obj.names lấy từ configs/label_map.yaml (0 person, 1 
 
 import argparse
 import csv
-import shutil
 import sys
 import zipfile
 from pathlib import Path
@@ -30,7 +30,9 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--source", required=True, help="tên bộ trong data/ppe4/converted/")
     p.add_argument("--part-size", type=int, default=100, help="số ảnh mỗi phần (mỗi task CVAT)")
-    p.add_argument("--overwrite", action="store_true", help="xóa thư mục cvat/ cũ của bộ đó rồi tạo lại")
+    p.add_argument("--part-sizes", help="số ảnh của từng phần, cách nhau bởi dấu phẩy (vd. 100,615,615); tổng phải bằng số ảnh")
+    p.add_argument("--overwrite", action="store_true",
+                   help="xóa các gói cũ do script này tạo rồi tạo lại (giữ nguyên *_done*.zip, notes.txt, bản sao lưu)")
     args = p.parse_args()
     sys.stdout.reconfigure(encoding="utf-8")
 
@@ -38,21 +40,34 @@ def main():
     names = [classes[k] for k in sorted(classes)]
     src_dir = CONVERTED / args.source
     out_dir = src_dir / "cvat"
-    if out_dir.exists() and any(out_dir.iterdir()):
+    # Chỉ đụng tới file do script này sinh ra; file người dùng để vào (bản export từ CVAT, ghi chú) giữ nguyên
+    generated = sorted(out_dir.glob(f"{args.source}_part[0-9][0-9]_images.zip")) \
+        + sorted(out_dir.glob(f"{args.source}_part[0-9][0-9]_yolo1.1.zip")) \
+        + [f for f in [out_dir / "parts.csv"] if f.exists()]
+    if generated:
         if not args.overwrite:
-            sys.exit(f"{out_dir} đã có dữ liệu; chạy lại với --overwrite để tạo lại.")
-        shutil.rmtree(out_dir)
-    out_dir.mkdir(parents=True)
+            sys.exit(f"{out_dir} đã có gói cũ; chạy lại với --overwrite để tạo lại.")
+        for f in generated:
+            f.unlink()
+    out_dir.mkdir(parents=True, exist_ok=True)
 
     with open(src_dir / "index.csv", encoding="utf-8") as f:
         rows = sorted(csv.DictReader(f), key=lambda r: Path(r["image"]).name)
 
+    if args.part_sizes:
+        sizes = [int(s) for s in args.part_sizes.split(",")]
+        if sum(sizes) != len(rows):
+            sys.exit(f"Tổng --part-sizes = {sum(sizes)}, khác số ảnh {len(rows)}.")
+    else:
+        sizes = [args.part_size] * (len(rows) // args.part_size) + ([len(rows) % args.part_size] if len(rows) % args.part_size else [])
+    starts = [sum(sizes[:k]) for k in range(len(sizes))]
+
     obj_names = "\n".join(names) + "\n"
     obj_data = f"classes = {len(names)}\ntrain = data/train.txt\nnames = data/obj.names\nbackup = backup/\n"
     parts = []
-    for i in range(0, len(rows), args.part_size):
-        chunk = rows[i:i + args.part_size]
-        part = f"{args.source}_part{i // args.part_size + 1:02d}"
+    for k, (i, size) in enumerate(zip(starts, sizes)):
+        chunk = rows[i:i + size]
+        part = f"{args.source}_part{k + 1:02d}"
         with zipfile.ZipFile(out_dir / f"{part}_images.zip", "w", zipfile.ZIP_STORED) as zi:
             for r in chunk:
                 zi.write(ROOT / r["image"], Path(r["image"]).name)
@@ -69,7 +84,7 @@ def main():
         w = csv.DictWriter(f, fieldnames=["part", "image", "orig_split"])
         w.writeheader()
         w.writerows(parts)
-    print(f"Đã ghi {len(rows)} ảnh thành {-(-len(rows) // args.part_size)} phần vào {out_dir.relative_to(ROOT).as_posix()}")
+    print(f"Đã ghi {len(rows)} ảnh thành {len(sizes)} phần vào {out_dir.relative_to(ROOT).as_posix()}")
 
 
 if __name__ == "__main__":

@@ -5,6 +5,7 @@
 | `00_check_env.py` | Kiểm tra PyTorch nhận GPU, chạy thử YOLO11s trên ảnh mẫu | 0 |
 | `01_convert_labels.py` | Đổi nhãn từng bộ về bốn lớp theo `configs/label_map.yaml`, ghi vào `data/ppe4/converted/` (chưa chép ảnh) | 1 |
 | `01a_cvat_export.py` | Đóng gói nhãn 4 lớp của một bộ (vd. CHV) thành các phần định dạng CVAT YOLO 1.1 kèm zip ảnh, để gán bổ sung găng tay | 1 |
+| `01b_cvat_upload.py` | Tự tạo task trên app.cvat.ai cho các phần đã đóng gói (tải ảnh, nạp nhãn YOLO 1.1); bỏ qua task đã có. Cần biến môi trường `CVAT_ACCESS_TOKEN` do người dùng tự gán | 1 |
 | `02_check_data.py` | Tìm nhãn lỗi, ảnh trùng | 1 |
 | `03_split_data.py` | Chia train/val/test theo nhóm ảnh | 1 |
 | `04_train.py` | Huấn luyện YOLO11s | 2 |

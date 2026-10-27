@@ -1,12 +1,14 @@
-# Toàn bộ gói trong .venv (khóa phiên bản), sinh bằng `uv pip freeze` ngày 2026-10-26
+# Toàn bộ gói trong .venv (khóa phiên bản), sinh bằng `uv pip freeze` ngày 2026-10-27
 # Python 3.12.12, Windows 11, driver NVIDIA 576.28
 # Cài lại: uv pip install -r requirements-lock.txt --index-strategy unsafe-best-match
 --extra-index-url https://download.pytorch.org/whl/cu128
 anyio==4.15.1
+attrs==26.1.0
 certifi==2026.10.23
 charset-normalizer==3.5.2
 colorama==0.4.6
 contourpy==1.4.0
+cvat-sdk==2.80.0
 cycler==0.12.1
 filelock==4.2.4
 fonttools==4.67.0
@@ -27,6 +29,7 @@ nvidia-ml-py==13.615.71
 opencv-python==5.0.0.93
 packaging==26.3
 pillow==13.0.0
+platformdirs==4.13.5
 pluggy==1.7.0
 polars==2.1.0
 polars-runtime-32==2.1.0
@@ -42,6 +45,7 @@ six==1.17.0
 sympy==1.14.0
 torch==2.11.0+cu128
 torchvision==0.26.0+cu128
+tqdm==4.70.1
 typing-extensions==4.16.0
 tzdata==2026.5
 ultralytics==8.4.189
