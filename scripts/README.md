@@ -7,6 +7,7 @@
 | `01a_cvat_export.py` | Đóng gói nhãn 4 lớp của một bộ (vd. CHV) thành các phần định dạng CVAT YOLO 1.1 kèm zip ảnh, để gán bổ sung găng tay | 1 |
 | `01b_cvat_upload.py` | Tự tạo task trên app.cvat.ai cho các phần đã đóng gói (tải ảnh, nạp nhãn YOLO 1.1); bỏ qua task đã có. Cần biến môi trường `CVAT_ACCESS_TOKEN` do người dùng tự gán | 1 |
 | `01c_prelabel_gloves.py` | Gán trước găng tay bằng YOLOE (tham số trong `configs/prelabel.yaml`), lưu CSV; `--upload` thêm hộp (nguồn `auto`) vào task CVAT để người duyệt | 1 |
+| `01d_cvat_apply_review.py` | Áp kết quả duyệt tự động (`chv_review_boxes.csv`, `chv_review_images.csv`) lên CVAT: xóa hộp găng sai còn nguyên, gắn tag `check` cho ảnh cần người xem | 1 |
 | `02_check_data.py` | Tìm nhãn lỗi, ảnh trùng | 1 |
 | `03_split_data.py` | Chia train/val/test theo nhóm ảnh | 1 |
 | `04_train.py` | Huấn luyện YOLO11s | 2 |

@@ -6,9 +6,18 @@
 
 Ảnh CHV đã có sẵn hộp `person`, `helmet`, `vest`. Chỉ **vẽ thêm hộp `gloves`**, hoặc gắn tag `reject` cho ảnh cần loại.
 
-## 0. Hộp `gloves` máy vẽ sẵn (part02, part03)
+## 0. Hộp `gloves` máy vẽ sẵn và tag `check` (part02, part03)
 
-Từ ngày 30/10/2026, `chv_part02` và `chv_part03` có sẵn hộp `gloves` do mô hình YOLOE vẽ (`scripts/01c_prelabel_gloves.py`). Bấm vào hộp, CVAT ghi nguồn là `auto`. Thử trên part01, máy tìm được khoảng 3/4 số găng và cứ khoảng 3 ảnh có 1 hộp thừa, nên **mọi ảnh vẫn phải xem như bình thường**:
+Từ ngày 30/10/2026, `chv_part02` và `chv_part03` có sẵn hộp `gloves` do mô hình YOLOE vẽ (`scripts/01c_prelabel_gloves.py`). Bấm vào hộp, CVAT ghi nguồn là `auto`.
+
+Sau đó máy duyệt lại toàn bộ (`scripts/01d_cvat_apply_review.py`): đã xóa các hộp chắc chắn không phải găng, và gắn tag **`check`** cho những ảnh máy không chắc (part02: 214 ảnh, part03: 326 ảnh). **Chỉ cần xem các ảnh có tag `check`**; ảnh không có tag là máy đã duyệt, không cần mở.
+
+- Lọc ảnh trong CVAT: thanh trên cùng của job → biểu tượng phễu (Filter) → `Label` `==` `check` → chọn lọc theo frame có annotation. Hoặc bấm phím chuyển tới ảnh kế tiếp có annotation phù hợp bộ lọc.
+- Xem xong một ảnh: sửa theo các quy tắc dưới, rồi **xóa tag `check`** của ảnh đó (bấm vào tag ở danh sách Objects bên phải → Delete). Hết tag `check` là xong task.
+- Ảnh có tag `check` chỉ vì người ở xa, quá nhỏ: không cần vẽ găng (mục 3), xóa tag là xong.
+- Ảnh không có tag `check` chỉ dùng cho tập train (máy duyệt), ảnh có tag đã được người xem mới được dùng cho val/test. Danh sách lưu ở `data/ppe4/converted/chv/cvat/chv_review_images.csv`.
+
+Khi xem ảnh có tag `check`:
 
 - Hộp đúng là găng và sát mép: **giữ nguyên**.
 - Hộp đúng là găng nhưng lệch hoặc rộng: **kéo sửa** cho sát mép (quy tắc mục 2).
