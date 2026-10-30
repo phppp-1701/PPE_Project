@@ -6,6 +6,17 @@
 
 Ảnh CHV đã có sẵn hộp `person`, `helmet`, `vest`. Chỉ **vẽ thêm hộp `gloves`**, hoặc gắn tag `reject` cho ảnh cần loại.
 
+## 0. Hộp `gloves` máy vẽ sẵn (part02, part03)
+
+Từ ngày 30/10/2026, `chv_part02` và `chv_part03` có sẵn hộp `gloves` do mô hình YOLOE vẽ (`scripts/01c_prelabel_gloves.py`). Bấm vào hộp, CVAT ghi nguồn là `auto`. Thử trên part01, máy tìm được khoảng 3/4 số găng và cứ khoảng 3 ảnh có 1 hộp thừa, nên **mọi ảnh vẫn phải xem như bình thường**:
+
+- Hộp đúng là găng và sát mép: **giữ nguyên**.
+- Hộp đúng là găng nhưng lệch hoặc rộng: **kéo sửa** cho sát mép (quy tắc mục 2).
+- Hộp vẽ vào tay trần, ống tay áo, dụng cụ, hoặc hai hộp cho cùng một chiếc găng: **xóa**.
+- Găng máy bỏ sót (khoảng 1/4): **vẽ thêm** như thường.
+- Người cao dưới khoảng 80 px mà máy vẫn vẽ găng: xóa (mục 3).
+- Quy tắc `reject` không đổi: máy không gắn `reject`, người gán tự quyết định.
+
 ## 1. Cái gì là găng tay
 
 | Trường hợp | Gán `gloves`? |

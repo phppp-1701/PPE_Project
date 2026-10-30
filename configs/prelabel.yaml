@@ -1,0 +1,23 @@
+# Gán trước găng tay cho ảnh CHV bằng YOLOE (dùng bởi scripts/01c_prelabel_gloves.py).
+# Hộp máy vẽ chỉ là gợi ý: người gán duyệt lại trên CVAT theo docs/annotation_rules.md.
+#
+# imgsz và conf chọn ngày 30/10/2026 trên chv_part01 (100 ảnh, 88 hộp găng người gán):
+#   imgsz 1024, conf 0.25 -> tìm đúng 66/88 (recall 0.75), 33 hộp thừa (precision 0.67).
+#   Ưu tiên recall vì xóa hộp thừa nhanh hơn vẽ hộp sót.
+
+model: yoloe-11l-seg-pf.pt   # YOLOE prompt-free, từ vựng 4.585 lớp có sẵn, không cần gói CLIP
+class_keyword: glove         # giữ các lớp có tên chứa từ này: glove, baseball glove, boxing glove
+imgsz: 1024
+conf: 0.25
+device: 0
+
+# Hộp máy vẽ được đưa vào CVAT với nhãn và nguồn này
+target_label: gloves
+source_tag: auto
+# Bỏ hộp máy vẽ nếu đã có hộp gloves trong task chồng lên với IoU >= ngưỡng này (tránh vẽ trùng phần đã gán)
+skip_if_iou_with_existing: 0.3
+
+cvat:
+  host: https://app.cvat.ai
+  org: ppeKhoaLuan
+  project: CHV gloves
