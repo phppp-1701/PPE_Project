@@ -98,6 +98,10 @@ def main():
             check_id = labels[CHECK_TAG]
             frame_of = {Path(fr.name).name: i for i, fr in enumerate(task.get_frames_info())}
             ann = task.get_annotations()
+            if any(s.source in ("manual", "semi-auto") for s in ann.shapes):
+                # người đã duyệt (có thể đã gỡ tag check): áp lại sẽ gắn tag lại vào ảnh đã xem xong
+                print(f"[bỏ qua] {part}: task đã có người sửa, không áp lại kết quả duyệt.")
+                continue
             current = {s.id: s for s in ann.shapes}
 
             to_delete, changed = [], 0
