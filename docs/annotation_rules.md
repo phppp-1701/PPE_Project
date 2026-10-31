@@ -16,6 +16,7 @@ Sau đó máy duyệt lại toàn bộ (`scripts/01d_cvat_apply_review.py`): đ�
 - Xem xong một ảnh: sửa theo các quy tắc dưới, rồi **xóa tag `check`** của ảnh đó (bấm vào tag ở danh sách Objects bên phải → Delete). Hết tag `check` là xong task.
 - Ảnh có tag `check` chỉ vì người ở xa, quá nhỏ: không cần vẽ găng (mục 3), xóa tag là xong.
 - `chv_part03` được tạo lại ngày 31/10/2026 để **278 ảnh có tag `check` nằm ở đầu task (frame 0–277)**: chỉ cần duyệt từ frame 0 đến 277, phần sau là ảnh máy đã duyệt. Số ảnh `check` giảm từ 326 xuống 278 nhờ quy tắc rút từ kết quả người duyệt part02: hộp găng máy "không chắc" nhưng có độ tin cậy YOLOE ≥ 0,5 thì giữ (trên part02 đúng 84/94 hộp).
+- `chv_part02` cũng được tạo lại ngày 31/10/2026 (`scripts/01e_cvat_reorder_task.py`, giữ nguyên mọi hộp/tag đã gán): **32 ảnh còn tag `check` nằm ở frame 0–31**.
 - Ảnh không có tag `check` chỉ dùng cho tập train (máy duyệt), ảnh có tag đã được người xem mới được dùng cho val/test. Danh sách lưu ở `data/ppe4/converted/chv/cvat/chv_review_images.csv`.
 
 Khi xem ảnh có tag `check`:

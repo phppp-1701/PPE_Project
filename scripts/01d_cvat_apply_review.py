@@ -66,7 +66,8 @@ def main():
     for part in parts:
         with open(cvat_dir / f"{part}_prelabel_uploaded.csv", encoding="utf-8") as f:
             for r in csv.DictReader(f):
-                uploaded[int(r["shape_id"])] = [float(r[k]) for k in ("x1", "y1", "x2", "y2")]
+                if r["shape_id"]:  # rỗng: hộp đã bị người xóa (sau 01e_cvat_reorder_task.py)
+                    uploaded[int(r["shape_id"])] = [float(r[k]) for k in ("x1", "y1", "x2", "y2")]
 
     for part in parts:
         n_del = sum(1 for b in boxes if b["part"] == part and b["verdict"] == "not_glove")
@@ -101,7 +102,7 @@ def main():
 
             to_delete, changed = [], 0
             for b in boxes:
-                if b["part"] != part or b["verdict"] != "not_glove":
+                if b["part"] != part or b["verdict"] != "not_glove" or not b["shape_id"]:
                     continue
                 s = current.get(int(b["shape_id"]))
                 if s is None:
