@@ -5,6 +5,7 @@ Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
     $env:CVAT_ACCESS_TOKEN = "<mã truy cập CVAT>"                # PowerShell, người dùng tự gán
     python scripts/01b_cvat_upload.py --parts 3                  # chạy thật một phần để kiểm tra
     python scripts/01b_cvat_upload.py --parts 3-14               # các phần còn lại
+    python scripts/01b_cvat_upload.py --parts 3 --check-first    # ảnh status=check (chv_review_images.csv) lên đầu task
 
 Với mỗi phần XX: tạo task <bộ>_partXX trong project và Organization đã chọn, tải lên
 <bộ>_partXX_images.zip (sắp ảnh theo tên), rồi import nhãn "YOLO 1.1" từ <bộ>_partXX_yolo1.1.zip.
@@ -13,6 +14,7 @@ Token chỉ đọc từ biến môi trường CVAT_ACCESS_TOKEN, không in ra v�
 """
 
 import argparse
+import csv
 import os
 import sys
 import zipfile
@@ -51,6 +53,8 @@ def main():
     p.add_argument("--org", default="ppeKhoaLuan", help="short name của Organization trên CVAT")
     p.add_argument("--project", default="CHV gloves")
     p.add_argument("--dry-run", action="store_true", help="chỉ kiểm tra file và in kế hoạch, không gọi CVAT")
+    p.add_argument("--check-first", action="store_true",
+                   help="tải từng ảnh gốc theo thứ tự: ảnh status=check trong <bộ>_review_images.csv trước, còn lại sau")
     args = p.parse_args()
     sys.stdout.reconfigure(encoding="utf-8")
     sys.stderr.reconfigure(encoding="utf-8")  # thông báo lỗi của sys.exit in ra stderr
@@ -91,10 +95,20 @@ def main():
                 print(f"[bỏ qua] {name}: task đã tồn tại, không tạo lại và không import đè.")
                 continue
             print(f"[tạo] {name} ...", flush=True)
+            resources, sorting = [str(images_zip)], "lexicographical"
+            if args.check_first:
+                with zipfile.ZipFile(images_zip) as z:
+                    names = sorted(n for n in z.namelist() if not n.endswith("/"))
+                with open(cvat_dir / f"{args.source}_review_images.csv", encoding="utf-8") as f:
+                    check = {r["image"] for r in csv.DictReader(f) if r["part"] == name and r["status"] == "check"}
+                ordered = [n for n in names if n in check] + [n for n in names if n not in check]
+                resources = [str(ROOT / "data" / "raw" / args.source / "images" / n) for n in ordered]
+                sorting = "predefined"  # giữ đúng thứ tự file gửi lên
+                print(f"  {len(check)} ảnh check ở đầu (frame 0-{len(check) - 1}), {len(ordered) - len(check)} ảnh còn lại sau")
             task = client.tasks.create_from_data(
                 spec=models.TaskWriteRequest(name=name, project_id=project.id),
-                resources=[str(images_zip)],
-                data_params={"sorting_method": "lexicographical", "image_quality": 70},
+                resources=resources,
+                data_params={"sorting_method": sorting, "image_quality": 70},
                 annotation_path=str(labels_zip),
                 annotation_format="YOLO 1.1",
             )
