@@ -1,0 +1,22 @@
+# Huấn luyện YOLO11s (docs/spec.md mục 3). Dùng bởi scripts/04_train.py, chạy trên Kaggle.
+# Lần 1: giữ mặc định Ultralytics 8.4.189 để có kết quả gốc; chỉ ghi ra những gì đặt khác hoặc cần nêu rõ.
+# Đổi tham số ở các lần sau dựa trên kết quả val, ghi lại trong docs/experiments/.
+
+run_name: yolo11s_ppe4_r1
+model: yolo11s.pt        # trọng số tiền huấn luyện COCO; head được thay theo 4 lớp của data.yaml
+
+train:
+  imgsz: 640             # mặc định
+  epochs: 100            # mặc định
+  batch: -1              # AutoBatch: tự chọn theo bộ nhớ GPU (khoảng 60%); số thật ghi trong args.yaml
+  patience: 100          # mặc định: dừng sớm nếu 100 epoch liền val không tốt lên
+  seed: 0
+  deterministic: true
+  device: 0              # một GPU (Kaggle T4)
+  workers: 4             # Kaggle có 4 nhân CPU
+  # Ảnh SH17 để nguyên cỡ gốc; cache "ram" giải nén và thu ảnh về imgsz một lần rồi giữ trong RAM,
+  # để mỗi epoch không phải giải nén lại 13,8 GB ảnh (CPU Kaggle yếu). Không đổi nội dung học.
+  cache: ram
+  # Tăng cường: giữ mặc định Ultralytics. Nêu rõ hai phép spec mục 2.4 cấm, mặc định đã tắt:
+  flipud: 0.0            # không lật dọc
+  degrees: 0.0           # không xoay góc lớn (mặc định không xoay)

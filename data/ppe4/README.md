@@ -1,7 +1,11 @@
 # data/ppe4 — Bộ dữ liệu bốn lớp
 
 Do `scripts/01-03` tạo ra, không sửa tay. Lớp: 0 người, 1 mũ bảo hộ, 2 áo phản quang, 3 găng tay bảo hộ.
-Cấu trúc sau khi tạo: `images/{train,val,test}`, `labels/{train,val,test}` (định dạng YOLO) và `stats.csv` (nguồn, mã nhóm, tập của từng ảnh).
+Kết quả của `03_split_data.py`:
+
+- `dataset/`: bộ dùng để huấn luyện (SH17 + CHV + Construction-PPE). `images/{train,val,test}`, `labels/{train,val,test}` (nhãn YOLO đã áp `check/fixes.csv`), `data.yaml` (không ghi `path`, Ultralytics lấy thư mục chứa file làm gốc), `split_summary.json` (cấu hình và bảng số lượng theo tập × bộ × lớp). Tên file có tiền tố bộ, vd `sh17__abc.jpg`. Ảnh chép nguyên bản gốc.
+- `pictor_test/`: Pictor-PPE, chỉ kiểm thử ngoài (`images/test`, `labels/test`, `data.yaml`), không có nhãn găng tay.
+- `stats.csv`: mỗi ảnh một dòng: bộ, ảnh gốc, tên file mới, `group_id`, tập (`train`/`val`/`test`; Pictor là `external_test`), lý do buộc vào train (`machine_review` / `fixes_train_only`), số hộp add/delete đã áp, số hộp từng lớp.
 
 `converted/` — kết quả trung gian của `01_convert_labels.py`, đầu vào của bước 02-03:
 
@@ -16,4 +20,4 @@ Cấu trúc sau khi tạo: `images/{train,val,test}`, `labels/{train,val,test}` 
 
 `check/` — báo cáo của `02_check_data.py` (xem `check/README.md`).
 
-Ảnh chưa được chép ở bước này (SH17 đã 13 GB); bước 03 chép ảnh khi chia tập.
+Bước 01-02 chưa chép ảnh; bước 03 chép ảnh khi chia tập (SH17 khoảng 13 GB).

@@ -1,0 +1,18 @@
+# Chia train/val/test (docs/spec.md mục 2.3). Dùng bởi scripts/03_split_data.py.
+
+sources: [sh17, chv, construction_ppe]   # bộ tham gia chia
+external_test: pictor_ppe                 # chỉ kiểm thử ngoài, không tham gia chia
+
+# Tỉ lệ theo spec, tính trên tổng số ảnh (sau khi loại reject) của TỪNG bộ.
+ratios: {train: 0.70, val: 0.15, test: 0.15}
+seed: 0            # xáo trộn các nhóm cùng cỡ; giữ nguyên để chia lại ra đúng kết quả cũ
+
+groups: data/ppe4/check/groups.csv
+fixes: data/ppe4/check/fixes.csv
+out_dir: data/ppe4/dataset               # images/{train,val,test}, labels/{train,val,test}, data.yaml
+external_out_dir: data/ppe4/pictor_test  # images/test, labels/test, data.yaml
+stats_csv: data/ppe4/stats.csv
+
+# Dòng delete trong fixes.csv khớp với hộp trong nhãn khi mọi tọa độ lệch không quá mức này
+# (nhãn ghi 6 chữ số thập phân; chỉ là sai số làm tròn, không phải ngưỡng chọn).
+box_match_tol: 0.00001

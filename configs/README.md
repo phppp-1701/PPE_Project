@@ -3,8 +3,9 @@
 - `label_map.yaml`: ánh xạ mã lớp gốc của từng bộ dữ liệu sang bốn lớp, kèm vị trí ảnh/nhãn trong `data/raw/`. Dùng bởi `scripts/01_convert_labels.py`.
 - `prelabel.yaml`: mô hình YOLOE, `imgsz`, `conf` dùng để gán trước găng tay cho CHV (chọn trên `chv_part01`), và project CVAT nhận hộp. Dùng bởi `scripts/01c_prelabel_gloves.py`.
 - `data_check.yaml`: tham số kiểm tra dữ liệu (sai số làm tròn tọa độ, mốc cỡ hộp theo COCO, ngưỡng gần trùng — để trống cho tới khi xem các cặp mẫu). Dùng bởi `scripts/02_check_data.py`.
+- `split.yaml`: tỉ lệ train/val/test (70/15/15 theo spec), `seed`, bộ tham gia chia, bộ kiểm thử ngoài (Pictor-PPE), đường dẫn vào/ra. Dùng bởi `scripts/03_split_data.py`.
 - `ppe4.yaml`: khai báo bốn lớp và đường dẫn dữ liệu cho YOLO.
-- `train.yaml`: cấu hình huấn luyện (kích thước ảnh, epoch, batch, seed...).
+- `train.yaml`: cấu hình huấn luyện YOLO11s (trọng số khởi tạo, `imgsz`, `epochs`, `batch`, `seed`, `cache`, tăng cường). Lần 1 giữ mặc định Ultralytics. Dùng bởi `scripts/04_train.py`.
 - `pipeline.yaml`: các ngưỡng của chuỗi xử lý. Chưa có giá trị: chọn trên tập xác thực ở bước thực nghiệm rồi mới điền.
 
 Muốn đổi con số thì sửa ở đây, không sửa trong code.

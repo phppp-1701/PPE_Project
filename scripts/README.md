@@ -11,8 +11,8 @@
 | `01e_cvat_reorder_task.py` | Tạo lại một task CVAT để ảnh có tag `check` lên đầu, giữ nguyên mọi hộp/tag và nguồn, có sao lưu và đối chiếu; `--first` chọn thứ tự các ảnh `check` | 1 |
 | `01f_import_cvat.py` | Nhập nhãn đã gán trên CVAT (`<bộ>_partXX_done_cvat.zip`) về `data/ppe4/converted/<bộ>/labels`, thêm cột `review` (human/machine) và `reject` vào `index.csv`, liệt kê hộp person/helmet/vest bị thêm/xóa so với nhãn gốc; nhãn cũ sao lưu ở `labels_before_cvat/` | 1 |
 | `02_check_data.py` | Kiểm tra dữ liệu, ghi báo cáo vào `data/ppe4/check/`. `--technical`: lỗi kỹ thuật (ảnh hỏng, nhãn sai định dạng, hộp ra ngoài ảnh) và thống kê; `--duplicates`: dấu vân tay dHash, cặp ảnh trùng/gần trùng, `group_id` (`groups.csv`); `--content`: liệt kê hộp đáng ngờ theo quy tắc; `--missing-person`: chạy `yolo11s.pt` tìm người chưa có hộp | 1 |
-| `03_split_data.py` | Chia train/val/test theo nhóm ảnh | 1 |
-| `04_train.py` | Huấn luyện YOLO11s | 2 |
+| `03_split_data.py` | Chia train/val/test 70/15/15 theo `group_id` (tham số trong `configs/split.yaml`): bỏ ảnh reject, áp `fixes.csv`, nhóm có ảnh máy duyệt hoặc hộp máy thêm buộc vào train, các nhóm còn lại cân bằng theo số ảnh từng bộ và số hộp từng lớp. Ghi `data/ppe4/dataset/`, `data/ppe4/pictor_test/`, `data/ppe4/stats.csv`. `--dry-run` chỉ in bảng chia | 1 |
+| `04_train.py` | Huấn luyện YOLO11s trên Kaggle theo `configs/train.yaml` (tự tìm `data.yaml` trong `/kaggle/input`), `--resume` chạy tiếp từ `last.pt`; xong thì đánh giá `best.pt` trên val, ghi `run_info.json` (GPU, phiên bản, thời gian, P/R/mAP từng lớp) | 2 |
 | `05_run_video.py` | Chạy một video qua toàn bộ hệ thống | 3 |
 | `06_evaluate.py` | Tính độ đo, so sánh cấu hình A-E | 5 |
 
