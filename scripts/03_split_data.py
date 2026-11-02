@@ -183,6 +183,17 @@ def out_name(im):
     return f"{im['source']}__{Path(im['image']).name}"
 
 
+def copy_image(src, dst):
+    """Chép ảnh. JPEG có byte thừa sau dấu kết thúc FFD9 thì cắt bỏ phần thừa (không nén lại),
+    vì Ultralytics coi là ảnh hỏng và cố ghi đè file — trên Kaggle (chỉ đọc) ảnh đó bị bỏ qua."""
+    data = src.read_bytes()
+    if src.suffix.lower() in (".jpg", ".jpeg") and not data.endswith(b"\xff\xd9") and b"\xff\xd9" in data:
+        dst.write_bytes(data[:data.rindex(b"\xff\xd9") + 2])
+        return True
+    shutil.copy2(src, dst)
+    return False
+
+
 def write_set(images, out_dir, split_key, folder=None):
     """Chép ảnh và ghi nhãn đã sửa vào out_dir/images/<tập>, out_dir/labels/<tập> (folder: thư mục cố định)."""
     for i, im in enumerate(images, 1):
@@ -191,7 +202,8 @@ def write_set(images, out_dir, split_key, folder=None):
         lbl_dst = out_dir / "labels" / s / (Path(out_name(im)).stem + ".txt")
         img_dst.parent.mkdir(parents=True, exist_ok=True)
         lbl_dst.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(ROOT / im["image"], img_dst)
+        if copy_image(ROOT / im["image"], img_dst):
+            print(f"  cắt byte thừa sau FFD9: {img_dst.name}")
         lbl_dst.write_text("".join(b[2] + "\n" for b in im["boxes"]), encoding="utf-8")
         if i % 1000 == 0 or i == len(images):
             print(f"  chép {i}/{len(images)}", flush=True)

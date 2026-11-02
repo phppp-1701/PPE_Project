@@ -13,6 +13,8 @@ Tham số trong configs/train.yaml. Ghi vào --out (mặc định /kaggle/workin
 
 import argparse
 import json
+import os
+import shutil
 import sys
 import time
 from pathlib import Path
@@ -31,6 +33,42 @@ def find_data_yaml(base):
     return found[0]
 
 
+def writable_copy(data_yaml, dst):
+    """Thư mục dữ liệu Kaggle chỉ đọc: tạo bản ở dst gồm liên kết (symlink) tới ảnh và bản chép nhãn,
+    để Ultralytics ghi được cache nhãn. JPEG có byte thừa sau FFD9 thì chép bản đã cắt thừa
+    (như 03_split_data.py), nếu không Ultralytics bỏ qua ảnh đó vì không ghi đè được."""
+    src = data_yaml.parent
+    if os.access(src, os.W_OK):
+        return data_yaml
+    n_link = n_trim = 0
+    for f in src.rglob("*"):
+        rel = f.relative_to(src)
+        if f.is_dir() or rel.parts[0] not in ("images", "labels"):
+            continue
+        out = dst / rel
+        out.parent.mkdir(parents=True, exist_ok=True)
+        if out.exists() or out.is_symlink():
+            continue
+        if rel.parts[0] == "labels":
+            shutil.copy2(f, out)
+            continue
+        tail = b""
+        if f.suffix.lower() in (".jpg", ".jpeg"):
+            with open(f, "rb") as fh:
+                fh.seek(-2, 2)
+                tail = fh.read()
+        data = f.read_bytes() if tail and tail != b"\xff\xd9" else b""
+        if b"\xff\xd9" in data:
+            out.write_bytes(data[:data.rindex(b"\xff\xd9") + 2])
+            n_trim += 1
+        else:
+            out.symlink_to(f)
+            n_link += 1
+    shutil.copy2(data_yaml, dst / "data.yaml")
+    print(f"Bản ghi được: {dst} ({n_link} liên kết ảnh, {n_trim} ảnh cắt byte thừa)")
+    return dst / "data.yaml"
+
+
 def per_class(metrics, names):
     """P, R, mAP@0.5, mAP@0.5:0.95 từng lớp và trung bình, từ kết quả model.val()."""
     box = metrics.box
@@ -46,6 +84,8 @@ def main():
     ap.add_argument("--data", help="đường dẫn data.yaml (mặc định: tự tìm trong /kaggle/input)")
     ap.add_argument("--out", default="/kaggle/working/runs", help="thư mục ghi kết quả")
     ap.add_argument("--resume", help="last.pt của lần chạy bị ngắt, để chạy tiếp")
+    ap.add_argument("--data-copy", default="/kaggle/working/data",
+                    help="nơi tạo bản ghi được khi thư mục dữ liệu chỉ đọc")
     args = ap.parse_args()
 
     import torch
@@ -56,14 +96,15 @@ def main():
     gpu = torch.cuda.get_device_name(0) if torch.cuda.is_available() else "không có GPU"
     print(f"ultralytics {ultralytics.__version__}, torch {torch.__version__}, GPU: {gpu}")
 
+    data = Path(args.data) if args.data else find_data_yaml("/kaggle/input")
+    print(f"data: {data}")
+    data = str(writable_copy(data, Path(args.data_copy)))
+
     start = time.time()
-    if args.resume:
+    if args.resume:  # lần trước cũng dùng bản ghi được ở cùng --data-copy nên đường dẫn trong last.pt vẫn đúng
         model = YOLO(args.resume)
         model.train(resume=True)
-        data = model.trainer.args.data
     else:
-        data = str(Path(args.data) if args.data else find_data_yaml("/kaggle/input"))
-        print(f"data: {data}")
         model = YOLO(cfg["model"])
         model.train(data=data, project=args.out, name=cfg["run_name"], exist_ok=False, **cfg["train"])
     hours = (time.time() - start) / 3600
