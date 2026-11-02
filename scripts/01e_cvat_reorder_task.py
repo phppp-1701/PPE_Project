@@ -3,6 +3,7 @@
 Cách chạy (từ thư mục gốc project, đã kích hoạt .venv; không ai được mở task này trong lúc chạy):
     python scripts/01e_cvat_reorder_task.py --part 2 --dry-run
     python scripts/01e_cvat_reorder_task.py --part 2
+    python scripts/01e_cvat_reorder_task.py --part 3 --first order.txt   # ảnh check theo thứ tự trong file (mỗi dòng một tên ảnh)
 
 CVAT không đổi được thứ tự ảnh của task đã tạo, nên script:
     1. Đọc toàn bộ hộp và tag của task (giữ nguồn file/auto/manual), sao lưu ra
@@ -64,6 +65,7 @@ def main():
     p.add_argument("--part", type=int, required=True)
     p.add_argument("--source", default="chv")
     p.add_argument("--dry-run", action="store_true")
+    p.add_argument("--first", help="file txt: thứ tự các ảnh check ở đầu task (ảnh check không có trong file xếp sau, theo tên)")
     args = p.parse_args()
     sys.stdout.reconfigure(encoding="utf-8")
 
@@ -85,6 +87,11 @@ def main():
         fr, shapes, tags = snapshot(old, names)
         images = [fr[i] for i in sorted(fr)]
         check = sorted({t["image"] for t in tags if t["label"] == CHECK_TAG})
+        if args.first:
+            first = [l.strip() for l in open(args.first, encoding="utf-8") if l.strip()]
+            if not set(first) <= set(check):
+                sys.exit(f"File --first có ảnh không mang tag '{CHECK_TAG}': {sorted(set(first) - set(check))[:5]}")
+            check = first + [n for n in check if n not in set(first)]
         ordered = check + [n for n in sorted(images) if n not in set(check)]
         print(f"{name} (task {old.id}): {len(images)} ảnh, {len(shapes)} hộp, {len(tags)} tag; "
               f"{len(check)} ảnh '{CHECK_TAG}' sẽ ở frame 0-{len(check) - 1}")
@@ -145,7 +152,7 @@ def main():
                 rows = list(csv.DictReader(fh))
             n = 0
             for r in rows:
-                if r.get("part", name) == name and int(r[col]) in id_map:
+                if r.get("part", name) == name and r[col] and int(r[col]) in id_map:
                     r[col] = str(id_map[int(r[col])]); n += 1
                 elif r.get("part", name) == name:
                     r[col] = ""  # hộp này đã bị người xóa trước khi tạo lại task

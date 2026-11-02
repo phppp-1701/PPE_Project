@@ -16,6 +16,8 @@ Sau đó máy duyệt lại toàn bộ (`scripts/01d_cvat_apply_review.py`): đ�
 - Xem xong một ảnh: sửa theo các quy tắc dưới, rồi **xóa tag `check`** của ảnh đó (bấm vào tag ở danh sách Objects bên phải → Delete). Hết tag `check` là xong task.
 - Ảnh có tag `check` chỉ vì người ở xa, quá nhỏ: không cần vẽ găng (mục 3), xóa tag là xong.
 - `chv_part03` được tạo lại ngày 31/10/2026 để **278 ảnh có tag `check` nằm ở đầu task (frame 0–277)**: chỉ cần duyệt từ frame 0 đến 277, phần sau là ảnh máy đã duyệt. Số ảnh `check` giảm từ 326 xuống 278 nhờ quy tắc rút từ kết quả người duyệt part02: hộp găng máy "không chắc" nhưng có độ tin cậy YOLOE ≥ 0,5 thì giữ (trên part02 đúng 84/94 hộp).
+- Chiều 31/10/2026, sau khi Phương duyệt xong 44 ảnh đầu, máy duyệt lần 2 cho 234 ảnh `check` còn lại của part03: xem từng hộp găng (phóng to) và ảnh nguyên. 97 ảnh ổn được gỡ tag (chỉ dùng cho train); `chv_part03` tạo lại lần nữa (id 2728661): **frame 0–75 là ảnh cần sửa** (hộp sai, hộp trùng, găng bị sót), **frame 76–136 là ảnh nên xem lại** (hộp máy vẽ không chắc). Việc cụ thể từng ảnh ở `data/ppe4/converted/chv/cvat/chv_part03_review_list.md`.
+- Ngày 02/11/2026, sau khi Phương duyệt frame 0–136, máy kiểm tra lại và tạo lại `chv_part03` (id 2730538) với **16 ảnh còn cần sửa hoặc xem lại ở frame 0–15**.
 - `chv_part02` cũng được tạo lại ngày 31/10/2026 (`scripts/01e_cvat_reorder_task.py`, giữ nguyên mọi hộp/tag đã gán): **32 ảnh còn tag `check` nằm ở frame 0–31**.
 - Ảnh không có tag `check` chỉ dùng cho tập train (máy duyệt), ảnh có tag đã được người xem mới được dùng cho val/test. Danh sách lưu ở `data/ppe4/converted/chv/cvat/chv_review_images.csv`.
 
@@ -27,6 +29,14 @@ Khi xem ảnh có tag `check`:
 - Găng máy bỏ sót (khoảng 1/4): **vẽ thêm** như thường.
 - Người cao dưới khoảng 80 px mà máy vẫn vẽ găng: xóa (mục 3).
 - Quy tắc `reject` không đổi: máy không gắn `reject`, người gán tự quyết định.
+
+### Ảnh reject sau khi gán xong (02/11/2026)
+
+Trên CVAT không ai gắn tag `reject`. Sau khi export cả 3 phần, máy đã rà lại theo quy tắc mục 3: đo độ nét và độ sáng của từng người cao từ 80 px trở lên, rồi xem phóng to bàn tay của những người bị đo là mờ hoặc tối. Kết quả **không gắn vào CVAT** mà ghi ở `data/ppe4/converted/chv/cvat/chv_reject.csv`, mỗi dòng một ảnh, cột `kind`:
+- `unclear`: bàn tay đủ lớn nhưng không phân biệt được găng hay tay trần;
+- `missing_gloves`: găng nhìn rõ nhưng chưa có hộp.
+
+Script nhập nhãn sẽ loại các ảnh này. Muốn giữ ảnh nào thì xóa dòng tương ứng; ảnh `missing_gloves` có thể giữ nếu vẽ bổ sung hộp găng.
 
 ## 1. Cái gì là găng tay
 
