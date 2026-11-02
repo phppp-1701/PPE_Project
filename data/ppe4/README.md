@@ -10,6 +10,8 @@ Cấu trúc sau khi tạo: `images/{train,val,test}`, `labels/{train,val,test}` 
 - `converted/<bộ>/cvat/`: gói nạp vào CVAT do `01a_cvat_export.py` tạo — mỗi phần một `<bộ>_partXX_images.zip` (tạo task) và một `<bộ>_partXX_yolo1.1.zip` (Upload annotations, định dạng YOLO 1.1), cùng `parts.csv` ghi ảnh nào thuộc phần nào.
 - `converted/<bộ>/cvat/<bộ>_partXX_prelabel_gloves.csv`: hộp găng YOLOE vẽ trước (`01c_prelabel_gloves.py`); `_prelabel_uploaded.csv`: id các hộp đó trên CVAT sau khi tải lên, dùng để biết hộp nào do máy vẽ khi nhập nhãn về.
 - `converted/chv/cvat/chv_review_boxes.csv`: kết quả duyệt từng hộp găng máy vẽ (glove / not_glove / uncertain, kèm id trên CVAT); `chv_review_images.csv`: từng ảnh là `check` (cần người xem) hay `machine_reviewed` (chỉ máy duyệt, chỉ dùng cho train), kèm lý do.
+- Sau khi gán xong trên CVAT, `01f_import_cvat.py` ghi đè `converted/<bộ>/labels` và `index.csv` bằng nhãn có găng tay. `index.csv` thêm cột `review` (`human` = có người xem, dùng được cho val/test; `machine` = chỉ máy duyệt, chỉ cho train) và `reject` (1 = loại, theo `cvat/<bộ>_reject.csv` hoặc tag `reject` trên CVAT). Nhãn cũ chưa có găng ở `labels_before_cvat/`. Hộp person/helmet/vest bị thêm/xóa so với nhãn gốc ghi ở `cvat/<bộ>_cvat_changes.csv`, thống kê ở `cvat/<bộ>_cvat_import.json`. Chạy lại `01_convert_labels.py` thì phải chạy lại `01f`.
+- `converted/<bộ>/cvat/<bộ>_reject.csv`: ảnh loại sau khi gán (`unclear` = không phân biệt được găng hay tay trần; `missing_gloves` = găng rõ nhưng thiếu hộp).
 - `converted/summary.json`: thống kê số ảnh, số hộp từng lớp, hộp bị bỏ theo lớp gốc.
 
 Ảnh chưa được chép ở bước này (SH17 đã 13 GB); bước 03 chép ảnh khi chia tập.

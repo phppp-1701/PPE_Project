@@ -9,6 +9,7 @@
 | `01c_prelabel_gloves.py` | Gán trước găng tay bằng YOLOE (tham số trong `configs/prelabel.yaml`), lưu CSV; `--upload` thêm hộp (nguồn `auto`) vào task CVAT để người duyệt | 1 |
 | `01d_cvat_apply_review.py` | Áp kết quả duyệt tự động (`chv_review_boxes.csv`, `chv_review_images.csv`) lên CVAT: xóa hộp găng sai còn nguyên, gắn tag `check` cho ảnh cần người xem | 1 |
 | `01e_cvat_reorder_task.py` | Tạo lại một task CVAT để ảnh có tag `check` lên đầu, giữ nguyên mọi hộp/tag và nguồn, có sao lưu và đối chiếu; `--first` chọn thứ tự các ảnh `check` | 1 |
+| `01f_import_cvat.py` | Nhập nhãn đã gán trên CVAT (`<bộ>_partXX_done_cvat.zip`) về `data/ppe4/converted/<bộ>/labels`, thêm cột `review` (human/machine) và `reject` vào `index.csv`, liệt kê hộp person/helmet/vest bị thêm/xóa so với nhãn gốc; nhãn cũ sao lưu ở `labels_before_cvat/` | 1 |
 | `02_check_data.py` | Tìm nhãn lỗi, ảnh trùng | 1 |
 | `03_split_data.py` | Chia train/val/test theo nhóm ảnh | 1 |
 | `04_train.py` | Huấn luyện YOLO11s | 2 |
