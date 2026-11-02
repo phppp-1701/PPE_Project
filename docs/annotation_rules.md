@@ -87,6 +87,14 @@ Nếu thấy mình `reject` quá nhiều (hơn khoảng 1/5 số ảnh của m�
 - **Trường hợp không chắc** có nên thêm hộp không thì không vẽ, ghi vào `notes.txt` để cả nhóm quyết định.
 - Các ghi chú được xử lý ở bước kiểm tra dữ liệu (`scripts/02_check_data.py`).
 
+### Khi nào gán `person` (chốt ngày 02/11/2026, áp dụng cho mọi bộ)
+
+- Thấy được **đầu hoặc thân người** (kể cả bị che một phần, ở xa, quay lưng) → gán `person`, hộp bao phần nhìn thấy.
+- **Chỉ thấy bàn tay, cánh tay hoặc chân** (ảnh chụp cận tay cầm dụng cụ...) → không gán `person`.
+- Tượng, người trong tranh/ảnh in, người trên màn hình → không gán.
+
+Lý do: hệ thống theo dõi cả người rồi gán PPE theo vùng cơ thể; một bàn tay đơn lẻ không dùng được cho việc đó. Người thiếu hộp do máy tìm (`02_check_data.py --missing-person`) được duyệt theo quy tắc này và ghi vào `data/ppe4/check/fixes.csv`.
+
 ## 5. Thao tác
 
 | Phím | Tác dụng |

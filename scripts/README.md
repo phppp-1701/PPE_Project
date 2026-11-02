@@ -10,7 +10,7 @@
 | `01d_cvat_apply_review.py` | Áp kết quả duyệt tự động (`chv_review_boxes.csv`, `chv_review_images.csv`) lên CVAT: xóa hộp găng sai còn nguyên, gắn tag `check` cho ảnh cần người xem | 1 |
 | `01e_cvat_reorder_task.py` | Tạo lại một task CVAT để ảnh có tag `check` lên đầu, giữ nguyên mọi hộp/tag và nguồn, có sao lưu và đối chiếu; `--first` chọn thứ tự các ảnh `check` | 1 |
 | `01f_import_cvat.py` | Nhập nhãn đã gán trên CVAT (`<bộ>_partXX_done_cvat.zip`) về `data/ppe4/converted/<bộ>/labels`, thêm cột `review` (human/machine) và `reject` vào `index.csv`, liệt kê hộp person/helmet/vest bị thêm/xóa so với nhãn gốc; nhãn cũ sao lưu ở `labels_before_cvat/` | 1 |
-| `02_check_data.py` | Tìm nhãn lỗi, ảnh trùng | 1 |
+| `02_check_data.py` | Kiểm tra dữ liệu, ghi báo cáo vào `data/ppe4/check/`. `--technical`: lỗi kỹ thuật (ảnh hỏng, nhãn sai định dạng, hộp ra ngoài ảnh) và thống kê; `--duplicates`: dấu vân tay dHash, cặp ảnh trùng/gần trùng, `group_id` (`groups.csv`); `--content`: liệt kê hộp đáng ngờ theo quy tắc; `--missing-person`: chạy `yolo11s.pt` tìm người chưa có hộp | 1 |
 | `03_split_data.py` | Chia train/val/test theo nhóm ảnh | 1 |
 | `04_train.py` | Huấn luyện YOLO11s | 2 |
 | `05_run_video.py` | Chạy một video qua toàn bộ hệ thống | 3 |

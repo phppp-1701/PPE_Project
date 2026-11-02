@@ -14,4 +14,6 @@ Cấu trúc sau khi tạo: `images/{train,val,test}`, `labels/{train,val,test}` 
 - `converted/<bộ>/cvat/<bộ>_reject.csv`: ảnh loại sau khi gán (`unclear` = không phân biệt được găng hay tay trần; `missing_gloves` = găng rõ nhưng thiếu hộp).
 - `converted/summary.json`: thống kê số ảnh, số hộp từng lớp, hộp bị bỏ theo lớp gốc.
 
+`check/` — báo cáo của `02_check_data.py` (xem `check/README.md`).
+
 Ảnh chưa được chép ở bước này (SH17 đã 13 GB); bước 03 chép ảnh khi chia tập.

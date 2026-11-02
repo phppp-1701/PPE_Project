@@ -1,0 +1,49 @@
+# Tham số kiểm tra dữ liệu (docs/spec.md mục 2.2). Dùng bởi scripts/02_check_data.py.
+
+sources: [sh17, chv, construction_ppe, pictor_ppe]
+out_dir: data/ppe4/check
+
+technical:
+  # Nhãn YOLO làm tròn 6 chữ số thập phân; mép hộp vượt ra ngoài ảnh không quá mức này
+  # (theo tỉ lệ cạnh ảnh) coi là sai số làm tròn, không tính là lỗi.
+  coord_tolerance: 0.001
+
+stats:
+  # Mốc chia hộp nhỏ / vừa / lớn theo diện tích pixel, dùng định nghĩa của COCO (32², 96²).
+  size_bins_px: [32, 96]
+
+duplicates:
+  # Dấu vân tay ảnh: dHash 64 bit (ảnh xám thu về 9x8, so sánh từng cặp điểm kề nhau),
+  # tính sau khi cắt viền tối đều màu (ảnh dọc bị độn viền đen).
+  border_dark: 16           # hàng/cột có mọi điểm xám <= giá trị này coi là viền
+  # Liệt kê mọi cặp có khoảng cách Hamming <= scan_hamming để người xem mẫu
+  # (chỉ là phạm vi liệt kê, không phải ngưỡng quyết định).
+  scan_hamming: 12
+  pairs_per_distance: 8     # số cặp mẫu vẽ ra cho mỗi mức khoảng cách
+  # Ngưỡng gom chung group_id, chọn ngày 02/11/2026 sau khi xem dup_samples_dXX.jpg:
+  # cùng bộ đến 8 vẫn chủ yếu là cùng cảnh; khác bộ từ 6 trở lên lẫn nhiều cặp không liên quan.
+  max_hamming_same_source: 8
+  max_hamming_cross_source: 5
+  # Cặp khác bộ trong khoảng (max_hamming_cross_source, cross_review_max] được vẽ ra để người xem;
+  # cặp xác nhận trùng ghi vào data/ppe4/check/duplicate_confirmed.csv.
+  cross_review_max: 8
+
+content:
+  # Các mức dưới đây chỉ là phạm vi LIỆT KÊ hộp đáng ngờ để người xem, không tự sửa hay xóa hộp nào.
+  # Cỡ ảnh lúc huấn luyện, dùng để đo hộp "nhỏ"; 640 là mặc định Ultralytics, đổi theo train.yaml khi chốt.
+  train_imgsz: 640
+  tiny_px: 4                    # cạnh ngắn của hộp sau khi đưa ảnh về train_imgsz nhỏ hơn mức này
+  dup_iou: 0.9                  # hai hộp cùng lớp chồng nhau IoU >= mức này (vẽ trùng)
+  glove_person_area_ratio: 0.25 # găng chiếm hơn tỉ lệ này diện tích hộp người chứa nó
+  inside_margin: 0.1            # nới hộp người thêm tỉ lệ này mỗi phía khi xét PPE "nằm trong" người
+
+missing_person:
+  # Tìm người chưa có hộp: chạy mô hình COCO có sẵn, liệt kê người máy thấy mà nhãn không có.
+  # Chỉ là danh sách để người xem; hộp thêm vào phải qua duyệt bằng mắt (fixes.csv).
+  model: yolo11s.pt
+  sources: [sh17, chv, construction_ppe]   # Pictor chỉ kiểm thử ngoài, không sửa
+  imgsz: 640
+  save_conf: 0.25          # lưu mọi dự đoán người từ mức này (để đổi mức liệt kê không phải chạy lại)
+  list_conf: 0.5           # liệt kê dự đoán có độ tin cậy từ mức này
+  match_iou: 0.3           # dự đoán chồng với hộp person đã có IoU >= mức này coi là đã có nhãn
+  min_height_px: 16        # bỏ qua người thấp hơn mức này (đo ở imgsz), quá nhỏ để gán
