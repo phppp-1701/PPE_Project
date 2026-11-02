@@ -12,11 +12,13 @@ Tham số trong configs/train.yaml. Ghi vào --out (mặc định /kaggle/workin
 """
 
 import argparse
+import collections
 import json
 import os
 import shutil
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import yaml
@@ -40,32 +42,43 @@ def writable_copy(data_yaml, dst):
     src = data_yaml.parent
     if os.access(src, os.W_OK):
         return data_yaml
-    n_link = n_trim = 0
-    for f in src.rglob("*"):
-        rel = f.relative_to(src)
-        if f.is_dir() or rel.parts[0] not in ("images", "labels"):
-            continue
-        out = dst / rel
-        out.parent.mkdir(parents=True, exist_ok=True)
+    # os.walk không stat từng file; mỗi lần mở file trên ổ dữ liệu Kaggle phải chờ mạng nên làm song song.
+    files = []
+    for kind in ("images", "labels"):
+        for d, _, names in os.walk(src / kind):
+            out_dir = dst / Path(d).relative_to(src)
+            out_dir.mkdir(parents=True, exist_ok=True)
+            files += [(kind, Path(d) / n, out_dir / n) for n in names]
+
+    def one(item):
+        kind, f, out = item
         if out.exists() or out.is_symlink():
-            continue
-        if rel.parts[0] == "labels":
+            return "skip"
+        if kind == "labels":
             shutil.copy2(f, out)
-            continue
-        tail = b""
+            return "label"
         if f.suffix.lower() in (".jpg", ".jpeg"):
             with open(f, "rb") as fh:
                 fh.seek(-2, 2)
-                tail = fh.read()
-        data = f.read_bytes() if tail and tail != b"\xff\xd9" else b""
-        if b"\xff\xd9" in data:
-            out.write_bytes(data[:data.rindex(b"\xff\xd9") + 2])
-            n_trim += 1
-        else:
-            out.symlink_to(f)
-            n_link += 1
+                if fh.read() != b"\xff\xd9":
+                    fh.seek(0)
+                    data = fh.read()
+                    if b"\xff\xd9" in data:
+                        out.write_bytes(data[:data.rindex(b"\xff\xd9") + 2])
+                        return "trim"
+        out.symlink_to(f)
+        return "link"
+
+    print(f"Tạo bản ghi được ở {dst}: {len(files)} file", flush=True)
+    done = collections.Counter()
+    with ThreadPoolExecutor(32) as pool:
+        for i, r in enumerate(pool.map(one, files), 1):
+            done[r] += 1
+            if i % 2000 == 0 or i == len(files):
+                print(f"  {i}/{len(files)}", flush=True)
     shutil.copy2(data_yaml, dst / "data.yaml")
-    print(f"Bản ghi được: {dst} ({n_link} liên kết ảnh, {n_trim} ảnh cắt byte thừa)")
+    print(f"Bản ghi được: {dst} ({done['link']} liên kết ảnh, {done['trim']} ảnh cắt byte thừa, "
+          f"{done['label']} nhãn, {done['skip']} đã có)", flush=True)
     return dst / "data.yaml"
 
 
@@ -87,6 +100,7 @@ def main():
     ap.add_argument("--data-copy", default="/kaggle/working/data",
                     help="nơi tạo bản ghi được khi thư mục dữ liệu chỉ đọc")
     args = ap.parse_args()
+    sys.stdout.reconfigure(line_buffering=True)  # in ra ngay khi chạy bằng !python trong notebook
 
     import torch
     import ultralytics
