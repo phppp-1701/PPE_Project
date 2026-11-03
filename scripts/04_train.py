@@ -14,6 +14,7 @@ Tham số trong configs/train.yaml. Ghi vào --out (mặc định /kaggle/workin
 import argparse
 import collections
 import json
+import math
 import os
 import shutil
 import sys
@@ -35,13 +36,19 @@ def find_data_yaml(base):
     return found[0]
 
 
-def writable_copy(data_yaml, dst):
+def writable_copy(data_yaml, dst, max_side=None):
     """Thư mục dữ liệu Kaggle chỉ đọc: tạo bản ở dst gồm liên kết (symlink) tới ảnh và bản chép nhãn,
     để Ultralytics ghi được cache nhãn. JPEG có byte thừa sau FFD9 thì chép bản đã cắt thừa
-    (như 03_split_data.py), nếu không Ultralytics bỏ qua ảnh đó vì không ghi đè được."""
+    (như 03_split_data.py), nếu không Ultralytics bỏ qua ảnh đó vì không ghi đè được.
+    max_side: ảnh có cạnh dài hơn mức này được thu nhỏ (như Ultralytics, JPEG chất lượng 95) và ghi
+    vào dst thay cho liên kết, để khỏi giữ ảnh trong RAM (cache) mà mỗi epoch vẫn không phải giải nén
+    ảnh gốc rất lớn. Nhãn YOLO là tọa độ chuẩn hóa nên giữ nguyên."""
     src = data_yaml.parent
     if os.access(src, os.W_OK):
         return data_yaml
+    if max_side:
+        import cv2
+        from ultralytics.utils.patches import imread, imwrite  # cùng cách đọc (xoay EXIF) với Ultralytics
     # os.walk không stat từng file; mỗi lần mở file trên ổ dữ liệu Kaggle phải chờ mạng nên làm song song.
     files = []
     for kind in ("images", "labels"):
@@ -57,6 +64,20 @@ def writable_copy(data_yaml, dst):
         if kind == "labels":
             shutil.copy2(f, out)
             return "label"
+        if max_side:
+            im = imread(str(f))
+            if im is None:
+                raise RuntimeError(f"không đọc được ảnh {f}")
+            h, w = im.shape[:2]
+            if max(h, w) > max_side:
+                # Giống BaseDataset.load_image của Ultralytics 8.4.189 (ceil, INTER_LINEAR): khi train,
+                # ảnh đã đúng cạnh dài imgsz nên Ultralytics không thu nhỏ lại lần nữa.
+                r = max_side / max(h, w)
+                size = (min(math.ceil(w * r), max_side), min(math.ceil(h * r), max_side))
+                im = cv2.resize(im, size, interpolation=cv2.INTER_LINEAR)
+                if not imwrite(str(out), im, [cv2.IMWRITE_JPEG_QUALITY, 95]):
+                    raise RuntimeError(f"không ghi được {out}")
+                return "resize"
         if f.suffix.lower() in (".jpg", ".jpeg"):
             with open(f, "rb") as fh:
                 fh.seek(-2, 2)
@@ -69,16 +90,17 @@ def writable_copy(data_yaml, dst):
         out.symlink_to(f)
         return "link"
 
-    print(f"Tạo bản ghi được ở {dst}: {len(files)} file", flush=True)
+    print(f"Tạo bản ghi được ở {dst}: {len(files)} file" + (f", thu nhỏ ảnh về cạnh dài {max_side}" if max_side else ""),
+          flush=True)
     done = collections.Counter()
-    with ThreadPoolExecutor(32) as pool:
+    with ThreadPoolExecutor(16 if max_side else 32) as pool:  # giải nén ảnh lớn tốn RAM: ít luồng hơn
         for i, r in enumerate(pool.map(one, files), 1):
             done[r] += 1
             if i % 2000 == 0 or i == len(files):
                 print(f"  {i}/{len(files)}", flush=True)
     shutil.copy2(data_yaml, dst / "data.yaml")
-    print(f"Bản ghi được: {dst} ({done['link']} liên kết ảnh, {done['trim']} ảnh cắt byte thừa, "
-          f"{done['label']} nhãn, {done['skip']} đã có)", flush=True)
+    print(f"Bản ghi được: {dst} ({done['resize']} ảnh thu nhỏ, {done['link']} liên kết ảnh, "
+          f"{done['trim']} ảnh cắt byte thừa, {done['label']} nhãn, {done['skip']} đã có)", flush=True)
     return dst / "data.yaml"
 
 
@@ -112,7 +134,7 @@ def main():
 
     data = Path(args.data) if args.data else find_data_yaml("/kaggle/input")
     print(f"data: {data}")
-    data = str(writable_copy(data, Path(args.data_copy)))
+    data = str(writable_copy(data, Path(args.data_copy), cfg.get("copy_max_side")))
 
     start = time.time()
     if args.resume:  # lần trước cũng dùng bản ghi được ở cùng --data-copy nên đường dẫn trong last.pt vẫn đúng

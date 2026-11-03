@@ -7,6 +7,11 @@
 run_name: yolo11s_ppe4_r2
 model: yolo11s.pt        # trọng số tiền huấn luyện COCO; head được thay theo 4 lớp của data.yaml
 
+# Khi tạo bản ghi được trên Kaggle (04_train.py), thu nhỏ trước ảnh có cạnh dài hơn mức này về đúng mức này,
+# cùng cách Ultralytics thu nhỏ (ceil, INTER_LINEAR), lưu JPEG chất lượng 95. Đặt bằng train.imgsz.
+# Ảnh gốc trên máy và Kaggle Dataset không đổi. Bỏ trống (null) thì dùng liên kết tới ảnh gốc như r1.
+copy_max_side: 960
+
 train:
   # 960: găng cạnh 8-16 px ở 640 thành 12-24 px. Không dùng 1280 (ước tính gấp 4 thời gian r1, quá 12 giờ Kaggle).
   imgsz: 960
@@ -20,10 +25,10 @@ train:
   deterministic: true
   device: 0              # một GPU (Kaggle T4)
   workers: 4             # Kaggle có 4 nhân CPU
-  # Ảnh SH17 để nguyên cỡ gốc; cache "ram" giải nén và thu ảnh về imgsz một lần rồi giữ trong RAM,
-  # để mỗi epoch không phải giải nén lại 13,8 GB ảnh (CPU Kaggle yếu). Không đổi nội dung học.
-  # Ở 960 ước tính ~18 GB RAM (r1 ở 640 ~8 GB). Không dùng "disk": Ultralytics lưu ảnh cỡ gốc đã giải nén (>100 GB).
-  cache: ram
+  # r1 dùng cache "ram" (~8 GB ở 640). Lần chạy r2 đầu tiên (03/11) với cache ram ở 960 bị Kaggle tắt vì hết RAM
+  # (ảnh cache 13,8 GB, RAM còn 1,1/31,3 GB khi vào epoch 1). Nay thay bằng copy_max_side bên dưới.
+  # Không dùng "disk": Ultralytics lưu ảnh cỡ gốc đã giải nén (>100 GB).
+  cache: false
   # Tăng cường: giữ mặc định Ultralytics. Nêu rõ hai phép spec mục 2.4 cấm, mặc định đã tắt:
   flipud: 0.0            # không lật dọc
   degrees: 0.0           # không xoay góc lớn (mặc định không xoay)
