@@ -41,3 +41,4 @@ analyze:
   n_samples: 30          # số mẫu bỏ sót / dự đoán thừa vẽ ra cho mỗi lớp được chọn
   sample_classes: [gloves]
   seed: 0
+  speed_images: 200      # số ảnh val đầu tiên để đo tốc độ (batch 1, như khi chạy video); bỏ 20 ảnh đầu để GPU khởi động

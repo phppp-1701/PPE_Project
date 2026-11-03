@@ -108,6 +108,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--run", default="outputs/train/yolo11s_ppe4_r1", help="thư mục kết quả huấn luyện")
     ap.add_argument("--batch", type=int, default=8)
+    ap.add_argument("--speed-only", action="store_true", help="chỉ đo tốc độ (ghi speed.json)")
     args = ap.parse_args()
 
     from ultralytics import YOLO
@@ -120,6 +121,20 @@ def main():
     model = YOLO(run / "weights" / "best.pt")
     names = {int(k): v for k, v in model.names.items()}
     assert names == CLASSES, f"lớp của mô hình {names} khác label_map {CLASSES}"
+
+    # Tốc độ: batch 1 như khi chạy video; thời gian đọc file ảnh không tính (Ultralytics chỉ đo 3 bước dưới).
+    import torch
+    files = sorted((DATASET / "images" / "val").iterdir())[:cfg["speed_images"]]
+    times = [model.predict(str(p), imgsz=imgsz, conf=cfg["conf"], verbose=False)[0].speed for p in files]
+    times = times[20:]
+    speed = {k: round(float(np.median([t[k] for t in times])), 2) for k in times[0]}
+    speed.update(total_ms=round(sum(speed.values()), 2), imgsz=imgsz, n_images=len(times), batch=1,
+                 gpu=torch.cuda.get_device_name(0) if torch.cuda.is_available() else "cpu")
+    speed["fps_detector_only"] = round(1000 / speed["total_ms"], 1)
+    (out / "speed.json").write_text(json.dumps(speed, indent=2), encoding="utf-8")
+    print(f"Tốc độ (trung vị, ms/ảnh): {speed}", flush=True)
+    if args.speed_only:
+        return
 
     print(f"1/2 model.val trên val (imgsz {imgsz})", flush=True)
     m = model.val(data=str(DATASET / "data.yaml"), split="val", imgsz=imgsz, batch=args.batch,

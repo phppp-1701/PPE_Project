@@ -27,8 +27,8 @@ Bỏ dữ liệu vào `data/` → chỉnh số trong `configs/` → chạy lện
 ## Trạng thái
 
 - [x] Bước 0: cài môi trường (Python, PyTorch GPU, Ultralytics)
-- [ ] Bước 1: chuẩn bị dữ liệu ảnh (26/10 - 08/11)
-- [ ] Bước 2: huấn luyện YOLO11s (02/11 - 12/11)
+- [x] Bước 1: chuẩn bị dữ liệu ảnh (26/10 - 08/11)
+- [x] Bước 2: huấn luyện YOLO11s (02/11 - 12/11) — chọn r2 (`imgsz` 960), xem `docs/experiments/2026-11-03_yolo11s_r2.md`
 - [ ] Bước 3: chuỗi xử lý video (09/11 - 19/11)
 - [ ] Bước 4: API và dashboard (09/11 - 19/11)
 - [ ] Bước 5: video kiểm thử và thực nghiệm (16/11 - 24/11)
