@@ -2,21 +2,37 @@
 # Lần 1: giữ mặc định Ultralytics 8.4.189 để có kết quả gốc; chỉ ghi ra những gì đặt khác hoặc cần nêu rõ.
 # Đổi tham số ở các lần sau dựa trên kết quả val, ghi lại trong docs/experiments/.
 
-run_name: yolo11s_ppe4_r1
+# r1 (03/11/2026): imgsz 640, patience 100 — xem docs/experiments/2026-11-03_yolo11s_r1.md.
+# r2: chỉ đổi imgsz 640 -> 960 (găng tay sót chủ yếu là hộp nhỏ, theo phân tích lỗi r1 trên val); patience 20.
+run_name: yolo11s_ppe4_r2
 model: yolo11s.pt        # trọng số tiền huấn luyện COCO; head được thay theo 4 lớp của data.yaml
 
 train:
-  imgsz: 640             # mặc định
+  # 960: găng cạnh 8-16 px ở 640 thành 12-24 px. Không dùng 1280 (ước tính gấp 4 thời gian r1, quá 12 giờ Kaggle).
+  imgsz: 960
   epochs: 100            # mặc định
   batch: -1              # AutoBatch: tự chọn theo bộ nhớ GPU (khoảng 60%); số thật ghi trong args.yaml
-  patience: 100          # mặc định: dừng sớm nếu 100 epoch liền val không tốt lên
+  # Dừng sớm khi mAP@0.5:0.95 trên val không vượt mức tốt nhất sau `patience` epoch liền.
+  # Chọn 03/11/2026 theo đường học val của r1: 10 sẽ dừng ở epoch 11 (sau khởi động điểm giảm tạm thời),
+  # 20 dừng ở epoch 84 và vẫn giữ best (epoch 64). r1 chạy với 100 (mặc định).
+  patience: 20
   seed: 0
   deterministic: true
   device: 0              # một GPU (Kaggle T4)
   workers: 4             # Kaggle có 4 nhân CPU
   # Ảnh SH17 để nguyên cỡ gốc; cache "ram" giải nén và thu ảnh về imgsz một lần rồi giữ trong RAM,
   # để mỗi epoch không phải giải nén lại 13,8 GB ảnh (CPU Kaggle yếu). Không đổi nội dung học.
+  # Ở 960 ước tính ~18 GB RAM (r1 ở 640 ~8 GB). Không dùng "disk": Ultralytics lưu ảnh cỡ gốc đã giải nén (>100 GB).
   cache: ram
   # Tăng cường: giữ mặc định Ultralytics. Nêu rõ hai phép spec mục 2.4 cấm, mặc định đã tắt:
   flipud: 0.0            # không lật dọc
   degrees: 0.0           # không xoay góc lớn (mặc định không xoay)
+
+# Phân tích lỗi trên val (scripts/04b_analyze_val.py). Chỉ để chẩn đoán, không phải ngưỡng của hệ thống.
+analyze:
+  conf: 0.25             # mặc định predict của Ultralytics, cùng mức với ma trận nhầm lẫn
+  match_iou: 0.5         # dự đoán cùng lớp chồng hộp nhãn IoU >= mức này coi là tìm đúng
+  size_bins_px: [8, 16, 32]   # mốc cạnh ngắn của hộp, đo sau khi ảnh thu về imgsz lúc huấn luyện
+  n_samples: 30          # số mẫu bỏ sót / dự đoán thừa vẽ ra cho mỗi lớp được chọn
+  sample_classes: [gloves]
+  seed: 0
