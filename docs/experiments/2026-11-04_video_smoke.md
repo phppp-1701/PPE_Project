@@ -29,6 +29,21 @@ Quan sát và kiểm tra thêm:
 - **Mũ lưỡi trai / mũ vải bị nhận là mũ bảo hộ** (video1, cả khung và ảnh cắt, conf 0,64–0,78). Nhãn helmet trong train là mũ bảo hộ thật (xem mẫu `helmet_*.jpg`), nên đây là lỗi phân biệt của mô hình, không phải lỗi nhãn.
 - **Áo cam mặc ngoài quần yếm xanh** (video1, khung cuối) không được nhận cả khi cắt ảnh → lỗi ngoại hình, không phải cỡ.
 
+## Thêm chế độ dò PPE trên ảnh cắt (nhóm chọn hướng B, 04/11/2026)
+
+`python scripts/05a_calibrate_val.py --crop` (val, chỉ chấm PPE nằm trong người detector tìm được với conf person ≥ 0,39; ảnh cắt = hộp người nới 10% mỗi phía). F1 trung bình mũ/áo/găng ở conf tốt nhất:
+
+| Chế độ | Tất cả | Người < 120 px (ở 960) | 120–240 px | ≥ 240 px | ms/người |
+|---|---|---|---|---|---|
+| full (cả khung) | **0,789** | 0,486 | **0,651** | **0,838** | – |
+| crop256 | 0,717 | **0,578** | 0,608 | 0,755 | 10,8 |
+| crop320 | 0,738 | 0,564 | 0,644 | 0,776 | 10,6 |
+| crop480 | 0,753 | 0,555 | 0,628 | 0,799 | 13,2 |
+
+Ảnh cắt chỉ giúp người nhỏ (nhóm < 120 px: áo 0,471 → 0,571, găng 0,242 → 0,455 với crop256), kém hơn ở người lớn. → Chọn `ppe_source: auto`: người < 120 px dùng crop256 (conf mũ 0,50 / áo 0,57 / găng 0,42, chọn trên nhóm này, ít mẫu: 82/47/34 hộp nhãn), người lớn hơn dùng cả khung. Ghi trong `configs/pipeline.yaml` và spec 5.1 (bổ sung).
+
+Chạy lại video2 với `auto`: áo được nhận ở nhiều người xa (trước: không áo nào đạt ngưỡng); một số áo chưa gán được người (`Ao?`, vùng thân chọn trên ảnh chụp ngang không khớp góc nhìn từ trên cao); người gần camera (≥ 120 px, dùng cả khung) vẫn chưa được nhận áo. video1 chạy bình thường (detector p50 19,8 ms).
+
 ## Nhận xét
 
 - Hệ thống chạy đúng cấu trúc: phát hiện → theo dõi → gán PPE cho đúng người và đúng tay trên video1.

@@ -3,6 +3,7 @@
 Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
     python scripts/05a_calibrate_val.py --regions     # vùng cơ thể + max_distance từ nhãn val (không cần mô hình)
     python scripts/05a_calibrate_val.py --conf        # conf từng lớp + NMS IoU từ dự đoán của detector trên val
+    python scripts/05a_calibrate_val.py --crop        # so sánh PPE dò cả khung / trên ảnh cắt từng người (cần conf, nms)
     (dự đoán được lưu cache; --rerun để dự đoán lại)
 
 Tham số đầu vào: configs/pipeline.yaml (detector, ppe, calibration). Chỉ in và ghi đề xuất vào
@@ -11,6 +12,8 @@ outputs/results/pipeline_calib_val/; người chép giá trị đã duyệt vào
     preds.npz      cache dự đoán (conf rất thấp, gần như không NMS)
     conf_f1.csv    P/R/F1 theo NMS IoU × lớp × conf
     conf.json      đề xuất conf từng lớp và nms_iou
+    crop_preds.npz cache dự đoán PPE trên ảnh cắt từng người, mỗi cỡ ảnh cắt
+    crop.json      F1 từng lớp, conf cho F1 lớn nhất, thời gian/người của từng chế độ (full, crop<cỡ>)
 """
 
 import argparse
@@ -203,19 +206,163 @@ def conf_nms(cfg, rerun):
     print(f"\nĐề xuất: nms_iou {pick}, conf {res['conf']}")
 
 
+def match_scores(boxes, conf, g_boxes, match_iou):
+    """[(conf, khớp?)] sau ghép tham lam theo conf giảm dần (trạng thái khớp không phụ thuộc ngưỡng conf)."""
+    order = np.argsort(-conf)
+    used = np.zeros(len(g_boxes), dtype=bool)
+    ious = iou_matrix(boxes[order], g_boxes) if len(g_boxes) and len(boxes) else None
+    out = []
+    for j, k in enumerate(order):
+        hit = False
+        if ious is not None:
+            cand = np.where(~used & (ious[j] >= match_iou))[0]
+            if len(cand):
+                used[cand[np.argmax(ious[j][cand])]] = True
+                hit = True
+        out.append((float(conf[k]), hit))
+    return out
+
+
+def best_f1(scores, n_gt, grid):
+    s = np.array(scores) if scores else np.zeros((0, 2))
+    best = None
+    for th in grid:
+        sel = s[s[:, 0] >= th] if len(s) else s
+        tp = int(sel[:, 1].sum()) if len(sel) else 0
+        fp, fn = len(sel) - tp, n_gt - tp
+        p = tp / (tp + fp) if tp + fp else 0.0
+        r = tp / (tp + fn) if tp + fn else 0.0
+        f1 = 2 * p * r / (p + r) if p + r else 0.0
+        if best is None or f1 > best["F1"]:
+            best = dict(conf=float(th), tp=tp, fp=fp, fn=fn, P=round(p, 4), R=round(r, 4), F1=round(f1, 4))
+    return best
+
+
+def inside_any(cx, cy, persons, margin):
+    return any(p[0] - margin * (p[2] - p[0]) <= cx <= p[2] + margin * (p[2] - p[0]) and
+               p[1] - margin * (p[3] - p[1]) <= cy <= p[3] + margin * (p[3] - p[1]) for p in persons)
+
+
+def crop_eval(cfg, rerun):
+    """So sánh dò PPE trên cả khung với dò trên ảnh cắt từng người (đạt conf person) ở các cỡ ảnh cắt.
+
+    Chỉ chấm PPE (nhãn và dự đoán) có tâm nằm trong một người detector tìm được (nới inside_margin):
+    đó là phần chuỗi xử lý dùng được; PPE của người không được phát hiện thì không gán được cho ai.
+    """
+    import time
+
+    import cv2
+    import torch
+    from torchvision.ops import nms
+    from ultralytics import YOLO
+
+    cal, d = cfg["calibration"], cfg["detector"]
+    full = predict(cfg, False)
+    person_conf, nms_iou, margin = d["conf"]["person"], d["nms_iou"], d["crop"]["margin"]
+    ppe_cls = {p["cls"]: n for n, p in cfg["ppe"].items()}
+    g = cal["conf_grid"]
+    grid = np.round(np.arange(g["start"], g["stop"] + 1e-9, g["step"]), 4)
+    cache = OUT / "crop_preds.npz"
+    if cache.exists() and not rerun:
+        crop_preds, timing = np.load(cache, allow_pickle=True)["data"]
+    else:
+        model = YOLO(ROOT / d["weights"])
+        crop_preds = {s: {} for s in cal["crop_imgsz_grid"]}
+        timing = {s: [] for s in cal["crop_imgsz_grid"]}
+        stems = sorted(full)
+        for i, stem in enumerate(stems, 1):
+            p = full[stem]
+            m = p["cls"] == cfg["person_cls"]
+            boxes, conf = p["xyxy"][m], p["conf"][m]
+            persons = []
+            if len(boxes):
+                keep = nms(torch.tensor(boxes), torch.tensor(conf), nms_iou).numpy()
+                persons = [b for b, s in zip(boxes[keep], conf[keep]) if s >= person_conf]
+            img = cv2.imread(str(next((DATASET / "images" / "val").glob(stem + ".*"))))
+            H, W = img.shape[:2]
+            crops, offs = [], []
+            for b in persons:
+                w, h = b[2] - b[0], b[3] - b[1]
+                x1, y1 = int(max(0, b[0] - margin * w)), int(max(0, b[1] - margin * h))
+                x2, y2 = int(min(W, b[2] + margin * w)), int(min(H, b[3] + margin * h))
+                if x2 - x1 >= 2 and y2 - y1 >= 2:
+                    crops.append(img[y1:y2, x1:x2])
+                    offs.append((x1, y1))
+            for s in cal["crop_imgsz_grid"]:
+                xy, cf, cl = [], [], []
+                if crops:
+                    t0 = time.perf_counter()
+                    res = model.predict(crops, imgsz=s, conf=0.01, iou=0.95, max_det=300, device=d["device"],
+                                        verbose=False)
+                    timing[s].append((time.perf_counter() - t0) * 1000 / len(crops))
+                    for (ox, oy), r in zip(offs, res):
+                        b = r.boxes.cpu().numpy()
+                        keep = b.cls.astype(int) != cfg["person_cls"]
+                        xy.append(b.xyxy[keep] + np.array([ox, oy, ox, oy]))
+                        cf.append(b.conf[keep])
+                        cl.append(b.cls.astype(int)[keep])
+                crop_preds[s][stem] = dict(
+                    xyxy=np.concatenate(xy) if xy else np.zeros((0, 4)), conf=np.concatenate(cf) if cf else np.zeros(0),
+                    cls=np.concatenate(cl) if cl else np.zeros(0, int), persons=np.array(persons).reshape(-1, 4),
+                    shape=(H, W))
+            if i % 200 == 0 or i == len(stems):
+                print(f"  ảnh cắt {i}/{len(stems)}", flush=True)
+        np.savez_compressed(cache, data=np.array((crop_preds, timing), dtype=object))
+
+    s0 = cal["crop_imgsz_grid"][0]
+    modes = {"full": full, **{f"crop{s}": crop_preds[s] for s in cal["crop_imgsz_grid"]}}
+    results = {}
+    for mode, preds in modes.items():
+        scores = {c: [] for c in ppe_cls}
+        n_gt = {c: 0 for c in ppe_cls}
+        for stem, p in preds.items():
+            persons = crop_preds[s0][stem]["persons"]
+            H, W = crop_preds[s0][stem]["shape"]
+            lab = read_labels(DATASET / "labels" / "val" / f"{stem}.txt")
+            for c in ppe_cls:
+                g_boxes = np.array([to_xyxy(r[1] * W, r[2] * H, r[3] * W, r[4] * H) for r in lab
+                                    if r[0] == c and inside_any(r[1] * W, r[2] * H, persons, margin)]).reshape(-1, 4)
+                n_gt[c] += len(g_boxes)
+                m = p["cls"] == c
+                boxes, conf = p["xyxy"][m], p["conf"][m]
+                if len(boxes):
+                    keep = nms(torch.tensor(boxes, dtype=torch.float32), torch.tensor(conf, dtype=torch.float32),
+                               nms_iou).numpy()
+                    boxes, conf = boxes[keep], conf[keep]
+                    ok = np.array([inside_any((b[0] + b[2]) / 2, (b[1] + b[3]) / 2, persons, margin) for b in boxes],
+                                  dtype=bool)
+                    boxes, conf = boxes[ok], conf[ok]
+                scores[c] += match_scores(boxes, conf, g_boxes, cal["match_iou"])
+        per = {ppe_cls[c]: best_f1(scores[c], n_gt[c], grid) for c in ppe_cls}
+        size = int(mode[4:]) if mode.startswith("crop") else None
+        results[mode] = dict(per_class=per, macro_f1=round(float(np.mean([v["F1"] for v in per.values()])), 4),
+                             ms_per_person=round(float(np.median(timing[size])), 2) if size else None)
+    print(f"\nPPE trong người đã phát hiện (conf person >= {person_conf}), NMS {nms_iou}, conf cho F1 lớn nhất:")
+    for mode, r in results.items():
+        t = f", {r['ms_per_person']} ms/người" if r["ms_per_person"] else ""
+        print(f"  {mode:<8} F1 trung bình {r['macro_f1']:.4f}{t}")
+        for name, v in r["per_class"].items():
+            print(f"    {name:<7} conf {v['conf']:.2f}  P {v['P']:.3f}  R {v['R']:.3f}  F1 {v['F1']:.3f}  "
+                  f"(TP {v['tp']}, FP {v['fp']}, FN {v['fn']})")
+    (OUT / "crop.json").write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--regions", action="store_true")
     ap.add_argument("--conf", action="store_true")
+    ap.add_argument("--crop", action="store_true", help="so sánh dò PPE cả khung với dò trên ảnh cắt từng người")
     ap.add_argument("--rerun", action="store_true", help="dự đoán lại thay vì dùng cache")
     args = ap.parse_args()
-    if not (args.regions or args.conf):
-        ap.error("chọn --regions và/hoặc --conf")
+    if not (args.regions or args.conf or args.crop):
+        ap.error("chọn --regions, --conf và/hoặc --crop")
     cfg = load_config()
     if args.regions:
         regions(cfg)
     if args.conf:
         conf_nms(cfg, args.rerun)
+    if args.crop:
+        crop_eval(cfg, args.rerun)
 
 
 if __name__ == "__main__":

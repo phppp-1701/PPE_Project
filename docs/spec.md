@@ -132,6 +132,7 @@ Detector và tracker không ghi trực tiếp vào cơ sở dữ liệu.
 ### 5.1. Phát hiện và theo dõi (`detector.py`, `tracker.py`)
 
 - Tách kết quả thành tập người và 3 tập PPE, quy đổi về tọa độ gốc. **Không track PPE.** Lịch sử trạng thái lưu theo `track_id` của người.
+- *Bổ sung 04/11/2026 (nhóm quyết định, ngoài báo cáo gốc):* tùy chọn `ppe_source: crop` — người dò trên cả khung, PPE dò trên ảnh cắt từng người đạt ngưỡng conf (cùng trọng số YOLO11s), rồi quy về tọa độ gốc. Lý do: chạy thử video camera xa cho thấy PPE không được nhận khi người chỉ cao 70–90 px ở đầu vào, nhận được khi phóng to người (`docs/experiments/2026-11-04_video_smoke.md`). Chọn `full` hay `crop` và tham số trên val.
 - Dùng `ultralytics.trackers.byte_tracker.BYTETracker`, gọi trực tiếp với hộp người. Không dùng `model.track()`, vì nó track mọi lớp.
 - ByteTrack dùng cả hộp có độ tin cậy thấp khi ghép. Tuy vậy, **chỉ hộp người đạt ngưỡng ở khung hiện tại mới được dùng để xác định trạng thái**. Quỹ đạo chỉ còn được giữ bằng dự đoán hoặc hộp có độ tin cậy thấp thì vẫn giữ mã, nhưng trạng thái khung đó là Chưa xác định.
 - Ngưỡng ghép và `track_buffer` chọn trên video chỉnh tham số.
