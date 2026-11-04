@@ -14,7 +14,8 @@
 | `03_split_data.py` | Chia train/val/test 70/15/15 theo `group_id` (tham số trong `configs/split.yaml`): bỏ ảnh reject, áp `fixes.csv`, nhóm có ảnh máy duyệt hoặc hộp máy thêm buộc vào train, các nhóm còn lại cân bằng theo số ảnh từng bộ và số hộp từng lớp. Ghi `data/ppe4/dataset/`, `data/ppe4/pictor_test/`, `data/ppe4/stats.csv`. `--dry-run` chỉ in bảng chia | 1 |
 | `04_train.py` | Huấn luyện YOLO11s trên Kaggle theo `configs/train.yaml` (tự tìm `data.yaml` trong `/kaggle/input`), `--resume` chạy tiếp từ `last.pt`; xong thì đánh giá `best.pt` trên val, ghi `run_info.json` (GPU, phiên bản, thời gian, P/R/mAP từng lớp) | 2 |
 | `04b_analyze_val.py` | Phân tích lỗi một lần huấn luyện trên val (laptop): tính lại mAP, tỉ lệ tìm được theo lớp × bộ × cỡ hộp, danh sách dự đoán thừa, ô cắt mẫu bỏ sót / dự đoán thừa, tốc độ trên laptop (`speed.json`, batch 1; `--speed-only` chỉ đo tốc độ; `--imgsz` chạy ở cỡ ảnh khác lúc train, ghi vào `<run>_val_infer<cỡ>/`); tham số ở `configs/train.yaml` mục `analyze`, ghi `outputs/results/<run>_val/` | 2 |
-| `05_run_video.py` | Chạy một video qua toàn bộ hệ thống | 3 |
+| `05a_calibrate_val.py` | Chọn trên val ảnh tham số của chuỗi xử lý: `--regions` vùng cơ thể và `max_distance` từ vị trí tâm PPE (nhãn thật) trong hộp người; `--conf` conf từng lớp (F1 lớn nhất) và NMS IoU từ dự đoán của detector. Ghi đề xuất vào `outputs/results/pipeline_calib_val/`, người chép giá trị đã duyệt vào `configs/pipeline.yaml` | 3 |
+| `05_run_video.py` | Chạy một video qua chuỗi xử lý tới bước xa nhất đã đủ tham số (`--stage` chọn bước): ghi video đã vẽ, `frames.csv` (trạng thái từng người mỗi khung), `events.jsonl`, `summary.json` (FPS, thời gian từng bước) vào `outputs/results/video/<tên video>/` | 3 |
 | `06_evaluate.py` | Tính độ đo, so sánh cấu hình A-E | 5 |
 
 Các file sẽ được viết dần khi làm tới bước tương ứng.

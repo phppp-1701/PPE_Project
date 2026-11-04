@@ -1,0 +1,3 @@
+video_id,file,url,title,downloaded,role,notes
+video1,video1.mp4,https://www.youtube.com/watch?v=PHezq3zCgGs,"Construction Work | Construction Site | Building | Free Stock Footage | Video#380",2026-11-04,chay_thu,"1280x720 30 FPS 64.7 s; video stock nhiều cảnh cắt ghép -> spec loại khỏi bộ đánh giá, chỉ dùng chạy thử"
+video2,video2.mp4,https://www.youtube.com/watch?v=8DJi4PrdFCg,"Example of Hi-Definition Video Surveillance of a Factory Floor (CCTVDOC.COM)",2026-11-04,chinh_tham_so,"1920x1080 6 FPS 17.0 s; camera giám sát cố định, kho/xưởng, người xa, áo phản quang, không mũ; xếp vào nhóm chỉnh tham số ngày 04/11/2026 (không dùng đánh giá cuối)"

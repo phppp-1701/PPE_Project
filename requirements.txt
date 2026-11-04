@@ -6,4 +6,5 @@ torchvision==0.26.0+cu128
 ultralytics==8.4.189
 opencv-python==5.0.0.93
 pytest==9.1.1
+lap==0.5.14  # ghép hộp của ByteTrack (ultralytics.trackers); Ultralytics tự cài ngày 04/11/2026, nhóm đồng ý giữ
 cvat-sdk==2.80.0  # chỉ dùng cho scripts/01b_cvat_upload.py (khớp máy chủ app.cvat.ai 2.80.0), giấy phép MIT

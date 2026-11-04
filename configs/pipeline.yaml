@@ -1,0 +1,78 @@
+# Chuỗi xử lý video (docs/spec.md mục 5). Dùng bởi src/ppe/*, scripts/05_run_video.py, scripts/05a_calibrate_val.py.
+# Quy tắc: null = chưa chọn. Tham số chọn trên val ảnh (05a) hoặc video chỉnh tham số; ghi ngày và cách chọn
+# cạnh giá trị. Chuỗi xử lý dừng ở bước đầu tiên còn tham số null và báo tên tham số.
+
+detector:
+  weights: outputs/train/yolo11s_ppe4_r2/weights/best.pt   # r2, xem docs/experiments/2026-11-03_yolo11s_r2.md
+  imgsz: 960                                               # chốt 04/11/2026 (1280 kém hơn trên val)
+  device: 0
+  # Ngưỡng conf từng lớp: chọn trên val ngày 04/11/2026 bằng 05a --conf (F1 lớn nhất của từng lớp, NMS IoU 0.5):
+  # person F1 0.867, helmet 0.887, vest 0.802, gloves 0.612. Găng: F1 gần như phẳng ở conf 0.30-0.50 (0.600-0.612);
+  # có thể dịch trong khoảng này khi chỉnh trên video (thấp hơn = ít sót găng, nhiều nhận nhầm tay trần hơn).
+  conf: {person: 0.39, helmet: 0.33, vest: 0.40, gloves: 0.49}
+  nms_iou: 0.5            # chọn trên val 04/11/2026 (05a): F1 trung bình 0.792 / 0.791 / 0.789 ở 0.5 / 0.6 / 0.7
+
+# Danh sách PPE. Thêm loại mới (vd. giày) = thêm một mục ở đây, một vùng ở association.regions
+# và một mục ở compliance; không sửa code. `region`: tên vùng; `sides`: true = xét từng bên (trái/phải).
+ppe:
+  helmet: {cls: 1, region: head, sides: false}
+  vest:   {cls: 2, region: torso, sides: false}
+  gloves: {cls: 3, region: hands, sides: true}
+person_cls: 0
+required_ppe: [helmet, vest, gloves]   # PPE bắt buộc mặc định của một nguồn (bước 4 cho đổi theo nguồn)
+
+tracker:
+  # ByteTrack của Ultralytics (BYTETracker), chỉ track hộp người. Giá trị dưới là MẶC ĐỊNH Ultralytics 8.4.189
+  # (cfg/trackers/bytetrack.yaml), CHƯA CHỈNH; chỉnh trên video chỉnh tham số (spec 5.1).
+  track_high_thresh: 0.25
+  track_low_thresh: 0.1
+  new_track_thresh: 0.25
+  track_buffer: 30          # số khung giữ quỹ đạo bị mất
+  match_thresh: 0.8
+  fuse_score: true
+
+association:
+  # Vùng cơ thể theo tọa độ chuẩn hóa trong hộp người: x, y = 0 ở góc trên trái, 1 ở góc dưới phải;
+  # được phép < 0 hoặc > 1 (PPE nhô ra ngoài hộp). Vùng `sides` chia đôi theo x = 0.5 thành trái/phải (theo ảnh).
+  # Chọn trên val bằng 05a: khoảng chứa `calibration.region_coverage` tâm PPE (nhãn thật) của từng loại.
+  # Chọn 04/11/2026 bằng 05a --regions (phân vị 2.5-97.5% từng trục; cả hai trục cùng lúc chứa mũ 688/759,
+  # áo 477/528, găng 637/706 PPE có đúng một người chứa).
+  regions:
+    head:  {x0: 0.152, x1: 0.831, y0: 0.022, y1: 0.290}
+    torso: {x0: 0.309, x1: 0.665, y0: 0.241, y1: 0.732}
+    hands: {x0: 0.041, x1: 0.961, y0: 0.093, y1: 0.943}
+  # Khoảng cách chuẩn hóa tối đa từ tâm PPE tới tâm vùng (công thức 3.4); phân vị 95% trên val, 05a 04/11/2026.
+  max_distance: {helmet: 0.299, vest: 0.227, gloves: 0.399}
+  # Hai ứng viên tốt nhất chênh nhau dưới mức này = tranh chấp, không gán. Cần nhãn gán PPE-người
+  # (video chỉnh tham số). Khi còn null: PPE có từ 2 ứng viên trở lên luôn coi là tranh chấp (an toàn:
+  # dẫn tới Chưa xác định, không dẫn tới Thiếu).
+  ambiguity_margin: null
+
+compliance:
+  # Vùng đủ quan sát (công thức 3.7): v >= tau_in, o <= tau_occ, diện tích vùng trong ảnh >= area_min_px.
+  # Chọn trên video chỉnh tham số.
+  tau_in:      {helmet: null, vest: null, gloves: null}
+  tau_occ:     {helmet: null, vest: null, gloves: null}
+  area_min_px: {helmet: null, vest: null, gloves: null}
+
+temporal:
+  # Cửa sổ theo giây (spec 5.4); chọn trên video chỉnh tham số.
+  T_on: null
+  T_off: null
+  n_on: null
+  n_off: null
+  theta_on: null
+  theta_off: null
+
+events:
+  evidence_dir: outputs/evidence     # ảnh minh chứng: <evidence_dir>/<session_id>/<event_id>_<n>.jpg
+
+calibration:
+  # Dùng bởi 05a_calibrate_val.py (chỉ trên val, không đụng test).
+  match_iou: 0.5            # dự đoán khớp nhãn khi IoU >= mức này (như mAP@0.5)
+  nms_iou_grid: [0.5, 0.6, 0.7]
+  conf_grid: {start: 0.05, stop: 0.9, step: 0.01}
+  # Tỉ lệ tâm PPE (nhãn thật) mà vùng cơ thể phải chứa; quyết định phương pháp, đặt 04/11/2026 khi lập kế hoạch
+  # bước 3 (vùng quá chặt bỏ sót PPE đúng chỗ, quá rộng dễ tranh chấp giữa người đứng gần).
+  region_coverage: 0.95
+  inside_margin: 0.1        # nới hộp người mỗi phía khi tìm người chứa PPE (như configs/data_check.yaml)

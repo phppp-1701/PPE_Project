@@ -4,6 +4,7 @@ Mỗi file ứng với một bước xử lý:
 
 | File | Việc |
 |---|---|
+| `__init__.py` | Kiểu dữ liệu dùng chung (`Det`, `Track`, ba trạng thái), đọc `configs/pipeline.yaml`, báo lỗi khi tham số còn null |
 | `detector.py` | Chạy YOLO11s, trả về hộp người và PPE |
 | `tracker.py` | Chạy ByteTrack cho hộp người |
 | `association.py` | Gán mũ, áo, găng cho đúng người theo vùng cơ thể |
