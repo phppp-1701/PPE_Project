@@ -109,14 +109,17 @@ def main():
     ap.add_argument("--run", default="outputs/train/yolo11s_ppe4_r1", help="thư mục kết quả huấn luyện")
     ap.add_argument("--batch", type=int, default=8)
     ap.add_argument("--speed-only", action="store_true", help="chỉ đo tốc độ (ghi speed.json)")
+    ap.add_argument("--imgsz", type=int, help="cỡ ảnh lúc chạy khác cỡ lúc train (mặc định: lấy từ args.yaml)")
     args = ap.parse_args()
 
     from ultralytics import YOLO
 
     cfg = yaml.safe_load(CONFIG.read_text(encoding="utf-8"))["analyze"]
     run = ROOT / args.run
-    imgsz = yaml.safe_load((run / "args.yaml").read_text(encoding="utf-8"))["imgsz"]
-    out = ROOT / "outputs" / "results" / f"{run.name}_val"
+    train_imgsz = yaml.safe_load((run / "args.yaml").read_text(encoding="utf-8"))["imgsz"]
+    imgsz = args.imgsz or train_imgsz
+    suffix = "" if imgsz == train_imgsz else f"_infer{imgsz}"
+    out = ROOT / "outputs" / "results" / f"{run.name}_val{suffix}"
     out.mkdir(parents=True, exist_ok=True)
     model = YOLO(run / "weights" / "best.pt")
     names = {int(k): v for k, v in model.names.items()}
