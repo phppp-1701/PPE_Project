@@ -26,6 +26,7 @@ def test_cfg():
     }
     cfg["association"]["max_distance"] = {"helmet": 0.5, "vest": 0.5, "gloves": 0.6}
     cfg["association"]["ambiguity_margin"] = None
+    cfg["pose"]["enabled"] = False   # bài kiểm thử pose tự bật
     cfg["compliance"]["tau_in"] = {"helmet": 0.9, "vest": 0.9, "gloves": 0.9}
     cfg["compliance"]["tau_occ"] = {"helmet": 0.3, "vest": 0.3, "gloves": 0.3}
     cfg["compliance"]["area_min_px"] = {"helmet": 10, "vest": 10, "gloves": 10}

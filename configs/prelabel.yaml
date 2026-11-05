@@ -21,3 +21,23 @@ cvat:
   host: https://app.cvat.ai
   org: ppeKhoaLuan
   project: CHV gloves
+
+# Vẽ sẵn hộp người cho video (dùng bởi scripts/05c_cvat_prefill_people.py). Hộp máy vẽ chỉ là gợi ý, người sửa lại
+# trên CVAT. Dùng yolo11s.pt gốc (COCO), không dùng r2 và ByteTrack, để nhãn không thiên về hệ thống đang chỉnh.
+# Đây là tham số của công cụ gán nhãn (đặt 05/11/2026), không phải tham số của hệ thống.
+video_people:
+  weights: yolo11s.pt
+  person_cls: 0             # lớp person của COCO
+  imgsz: 1280
+  conf: 0.15                # thấp để ít sót người; hộp thừa bị lọc bởi min_new_frames
+  nms_iou: 0.6
+  device: 0
+  match_iou: 0.2            # hộp khung trước và khung sau là cùng người khi IoU >= mức này
+  keyframe_step: 5          # cứ bao nhiêu khung đặt một mốc; CVAT nội suy phần giữa
+  max_hold: 6               # giữ nguyên hộp tối đa bao nhiêu khung khi không thấy người, quá thì Outside
+  min_new_frames: 6         # người mới phải thấy liên tiếp bao nhiêu khung mới tạo track
+  stitch_max_gap: 15        # nối hai đoạn của cùng người nếu cách nhau tối đa bao nhiêu khung
+  stitch_max_overlap: 3     # hoặc chồng nhau về thời gian tối đa bao nhiêu khung
+  stitch_max_dist: 1.0      # khoảng cách hai tâm hộp, tính theo chiều cao hộp người
+  jump_ratio: 1.5           # diện tích hộp đổi quá tỉ lệ này giữa hai khung thì đưa vào danh sách cần xem
+  overlap_iou: 0.3          # hai track chồng nhau từ mức này thì đưa vào danh sách cần xem

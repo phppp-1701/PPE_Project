@@ -9,7 +9,7 @@ import math
 import numpy as np
 
 from . import HAVE, MISSING, UNKNOWN, box_area, intersect, require
-from .association import SIDES, region_box
+from .association import SIDES, region_box, valid_wrist, wrist_box
 
 GRID = 100   # số ô tối đa mỗi chiều khi tính diện tích bị người khác che (xấp xỉ, đủ cho tỉ lệ)
 
@@ -37,9 +37,17 @@ class Compliance:
         self.tau_in = require(cfg, "compliance", "tau_in")
         self.tau_occ = require(cfg, "compliance", "tau_occ")
         self.area_min = require(cfg, "compliance", "area_min_px")
+        self.pose = cfg["pose"] if cfg.get("pose", {}).get("enabled") else None
 
     def side_state(self, name, track, side, assoc, frame_box, others):
-        r = region_box(track.xyxy, self.regions[self.ppe[name]["region"]], side)
+        if self.pose and self.ppe[name]["sides"]:
+            # Có pose: không thấy cổ tay đạt ngưỡng thì tay đó không quan sát được (G = 0), không suy ra Thiếu.
+            q = valid_wrist(track, side, self.pose)
+            if q is None:
+                return UNKNOWN, dict(v=0.0, o=0.0, area=0, observable=False, has=False, contested=False)
+            r = wrist_box(track.xyxy, q, self.pose)
+        else:
+            r = region_box(track.xyxy, self.regions[self.ppe[name]["region"]], side)
         area_r = box_area(r)
         visible = box_area(intersect(r, frame_box))
         v = visible / area_r if area_r > 0 else 0.0

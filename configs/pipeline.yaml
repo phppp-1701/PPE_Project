@@ -20,10 +20,14 @@ detector:
   ppe_source: auto
   crop:
     margin: 0.1           # nới hộp người mỗi phía khi cắt = calibration.inside_margin (vùng cơ thể + 10%)
-    max_person_px: 120    # mốc chia nhóm cỡ người trên val (crop tốt hơn full ở nhóm < 120 px, kém hơn ở nhóm trên)
-    imgsz: 256            # tốt nhất cho nhóm < 120 px trên val (crop256 0.578, crop320 0.564, crop480 0.555)
+    # Trên val: crop tốt hơn full ở nhóm < 120 px, gần bằng ở 120-240 px (0.644 / 0.651), kém hơn ở nhóm >= 240 px.
+    # Trên video2 (góc cao, 05/11/2026, thử max_person_px 120/180/240/2000 x imgsz 256/320/480, conf giữ nguyên):
+    # 120 + 256: áo đúng 97, báo Thiếu sai 302; 180 + 320: áo đúng 163, báo Thiếu sai 236, thời gian tương đương.
+    max_person_px: 180
+    imgsz: 320            # trên val nhóm < 120 px: crop256 0.578, crop320 0.564, crop480 0.555
     # conf cho F1 lớn nhất của crop256 trong nhóm người < 120 px trên val. Ít mẫu (mũ 82, áo 47, găng 34 hộp
-    # nhãn) nên còn dao động; xem lại khi có video chỉnh tham số.
+    # nhãn) nên còn dao động. Chưa chọn lại cho crop320. Không hạ trên video2 vì video đó không có ai thiếu áo,
+    # không đo được nhận nhầm; xem lại khi có video có người thiếu PPE.
     conf: {helmet: 0.50, vest: 0.57, gloves: 0.42}
 
 # Danh sách PPE. Thêm loại mới (vd. giày) = thêm một mục ở đây, một vùng ở association.regions
@@ -36,14 +40,30 @@ person_cls: 0
 required_ppe: [helmet, vest, gloves]   # PPE bắt buộc mặc định của một nguồn (bước 4 cho đổi theo nguồn)
 
 tracker:
-  # ByteTrack của Ultralytics (BYTETracker), chỉ track hộp người. Giá trị dưới là MẶC ĐỊNH Ultralytics 8.4.189
-  # (cfg/trackers/bytetrack.yaml), CHƯA CHỈNH; chỉnh trên video chỉnh tham số (spec 5.1).
+  # ByteTrack của Ultralytics (BYTETracker), chỉ track hộp người. Mặc định Ultralytics 8.4.189 (cfg/trackers/bytetrack.yaml),
+  # đổi hai giá trị new_track_thresh và fuse_score, chọn 05/11/2026 bằng 05d --tracker trên video2 (216 bộ thử):
+  # mặc định IDF1 0.572, IDSW 10, 18 ID; bộ này IDF1 0.636, IDSW 4, 11 ID (nhãn: 10 người). Tốt nhất IDF1 0.637 nhưng
+  # đổi thêm match_thresh và IDSW 5, nên giữ bộ đổi ít hơn. Chỉ một video, 6 FPS: xem lại khi có video chỉnh tham số khác.
   track_high_thresh: 0.25
   track_low_thresh: 0.1
-  new_track_thresh: 0.25
+  new_track_thresh: 0.39
   track_buffer: 30          # số khung giữ quỹ đạo bị mất
   match_thresh: 0.8
-  fuse_score: true
+  fuse_score: false
+
+# YOLO11n-pose, tùy chọn có điều kiện của spec 5.2: nhóm đồng ý bật 05/11/2026 vì trên video2 hình học báo Thiếu găng sai
+# 294 lượt ở những tay nhãn là Chưa xác định. Thử ảnh cắt 256/320 và cả khung 960/1280, wrist_conf 0.7-0.95 trên video2:
+# chọn ảnh cắt 320, wrist_conf 0.9: báo Thiếu sai 111, Thiếu đúng 101, F1 Thiếu 0.627, Coverage 0.441, 33 ms/khung.
+# Chưa kiểm tra trên val. rho = bán trục elip theo cỡ hộp người (3.5), đặt để thử, kết quả gần như không đổi ở 0.15-0.25.
+pose:
+  enabled: true
+  weights: yolo11n-pose.pt
+  imgsz: 320
+  margin: 0.15              # nới hộp người mỗi phía khi cắt
+  conf: 0.1
+  wrist_conf: 0.9
+  rho_x: 0.15
+  rho_y: 0.15
 
 association:
   # Vùng cơ thể theo tọa độ chuẩn hóa trong hộp người: x, y = 0 ở góc trên trái, 1 ở góc dưới phải;
@@ -60,23 +80,28 @@ association:
   # Hai ứng viên tốt nhất chênh nhau dưới mức này = tranh chấp, không gán. Cần nhãn gán PPE-người
   # (video chỉnh tham số). Khi còn null: PPE có từ 2 ứng viên trở lên luôn coi là tranh chấp (an toàn:
   # dẫn tới Chưa xác định, không dẫn tới Thiếu).
-  ambiguity_margin: null
+  # TẠM 05/11/2026, chưa chọn: trên video2 0.02-0.2 không đổi kết quả. Chọn lại trên video chỉnh tham số khác.
+  ambiguity_margin: 0.1
 
 compliance:
   # Vùng đủ quan sát (công thức 3.7): v >= tau_in, o <= tau_occ, diện tích vùng trong ảnh >= area_min_px.
   # Chọn trên video chỉnh tham số.
-  tau_in:      {helmet: null, vest: null, gloves: null}
-  tau_occ:     {helmet: null, vest: null, gloves: null}
-  area_min_px: {helmet: null, vest: null, gloves: null}
+  # TẠM 05/11/2026 để chạy đủ luồng, chưa chọn: video2 không đủ cơ sở (docs/experiments/2026-11-05_video2_calibration.md).
+  # Chọn lại trên video có người thiếu PPE. area_min_px = 0: tăng ngưỡng chỉ bỏ bớt quan sát, không tách được đúng và sai.
+  tau_in:      {helmet: 0.7, vest: 0.7, gloves: 0.7}
+  tau_occ:     {helmet: 0.4, vest: 0.4, gloves: 0.4}
+  area_min_px: {helmet: 0, vest: 0, gloves: 0}
 
 temporal:
   # Cửa sổ theo giây (spec 5.4); chọn trên video chỉnh tham số.
-  T_on: null
-  T_off: null
-  n_on: null
-  n_off: null
-  theta_on: null
-  theta_off: null
+  # TẠM 05/11/2026, chưa chọn. T và theta theo bài 24 (cửa sổ 5 s, ngưỡng 70%, dùng cho cả xác nhận an toàn).
+  # n_on, n_off đặt để có ít nhất vài quan sát, chưa có căn cứ. video2 không có ca khắc phục: chọn lại trên video khác.
+  T_on: 5
+  T_off: 5
+  n_on: 5
+  n_off: 5
+  theta_on: 0.7
+  theta_off: 0.7
 
 events:
   evidence_dir: outputs/evidence     # ảnh minh chứng: <evidence_dir>/<session_id>/<event_id>_<n>.jpg
@@ -91,3 +116,19 @@ calibration:
   region_coverage: 0.95
   inside_margin: 0.1        # nới hộp người mỗi phía khi tìm người chứa PPE (như configs/data_check.yaml)
   crop_imgsz_grid: [256, 320, 480]   # cỡ ảnh cắt thử cho chế độ crop
+  video:
+    # Dùng bởi 05d_calibrate_video.py, chỉ trên video chinh_tham_so. Lưới thử, không phải giá trị đã chọn.
+    match_iou: 0.5          # ghép người với nhãn (spec 7.4)
+    tracker_grid:
+      track_high_thresh: [0.25, 0.39, 0.5]
+      new_track_thresh: [0.25, 0.39, 0.5]
+      match_thresh: [0.7, 0.8, 0.9]
+      track_buffer: [15, 30, 60, 90]
+      fuse_score: [true, false]
+    ambiguity_margin_grid: [0.02, 0.05, 0.1, 0.2]
+    tau_in_grid: [0.5, 0.7, 0.9]
+    tau_occ_grid: [0.2, 0.4, 0.6, 0.8, 1.0]
+    area_min_grid:          # diện tích vùng tối thiểu (pixel vuông, ảnh gốc)
+      helmet: [0, 400, 900, 1600, 2500]
+      vest: [0, 900, 1600, 2500, 4900]
+      gloves: [0, 900, 1600, 2500, 4900]

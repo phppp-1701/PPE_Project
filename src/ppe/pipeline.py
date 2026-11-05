@@ -12,6 +12,7 @@ from .association import Associator
 from .compliance import Compliance
 from .detector import Detector
 from .events import EventManager
+from .pose import PoseEstimator
 from .temporal import TemporalConfirmer
 from .tracker import PersonTracker
 
@@ -25,6 +26,8 @@ class Pipeline:
         self.required = list(required_ppe or self.cfg["required_ppe"])
         self.detector = Detector(self.cfg, ROOT)
         self.tracker = PersonTracker(self.cfg) if self.stage >= 1 else None
+        use_pose = self.stage >= 2 and self.cfg.get("pose", {}).get("enabled")
+        self.pose = PoseEstimator(self.cfg, ROOT) if use_pose else None
         self.associator = Associator(self.cfg) if self.stage >= 2 else None
         self.compliance = Compliance(self.cfg) if self.stage >= 3 else None
         if self.stage >= 4:
@@ -46,6 +49,8 @@ class Pipeline:
         if self.stage >= 1:
             out["tracks"] = timed("tracker", self.tracker.update, out["persons"], frame)
             out["lost"] = self.tracker.lost()
+        if self.pose:
+            timed("pose", self.pose, frame, out["tracks"])
         if self.stage >= 2:
             out["assoc"] = timed("association", self.associator, out["tracks"], out["ppe"])
         if self.stage >= 3:

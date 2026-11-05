@@ -156,6 +156,7 @@ Các hệ số vùng chọn trên val.
 - Giữ nguyên trọng số tiền huấn luyện. Ghép một-một với hộp người theo độ chồng lấp.
 - Dùng cổ tay trái/phải làm tâm vùng găng. Ứng viên nằm trong elip (3.5): `((c_x − q_x)/(ρ_x·w_p))² + ((c_y − q_y)/(ρ_y·h_p))² ≤ 1`.
 - Chỉ dùng cổ tay có tọa độ hợp lệ và độ tin cậy đạt ngưỡng. Đo lại chất lượng và thời gian trước khi giữ.
+- Bổ sung 05/11/2026: nhóm đồng ý bật pose vì trên video2 hình học báo Thiếu găng sai nhiều khi tay bị che; khi bật, tay không có cổ tay đạt ngưỡng là Chưa xác định. Chưa kiểm tra trên val. Xem `docs/experiments/2026-11-05_video2_calibration.md`.
 
 ### 5.3. Khả năng quan sát và ba trạng thái (`compliance.py`, mục 3.4.4)
 
