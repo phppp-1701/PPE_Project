@@ -54,7 +54,9 @@ tracker:
 # YOLO11n-pose, tùy chọn có điều kiện của spec 5.2: nhóm đồng ý bật 05/11/2026 vì trên video2 hình học báo Thiếu găng sai
 # 294 lượt ở những tay nhãn là Chưa xác định. Thử ảnh cắt 256/320 và cả khung 960/1280, wrist_conf 0.7-0.95 trên video2:
 # chọn ảnh cắt 320, wrist_conf 0.9: báo Thiếu sai 111, Thiếu đúng 101, F1 Thiếu 0.627, Coverage 0.441, 33 ms/khung.
-# Chưa kiểm tra trên val. rho = bán trục elip theo cỡ hộp người (3.5), đặt để thử, kết quả gần như không đổi ở 0.15-0.25.
+# rho = bán trục elip theo cỡ hộp người (3.5). Chọn trên val 05/11/2026 bằng 05a --pose (706 găng nhãn thật, wrist_conf 0.9):
+# rho 0.15: 55.0% găng trong elip; rho 0.3: 63.3%, trong khi 73.5% găng có cổ tay đạt ngưỡng. Vùng tay cũ chứa 90.2%.
+# Trên video2, rho 0.3 cho kết quả như 0.15. wrist_conf 0.9 chọn trên video2; val cho thấy cái giá: 26.5% găng không có cổ tay đạt ngưỡng.
 pose:
   enabled: true
   weights: yolo11n-pose.pt
@@ -62,8 +64,8 @@ pose:
   margin: 0.15              # nới hộp người mỗi phía khi cắt
   conf: 0.1
   wrist_conf: 0.9
-  rho_x: 0.15
-  rho_y: 0.15
+  rho_x: 0.3
+  rho_y: 0.3
 
 association:
   # Vùng cơ thể theo tọa độ chuẩn hóa trong hộp người: x, y = 0 ở góc trên trái, 1 ở góc dưới phải;
@@ -116,6 +118,8 @@ calibration:
   region_coverage: 0.95
   inside_margin: 0.1        # nới hộp người mỗi phía khi tìm người chứa PPE (như configs/data_check.yaml)
   crop_imgsz_grid: [256, 320, 480]   # cỡ ảnh cắt thử cho chế độ crop
+  pose_wrist_grid: [0.3, 0.5, 0.7, 0.8, 0.9]   # lưới thử cho 05a --pose
+  pose_rho_grid: [0.1, 0.15, 0.2, 0.3]
   video:
     # Dùng bởi 05d_calibrate_video.py, chỉ trên video chinh_tham_so. Lưới thử, không phải giá trị đã chọn.
     match_iou: 0.5          # ghép người với nhãn (spec 7.4)

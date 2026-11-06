@@ -95,3 +95,17 @@ Chạy đủ luồng (`python scripts/05_run_video.py`, gồm ghi video):
 | video2 | 5,65 (có khởi động, video ngắn) | 68,9 / 139,3 | 34,8 / 103,4 | 10 |
 
 Trên video2, 6 trong 10 sự kiện có `vest` trong `missing_items`, là báo sai vì mọi người đều mặc áo. Sự kiện `helmet` khớp nhãn nhưng là do r2 không thấy mũ, không phải kiểm chứng được khả năng nhận mũ. Chưa tính Event F1: chưa có sự kiện chuẩn.
+
+## Kiểm tra pose trên val (`python scripts/05a_calibrate_val.py --pose`)
+
+448 người có găng trong nhãn, 706 găng nhãn thật (người nhỏ chỉ 34 găng), pose 22,1 ms/người khi chạy theo ảnh. Vùng tay cũ chứa 90,2% tâm găng. Tỉ lệ tâm găng nằm trong elip / tỉ lệ găng có cổ tay đạt ngưỡng:
+
+| `wrist_conf` | `rho` 0,15 | `rho` 0,3 | Có cổ tay đạt ngưỡng |
+|---|---|---|---|
+| 0,5 | 76,6% | 89,2% | 96,3% |
+| 0,7 | 74,5% | 86,0% | 93,5% |
+| 0,9 | 55,0% | 63,3% | 73,5% |
+
+`rho` 0,15 quá nhỏ, nên đổi sang 0,3; video2 giữ nguyên kết quả. Ở `wrist_conf` 0,9, 26,5% găng thành Chưa xác định và khoảng 10% găng có cổ tay đạt ngưỡng nhưng nằm ngoài elip, tức có thể bị báo Thiếu sai. `wrist_conf` thấp giữ được nhiều găng hơn nhưng trên video2 báo Thiếu sai tăng mạnh (0,7: 215). Giá trị 0,9 ưu tiên ít báo sai trên video2; cần chọn lại khi có video thấy rõ tay. Val chỉ có người đeo găng nên không đo được tay trần.
+
+Chạy lại video2 đủ luồng: 9,06 FPS, 10 sự kiện (5,65 FPS lúc trước gồm khởi động mô hình).

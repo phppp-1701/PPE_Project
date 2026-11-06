@@ -4,6 +4,7 @@ Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
     python scripts/05a_calibrate_val.py --regions     # vùng cơ thể + max_distance từ nhãn val (không cần mô hình)
     python scripts/05a_calibrate_val.py --conf        # conf từng lớp + NMS IoU từ dự đoán của detector trên val
     python scripts/05a_calibrate_val.py --crop        # so sánh PPE dò cả khung / trên ảnh cắt từng người (cần conf, nms)
+    python scripts/05a_calibrate_val.py --pose        # tâm găng nhãn thật trong elip cổ tay, so với vùng tay
     (dự đoán được lưu cache; --rerun để dự đoán lại)
 
 Tham số đầu vào: configs/pipeline.yaml (detector, ppe, calibration). Chỉ in và ghi đề xuất vào
@@ -14,6 +15,7 @@ outputs/results/pipeline_calib_val/; người chép giá trị đã duyệt vào
     conf.json      đề xuất conf từng lớp và nms_iou
     crop_preds.npz cache dự đoán PPE trên ảnh cắt từng người, mỗi cỡ ảnh cắt
     crop.json      F1 từng lớp, conf cho F1 lớn nhất, thời gian/người của từng chế độ (full, crop<cỡ>)
+    pose.json      tỉ lệ găng nằm trong elip cổ tay theo wrist_conf, rho, cỡ người; thời gian pose/người
 """
 
 import argparse
@@ -347,15 +349,87 @@ def crop_eval(cfg, rerun):
     (OUT / "crop.json").write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
+def pose_eval(cfg):
+    """Pose trên val: với hộp người và hộp găng nhãn thật, tâm găng có nằm trong elip cổ tay không; so với vùng tay.
+
+    Chỉ dùng người có ít nhất một găng trong nhãn (val không có nhãn tay trần). Kết quả theo cỡ người và lưới ngưỡng.
+    """
+    import time
+
+    import cv2
+
+    from ppe import Track
+    from ppe.association import ellipse_value
+    from ppe.pose import PoseEstimator
+
+    cal = cfg["calibration"]
+    margin, g_cls = cal["inside_margin"], cfg["ppe"]["gloves"]["cls"]
+    hands = cfg["association"]["regions"]["hands"]
+    pose = PoseEstimator(cfg, ROOT)
+    rows, elapsed, n_people = [], 0.0, 0
+    for f in sorted((DATASET / "labels" / "val").glob("*.txt")):
+        lab = read_labels(f)
+        gloves = [r for r in lab if r[0] == g_cls]
+        if not gloves:
+            continue
+        img = next(iter((DATASET / "images" / "val").glob(f.stem + ".*")))
+        im = cv2.imread(str(img))
+        h, w = im.shape[:2]
+        scale = np.array([w, h, w, h])
+        persons = [to_xyxy(*r[1:]) * scale for r in lab if r[0] == cfg["person_cls"]]
+        owned = {}
+        for g in gloves:
+            c = (g[1] * w, g[2] * h)
+            own = [i for i, q in enumerate(persons)
+                   if q[0] - margin * (q[2] - q[0]) <= c[0] <= q[2] + margin * (q[2] - q[0])
+                   and q[1] - margin * (q[3] - q[1]) <= c[1] <= q[3] + margin * (q[3] - q[1])]
+            if len(own) == 1:
+                owned.setdefault(own[0], []).append(c)
+        tracks = [Track(i, persons[i], 1.0, True) for i in owned]
+        if not tracks:
+            continue
+        t0 = time.perf_counter()
+        pose(im, tracks)
+        elapsed += time.perf_counter() - t0
+        n_people += len(tracks)
+        for t in tracks:
+            wr = t.extra.get("wrists", {})
+            for c in owned[t.track_id]:
+                rows.append(dict(h=(t.xyxy[3] - t.xyxy[1]) * cfg["detector"]["imgsz"] / max(h, w), c=c, box=t.xyxy, wr=wr,
+                                 region=bool(region_box(t.xyxy, hands)[0] <= c[0] <= region_box(t.xyxy, hands)[2]
+                                             and region_box(t.xyxy, hands)[1] <= c[1] <= region_box(t.xyxy, hands)[3])))
+
+    def rate(sel, wc, rho):
+        par = dict(rho_x=rho, rho_y=rho)
+        hit = sum(any(q[2] >= wc and ellipse_value(r["c"], r["box"], q, par) <= 1 for q in r["wr"].values()) for r in sel)
+        seen = sum(any(q[2] >= wc for q in r["wr"].values()) for r in sel)
+        return round(hit / max(len(sel), 1), 3), round(seen / max(len(sel), 1), 3)
+
+    bands = {"tat_ca": rows, "<120": [r for r in rows if r["h"] < 120],
+             "120-240": [r for r in rows if 120 <= r["h"] < 240], ">=240": [r for r in rows if r["h"] >= 240]}
+    res = dict(ms_per_person=round(elapsed / max(n_people, 1) * 1000, 1), people=n_people, gloves=len(rows),
+               region_hit={k: round(sum(r["region"] for r in v) / max(len(v), 1), 3) for k, v in bands.items()},
+               n={k: len(v) for k, v in bands.items()}, grid={})
+    for wc in cal["pose_wrist_grid"]:
+        for rho in cal["pose_rho_grid"]:
+            res["grid"][f"wrist_conf {wc}, rho {rho}"] = {k: rate(v, wc, rho) for k, v in bands.items()}
+    OUT.mkdir(parents=True, exist_ok=True)
+    (OUT / "pose.json").write_text(json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"{n_people} người, {len(rows)} găng, {res['ms_per_person']} ms/người; trong vùng tay: {res['region_hit']}; n {res['n']}")
+    for k, v in res["grid"].items():
+        print(k, "(găng trong elip, găng có cổ tay đạt ngưỡng):", v)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--regions", action="store_true")
     ap.add_argument("--conf", action="store_true")
     ap.add_argument("--crop", action="store_true", help="so sánh dò PPE cả khung với dò trên ảnh cắt từng người")
+    ap.add_argument("--pose", action="store_true", help="tâm găng nhãn thật có nằm trong elip cổ tay không, so với vùng tay")
     ap.add_argument("--rerun", action="store_true", help="dự đoán lại thay vì dùng cache")
     args = ap.parse_args()
-    if not (args.regions or args.conf or args.crop):
-        ap.error("chọn --regions, --conf và/hoặc --crop")
+    if not (args.regions or args.conf or args.crop or args.pose):
+        ap.error("chọn --regions, --conf, --crop và/hoặc --pose")
     cfg = load_config()
     if args.regions:
         regions(cfg)
@@ -363,6 +437,8 @@ def main():
         conf_nms(cfg, args.rerun)
     if args.crop:
         crop_eval(cfg, args.rerun)
+    if args.pose:
+        pose_eval(cfg)
 
 
 if __name__ == "__main__":
