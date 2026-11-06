@@ -8,5 +8,8 @@ review:
   sources:
     sh17: {goggles: 8, boots: 14}               # glasses, shoes: lẫn đồ thường, phải duyệt
     construction_ppe: {goggles: 4, boots: 3}    # goggles, boots
+  # Hộp có cạnh dài dưới min_side_px ở đầu vào imgsz không được duyệt bằng mắt. Giá trị đặt theo cảm quan, chưa đo.
+  min_side_px: 24
+  imgsz: 960
   # Bảng ảnh duyệt: chỉ để người và máy xem, không ảnh hưởng nhãn.
-  sheet: {cols: 8, rows: 6, tile_px: 160, context: 1.0}   # context: nới mỗi phía, tính theo cạnh dài của hộp
+  sheet: {cols: 10, rows: 8, tile_px: 128, context: 0.75}   # context: nới mỗi phía, tính theo cạnh dài của hộp

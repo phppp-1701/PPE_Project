@@ -3,6 +3,8 @@ data/**
 !data/**/
 !data/**/README.md
 !data/videos/video_sources.csv
+!data/ppe6/review/boxes.csv
+!data/ppe6/review/decisions.csv
 outputs/**
 !outputs/**/
 !outputs/**/README.md

@@ -133,9 +133,10 @@ Duyệt từng hộp `glasses`, `shoes` của SH17 và `goggles`, `boots` của 
 | `safety` | Đồ bảo hộ, nhìn rõ | Giữ làm nhãn lớp mới |
 | `ordinary` | Đồ thường, hoặc không đang đeo, mang | Bỏ nhãn, ảnh làm mẫu âm |
 | `unclear` | Không phân biệt được, hộp lệch | Loại ảnh khỏi train, loại khỏi phần đo lớp mới |
+| `unclear`, note `not_safety` hoặc `too_small` | Giày của SH17 không rõ là bảo hộ, hoặc hộp quá nhỏ | Không gán nhãn, **giữ ảnh** (loại ảnh thì mất phần lớn SH17) |
 
-**`goggles` là `safety` khi** đang đeo trên mắt và có ít nhất một dấu hiệu: tròng ôm mặt hoặc có tấm chắn bên, gọng dày kiểu kính an toàn, tròng vàng hoặc đỏ dùng trong phòng thí nghiệm, kính kín kiểu goggle. Kính cận, kính râm thời trang, kính cầm tay, treo áo, đặt trên bàn, đẩy lên đầu đều không tính.
+**`goggles` là `safety` khi** đang đeo trên mắt và có ít nhất một dấu hiệu: tròng ôm mặt hoặc có tấm chắn bên, gọng dày kiểu kính an toàn, tròng vàng hoặc đỏ dùng trong phòng thí nghiệm, kính kín kiểu goggle. Kính tối màu ôm mặt đeo cùng mũ bảo hộ cũng tính `safety`. Kính cận, kính râm thời trang, kính cầm tay, treo áo, đặt trên bàn, đẩy lên đầu đều không tính.
 
 **`boots` là `safety` khi** nhìn rõ là ủng cao su, ủng công trình, giày cổ cao đế dày kiểu công trình. Giày da, giày thể thao, dép là `ordinary`. Giày tối màu, quá mờ, bị che là `unclear`.
 
-Ghi kết quả ở `data/ppe6/review/decisions.csv`, cột `reviewer` nêu rõ `human` hay `claude`. Hộp chỉ máy duyệt không dùng cho val, test.
+Ghi kết quả ở `data/ppe6/review/decisions.csv`, cột `reviewer` nêu rõ `human` hay `claude`. Hộp chỉ Claude duyệt chỉ dùng cho train; hộp ở val, test phải có người duyệt lại trước khi báo cáo số.
