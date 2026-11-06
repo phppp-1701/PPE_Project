@@ -1,0 +1,206 @@
+{
+  "commit": "438ba25",
+  "seed": 0,
+  "scene": {
+    "phash_max": 8,
+    "emb_min": 0.93,
+    "hist_min": 0.85,
+    "emb_strong": 0.97
+  },
+  "target_boots": 100,
+  "cp_share": 0.3,
+  "max_scene_boots": 30,
+  "train_scene_cap": 30,
+  "repeat_scenes": [
+    "s00001",
+    "s00005",
+    "s00007"
+  ],
+  "capped_scenes": {
+    "s00001": 31,
+    "s00005": 76,
+    "s00007": 32
+  },
+  "min_side_px": 24,
+  "ppe4_train": {
+    "images": 7630,
+    "person": 14215,
+    "helmet": 4159,
+    "vest": 2645,
+    "gloves": 3779
+  },
+  "lost_from_train": {
+    "chv_no_new_labels": {
+      "images": 964,
+      "person": 2584,
+      "helmet": 2299,
+      "vest": 1161,
+      "gloves": 814
+    },
+    "eval_scene": {
+      "images": 63,
+      "person": 181,
+      "helmet": 30,
+      "vest": 28,
+      "gloves": 39
+    },
+    "scene_cap": {
+      "images": 49,
+      "person": 50,
+      "helmet": 50,
+      "vest": 49,
+      "gloves": 62
+    },
+    "unclear_box": {
+      "images": 534,
+      "person": 1038,
+      "helmet": 460,
+      "vest": 426,
+      "gloves": 719
+    }
+  },
+  "counts": {
+    "chvg_glass_test_draft": {
+      "images": {
+        "chvg": 171
+      },
+      "boxes": {
+        "goggles|chvg": 105
+      },
+      "scenes": {
+        "goggles|chvg": 69
+      }
+    },
+    "chvg_glass_val_draft": {
+      "images": {
+        "chvg": 171
+      },
+      "boxes": {
+        "goggles|chvg": 110
+      },
+      "scenes": {
+        "goggles|chvg": 74
+      }
+    },
+    "test_new_draft": {
+      "images": {
+        "construction_ppe": 14,
+        "sh17": 103
+      },
+      "boxes": {
+        "boots|construction_ppe": 35,
+        "boots|sh17": 65,
+        "gloves|construction_ppe": 18,
+        "gloves|sh17": 60,
+        "goggles|construction_ppe": 5,
+        "goggles|sh17": 29,
+        "helmet|construction_ppe": 34,
+        "helmet|sh17": 15,
+        "person|construction_ppe": 40,
+        "person|sh17": 248,
+        "vest|construction_ppe": 34,
+        "vest|sh17": 2
+      },
+      "scenes": {
+        "boots|construction_ppe": 11,
+        "boots|sh17": 23,
+        "gloves|construction_ppe": 5,
+        "gloves|sh17": 21,
+        "goggles|construction_ppe": 3,
+        "goggles|sh17": 24,
+        "helmet|construction_ppe": 11,
+        "helmet|sh17": 8,
+        "person|construction_ppe": 13,
+        "person|sh17": 46,
+        "vest|construction_ppe": 9,
+        "vest|sh17": 1
+      }
+    },
+    "train": {
+      "images": {
+        "construction_ppe": 599,
+        "sh17": 5421
+      },
+      "boxes": {
+        "boots|construction_ppe": 201,
+        "boots|sh17": 166,
+        "gloves|construction_ppe": 356,
+        "gloves|sh17": 1789,
+        "goggles|construction_ppe": 31,
+        "goggles|sh17": 201,
+        "helmet|construction_ppe": 736,
+        "helmet|sh17": 584,
+        "person|construction_ppe": 1138,
+        "person|sh17": 9224,
+        "vest|construction_ppe": 675,
+        "vest|sh17": 306
+      },
+      "scenes": {
+        "boots|construction_ppe": 14,
+        "boots|sh17": 66,
+        "gloves|construction_ppe": 79,
+        "gloves|sh17": 713,
+        "goggles|construction_ppe": 19,
+        "goggles|sh17": 140,
+        "helmet|construction_ppe": 180,
+        "helmet|sh17": 267,
+        "person|construction_ppe": 380,
+        "person|sh17": 4014,
+        "vest|construction_ppe": 185,
+        "vest|sh17": 125
+      }
+    },
+    "val_new_draft": {
+      "images": {
+        "construction_ppe": 17,
+        "sh17": 52
+      },
+      "boxes": {
+        "boots|construction_ppe": 40,
+        "boots|sh17": 60,
+        "gloves|construction_ppe": 28,
+        "gloves|sh17": 34,
+        "goggles|construction_ppe": 5,
+        "goggles|sh17": 23,
+        "helmet|construction_ppe": 32,
+        "helmet|sh17": 14,
+        "person|construction_ppe": 43,
+        "person|sh17": 88,
+        "vest|construction_ppe": 32,
+        "vest|sh17": 2
+      },
+      "scenes": {
+        "boots|construction_ppe": 10,
+        "boots|sh17": 22,
+        "gloves|construction_ppe": 6,
+        "gloves|sh17": 14,
+        "goggles|construction_ppe": 4,
+        "goggles|sh17": 20,
+        "helmet|construction_ppe": 12,
+        "helmet|sh17": 8,
+        "person|construction_ppe": 14,
+        "person|sh17": 43,
+        "vest|construction_ppe": 11,
+        "vest|sh17": 2
+      }
+    }
+  },
+  "eval_status": {
+    "chvg_glass_test": {
+      "pending": 171
+    },
+    "chvg_glass_val": {
+      "pending": 171
+    },
+    "test_new": {
+      "pending": 80,
+      "ready": 37
+    },
+    "val_new": {
+      "pending": 61,
+      "ready": 8
+    }
+  },
+  "human_reviewed_boxes": 0,
+  "content_hash": "d6baedec125d085daf90342380ff860f05f5dab1261e5e205db2158e5aeee5fe"
+}
