@@ -13,3 +13,27 @@ review:
   imgsz: 960
   # Bảng ảnh duyệt: chỉ để người và máy xem, không ảnh hưởng nhãn.
   sheet: {cols: 10, rows: 8, tile_px: 128, context: 0.75}   # context: nới mỗi phía, tính theo cạnh dài của hộp
+
+# Định nghĩa kính phiên bản 2 (06/11/2026): Claude xem lại 407 hộp `safety` ngoài cảnh mũ cam. Dùng bởi 03d_ppe6_decisions_v2.py.
+goggles_v2:
+  dark_lens: >-
+    b00048 b00071 b00668 b00708 b00709 b00710 b00888 b00889 b01335 b01348 b01401 b01402 b01403 b01404 b01407 b01465
+    b01524 b01556 b01582 b01718 b01845 b02210 b02607 b02766 b02767 b02769 b02772 b03032 b03185 b03201 b03215 b03226
+    b03228 b05032 b05035 b05089 b05249 b05318 b06362 b07305 b07995 b07996 b08004 b08006 b08009 b08010 b08495
+  plain_frame: b00679 b00680 b00702 b00707 b00811 b00835 b00848 b00855 b00879 b00898
+  not_worn: b05483
+
+# Gom cảnh: đặc trưng từ 03e_ppe6_scene_features.py, ngưỡng do 03f chọn và báo cáo.
+scene:
+  weights: yolo11s.pt
+  imgsz: 320
+  side: 640
+  batch: 32
+  sweep: {phash: [8, 12, 16], emb: [0.9, 0.93, 0.95, 0.97], hist: [0.7, 0.85]}
+  near_margin: 0.02
+  near_samples: 60
+  # Chọn 06/11/2026 bằng 03f --sweep: 8475 cụm, cụm lớn nhất 397 ảnh (355/380 ảnh thẻ mũ cam, 385/411 ảnh thẻ ủng đỏ).
+  # Ngưỡng lỏng hơn nối thành cụm hàng nghìn ảnh; chặt hơn (emb 0.95) xé cảnh đã biết thành hơn 100 cụm.
+  phash_max: 8
+  emb_min: 0.93
+  hist_min: 0.85

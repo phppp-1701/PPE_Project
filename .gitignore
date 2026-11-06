@@ -5,6 +5,8 @@ data/**
 !data/videos/video_sources.csv
 !data/ppe6/review/boxes.csv
 !data/ppe6/review/decisions.csv
+!data/ppe6/review/decisions_v2.csv
+!data/ppe6/scene/scene_ids.csv
 outputs/**
 !outputs/**/
 !outputs/**/README.md

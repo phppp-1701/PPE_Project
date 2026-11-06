@@ -135,8 +135,10 @@ Duyệt từng hộp `glasses`, `shoes` của SH17 và `goggles`, `boots` của 
 | `unclear` | Không phân biệt được, hộp lệch | Loại ảnh khỏi train, loại khỏi phần đo lớp mới |
 | `unclear`, note `not_safety` hoặc `too_small` | Giày của SH17 không rõ là bảo hộ, hoặc hộp quá nhỏ | Không gán nhãn, **giữ ảnh** (loại ảnh thì mất phần lớn SH17) |
 
-**`goggles` là `safety` khi** đang đeo trên mắt và có ít nhất một dấu hiệu: tròng ôm mặt hoặc có tấm chắn bên, gọng dày kiểu kính an toàn, tròng vàng hoặc đỏ dùng trong phòng thí nghiệm, kính kín kiểu goggle. Kính tối màu ôm mặt đeo cùng mũ bảo hộ cũng tính `safety`. Kính cận, kính râm thời trang, kính cầm tay, treo áo, đặt trên bàn, đẩy lên đầu đều không tính.
+**`goggles` là `safety` khi** đang đeo trên mắt và có ít nhất một dấu hiệu: tròng ôm mặt hoặc có tấm chắn bên, gọng dày kiểu kính an toàn, tròng vàng hoặc đỏ dùng trong phòng thí nghiệm, kính kín kiểu goggle. Từ định nghĩa 2 (06/11/2026): chỉ xét đặc điểm của chính chiếc kính, không xét mũ; kính tối không phân biệt được với kính râm thì `unclear`. Kính cận, kính râm thời trang, kính cầm tay, treo áo, đặt trên bàn, đẩy lên đầu đều không tính.
 
 **`boots` là `safety` khi** nhìn rõ là ủng cao su, ủng công trình, giày cổ cao đế dày kiểu công trình. Giày da, giày thể thao, dép là `ordinary`. Giày tối màu, quá mờ, bị che là `unclear`.
 
 Ghi kết quả ở `data/ppe6/review/decisions.csv`, cột `reviewer` nêu rõ `human` hay `claude`. Hộp chỉ Claude duyệt chỉ dùng cho train; hộp ở val, test phải có người duyệt lại trước khi báo cáo số.
+
+Định nghĩa 2 ghi ở `data/ppe6/review/decisions_v2.csv` (`03d_ppe6_decisions_v2.py`), có cột giá trị trước và sau; `decisions.csv` giữ nguyên. Ảnh có kính `unclear` không được giữ ở train dưới dạng không nhãn. Giày thể thao dày không tính bảo hộ.
