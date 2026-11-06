@@ -195,7 +195,7 @@ def check():
         bad += [f"{t}/labels.json: {x}" for x in leak_tokens((folder / "labels.json").read_text(encoding="utf-8"), allow_decisions=True)]
         with zipfile.ZipFile(folder / "images.zip") as z:
             zn = z.namelist()
-            bad += [f"{t}: tên ảnh lộ {n}" for n in zn if not re.fullmatch(r"img_\d{5}\.jpg", n)]
+            bad += [f"{t}: tên ảnh lộ {n}" for n in zn if not re.fullmatch(r"img_\d{6}\.jpg", n)]
             if len({z.getinfo(n).date_time for n in zn}) > 1:
                 bad.append(f"{t}: thời gian file khác nhau")
             with Image.open(BytesIO(z.read(zn[0]))) as im:
