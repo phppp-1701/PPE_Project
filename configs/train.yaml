@@ -4,7 +4,8 @@
 
 # r1 (03/11/2026): imgsz 640, patience 100 — xem docs/experiments/2026-11-03_yolo11s_r1.md.
 # r2: chỉ đổi imgsz 640 -> 960 (găng tay sót chủ yếu là hộp nhỏ, theo phân tích lỗi r1 trên val); patience 20.
-run_name: yolo11s_ppe4_r2
+# r3: như r2, thêm bộ phụ ở train (mục extra; xem docs/experiments khi có kết quả). Val và test giữ nguyên để so với r2.
+run_name: yolo11s_ppe4_r3
 model: yolo11s.pt        # trọng số tiền huấn luyện COCO; head được thay theo 4 lớp của data.yaml
 
 # Khi tạo bản ghi được trên Kaggle (04_train.py), thu nhỏ trước ảnh có cạnh dài hơn mức này về đúng mức này,
@@ -21,6 +22,7 @@ train:
   # Chọn 03/11/2026 theo đường học val của r1: 10 sẽ dừng ở epoch 11 (sau khởi động điểm giảm tạm thời),
   # 20 dừng ở epoch 84 và vẫn giữ best (epoch 64). r1 chạy với 100 (mặc định).
   patience: 20
+  time: 11               # dừng sau 11 giờ, trong giới hạn 12 giờ của Kaggle (r3 nhiều ảnh hơn r2 khoảng 50%)
   seed: 0
   deterministic: true
   device: 0              # một GPU (Kaggle T4)
@@ -32,6 +34,20 @@ train:
   # Tăng cường: giữ mặc định Ultralytics. Nêu rõ hai phép spec mục 2.4 cấm, mặc định đã tắt:
   flipud: 0.0            # không lật dọc
   degrees: 0.0           # không xoay góc lớn (mặc định không xoay)
+
+# Bộ phụ cho r3 (scripts/03b_make_extra_train.py), chỉ tạo từ ảnh train. Đặt 06/11/2026 khi lập kế hoạch r3, chưa thử.
+extra:
+  seed: 0
+  video_side: 1920       # thu ảnh về cạnh dài này trước khi cắt, như khung video 1080p
+  margin: 0.1            # = detector.crop.margin trong pipeline.yaml
+  min_person_px: 30      # cỡ người đo ở đầu vào imgsz; dưới mức này gần như không còn chi tiết
+  max_person_px: 180     # = detector.crop.max_person_px trong pipeline.yaml
+  min_visible: 0.5       # hộp còn dưới tỉ lệ diện tích này trong ảnh cắt thì bỏ nhãn
+  max_crops: 2500        # giới hạn để thời gian train không vượt 12 giờ Kaggle
+  max_per_image: 3
+  no_ppe_share: 0.15     # tỉ lệ ảnh cắt không có PPE, làm mẫu âm
+  oversample_gloves: 1500
+  shrink_px: [60, 360]   # chiều cao người sau thu nhỏ, tính ở khung video; 360 = max_person_px ở đầu vào imgsz
 
 # Phân tích lỗi trên val (scripts/04b_analyze_val.py). Chỉ để chẩn đoán, không phải ngưỡng của hệ thống.
 analyze:

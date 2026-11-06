@@ -7,6 +7,8 @@ Kết quả của `03_split_data.py`:
 - `pictor_test/`: Pictor-PPE, chỉ kiểm thử ngoài (`images/test`, `labels/test`, `data.yaml`), không có nhãn găng tay.
 - `stats.csv`: mỗi ảnh một dòng: bộ, ảnh gốc, tên file mới, `group_id`, tập (`train`/`val`/`test`; Pictor là `external_test`), lý do buộc vào train (`machine_review` / `fixes_train_only`), số hộp add/delete đã áp, số hộp từng lớp.
 
+`r3_extra/` — bộ phụ cho lần huấn luyện r3, do `03b_make_extra_train.py` tạo từ ảnh train: `images/train`, `labels/train` (ảnh cắt `crop__*`, ảnh thu nhỏ `shrink__*`), `oversample.txt`, `summary.json`.
+
 `converted/` — kết quả trung gian của `01_convert_labels.py`, đầu vào của bước 02-03:
 
 - `converted/<bộ>/labels/*.txt`: nhãn YOLO 4 lớp, mỗi ảnh gốc một file (file rỗng = ảnh không còn hộp nào sau khi lọc).

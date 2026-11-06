@@ -4,6 +4,7 @@ Cách chạy (trong notebook Kaggle, sau khi git clone repo và cài ultralytics
     python scripts/04_train.py                          # tự tìm data.yaml trong /kaggle/input
     python scripts/04_train.py --data /đường/dẫn/data.yaml
     python scripts/04_train.py --resume /kaggle/input/<output lần trước>/.../weights/last.pt
+    python scripts/04_train.py --extra /kaggle/input/<bộ phụ r3>     # ghép bộ phụ của 03b_make_extra_train.py vào train
 
 Tham số trong configs/train.yaml. Ghi vào --out (mặc định /kaggle/working/runs/<run_name>):
     weights/best.pt, last.pt   trọng số (best chọn theo mAP@0.5:0.95 trên val)
@@ -104,6 +105,29 @@ def writable_copy(data_yaml, dst, max_side=None):
     return dst / "data.yaml"
 
 
+def add_extra(extra, data_yaml):
+    """Ghép bộ phụ vào phần train của bản ghi được: chép ảnh cắt, thêm một bản cho ảnh trong oversample.txt.
+    Bản thêm là liên kết tới ảnh đã có, tên rep__<ảnh>. Không đụng val, test."""
+    base = Path(data_yaml).parent
+    found = [p.parent for p in Path(extra).rglob("oversample.txt")]
+    if len(found) != 1:
+        sys.exit(f"Tìm thấy {len(found)} oversample.txt trong {extra}.")
+    src = found[0]
+    img, lab = base / "images" / "train", base / "labels" / "train"
+    n = 0
+    for f in (src / "images" / "train").iterdir():
+        shutil.copy2(f, img / f.name)
+        shutil.copy2(src / "labels" / "train" / f"{f.stem}.txt", lab / f"{f.stem}.txt")
+        n += 1
+    names = [x for x in (src / "oversample.txt").read_text(encoding="utf-8").split("\n") if x]
+    for name in names:
+        out = img / f"rep__{name}"
+        if not out.exists() and not out.is_symlink():
+            out.symlink_to((img / name).resolve())
+        shutil.copy2(lab / f"{Path(name).stem}.txt", lab / f"rep__{Path(name).stem}.txt")
+    print(f"Bộ phụ: {n} ảnh cắt, {len(names)} bản thêm; train còn {sum(1 for _ in img.iterdir())} ảnh", flush=True)
+
+
 def per_class(metrics, names):
     """P, R, mAP@0.5, mAP@0.5:0.95 từng lớp và trung bình, từ kết quả model.val()."""
     box = metrics.box
@@ -119,6 +143,7 @@ def main():
     ap.add_argument("--data", help="đường dẫn data.yaml (mặc định: tự tìm trong /kaggle/input)")
     ap.add_argument("--out", default="/kaggle/working/runs", help="thư mục ghi kết quả")
     ap.add_argument("--resume", help="last.pt của lần chạy bị ngắt, để chạy tiếp")
+    ap.add_argument("--extra", help="thư mục chứa bộ phụ của 03b_make_extra_train.py")
     ap.add_argument("--data-copy", default="/kaggle/working/data",
                     help="nơi tạo bản ghi được khi thư mục dữ liệu chỉ đọc")
     args = ap.parse_args()
@@ -135,6 +160,8 @@ def main():
     data = Path(args.data) if args.data else find_data_yaml("/kaggle/input")
     print(f"data: {data}")
     data = str(writable_copy(data, Path(args.data_copy), cfg.get("copy_max_side")))
+    if args.extra:
+        add_extra(args.extra, data)
 
     start = time.time()
     if args.resume:  # lần trước cũng dùng bản ghi được ở cùng --data-copy nên đường dẫn trong last.pt vẫn đúng
