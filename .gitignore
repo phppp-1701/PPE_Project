@@ -7,6 +7,11 @@ data/**
 !data/ppe6/review/decisions.csv
 !data/ppe6/review/decisions_v2.csv
 !data/ppe6/scene/scene_ids.csv
+!data/ppe6/review/p2_shoe_sample.csv
+!data/ppe6/eval/*.csv
+!data/ppe6/dataset/manifest.json
+!data/ppe6/dataset/excluded.csv
+!data/ppe6/dataset/eval_status.csv
 outputs/**
 !outputs/**/
 !outputs/**/README.md

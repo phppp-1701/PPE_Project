@@ -13,4 +13,10 @@ Lớp: 0-3 như `ppe4`, 4 kính bảo hộ, 5 ủng bảo hộ. Kế hoạch: `d
 
 `scene/`: `features.npz`, `scene_ids.csv`, `near_threshold.csv` và ảnh mẫu kiểm tra cụm (`03e`, `03f`).
 
+`eval/`: `scene_roles.csv` (cảnh đánh giá), `chvg_split.csv`, `tradeoff.csv` (`03h`).
+
+`dataset/`: bộ 6 lớp (`03i`). `images/`, `labels/` chỉ có trên máy; `manifest.json`, `excluded.csv`, `eval_status.csv` có trên git. `val_new.txt`, `test_new.txt` chỉ gồm ảnh đã có người chốt.
+
+`review/cvat_pack/`: gói duyệt (`03k`), hướng dẫn ở `docs/ppe6_review_guide.md`. `review/human_review.csv`: kết quả người duyệt (`03l`), chỉ xuất hiện khi có người nhập.
+
 `external/chvg/`: CHVG tải từ figshare (`03g`), không đưa lên git. Chưa dùng cho train.

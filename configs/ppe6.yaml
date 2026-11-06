@@ -10,6 +10,9 @@ review:
     construction_ppe: {goggles: 4, boots: 3}    # goggles, boots
   # Hộp có cạnh dài dưới min_side_px ở đầu vào imgsz không được duyệt bằng mắt. Giá trị đặt theo cảm quan, chưa đo.
   min_side_px: 24
+  min_side_grid: [16, 20, 24, 28, 32, 40]
+  dark_luma: 70        # trung vị độ sáng 0-255 của hộp dưới mức này coi là giày tối, chỉ để phân tầng mẫu
+  p2_shoes: 100
   imgsz: 960
   # Bảng ảnh duyệt: chỉ để người và máy xem, không ảnh hưởng nhãn.
   sheet: {cols: 10, rows: 8, tile_px: 128, context: 0.75}   # context: nới mỗi phía, tính theo cạnh dài của hộp
@@ -29,11 +32,54 @@ scene:
   imgsz: 320
   side: 640
   batch: 32
-  sweep: {phash: [8, 12, 16], emb: [0.9, 0.93, 0.95, 0.97], hist: [0.7, 0.85]}
+  sweep: {emb_strong: [0.95, 0.96, 0.97, 0.98, 0.99]}
   near_margin: 0.02
   near_samples: 60
   # Chọn 06/11/2026 bằng 03f --sweep: 8475 cụm, cụm lớn nhất 397 ảnh (355/380 ảnh thẻ mũ cam, 385/411 ảnh thẻ ủng đỏ).
   # Ngưỡng lỏng hơn nối thành cụm hàng nghìn ảnh; chặt hơn (emb 0.95) xé cảnh đã biết thành hơn 100 cụm.
+  # emb_strong: nới thêm cho cặp rất giống nhưng khác màu; chọn 06/11/2026 bằng --sweep: 0.97 cho 8322 cụm, lớn nhất 573; 0.96 lên 951.
+  emb_strong: 0.97
   phash_max: 8
   emb_min: 0.93
   hist_min: 0.85
+
+# Chọn cảnh cho val_new, test_new (03h_ppe6_select_eval.py). Mục tiêu do nhóm đặt 06/11/2026.
+eval:
+  seed: 0
+  target_boots: 100
+  cp_share: 0.3            # tỉ lệ tối thiểu hộp ủng Construction-PPE ở mỗi tập
+  max_scene_boots: 30      # cảnh có nhiều hộp ủng hơn mức này thì không dùng, để hộp trải trên nhiều cảnh
+  levels: [[80, 0.3], [100, 0.3], [120, 0.3]]
+
+# So r2, r3 trên val gốc và val sạch (04c_ppe4_val_clean.py).
+clean_val:
+  seed: 0
+  n_boot: 1000
+  max_gap: 0.015           # AP tính lại lệch model.val quá mức này thì dừng. Đo: cao hơn 0.004-0.012, cùng chiều, chưa rõ nguyên nhân; hiệu số val và val sạch cùng cách tính
+
+train_scene_cap: 30        # mỗi cảnh lặp ở train giữ tối đa chừng này ảnh (nhóm chốt 06/11/2026)
+# Cụm thật sự là một cảnh lặp, Claude xem 10 ảnh mẫu của 8 cụm lớn nhất, chờ người xác nhận. s00000, s00002, s00003, s00004, s00006
+# là cụm nối nhầm các ảnh không liên quan nên không giới hạn. Không dùng số đo: median cosine không tách được (s00001 0.869, s00003 0.913).
+repeat_scenes: [s00001, s00005, s00007]
+
+# Kiểm tra sơ bộ CHVG của Claude (06/11/2026), chưa phải người duyệt. Số là idx trong external/chvg/glass_order.csv.
+# unclear: mờ, tối, không rõ là kính bảo hộ, hoặc gọng giống kính cận.
+chvg_precheck:
+  unclear: >-
+    13 25 26 27 28 33 38 39 70 71 72 74 79 80 108 124 133 138 152 190 202 230 231 233 284 285 289 291 297 310 420
+  missing_label_images: "50 88 94"   # thứ tự trong noglass_order.txt: ảnh không có hộp glass nhưng thấy người đeo kính
+
+# Gói duyệt CVAT (03k). Thời gian là giả định để ước tính, chưa đo.
+pack:
+  side: 1920
+  p2_chvg: 60
+  sec_per_box: 6
+  sec_per_image: 8
+  sec_per_scene: 20
+
+# Ngưỡng "người đủ lớn" (03l --report): chiều cao người tối thiểu mà từ đó trở lên tỉ lệ người duyệt nhìn rõ đạt min_ok_rate.
+# Chưa chọn: phải có kết quả duyệt, chốt trước khi train.
+scope:
+  side: 1920
+  min_ok_rate: 0.9
+  min_person_px: null
