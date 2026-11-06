@@ -18,11 +18,19 @@
 
 ## Quyết định đã chốt
 
-- 4 lớp, thứ tự cố định: 0 person, 1 helmet, 2 vest, 3 gloves. Không có ủng.
+- 4 lớp, thứ tự cố định: 0 person, 1 helmet, 2 vest, 3 gloves. Không có ủng. Đây là bản chính ở `main`; bản 6 lớp đang thử ở nhánh `exp/ppe6` (xem mục dưới).
 - YOLO11s (Ultralytics) + ByteTrack (`BYTETracker` của Ultralytics, chỉ track hộp người; không dùng `model.track()`) + gán PPE theo vùng cơ thể. YOLO11n-pose chỉ thêm khi kết quả trên tập xác thực cho thấy cần và người dùng đồng ý.
 - Huấn luyện YOLO11s trên Kaggle (ultralytics==8.4.189, cùng phiên bản với máy); laptop chỉ dùng để suy luận, chạy hệ thống và đo hiệu năng.
 - Dữ liệu: SH17 (chính), CHV và Construction-PPE (bổ sung), Pictor-PPE chỉ kiểm thử ngoài. Video kiểm thử lấy từ Internet.
 - Stack: Python, FastAPI, SQLite, WebSocket, HTML/CSS/JS thuần. Chạy trên laptop i5-11500H, RTX 3050 4 GB, RAM 32 GB.
+
+## Thử nghiệm 6 lớp (nhánh `exp/ppe6`)
+
+- Nhóm quyết định 06/11/2026: thử thêm 4 goggles, 5 boots, thứ tự 0-3 giữ nguyên. Kế hoạch ở `docs/experiments/2026-11-06_ppe6_plan.md`.
+- Bản nào tốt hơn thì lấy. Tiêu chí bằng số phải chốt và ghi vào kế hoạch trước khi train, không chọn sau khi đã thấy kết quả. Người dùng quyết định cuối cùng.
+- `goggles` chỉ gồm kính bảo hộ đang đeo, `boots` chỉ gồm ủng hoặc giày bảo hộ nhìn rõ; quy tắc ở `docs/annotation_rules.md`. Kính, giày thường không gán nhãn, dùng làm mẫu âm.
+- Dùng lại cách chia train/val/test của `ppe4`. Không sửa `data/ppe4/`, `data/raw/`. Dữ liệu thử nghiệm ở `data/ppe6/`.
+- r3 và bản 4 lớp ưu tiên trước: không để thử nghiệm làm chậm bước 3-5 hay chiếm GPU Kaggle của r3.
 
 ## Cấm
 

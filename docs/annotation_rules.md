@@ -123,3 +123,19 @@ Lý do chỉ có 3 task: gói miễn phí của CVAT chỉ cho mỗi Organizatio
   1. Định dạng **YOLO 1.1** → đặt tên `chv_partXX_done.zip`.
   2. Định dạng **CVAT for images 1.1** → đặt tên `chv_partXX_done_cvat.zip`. Bản này giữ tag `reject`; YOLO 1.1 chỉ lưu hộp nên có thể làm mất tag.
 - Để cả hai file vào `data/ppe4/converted/chv/cvat/` trên máy của Phương. Thư mục `data/` không đưa lên Git, nên Huy gửi hai file zip và các dòng ghi chú (`notes.txt`) cho Phương qua Drive hoặc tin nhắn.
+
+## Thử nghiệm 6 lớp: kính và ủng bảo hộ (nhánh `exp/ppe6`)
+
+Duyệt từng hộp `glasses`, `shoes` của SH17 và `goggles`, `boots` của Construction-PPE thành ba nhóm:
+
+| Nhóm | Ý nghĩa | Xử lý |
+|---|---|---|
+| `safety` | Đồ bảo hộ, nhìn rõ | Giữ làm nhãn lớp mới |
+| `ordinary` | Đồ thường, hoặc không đang đeo, mang | Bỏ nhãn, ảnh làm mẫu âm |
+| `unclear` | Không phân biệt được, hộp lệch | Loại ảnh khỏi train, loại khỏi phần đo lớp mới |
+
+**`goggles` là `safety` khi** đang đeo trên mắt và có ít nhất một dấu hiệu: tròng ôm mặt hoặc có tấm chắn bên, gọng dày kiểu kính an toàn, tròng vàng hoặc đỏ dùng trong phòng thí nghiệm, kính kín kiểu goggle. Kính cận, kính râm thời trang, kính cầm tay, treo áo, đặt trên bàn, đẩy lên đầu đều không tính.
+
+**`boots` là `safety` khi** nhìn rõ là ủng cao su, ủng công trình, giày cổ cao đế dày kiểu công trình. Giày da, giày thể thao, dép là `ordinary`. Giày tối màu, quá mờ, bị che là `unclear`.
+
+Ghi kết quả ở `data/ppe6/review/decisions.csv`, cột `reviewer` nêu rõ `human` hay `claude`. Hộp chỉ máy duyệt không dùng cho val, test.

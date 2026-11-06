@@ -1,0 +1,12 @@
+# Thử nghiệm 6 lớp, nhánh exp/ppe6 (docs/experiments/2026-11-06_ppe6_plan.md).
+# Lớp 0-3 giữ nguyên ppe4 để so được với r2, r3. Dùng bởi scripts/03c_ppe6_review_sheets.py.
+classes: {0: person, 1: helmet, 2: vest, 3: gloves, 4: goggles, 5: boots}
+
+review:
+  seed: 0
+  # Mã lớp gốc của hộp cần duyệt. Tên lớp xem data/raw/<bộ>/README.md và data/raw/construction_ppe/data.yaml.
+  sources:
+    sh17: {goggles: 8, boots: 14}               # glasses, shoes: lẫn đồ thường, phải duyệt
+    construction_ppe: {goggles: 4, boots: 3}    # goggles, boots
+  # Bảng ảnh duyệt: chỉ để người và máy xem, không ảnh hưởng nhãn.
+  sheet: {cols: 8, rows: 6, tile_px: 160, context: 1.0}   # context: nới mỗi phía, tính theo cạnh dài của hộp
