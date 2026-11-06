@@ -80,7 +80,8 @@ pack:
 scope:
   side: 1920
   min_ok_rate: 0.9
-  min_person_px: null
+  min_boxes: 30          # cần ít nhất chừng này hộp có ý kiến mỗi lớp mới đề xuất ngưỡng; Claude đặt, chưa đo
+  min_person_px: {boots: null, goggles: null}
 
 # Ghép kính CHVG vào ảnh CHV train (03m). Ngưỡng xác nhận cùng ảnh, cùng hệ tọa độ, đo ngày 06/11/2026 trên 1.283 ảnh trùng tên.
 chv_merge:
@@ -106,3 +107,22 @@ decision:
   max_mean_drop: 0.01
   max_class_drop: 0.02
   new_class_target: 0.5
+
+# Quy tắc sau duyệt (03n_ppe6_readiness.py), khóa 07/11/2026 trước khi có kết quả P2, P2_chv.
+gates:
+  max_disagreement: 0.10   # P0a: bất đồng agent, người từ mức này thì đề xuất kiểm tra nhãn train
+  min_boots_eval: 80       # P0a: dưới mức này ở val_new hoặc test_new thì dừng
+  min_shoe_rate: 0.10      # P2: tỉ lệ giày bảo hộ thật từ mức này thì đề xuất che vùng
+  min_chv_rate: 0.10       # P2_chv: tỉ lệ ảnh thiếu nhãn ủng mỗi tầng từ mức này thì không dùng nguyên trạng
+
+# Bản dữ liệu: nhóm chọn 07/11/2026, có hiệu lực khi kết quả duyệt không buộc đổi dữ liệu. Người dùng đặt data_locked true sau khi xem `03n gates`.
+final:
+  main: c2
+  control: c1
+  data_locked: false
+
+# Kiểm tra đầu ra train (04f_check_run.py). r2 best.pt 19,2 MB.
+kaggle:
+  min_best_mb: 10
+  max_best_mb: 60
+  class_names: [person, helmet, vest, gloves, goggles, boots]

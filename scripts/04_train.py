@@ -7,6 +7,7 @@ Cách chạy (trong notebook Kaggle, sau khi git clone repo và cài ultralytics
     python scripts/04_train.py --extra /kaggle/input/<bộ phụ r3>     # ghép bộ phụ của 03b_make_extra_train.py vào train
     python scripts/04_train.py --ppe6 /kaggle/input/<gói c2> --run-name yolo11s_ppe6_c2     # bộ 6 lớp, gói của 03m, ảnh lấy từ dataset chính
     python scripts/04_train.py --ppe6 <gói> --data <data.yaml ppe4> --smoke 32 --out <thư mục>  # kiểm tra đường chạy, 1 epoch mẫu nhỏ, không dùng số
+    Train thật với --ppe6 cần gói cuối của 03n_ppe6_readiness.py monitor (có ready.json), nếu không thì dừng. --seed đổi seed cho lần chạy lặp.
 
 Tham số trong configs/train.yaml. Ghi vào --out (mặc định /kaggle/working/runs/<run_name>):
     weights/best.pt, last.pt   trọng số (best chọn theo mAP@0.5:0.95 trên val)
@@ -37,6 +38,17 @@ def find_data_yaml(base):
     if len(found) != 1:
         sys.exit(f"Tìm thấy {len(found)} data.yaml có images/train trong {base}: {found}. Dùng --data.")
     return found[0]
+
+
+def require_ready(pack):
+    """Train thật phải dùng gói cuối: val_monitor từ nhãn đã duyệt, đã có ngưỡng người đủ lớn."""
+    sys.path.insert(0, str(ROOT / "src"))
+    from ppe.ppe6_data import check_ready
+
+    found = list(Path(pack).rglob("ready.json"))
+    bad = check_ready(json.loads(found[0].read_text(encoding="utf-8")) if found else None)
+    if bad:
+        sys.exit("Chưa được train thật: " + "; ".join(bad))
 
 
 def link_file(src, dst):
@@ -186,6 +198,7 @@ def main():
     ap.add_argument("--extra", help="thư mục chứa bộ phụ của 03b_make_extra_train.py")
     ap.add_argument("--ppe6", help="thư mục gói của 03m_ppe6_train_variants.py (bộ 6 lớp)")
     ap.add_argument("--run-name", help="tên lần chạy, thay run_name trong config")
+    ap.add_argument("--seed", type=int, help="seed, thay giá trị trong config")
     ap.add_argument("--smoke", type=int, help="kiểm tra đường chạy: chừng này ảnh mỗi phần, 1 epoch, imgsz 320; không dùng số")
     ap.add_argument("--data-copy", default="/kaggle/working/data",
                     help="nơi tạo bản ghi được khi thư mục dữ liệu chỉ đọc")
@@ -202,8 +215,12 @@ def main():
 
     data = Path(args.data) if args.data else find_data_yaml("/kaggle/input")
     print(f"data: {data}")
+    if args.ppe6 and not args.smoke:
+        require_ready(args.ppe6)
     if args.run_name:
         cfg["run_name"] = args.run_name
+    if args.seed is not None:
+        cfg["train"]["seed"] = args.seed
     if args.smoke:
         cfg["train"].update(epochs=1, imgsz=320, batch=2, workers=0, patience=0, plots=False)
         cfg["train"].pop("time", None)

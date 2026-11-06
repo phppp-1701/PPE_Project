@@ -252,3 +252,82 @@ def ignore_filter(tp, boxes, classes, ignore, iou_min=0.5):
             keep[i] = False
     return keep
 
+
+def wilson(k, n, z=1.96):
+    """Tỉ lệ và khoảng tin cậy Wilson. Trả về (p, thấp, cao)."""
+    if n == 0:
+        return 0.0, 0.0, 1.0
+    p = k / n
+    d = 1 + z * z / n
+    c = (p + z * z / (2 * n)) / d
+    h = z * np.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d
+    return p, float(max(c - h, 0.0)), float(min(c + h, 1.0))
+
+
+def stratified_rate(rows, z=1.96):
+    """Tỉ lệ có trọng số theo tầng. rows: (cỡ tầng thật, số dương trong mẫu, cỡ mẫu). Phương sai dùng Wilson từng tầng để không bằng 0 khi k = 0."""
+    rows = [r for r in rows if r[2] > 0]
+    total = sum(r[0] for r in rows)
+    p = sum(r[0] / total * r[1] / r[2] for r in rows)
+    var = 0.0
+    for size, k, n in rows:
+        _, lo, hi = wilson(k, n, z)
+        var += (size / total) ** 2 * ((hi - lo) / (2 * z)) ** 2
+    h = z * var ** 0.5
+    return p, max(p - h, 0.0), min(p + h, 1.0)
+
+
+def old_class_status(diff, ci, limit):
+    """Kết luận một mốc 4 lớp cũ. diff: ứng viên trừ r2; ci: khoảng tin cậy của diff; limit: mức giảm cho phép."""
+    if diff >= -limit:
+        return "dat"
+    return "chua_du_bang_chung" if ci[1] >= -limit else "khong_dat"
+
+
+def old_decision(result, classes, max_mean, max_class):
+    """Kết luận chung trên val sạch. Chỉ găng không đạt thì ghi `han_che_gang`, không tính là đạt."""
+    mean = old_class_status(result["mean"]["diff"], result["mean"]["ci_diff"], max_mean)
+    per = {c: old_class_status(result[c]["diff"], result[c]["ci_diff"], max_class) for c in classes}
+    failed = [c for c, s in per.items() if s != "dat"]
+    if mean == "dat" and not failed:
+        overall = "dat"
+    elif mean == "dat" and failed == ["gloves"]:
+        overall = "han_che_gang"
+    elif "khong_dat" in [mean, *per.values()]:
+        overall = "khong_dat"
+    else:
+        overall = "chua_du_bang_chung"
+    return dict(overall=overall, mean=mean, classes=per, by="val sạch")
+
+
+def check_monitor(labels, status):
+    """labels: {file: dòng nhãn}. Lớp mới chỉ được có ở ảnh đã có người chốt. Trả về danh sách lỗi."""
+    bad = []
+    for f, rows in labels.items():
+        if status.get(f) != "ready" and any(x.split()[0] in ("4", "5") for x in rows if x.strip()):
+            bad.append(f"{f}: nhãn lớp mới chưa có người duyệt")
+    return bad
+
+
+def check_ready(ready):
+    """ready: nội dung ready.json của gói, hoặc None. Trả về danh sách lý do chưa được train thật."""
+    if ready is None:
+        return ["gói chưa có ready.json: dùng gói cuối của `03n monitor`"]
+    bad = []
+    if ready.get("monitor_source") != "human":
+        bad.append("val_monitor chưa dựng từ nhãn người duyệt")
+    scope = ready.get("min_person_px") or {}
+    if not scope or any(v is None for v in scope.values()):
+        bad.append("chưa có ngưỡng người đủ lớn")
+    return bad
+
+
+def check_weights(mb, names, min_mb, max_mb, class_names):
+    """Kiểm tra best.pt: kích thước, tên lớp đúng thứ tự. Trả về danh sách lỗi."""
+    bad = []
+    if not min_mb <= mb <= max_mb:
+        bad.append(f"kích thước {mb:.1f} MB ngoài khoảng {min_mb}-{max_mb}")
+    if [names[i] for i in sorted(names)] != list(class_names):
+        bad.append(f"tên lớp sai: {names}")
+    return bad
+

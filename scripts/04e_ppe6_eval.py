@@ -7,6 +7,7 @@ Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
 `old`: 4 lớp cũ trên val gốc và val sạch theo cảnh, ứng viên trừ baseline, bootstrap ghép cặp theo cảnh (cùng mẫu cảnh cho hai mô hình).
 Val sạch = ảnh ppe4 val mà cảnh không có ảnh ppe4 train; C0, C1, C2 đều là tập con của ppe4 train nên phần này sạch với mọi ứng viên, theo ngưỡng hiện tại.
 Quyết định theo val sạch; val gốc chỉ để đối chiếu. Mốc ở configs/ppe6.yaml mục `decision`.
+Kết luận: dat; chua_du_bang_chung (quá mốc nhưng khoảng tin cậy còn chứa mức đạt, không tính là đạt); khong_dat; han_che_gang (chỉ găng không đạt).
 `new`: kính, ủng; dự đoán sai trùng vùng `ignore` không tính đúng, không tính sai. Bootstrap theo cảnh.
 AP và tp là của Ultralytics (tp bắt từ validator, AP chép compute_ap). Ghi outputs/results/ppe6_eval/<name>.json.
 """
@@ -23,7 +24,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
-from ppe.ppe6_data import ap_from_tp, ignore_filter  # noqa: E402
+from ppe.ppe6_data import ap_from_tp, ignore_filter, old_decision  # noqa: E402
 
 CLASSES = ["person", "helmet", "vest", "gloves", "goggles", "boots"]
 OUT = ROOT / "outputs" / "results" / "ppe6_eval"
@@ -100,8 +101,7 @@ def compare_old(a, b, cfg):
         ma, mb = float(np.mean(list(pa.values()))), float(np.mean(list(pb.values())))
         t["mean"] = dict(baseline=round(ma, 4), candidate=round(mb, 4), diff=round(mb - ma, 4), ci_baseline=ci(boot[(name, "mean", "a")]), ci_candidate=ci(boot[(name, "mean", "b")]), ci_diff=ci(boot[(name, "mean", "d")]))
         res[name] = t
-    c = res["clean"]
-    res["decision"] = dict(mean_ok=c["mean"]["diff"] >= -cfg["max_mean_drop"], classes_ok=all(c[CLASSES[k]]["diff"] >= -cfg["max_class_drop"] for k in cl), by="val sạch")
+    res["decision"] = old_decision(res["clean"], CLASSES[:4], cfg["max_mean_drop"], cfg["max_class_drop"])
     return res
 
 

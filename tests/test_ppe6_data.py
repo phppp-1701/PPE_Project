@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from ppe.ppe6_data import (ap_from_tp, blocks_train, box_iou_xyxy, cover_fraction, ignore_filter, mask_decision, merge_glass_status, check_label_rows, check_leaks, disagreement, diverse_pick, effective, eval_status, merge_review, parse_cvat,
+from ppe.ppe6_data import (ap_from_tp, blocks_train, check_monitor, check_ready, check_weights, old_class_status, old_decision, stratified_rate, wilson, box_iou_xyxy, cover_fraction, ignore_filter, mask_decision, merge_glass_status, check_label_rows, check_leaks, disagreement, diverse_pick, effective, eval_status, merge_review, parse_cvat,
                            scope_threshold)
 
 AGENT = dict(label="safety", note="", decided_by="agent")
@@ -145,3 +145,46 @@ def test_apply_ignore_uses_letterbox_coordinates():
              tp=np.zeros((2, 1), dtype=bool), ori=np.array([[100, 100]]), ratio_pad=np.array([[0.5, 10, 0]]))
     out, dropped = e.apply_ignore(z, {"a.jpg": [(5, 0.5, 0.5, 0.2, 0.2)]})
     assert dropped == 1 and len(out["conf"]) == 1
+
+
+def test_wilson_and_stratified_rate():
+    p, lo, hi = wilson(10, 100)
+    assert p == 0.1 and 0.05 < lo < 0.1 < hi < 0.18
+    assert wilson(0, 16)[2] > 0.1
+    p, lo, hi = stratified_rate([(900, 0, 10), (100, 10, 10)])
+    assert p == pytest.approx(0.1) and lo < 0.1 < hi
+
+
+@pytest.mark.parametrize("diff,ci,want", [(-0.005, (-0.03, 0.01), "dat"), (-0.015, (-0.03, 0.0), "chua_du_bang_chung"), (-0.03, (-0.05, -0.015), "khong_dat")])
+def test_old_class_status(diff, ci, want):
+    assert old_class_status(diff, ci, 0.01) == want
+
+
+def test_old_decision_gloves_only_is_limitation_not_pass():
+    ok = dict(diff=0.0, ci_diff=[-0.01, 0.01])
+    bad = dict(diff=-0.05, ci_diff=[-0.08, -0.03])
+    r = dict(mean=dict(diff=-0.005, ci_diff=[-0.02, 0.01]), person=ok, helmet=ok, vest=ok, gloves=bad)
+    assert old_decision(r, ["person", "helmet", "vest", "gloves"], 0.01, 0.02)["overall"] == "han_che_gang"
+    r["vest"] = dict(diff=-0.03, ci_diff=[-0.06, 0.0])
+    assert old_decision(r, ["person", "helmet", "vest", "gloves"], 0.01, 0.02)["overall"] != "dat"
+
+
+def test_monitor_refuses_agent_labels_for_new_classes():
+    labels = {"a.jpg": ["5 0.5 0.5 0.1 0.1"], "b.jpg": ["0 0.5 0.5 0.1 0.1"], "c.jpg": ["4 0.5 0.5 0.1 0.1"]}
+    bad = check_monitor(labels, {"a.jpg": "pending", "c.jpg": "ready"})
+    assert len(bad) == 1 and bad[0].startswith("a.jpg")
+
+
+def test_real_training_needs_ready_pack():
+    assert check_ready(None)
+    assert check_ready(dict(monitor_source="agent", min_person_px=dict(boots=100, goggles=200)))
+    assert check_ready(dict(monitor_source="human", min_person_px=dict(boots=None, goggles=200)))
+    assert check_ready(dict(monitor_source="human", min_person_px=dict(boots=100, goggles=200))) == []
+
+
+def test_check_weights():
+    names = {i: n for i, n in enumerate(["person", "helmet", "vest", "gloves", "goggles", "boots"])}
+    assert check_weights(19.2, names, 10, 60, list(names.values())) == []
+    assert check_weights(1.0, names, 10, 60, list(names.values()))
+    assert check_weights(19.2, {0: "person"}, 10, 60, list(names.values()))
+

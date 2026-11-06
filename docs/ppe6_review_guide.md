@@ -66,7 +66,7 @@ Xem cả ảnh, không chỉ trong hộp. Mỗi hộp đặt `decision`:
 
 ## Mẫu CHV đo ủng thiếu nhãn (`P2_chv`)
 
-99 ảnh không có hộp. Với mỗi ảnh: thấy ủng hoặc giày bảo hộ thì vẽ `boots_new`, xem xong thêm tag `image_checked`. Kết quả chỉ để đo, không đổi nhãn train.
+99 ảnh không có hộp. Với mỗi ảnh: chỉ vẽ `boots_new` khi nhìn rõ là ủng hoặc giày bảo hộ; người ở xa không nhìn rõ thì không vẽ. Xem xong thêm tag `image_checked`. Kết quả chỉ để đo, không đổi nhãn train.
 
 ## Duyệt cảnh (làm cùng P0a)
 
@@ -84,5 +84,17 @@ python scripts/03l_ppe6_import_review.py --scenes <scene_review.csv> --reviewer 
 python scripts/03l_ppe6_import_review.py --report
 python scripts/03i_ppe6_build_dataset.py
 ```
+
+Sau khi nhập hết, theo thứ tự:
+
+```
+python scripts/03n_ppe6_readiness.py gates
+python scripts/03n_ppe6_readiness.py scope --write
+python scripts/03n_ppe6_readiness.py monitor --variant c2
+python scripts/03n_ppe6_readiness.py monitor --variant c1
+python scripts/03n_ppe6_readiness.py checklist
+```
+
+`gates` chỉ ra quy tắc nào kích hoạt. Nếu mọi mục `pass`, đặt `final.data_locked: true` trong `configs/ppe6.yaml`.
 
 `--report` in tỉ lệ khác nhau giữa bạn và Claude theo lớp, nguồn, và đề xuất ngưỡng người đủ lớn. `03i` đưa ảnh đã chốt vào `val_new.txt`, `test_new.txt`.
