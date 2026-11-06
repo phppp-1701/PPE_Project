@@ -19,6 +19,8 @@ Lớp: 0-3 như `ppe4`, 4 kính bảo hộ, 5 ủng bảo hộ. Kế hoạch: `d
 
 `dataset_c1/`, `dataset_c2/`: train C1, C2 (`03m`); `dataset/` là C0, không sửa. `dataset_c2/mask_map.csv`: ảnh gốc, ảnh che, vùng che. `variants/`: bảng mất dữ liệu, so sánh, gói Kaggle.
 
+`review/cvat_pack_blind/`: gói duyệt mù (`03p`), dùng gói này để duyệt. `_private/` giữ nhóm gốc, giá trị agent: người duyệt không mở. `review/second_review.csv`, `agreement.json`: người thứ hai, chỉ để kiểm tra chất lượng.
+
 `review/cvat_pack/`: gói duyệt (`03k`), hướng dẫn ở `docs/ppe6_review_guide.md`. `review/human_review.csv`: kết quả người duyệt (`03l`), chỉ xuất hiện khi có người nhập.
 
 `external/chvg/`: CHVG tải từ figshare (`03g`), không đưa lên git. Chưa dùng cho train.

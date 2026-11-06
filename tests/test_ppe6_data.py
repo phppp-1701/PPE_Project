@@ -188,3 +188,103 @@ def test_check_weights():
     assert check_weights(1.0, names, 10, 60, list(names.values()))
     assert check_weights(19.2, {0: "person"}, 10, 60, list(names.values()))
 
+
+BLIND_XML = """<annotations><image id="0" name="img_00001.jpg" width="100" height="100">
+<box label="boots_review" xtl="10" ytl="10" xbr="20" ybr="20"><attribute name="item_id">r1</attribute><attribute name="decision">ordinary</attribute><attribute name="person_ok">du_lon</attribute></box>
+<box label="boots_review" xtl="30" ytl="30" xbr="40" ybr="40"><attribute name="item_id">r2</attribute><attribute name="decision">chua_chon</attribute><attribute name="person_ok">chua_chon</attribute></box>
+</image></annotations>"""
+
+
+def blind_items():
+    base = dict(image_name="img_00001.jpg", file="sh17__a.jpeg", target="boots", source="sh17", agent_label="safety", cx="0.15", cy="0.15", w="0.1", h="0.1")
+    return {"r1": dict(base, box_id="b1", group="P1"), "r2": dict(base, box_id="b2", group="P0a", cx="0.35", cy="0.35")}
+
+
+def load_script(name):
+    import importlib.util
+    from pathlib import Path
+    spec = importlib.util.spec_from_file_location(name.replace(".py", ""), Path(__file__).resolve().parents[1] / "scripts" / name)
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m
+
+
+def test_blind_xml_has_no_labels():
+    from ppe.ppe6_data import leak_tokens
+    m = load_script("03p_ppe6_blind_pack.py")
+    item = dict(item_id="r00012", target="boots", cx="0.5", cy="0.5", w="0.1", h="0.1", agent_label="safety", source="sh17", group="P0a", box_id="b00001", file="sh17__x.jpeg")
+    xml = m.annotations_xml([("img_00001.jpg", 100, 100, [item])], True)
+    assert leak_tokens(xml) == []
+    assert "b00001" not in xml and "chua_chon" in xml
+    assert leak_tokens("<attribute>safety</attribute>") and leak_tokens("chvg__a.jpg") and leak_tokens("agent_label")
+
+
+def test_blind_mapping_keeps_original_group():
+    from ppe.ppe6_data import merge_blind
+    boxes, tags = parse_cvat(BLIND_XML)
+    rows, added, unset = merge_blind(boxes, tags, blind_items(), {"img_00001.jpg": "sh17__a.jpeg"}, "Phuong", "task_a", "t", True, partial=True)
+    assert rows[0]["box_id"] == "b1" and rows[0]["pack"] == "P1" and rows[0]["before"] == "safety" and rows[0]["after"] == "ordinary"
+    assert len(rows) == 1 and any("r2" in x for x in unset)
+
+
+def test_unset_stops_import_and_deleted_box_is_caught():
+    from ppe.ppe6_data import UnsetError, merge_blind
+    boxes, tags = parse_cvat(BLIND_XML)
+    with pytest.raises(UnsetError):
+        merge_blind(boxes, tags, blind_items(), {"img_00001.jpg": "x"}, "Phuong", "task_a", "t", True)
+    only = [b for b in boxes if b["attrs"]["item_id"] == "r1"]
+    with pytest.raises(UnsetError) as e:
+        merge_blind(only, [], blind_items(), {"img_00001.jpg": "x"}, "Phuong", "task_a", "t", True)
+    assert "xóa" in e.value.items[0]
+
+
+def write_map(folder, task):
+    import csv
+    p = folder / "_private"
+    p.mkdir(parents=True)
+    keys = ["item_id", "box_id", "group", "target", "source", "set", "file", "image_name", "cx", "cy", "w", "h", "agent_label", "agent_note", "person_h_px"]
+    with (p / f"{task}_items.csv").open("w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, keys, extrasaction="ignore", restval="")
+        w.writeheader()
+        for k, v in blind_items().items():
+            w.writerow(dict(v, item_id=k))
+    (p / f"{task}_images.csv").write_text("image_name,file\nimg_00001.jpg,sh17__a.jpeg\n", encoding="utf-8")
+
+
+def test_second_reviewer_never_touches_primary_file(tmp_path):
+    m = load_script("03l_ppe6_import_review.py")
+    write_map(tmp_path / "pack", "second")
+    primary = tmp_path / "human_review.csv"
+    primary.write_text(",".join(m.FIELDS) + "\nb1,boots,sh17,safety,safety,du_lon,Phuong,t,P0a,,,,\n", encoding="utf-8")
+    before = primary.read_bytes()
+    m.import_blind("second", BLIND_XML, "Huy", "t", partial=True, blind=tmp_path / "pack", review=tmp_path)
+    assert primary.read_bytes() == before
+    assert (tmp_path / "second_review.csv").exists()
+    with pytest.raises(ValueError):
+        m.import_blind("second", BLIND_XML, "Phuong", "t", partial=True, blind=tmp_path / "pack", review=tmp_path)
+    res = m.agreement_report(tmp_path)
+    assert res["n"] == 1 and res["agreement"] == 0.0
+
+
+def test_kappa():
+    from ppe.ppe6_data import agreement, cohen_kappa
+    assert cohen_kappa(["a", "b", "a", "b"], ["a", "b", "a", "b"]) == 1.0
+    assert cohen_kappa(["a", "a", "b", "b"], ["a", "b", "a", "b"]) == 0.0
+    assert cohen_kappa(["a", "a"], ["a", "a"]) is None
+    # Ví dụ tính tay: po = 0.7, pe = 0.5 nên kappa = 0.4
+    a = ["y"] * 5 + ["n"] * 5
+    b = ["y"] * 4 + ["n"] + ["y"] * 2 + ["n"] * 3
+    assert cohen_kappa(a, b) == pytest.approx(0.4)
+    r = agreement(a, b, np.random.default_rng(0), n_boot=200)
+    assert r["n"] == 10 and r["confusion"]["y"]["y"] == 4 and r["kappa_ci"][0] < 0.4 < r["kappa_ci"][1]
+    assert "không phải quyết định" in r["note"]
+
+
+def test_second_sample_is_stratified_and_fixed():
+    m = load_script("03p_ppe6_blind_pack.py")
+    items = [dict(box_id=f"b{i:03d}", target=t, source=s, agent_label=l) for i, (t, s, l) in enumerate(
+        [("boots", "sh17", "safety")] * 60 + [("boots", "sh17", "ordinary")] * 30 + [("goggles", "chvg", "safety")] * 40 + [("goggles", "chvg", "unclear")] * 3)]
+    a = m.stratified_second(items, 20, 2, 0)
+    assert len(a) == 20 and a == m.stratified_second(items, 20, 2, 0)
+    assert len({(x["target"], x["agent_label"]) for x in a}) == 4
+

@@ -331,3 +331,96 @@ def check_weights(mb, names, min_mb, max_mb, class_names):
         bad.append(f"tên lớp sai: {names}")
     return bad
 
+
+UNSET = "chua_chon"
+LEAK_WORDS = ("agent", "sh17", "chvg", "chv_", "construction", "p0a", "p0b", "p1", "p2", "val_new", "test_new", "not_safety", "too_small", "scene_", "claude", "ppe_")
+
+
+class UnsetError(ValueError):
+    """Còn ô chưa chọn hoặc hộp bị xóa trong file xuất. items: danh sách mô tả."""
+
+    def __init__(self, items):
+        super().__init__(f"Còn {len(items)} ô chưa chọn")
+        self.items = items
+
+
+def leak_tokens(text, allow_decisions=False):
+    """Từ có thể lộ nhãn, nguồn, nhóm trong file gửi người duyệt. Trả về danh sách phát hiện."""
+    low = text.lower()
+    found = [w for w in LEAK_WORDS if w in low]
+    if not allow_decisions:
+        for v in ("safety", "ordinary", "unclear", "ignore"):
+            if f">{v}<" in low:
+                found.append(f"giá trị {v}")
+    return found
+
+
+def merge_blind(boxes, tags, items, images, reviewer, task, now, need_person, partial=False):
+    """Đổi kết quả gói mù thành dòng duyệt. items: {item_id: dòng file ánh xạ}, images: {tên ảnh: file}.
+
+    Ô `chua_chon` và hộp bị xóa khỏi file xuất không bao giờ được coi là đồng ý với agent: mặc định báo lỗi; partial thì bỏ qua và liệt kê.
+    Trả về (dòng duyệt, hộp vẽ thêm, danh sách chưa chọn). Dòng duyệt mang nhóm gốc ở `pack`.
+    """
+    if reviewer.strip().lower() in NOT_A_PERSON:
+        raise ValueError("Cần tên người duyệt thật.")
+    rows, added, unset, seen = [], [], [], set()
+    for b in boxes:
+        w, h = b["width"], b["height"]
+        norm = dict(cx=(b["xtl"] + b["xbr"]) / 2 / w, cy=(b["ytl"] + b["ybr"]) / 2 / h, w=(b["xbr"] - b["xtl"]) / w, h=(b["ybr"] - b["ytl"]) / h)
+        if b["label"] in ("boots_new", "goggles_new"):
+            added.append(dict(file=images[b["image"]], target=b["label"].replace("_new", ""), **{k: round(v, 6) for k, v in norm.items()}, reviewer=reviewer, pack=task))
+            continue
+        iid = b["attrs"].get("item_id", "")
+        if iid not in items:
+            raise ValueError(f"item_id không có trong gói: {iid}")
+        seen.add(iid)
+        old = items[iid]
+        decision = b["attrs"].get("decision", UNSET)
+        person = b["attrs"].get("person_ok", UNSET)
+        if decision == UNSET:
+            unset.append(f"{iid} ({b['image']}): decision")
+            continue
+        if decision not in DECISIONS:
+            raise ValueError(f"Quyết định lạ: {decision}")
+        if need_person and person == UNSET:
+            unset.append(f"{iid} ({b['image']}): person_ok")
+        moved = max(abs(norm[k] - float(old[k])) for k in ("cx", "cy", "w", "h")) > BOX_MOVED
+        rows.append(dict(box_id=old["box_id"], target=old["target"], source=old["source"], before=old["agent_label"], after=decision, person_ok="" if person == UNSET else person,
+                         reviewer=reviewer, reviewed_at=now, pack=old["group"], **{f"new_{k}": round(v, 6) if moved else "" for k, v in norm.items()}))
+    unset += [f"{i} ({items[i]['image_name']}): hộp bị xóa" for i in sorted(set(items) - seen)]
+    if unset and not partial:
+        raise UnsetError(unset)
+    for name, label in tags:
+        if label in ("image_checked", "reject_image"):
+            rows.append(dict(box_id="image:" + images[name], target="image", source="", before="", after="checked" if label == "image_checked" else "reject", person_ok="",
+                             reviewer=reviewer, reviewed_at=now, pack=task, new_cx="", new_cy="", new_w="", new_h=""))
+    return rows, added, unset
+
+
+def cohen_kappa(a, b):
+    """Cohen's Kappa cho hai danh sách nhãn. None khi mọi nhãn đều như nhau (kỳ vọng ngẫu nhiên bằng 1)."""
+    n = len(a)
+    po = sum(x == y for x, y in zip(a, b)) / n
+    ca, cb = Counter(a), Counter(b)
+    pe = sum(ca[k] * cb[k] for k in set(a) | set(b)) / (n * n)
+    return None if pe >= 1 else (po - pe) / (1 - pe)
+
+
+def agreement(a, b, rng, n_boot=1000):
+    """Tỉ lệ đồng thuận (Wilson), Kappa (bootstrap theo hộp), ma trận nhầm lẫn: hàng là người chính, cột là người thứ hai."""
+    labels = sorted(set(a) | set(b))
+    k = sum(x == y for x, y in zip(a, b))
+    p, lo, hi = wilson(k, len(a))
+    kap = cohen_kappa(a, b)
+    idx = np.arange(len(a))
+    boot = []
+    for _ in range(n_boot):
+        s = rng.choice(idx, len(idx))
+        v = cohen_kappa([a[i] for i in s], [b[i] for i in s])
+        if v is not None:
+            boot.append(v)
+    ci = [round(float(x), 4) for x in np.percentile(boot, [2.5, 97.5])] if boot else None
+    matrix = {x: {y: sum(1 for p1, p2 in zip(a, b) if p1 == x and p2 == y) for y in labels} for x in labels}
+    return dict(n=len(a), agreement=round(p, 4), agreement_ci=[round(lo, 4), round(hi, 4)], kappa=None if kap is None else round(kap, 4), kappa_ci=ci, confusion=matrix,
+                note="Kiểm tra chất lượng, không phải quyết định nhãn cuối.")
+

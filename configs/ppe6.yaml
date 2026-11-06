@@ -126,3 +126,10 @@ kaggle:
   min_best_mb: 10
   max_best_mb: 60
   class_names: [person, helmet, vest, gloves, goggles, boots]
+
+# Gói duyệt mù (03p_ppe6_blind_pack.py), nhóm yêu cầu 07/11/2026.
+blind:
+  seed: 0
+  side: 1920           # mọi ảnh đưa về cùng cạnh dài để kích thước không lộ nguồn
+  second_boxes: 50     # số hộp cho người thứ hai
+  second_floor: 2      # mỗi tầng (lớp, nguồn, nhãn agent) tối thiểu chừng này hộp nếu có; Claude đặt
