@@ -140,8 +140,8 @@ def test_apply_ignore_uses_letterbox_coordinates():
     spec = importlib.util.spec_from_file_location("e", Path(__file__).resolve().parents[1] / "scripts" / "04e_ppe6_eval.py")
     e = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(e)
-    # Ảnh 100x100, thu 0.5, đệm x 10: hộp chuẩn hóa tâm (0.5, 0.5) rộng 0.2 nằm ở 55-65 x, 45-55 y.
-    z = dict(files=np.array(["a.jpg"]), img=np.array([0, 0]), box=np.array([[55, 45, 65, 55.0], [0, 0, 5, 5.0]]), conf=np.array([0.9, 0.8]), cls=np.array([5, 5]),
+    # Ảnh 100x100, thu 0.5, đệm x 10: hộp chuẩn hóa tâm (0.5, 0.5) rộng 0.2 nằm ở 30-40 x, 20-30 y.
+    z = dict(files=np.array(["a.jpg"]), img=np.array([0, 0]), box=np.array([[30, 20, 40, 30.0], [0, 0, 5, 5.0]]), conf=np.array([0.9, 0.8]), cls=np.array([5, 5]),
              tp=np.zeros((2, 1), dtype=bool), ori=np.array([[100, 100]]), ratio_pad=np.array([[0.5, 10, 0]]))
     out, dropped = e.apply_ignore(z, {"a.jpg": [(5, 0.5, 0.5, 0.2, 0.2)]})
     assert dropped == 1 and len(out["conf"]) == 1
