@@ -2,6 +2,21 @@
 
 Dành cho người duyệt. Gói ở `data/ppe6/review/cvat_pack/` (không có trên git). Làm theo thứ tự P0a, P0b, P1, P2.
 
+## Thử gói nhỏ trước
+
+Gói `TRIAL` có 10 hộp lấy từ P0a, làm mất khoảng 2 phút (ước tính). Kết quả ghi riêng `trial_review.csv`, không tính là đã duyệt bộ dữ liệu.
+
+1. Tạo task theo mục dưới với thư mục `cvat_pack/TRIAL`.
+2. Mở job, kiểm tra thấy 10 hộp nhãn `boots_review` đúng vị trí trên ảnh, thuộc tính `decision` đang là `chua_duyet`.
+3. Đặt `decision` cho vài hộp, để nguyên vài hộp, thêm một tag `image_checked`, vẽ một hộp `boots_new`.
+4. Xuất file rồi chạy:
+
+```
+python scripts/03l_ppe6_import_review.py --group TRIAL --file <file_xuất.zip> --reviewer "Tên bạn"
+```
+
+Kết quả đúng: in đúng những hộp đã đặt, giá trị trước và sau, tên bạn; hộp để nguyên nằm ở số "hộp chưa duyệt". Nếu lỗi, gửi lại nội dung lỗi; đừng làm tiếp P0a.
+
 ## Tạo task
 
 1. Trên CVAT, tạo task mới. Mục Labels chọn tab Raw, dán nội dung `labels.json` của nhóm.
@@ -48,6 +63,10 @@ Xem cả ảnh, không chỉ trong hộp. Mỗi hộp đặt `decision`:
 - Thấy kính, ủng bảo hộ chưa có hộp: vẽ hộp nhãn `goggles_new` hoặc `boots_new`.
 - Xem xong một ảnh: thêm tag `image_checked`. **Bắt buộc với mọi ảnh CHVG trong P0b**, kể cả ảnh không có hộp; thiếu tag thì ảnh chưa được dùng. Ảnh CHVG có thể sót kính, hãy xem kỹ.
 - Ảnh không dùng được: tag `reject_image`.
+
+## Mẫu CHV đo ủng thiếu nhãn (`P2_chv`)
+
+99 ảnh không có hộp. Với mỗi ảnh: thấy ủng hoặc giày bảo hộ thì vẽ `boots_new`, xem xong thêm tag `image_checked`. Kết quả chỉ để đo, không đổi nhãn train.
 
 ## Duyệt cảnh (làm cùng P0a)
 

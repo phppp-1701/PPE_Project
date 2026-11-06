@@ -10,6 +10,9 @@ data/**
 !data/ppe6/review/p2_shoe_sample.csv
 !data/ppe6/eval/*.csv
 !data/ppe6/dataset/manifest.json
+!data/ppe6/variants/*.csv
+!data/ppe6/variants/manifest.json
+!data/ppe6/dataset_c2/mask_map.csv
 !data/ppe6/dataset/excluded.csv
 !data/ppe6/dataset/eval_status.csv
 outputs/**

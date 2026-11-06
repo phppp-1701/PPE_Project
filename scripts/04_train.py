@@ -5,6 +5,8 @@ Cách chạy (trong notebook Kaggle, sau khi git clone repo và cài ultralytics
     python scripts/04_train.py --data /đường/dẫn/data.yaml
     python scripts/04_train.py --resume /kaggle/input/<output lần trước>/.../weights/last.pt
     python scripts/04_train.py --extra /kaggle/input/<bộ phụ r3>     # ghép bộ phụ của 03b_make_extra_train.py vào train
+    python scripts/04_train.py --ppe6 /kaggle/input/<gói c2> --run-name yolo11s_ppe6_c2     # bộ 6 lớp, gói của 03m, ảnh lấy từ dataset chính
+    python scripts/04_train.py --ppe6 <gói> --data <data.yaml ppe4> --smoke 32 --out <thư mục>  # kiểm tra đường chạy, 1 epoch mẫu nhỏ, không dùng số
 
 Tham số trong configs/train.yaml. Ghi vào --out (mặc định /kaggle/working/runs/<run_name>):
     weights/best.pt, last.pt   trọng số (best chọn theo mAP@0.5:0.95 trên val)
@@ -31,13 +33,51 @@ CONFIG = ROOT / "configs" / "train.yaml"
 
 def find_data_yaml(base):
     """data.yaml của bộ 4 lớp đã chia (có images/train) trong thư mục dữ liệu Kaggle."""
-    found = [p for p in Path(base).rglob("data.yaml") if (p.parent / "images" / "train").is_dir()]
+    found = [p for p in Path(base).rglob("data.yaml") if (p.parent / "images" / "train").is_dir() and "_pack" not in str(p)]
     if len(found) != 1:
         sys.exit(f"Tìm thấy {len(found)} data.yaml có images/train trong {base}: {found}. Dùng --data.")
     return found[0]
 
 
-def writable_copy(data_yaml, dst, max_side=None):
+def link_file(src, dst):
+    """Liên kết tượng trưng; máy không cho phép (Windows thường) thì chép."""
+    try:
+        dst.symlink_to(src)
+    except OSError:
+        shutil.copy2(src, dst)
+
+
+def assemble_ppe6(pack, main_data, dst, limit=None):
+    """Dựng bộ 6 lớp từ gói của 03m: nhãn, ảnh che lấy trong gói, ảnh còn lại lấy từ dataset ppe4. Không đụng ppe4.
+    limit: chỉ lấy chừng này ảnh mỗi phần, để kiểm tra đường chạy."""
+    pack, main = Path(pack).resolve(), Path(main_data).resolve().parent
+    found = list(pack.rglob("manifest.tsv"))
+    if len(found) != 1:
+        sys.exit(f"Tìm thấy {len(found)} manifest.tsv trong {pack}.")
+    root = found[0].parent
+    used = collections.Counter()
+    for kind in ("images", "labels"):
+        for part in ("train", "val_monitor"):
+            (dst / kind / part).mkdir(parents=True, exist_ok=True)
+    for line in found[0].read_text(encoding="utf-8").splitlines():
+        part, split, file, how = line.split("\t")
+        if limit and used[part] >= limit:
+            continue
+        stem = Path(file).stem
+        src = root / "masked" / f"{stem}.jpg" if how == "masked" else main / "images" / split / file
+        if not src.exists():
+            sys.exit(f"Thiếu ảnh {src}")
+        out = dst / "images" / part / src.name
+        if not out.exists() and not out.is_symlink():
+            link_file(src, out)
+        shutil.copy2(root / "labels" / part / f"{stem}.txt", dst / "labels" / part / f"{stem}.txt")
+        used[part] += 1
+    shutil.copy2(root / "data.yaml", dst / "data.yaml")
+    print(f"Bộ 6 lớp: {dict(used)}", flush=True)
+    return dst / "data.yaml"
+
+
+def writable_copy(data_yaml, dst, max_side=None, force=False):
     """Thư mục dữ liệu Kaggle chỉ đọc: tạo bản ở dst gồm liên kết (symlink) tới ảnh và bản chép nhãn,
     để Ultralytics ghi được cache nhãn. JPEG có byte thừa sau FFD9 thì chép bản đã cắt thừa
     (như 03_split_data.py), nếu không Ultralytics bỏ qua ảnh đó vì không ghi đè được.
@@ -45,7 +85,7 @@ def writable_copy(data_yaml, dst, max_side=None):
     vào dst thay cho liên kết, để khỏi giữ ảnh trong RAM (cache) mà mỗi epoch vẫn không phải giải nén
     ảnh gốc rất lớn. Nhãn YOLO là tọa độ chuẩn hóa nên giữ nguyên."""
     src = data_yaml.parent
-    if os.access(src, os.W_OK):
+    if os.access(src, os.W_OK) and not force:
         return data_yaml
     if max_side:
         import cv2
@@ -88,7 +128,7 @@ def writable_copy(data_yaml, dst, max_side=None):
                     if b"\xff\xd9" in data:
                         out.write_bytes(data[:data.rindex(b"\xff\xd9") + 2])
                         return "trim"
-        out.symlink_to(f)
+        link_file(f, out)
         return "link"
 
     print(f"Tạo bản ghi được ở {dst}: {len(files)} file" + (f", thu nhỏ ảnh về cạnh dài {max_side}" if max_side else ""),
@@ -144,6 +184,9 @@ def main():
     ap.add_argument("--out", default="/kaggle/working/runs", help="thư mục ghi kết quả")
     ap.add_argument("--resume", help="last.pt của lần chạy bị ngắt, để chạy tiếp")
     ap.add_argument("--extra", help="thư mục chứa bộ phụ của 03b_make_extra_train.py")
+    ap.add_argument("--ppe6", help="thư mục gói của 03m_ppe6_train_variants.py (bộ 6 lớp)")
+    ap.add_argument("--run-name", help="tên lần chạy, thay run_name trong config")
+    ap.add_argument("--smoke", type=int, help="kiểm tra đường chạy: chừng này ảnh mỗi phần, 1 epoch, imgsz 320; không dùng số")
     ap.add_argument("--data-copy", default="/kaggle/working/data",
                     help="nơi tạo bản ghi được khi thư mục dữ liệu chỉ đọc")
     args = ap.parse_args()
@@ -159,7 +202,18 @@ def main():
 
     data = Path(args.data) if args.data else find_data_yaml("/kaggle/input")
     print(f"data: {data}")
-    data = str(writable_copy(data, Path(args.data_copy), cfg.get("copy_max_side")))
+    if args.run_name:
+        cfg["run_name"] = args.run_name
+    if args.smoke:
+        cfg["train"].update(epochs=1, imgsz=320, batch=2, workers=0, patience=0, plots=False)
+        cfg["train"].pop("time", None)
+        cfg["run_name"] += "_smoke"
+    if args.ppe6:
+        linked = Path(args.data_copy + "_links")
+        assembled = assemble_ppe6(args.ppe6, data, linked, args.smoke)
+        data = str(writable_copy(assembled, Path(args.data_copy), cfg.get("copy_max_side"), force=True))
+    else:
+        data = str(writable_copy(data, Path(args.data_copy), cfg.get("copy_max_side")))
     if args.extra:
         add_extra(args.extra, data)
 
@@ -175,7 +229,7 @@ def main():
 
     # Đánh giá lại best.pt trên val để có số từng lớp (chỉ val; test để dành đến cuối).
     best = YOLO(save_dir / "weights" / "best.pt")
-    metrics = best.val(data=data, split="val", imgsz=cfg["train"]["imgsz"], batch=16,
+    metrics = best.val(data=data, split="val", imgsz=cfg["train"]["imgsz"], batch=2 if args.smoke else 16,
                        device=cfg["train"]["device"], project=str(save_dir), name="val_best")
     info = dict(
         run_name=cfg["run_name"], gpu=gpu, ultralytics=ultralytics.__version__, torch=torch.__version__,

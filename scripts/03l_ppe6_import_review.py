@@ -8,7 +8,7 @@ Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
 Xuất từ CVAT theo định dạng "CVAT for images 1.1". Sau khi nhập, chạy lại 03i để cập nhật val_new, test_new.
 Ghi nối thêm vào data/ppe6/review/human_review.csv (giá trị trước, sau, người duyệt, thời gian, gói), human_added.csv (hộp vẽ thêm),
 scene_review_done.csv; `--report` ghi disagreement.csv. Nhập lại một hộp thì dòng sau cùng có hiệu lực, các dòng cũ giữ làm dấu vết.
-Hộp còn `chua_duyet` bị bỏ qua, không tính là đã duyệt. Script từ chối chạy nếu thiếu tên người duyệt.
+Nhóm TRIAL chỉ ghi trial_review.csv; P2_chv ghi riêng, chỉ để đo ủng thiếu nhãn. Hộp còn `chua_duyet` bị bỏ qua, không tính là đã duyệt. Script từ chối chạy nếu thiếu tên người duyệt.
 """
 
 import argparse
@@ -80,7 +80,7 @@ def report():
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--group", choices=["P0a", "P0b", "P1", "P2"])
+    ap.add_argument("--group", choices=["P0a", "P0b", "P1", "P2", "P2_chv", "TRIAL"])
     ap.add_argument("--file")
     ap.add_argument("--scenes")
     ap.add_argument("--reviewer", default="")
@@ -105,6 +105,18 @@ def main():
     index["__images__"] = images
     index_rows = {k: v for k, v in index.items()}
     rows, added, skipped = merge_review(boxes, tags, IndexView(index_rows), args.reviewer, args.group, datetime.now().isoformat(timespec="seconds"))
+    if args.group == "TRIAL":  # gói thử: chỉ kiểm tra đường nhập, không tính là đã duyệt bộ dữ liệu
+        append(REVIEW / "trial_review.csv", FIELDS, rows)
+        print("Gói thử, ghi trial_review.csv, không ảnh hưởng bộ dữ liệu.")
+        for r in rows:
+            print(" ", r["box_id"], r["before"], "->", r["after"], r["person_ok"], r["reviewer"])
+        print(f"{len(rows)} dòng, {len(added)} hộp vẽ thêm, {skipped} hộp chưa duyệt.")
+        return
+    if args.group == "P2_chv":  # đo ủng thiếu nhãn ở CHV, không đổi nhãn train
+        append(REVIEW / "chv_boots_added.csv", ADDED, added)
+        append(REVIEW / "chv_boots_seen.csv", FIELDS, rows)
+        print(f"Mẫu CHV: {len(rows)} ảnh đã xem, {len(added)} hộp ủng bị thiếu nhãn.")
+        return
     append(REVIEW / "human_review.csv", FIELDS, rows)
     if added:
         append(REVIEW / "human_added.csv", ADDED, added)

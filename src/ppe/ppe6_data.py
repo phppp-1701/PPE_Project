@@ -91,7 +91,9 @@ def check_leaks(sets, scene, ppe4_split):
 
 
 def ap_from_tp(tp, conf, n_gt, weight=None):
-    """AP nội suy 101 điểm như Ultralytics, cho từng ngưỡng IoU. Trả về (AP@0.5, AP@0.5:0.95).
+    """AP nội suy 101 điểm, chép compute_ap của Ultralytics 8.4.189. Trả về (AP@0.5, AP@0.5:0.95).
+
+    Điểm phụ (recall cuối, precision 0) làm precision rơi về 0 ngay tại recall lớn nhất.
 
     tp: bool [n, n_iou]. weight: số lần mỗi dự đoán xuất hiện (bootstrap).
     """
@@ -107,8 +109,8 @@ def ap_from_tp(tp, conf, n_gt, weight=None):
         fpc = np.cumsum((1 - tp[:, k]) * w)
         recall = tpc / n_gt
         precision = tpc / np.maximum(tpc + fpc, 1e-16)
-        r = np.concatenate(([0.0], recall, [1.0]))
-        p = np.flip(np.maximum.accumulate(np.flip(np.concatenate(([1.0], precision, [0.0])))))
+        r = np.concatenate(([0.0], recall, [recall[-1] if len(recall) else 1.0], [1.0]))
+        p = np.flip(np.maximum.accumulate(np.flip(np.concatenate(([1.0], precision, [0.0], [0.0])))))
         aps.append(float(np.trapezoid(np.interp(x, r, p), x)))
     return aps[0], float(np.mean(aps))
 
@@ -193,3 +195,60 @@ def scope_threshold(rows, min_rate):
         ok -= good
         n -= 1
     return best
+
+
+def parse_yolo(text):
+    """Dòng nhãn YOLO thành (lớp, cx, cy, w, h)."""
+    out = []
+    for line in text.splitlines():
+        t = line.split()
+        if t:
+            out.append((int(t[0]), *map(float, t[1:5])))
+    return out
+
+
+def box_iou_xyxy(a, b):
+    ix = max(0.0, min(a[2], b[2]) - max(a[0], b[0]))
+    iy = max(0.0, min(a[3], b[3]) - max(a[1], b[1]))
+    i = ix * iy
+    return i / max((a[2] - a[0]) * (a[3] - a[1]) + (b[2] - b[0]) * (b[3] - b[1]) - i, 1e-12)
+
+
+def merge_glass_status(corr, ham, helmet_iou, cfg):
+    """Ảnh CHV và CHVG ghép được không. helmet_iou None: ảnh không có mũ để so, chỉ dựa vào độ giống ảnh."""
+    if corr < cfg["min_corr"] or ham > cfg["max_hamming"]:
+        return "image_mismatch"
+    if helmet_iou is None:
+        return "no_helmet_check"
+    return "ok" if helmet_iou >= cfg["min_helmet_iou"] else "box_mismatch"
+
+
+def cover_fraction(box, regions):
+    """Phần diện tích `box` bị các vùng che phủ, đo trên lưới để không đếm trùng chỗ hai vùng chồng nhau."""
+    x1, y1, x2, y2 = box
+    if x2 <= x1 or y2 <= y1:
+        return 0.0
+    xs = np.linspace(x1, x2, 32)
+    ys = np.linspace(y1, y2, 32)
+    hit = np.zeros((32, 32), dtype=bool)
+    for a, b, c, d in regions:
+        hit |= ((ys[:, None] >= b) & (ys[:, None] <= d)) & ((xs[None, :] >= a) & (xs[None, :] <= c))
+    return float(hit.mean())
+
+
+def mask_decision(regions, labelled, max_cover):
+    """Che được khi không hộp đã gán nào bị che quá max_cover. labelled: (lớp, x1, y1, x2, y2). Trả về (được, mức che lớn nhất)."""
+    worst = max((cover_fraction(b[1:], regions) for b in labelled), default=0.0)
+    return worst <= max_cover, worst
+
+
+def ignore_filter(tp, boxes, classes, ignore, iou_min=0.5):
+    """Bỏ dự đoán sai trùng vùng `ignore` (không tính đúng, không tính sai). ignore: (lớp, x1, y1, x2, y2). Trả về mặt nạ giữ lại."""
+    keep = np.ones(len(boxes), dtype=bool)
+    for i, b in enumerate(boxes):
+        if tp[i].any():
+            continue
+        if any(c == classes[i] and box_iou_xyxy(b, g) >= iou_min for c, *g in ignore):
+            keep[i] = False
+    return keep
+

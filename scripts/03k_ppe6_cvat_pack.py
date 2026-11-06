@@ -2,6 +2,7 @@
 
 Cách chạy (từ thư mục gốc project, đã kích hoạt .venv, sau 03i và 03j):
     python scripts/03k_ppe6_cvat_pack.py
+    python scripts/03k_ppe6_cvat_pack.py --extra    # chỉ tạo TRIAL (gói thử 10 hộp), P2_chv (mẫu CHV đo ủng thiếu nhãn)
 
 Mỗi nhóm (P0a, P0b, P1, P2) có: images.zip (ảnh đầy đủ, cạnh dài tối đa `pack.side`), annotations.xml (CVAT for images 1.1),
 index.csv (box_id, giá trị agent, chiều cao người), labels.json (khai báo nhãn khi tạo task CVAT).
@@ -204,10 +205,52 @@ def scene_sheets(cfg, stats):
     return len(rows)
 
 
+def add_extra(cfg, stats, pk):
+    """Thêm gói thử TRIAL (hộp từ P0a) và P2_chv (mẫu ảnh CHV đo ủng thiếu nhãn). Không đụng gói P0a, P0b, P1, P2 đã có."""
+    rng = random.Random(cfg["eval"]["seed"])
+    p0a = rd(OUT / "P0a" / "index.csv")
+    pick = []
+    for src, n in (("construction_ppe", pk["trial_boxes"] // 2), ("sh17", pk["trial_boxes"] - pk["trial_boxes"] // 2)):
+        pick += rng.sample(sorted([r for r in p0a if r["source"] == src], key=lambda r: r["box_id"]), n)
+    items = [dict(box_id=r["box_id"], target=r["target"], source=r["source"], file=r["file"], cx=r["cx"], cy=r["cy"], w=r["w"], h=r["h"], agent_label=r["agent_label"], note=r["agent_note"], set=r["set"]) for r in pick]
+    # Mẫu CHV: phân tầng theo chiều cao người lớn nhất trong ảnh, chỉ ảnh có trong train C1
+    c1 = {p.name for p in (BASE / "dataset_c1" / "images" / "train").iterdir() if p.name.startswith("chv__")}
+    strata = defaultdict(list)
+    for f in sorted(c1):
+        hs = [float(x.split()[4]) for x in (PPE4 / "labels" / "train" / f"{Path(f).stem}.txt").read_text(encoding="utf-8").splitlines() if x.startswith("0 ")]
+        top = max(hs, default=0)
+        strata["nho" if top < 0.3 else "vua" if top < 0.6 else "lon"].append(f)
+    per = pk["chv_boots_images"] // len(strata)
+    chosen = []
+    rows = []
+    for k in sorted(strata):
+        s = rng.sample(strata[k], min(per, len(strata[k])))
+        chosen += s
+        rows += [dict(file=f, stratum=k) for f in s]
+    for name in ("TRIAL", "P2_chv"):
+        if (OUT / name).exists():
+            shutil.rmtree(OUT / name)
+    empty = lambda *a: ""  # noqa: E731
+    write_group("TRIAL", items, {i["file"] for i in items}, stats, pk["side"], person_height)
+    write_group("P2_chv", [], set(chosen), stats, pk["side"], empty)
+    with (OUT / "P2_chv" / "sample.csv").open("w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, ["file", "stratum"], lineterminator="\n")
+        w.writeheader()
+        w.writerows(rows)
+    s = json.loads((OUT / "summary.json").read_text(encoding="utf-8"))
+    s["TRIAL"] = dict(boxes=len(items), images=len({i["file"] for i in items}), minutes_estimate=round((len(items) * pk["sec_per_box"] + 10 * pk["sec_per_image"]) / 60))
+    s["P2_chv"] = dict(images=len(chosen), strata={k: len(v) for k, v in strata.items()}, minutes_estimate=round(len(chosen) * pk["sec_per_chv_image"] / 60))
+    (OUT / "summary.json").write_text(json.dumps(s, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
+    print(s["TRIAL"], s["P2_chv"])
+
+
 def main():
     sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
     cfg = yaml.safe_load((ROOT / "configs" / "ppe6.yaml").read_text(encoding="utf-8"))
     pk = cfg["pack"]
+    if "--extra" in sys.argv:
+        add_extra(cfg, {r["file"]: r for r in rd(ROOT / "data" / "ppe4" / "stats.csv")}, pk)
+        return
     if OUT.exists():
         shutil.rmtree(OUT)
     OUT.mkdir(parents=True)

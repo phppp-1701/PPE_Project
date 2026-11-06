@@ -1,0 +1,36 @@
+{
+  "commit": "05d06c8",
+  "seed": 0,
+  "mask": {
+    "margin": 0.1,
+    "max_cover": 0.5,
+    "fill": [
+      114,
+      114,
+      114
+    ],
+    "side": 1920,
+    "quality": 95
+  },
+  "chv_merge": {
+    "min_corr": 0.98,
+    "max_hamming": 8,
+    "min_helmet_iou": 0.5
+  },
+  "c1_dropped": {
+    "eval_scene": 25,
+    "chv_glass_unclear": 25,
+    "box_mismatch_with_glass": 3
+  },
+  "c2_status": {
+    "saved": 284,
+    "scene_cap": 257,
+    "hits_label": 18,
+    "eval_scene": 5
+  },
+  "monitor": {
+    "c1": 1072,
+    "c2": 1070
+  },
+  "content_hash": "69439c24c0555a028938cd7ae09c72318134b743a3a8529c537d6931c04278e5"
+}

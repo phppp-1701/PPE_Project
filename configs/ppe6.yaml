@@ -51,11 +51,6 @@ eval:
   max_scene_boots: 30      # cảnh có nhiều hộp ủng hơn mức này thì không dùng, để hộp trải trên nhiều cảnh
   levels: [[80, 0.3], [100, 0.3], [120, 0.3]]
 
-# So r2, r3 trên val gốc và val sạch (04c_ppe4_val_clean.py).
-clean_val:
-  seed: 0
-  n_boot: 1000
-  max_gap: 0.015           # AP tính lại lệch model.val quá mức này thì dừng. Đo: cao hơn 0.004-0.012, cùng chiều, chưa rõ nguyên nhân; hiệu số val và val sạch cùng cách tính
 
 train_scene_cap: 30        # mỗi cảnh lặp ở train giữ tối đa chừng này ảnh (nhóm chốt 06/11/2026)
 # Cụm thật sự là một cảnh lặp, Claude xem 10 ảnh mẫu của 8 cụm lớn nhất, chờ người xác nhận. s00000, s00002, s00003, s00004, s00006
@@ -76,6 +71,9 @@ pack:
   sec_per_box: 6
   sec_per_image: 8
   sec_per_scene: 20
+  sec_per_chv_image: 15
+  trial_boxes: 10
+  chv_boots_images: 100
 
 # Ngưỡng "người đủ lớn" (03l --report): chiều cao người tối thiểu mà từ đó trở lên tỉ lệ người duyệt nhìn rõ đạt min_ok_rate.
 # Chưa chọn: phải có kết quả duyệt, chốt trước khi train.
@@ -83,3 +81,28 @@ scope:
   side: 1920
   min_ok_rate: 0.9
   min_person_px: null
+
+# Ghép kính CHVG vào ảnh CHV train (03m). Ngưỡng xác nhận cùng ảnh, cùng hệ tọa độ, đo ngày 06/11/2026 trên 1.283 ảnh trùng tên.
+chv_merge:
+  min_corr: 0.98
+  max_hamming: 8
+  min_helmet_iou: 0.5
+  # Claude xem 130 hộp kính ở ảnh CHV train: tối, mờ, gọng giống kính cận thì để không rõ. Số là idx trong glass_order.csv. Chưa người duyệt.
+  unclear: >-
+    364 368 376 398 412 413 414 415 426 427 432 436 437 439 449 451 452 453 454 455 458 476 477 478 481 482 483 484 485 492 493 494 508 509 520 528
+
+# Che vùng không rõ trên bản sao ảnh (03m, C2).
+mask:
+  margin: 0.1          # nới hộp mỗi chiều khi che
+  max_cover: 0.5       # che quá phần này của một hộp đã gán nhãn thì vẫn loại ảnh ("phần lớn vật thể")
+  fill: [114, 114, 114]  # màu nền letterbox của Ultralytics
+  side: 1920           # ảnh che lưu cạnh dài tối đa, lớn hơn imgsz 960
+  quality: 95
+
+# Quyết định chọn bản (04e_ppe6_eval.py), khóa 06/11/2026 trước khi train. Chi tiết ở docs/experiments/2026-11-06_ppe6_plan.md.
+decision:
+  seed: 0
+  n_boot: 1000
+  max_mean_drop: 0.01
+  max_class_drop: 0.02
+  new_class_target: 0.5

@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from ppe.ppe6_data import (ap_from_tp, blocks_train, check_label_rows, check_leaks, disagreement, diverse_pick, effective, eval_status, merge_review, parse_cvat,
+from ppe.ppe6_data import (ap_from_tp, blocks_train, box_iou_xyxy, cover_fraction, ignore_filter, mask_decision, merge_glass_status, check_label_rows, check_leaks, disagreement, diverse_pick, effective, eval_status, merge_review, parse_cvat,
                            scope_threshold)
 
 AGENT = dict(label="safety", note="", decided_by="agent")
@@ -70,7 +70,7 @@ def test_ap_perfect_and_empty():
     assert ap_from_tp(tp, np.array([0.9, 0.8, 0.7]), 3)[0] == pytest.approx(1.0, abs=0.01)
     assert ap_from_tp(tp, np.array([0.9, 0.8, 0.7]), 0) == (0.0, 0.0)
     half = ap_from_tp(np.array([[True], [False]]), np.array([0.9, 0.8]), 2)[0]
-    assert 0.6 < half < 0.65   # nội suy 101 điểm như Ultralytics: precision giảm tuyến tính sau điểm hồi tưởng cuối
+    assert half == pytest.approx(0.5, abs=0.02)   # precision về 0 ngay tại recall lớn nhất, như compute_ap của Ultralytics
 
 
 def test_import_skips_unreviewed_and_keeps_before_after():
@@ -96,3 +96,52 @@ def test_disagreement_and_scope():
     assert disagreement(rows) == {("boots", "sh17"): (1, 2)}
     assert scope_threshold([(50, False), (100, False), (150, True), (200, True)], 0.9) == 150
     assert scope_threshold([], 0.9) is None
+
+
+MERGE = dict(min_corr=0.98, max_hamming=8, min_helmet_iou=0.5)
+
+
+def test_merge_requires_same_image_and_boxes():
+    assert merge_glass_status(1.0, 0, 0.8, MERGE) == "ok"
+    assert merge_glass_status(0.5, 0, 0.8, MERGE) == "image_mismatch"
+    assert merge_glass_status(1.0, 20, 0.8, MERGE) == "image_mismatch"
+    assert merge_glass_status(1.0, 0, 0.2, MERGE) == "box_mismatch"
+    assert merge_glass_status(1.0, 0, None, MERGE) == "no_helmet_check"
+    assert box_iou_xyxy((0, 0, 1, 1), (0, 0, 1, 1)) == pytest.approx(1.0)
+
+
+def test_mask_stops_when_label_mostly_covered():
+    region = [(0.0, 0.0, 0.5, 1.0)]
+    assert cover_fraction((0.0, 0.0, 1.0, 1.0), region) == pytest.approx(0.5, abs=0.04)
+    assert mask_decision(region, [(1, 0.1, 0.1, 0.4, 0.4)], 0.5)[0] is False
+    ok, worst = mask_decision(region, [(1, 0.6, 0.1, 0.9, 0.4)], 0.5)
+    assert ok and worst == 0
+    two = [(0.0, 0.0, 0.5, 1.0), (0.0, 0.0, 0.5, 1.0)]
+    assert cover_fraction((0.0, 0.0, 1.0, 1.0), two) == pytest.approx(0.5, abs=0.04)
+
+
+def test_ignore_removes_false_positive_only():
+    boxes = np.array([[0, 0, 10, 10], [0, 0, 10, 10], [50, 50, 60, 60], [0, 0, 10, 10.0]])
+    tp = np.array([[False], [True], [False], [False]])
+    classes = np.array([5, 5, 5, 4])
+    keep = ignore_filter(tp, boxes, classes, [(5, 0, 0, 10, 10)])
+    assert keep.tolist() == [False, True, True, True]
+
+
+def test_scene_leak_blocks_masked_copy_of_eval_scene():
+    scene = dict(a="s1", b="s1")
+    assert check_leaks({"train": {"a"}, "test_new": {"b"}}, scene, dict(a="train", b="test"))
+
+
+
+def test_apply_ignore_uses_letterbox_coordinates():
+    import importlib.util
+    from pathlib import Path
+    spec = importlib.util.spec_from_file_location("e", Path(__file__).resolve().parents[1] / "scripts" / "04e_ppe6_eval.py")
+    e = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(e)
+    # Ảnh 100x100, thu 0.5, đệm x 10: hộp chuẩn hóa tâm (0.5, 0.5) rộng 0.2 nằm ở 55-65 x, 45-55 y.
+    z = dict(files=np.array(["a.jpg"]), img=np.array([0, 0]), box=np.array([[55, 45, 65, 55.0], [0, 0, 5, 5.0]]), conf=np.array([0.9, 0.8]), cls=np.array([5, 5]),
+             tp=np.zeros((2, 1), dtype=bool), ori=np.array([[100, 100]]), ratio_pad=np.array([[0.5, 10, 0]]))
+    out, dropped = e.apply_ignore(z, {"a.jpg": [(5, 0.5, 0.5, 0.2, 0.2)]})
+    assert dropped == 1 and len(out["conf"]) == 1

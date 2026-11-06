@@ -31,7 +31,7 @@
 - `goggles` chỉ gồm kính bảo hộ đang đeo, `boots` chỉ gồm ủng hoặc giày bảo hộ nhìn rõ; quy tắc ở `docs/annotation_rules.md`. Kính, giày thường không gán nhãn, dùng làm mẫu âm.
 - Dùng lại cách chia train/val/test của `ppe4`. Không sửa `data/ppe4/`, `data/raw/`. Dữ liệu thử nghiệm ở `data/ppe6/`.
 - Ủng là lớp mới chính, mốc 0,5 của ủng là điều kiện chọn bản. Kính là thử nghiệm, báo riêng nội bộ và CHVG; không đạt thì pipeline ghi "Chưa xác định" cho kính, không chặn ủng.
-- CHVG chưa đưa vào train, chỉ dùng đo lớp kính. Agent không được đánh dấu hộp nào là người đã duyệt; `val_new`, `test_new` chỉ gồm ảnh đã có người chốt.
+- Ảnh riêng của CHVG chưa đưa vào train, chỉ dùng đo lớp kính. Ảnh CHV thuộc `ppe4` train được ghép nhãn kính từ CHVG (bản C1, C2). Bốn lớp cũ quyết định trên val sạch theo cảnh, so với r2. Agent không được đánh dấu hộp nào là người đã duyệt; `val_new`, `test_new` chỉ gồm ảnh đã có người chốt.
 - r3 và bản 4 lớp ưu tiên trước: không để thử nghiệm làm chậm bước 3-5 hay chiếm GPU Kaggle của r3.
 
 ## Cấm
