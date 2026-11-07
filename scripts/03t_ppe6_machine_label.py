@@ -14,6 +14,12 @@ Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
     python scripts/03t_ppe6_machine_label.py rest-import --reviewer "Tên"    # ghi rest_review.csv, human_reviewed
     python scripts/03t_ppe6_machine_label.py boots-v3    # gói chấm lại mọi hộp ủng val, test theo định nghĩa bản 3
     python scripts/03t_ppe6_machine_label.py boots-v3-import --reviewer "Tên"
+    python scripts/03t_ppe6_machine_label.py train-v3 [--dry]   # chấm mù ủng train theo bản 3 (gồm mẫu P2 giày SH17)
+    python scripts/03t_ppe6_machine_label.py train-v3-import --reviewer "Tên"
+    python scripts/03t_ppe6_machine_label.py chv-boots   # P2_chv: xem cả ảnh CHV train tìm ủng bảo hộ chưa có hộp
+    python scripts/03t_ppe6_machine_label.py chv-boots-import --reviewer "Tên"
+    python scripts/03t_ppe6_machine_label.py glass-img   # kính cả ảnh: CHVG và ảnh kính val, test (ưu tiên thấp)
+    python scripts/03t_ppe6_machine_label.py glass-img-import --reviewer "Tên"
     python scripts/03t_ppe6_machine_label.py eval-count  # số hộp theo tập, chỉ từ nhãn người
 
 Tham số ở configs/ppe6.yaml mục `labeling`. Quy trình ở docs/experiments/2026-11-06_ppe6_plan.md.
@@ -520,6 +526,187 @@ def cmd_boots_v3_import(reviewer):
     print(f"Đã ghi boots_v3_review.csv: {len(rows)} dòng, human_reviewed, định nghĩa bản 3. Không ghi human_review.csv.")
 
 
+def train_boot_rows():
+    """Hộp ủng ở train C2 cần chấm theo bản 3: mọi hộp agent `safety`, mọi hộp Construction-PPE `ordinary`, `unclear`,
+    và mẫu P2 giày SH17 (p2_shoe_sample.csv). Giày SH17 `unclear` còn lại do P2 đại diện, không chấm hết."""
+    stats = {r["image"]: r for r in read_csv(ROOT / "data" / "ppe4" / "stats.csv")}
+    c2 = {p.name for p in (ROOT / "data" / "ppe6" / "dataset_c2" / "images" / "train").iterdir()}
+    dec = {r["box_id"]: r for r in read_csv(REVIEW / "decisions_v2.csv")}
+    p2 = {r["box_id"] for r in read_csv(REVIEW / "p2_shoe_sample.csv")}
+    out = []
+    for b in read_csv(REVIEW / "boxes.csv"):
+        s = stats.get(b["image"])
+        if b["target"] != "boots" or s is None or s["file"] not in c2:
+            continue
+        lab = dec[b["box_id"]]["label"]
+        origin = "p2" if b["box_id"] in p2 else "agent_safety" if lab == "safety" else f"cp_{lab}" if b["source"] == "construction_ppe" else None
+        if origin:
+            out.append(dict(b, file=s["file"], origin=origin, agent_label=lab))
+    return out
+
+
+def cmd_train_v3(dry):
+    """Gói `train_v3`: chấm mù hộp ủng train theo định nghĩa bản 3. Ảnh lấy từ data/raw (chỉ đọc), mã hóa lại, tên mới."""
+    c = cfg()["audit"]
+    pk = yaml.safe_load((ROOT / "configs" / "ppe6.yaml").read_text(encoding="utf-8"))["pack"]
+    rows = train_boot_rows()
+    sec = cfg()["sec_per_box_measured"]
+    print("train_v3:", len(rows), "hộp,", len({r["file"] for r in rows}), "ảnh, theo nhóm", dict(sorted(Counter((r["source"], r["origin"]) for r in rows).items())),
+          f"ước tính {round(len(rows) * sec / 60)} phút ({sec} giây mỗi hộp)")
+    if dry:
+        return
+    if (AUDIT / "train_v3").exists():
+        sys.exit("Gói train_v3 đã có, không ghi đè.")
+    rng = random.Random(c["seed"] + 6)
+    files = sorted({r["image"] for r in rows})
+    rng.shuffle(files)
+    nums = rng.sample(range(100000, 999999), len(files) + len(rows))
+    folder = AUDIT / "train_v3"
+    folder.mkdir(parents=True)
+    by = defaultdict(list)
+    for r in rows:
+        by[r["image"]].append(r)
+    xml = ['<?xml version="1.0" encoding="utf-8"?>', "<annotations>", "<version>1.1</version>"]
+    mapped, k = [], len(files)
+    pages = sorted((f"img_{nums[i]:06d}.jpg", src) for i, src in enumerate(files))
+    with zipfile.ZipFile(folder / "images.zip", "w", zipfile.ZIP_STORED) as z:
+        for fi, (new, src) in enumerate(pages):
+            with Image.open(ROOT / src) as im:
+                im = im.convert("RGB")
+                s = min(1.0, pk["side"] / max(im.size))
+                if s < 1:
+                    im = im.resize((round(im.width * s), round(im.height * s)), Image.LANCZOS)
+                buf = BytesIO()
+                im.save(buf, "JPEG", quality=92)
+                w, h = im.size
+            z.writestr(zipfile.ZipInfo(new, date_time=(2026, 1, 1, 0, 0, 0)), buf.getvalue())
+            xml.append(f'<image id="{fi}" name={quoteattr(new)} width="{w}" height="{h}">')
+            group = by[src]
+            rng.shuffle(group)
+            for r in group:
+                iid = f"a{nums[k]:06d}"
+                k += 1
+                cx, cy, bw, bh = (float(r[x]) for x in ("cx", "cy", "w", "h"))
+                at = f'<attribute name="item_id">{iid}</attribute><attribute name="decision">{UNSET}</attribute><attribute name="person_ok">{UNSET}</attribute>'
+                xml.append(f'<box label="boots_review" source="manual" occluded="0" xtl="{(cx - bw / 2) * w:.2f}" ytl="{(cy - bh / 2) * h:.2f}" xbr="{(cx + bw / 2) * w:.2f}" ybr="{(cy + bh / 2) * h:.2f}" z_order="0">{at}</box>')
+                mapped.append(dict(audit_id=iid, box_id=r["box_id"], target="boots", source=r["source"], origin=r["origin"], agent_label=r["agent_label"]))
+            xml.append("</image>")
+    xml.append("</annotations>")
+    (folder / "annotations.xml").write_text("\n".join(xml) + "\n", encoding="utf-8", newline="\n")
+    attrs = [dict(name="item_id"), dict(name="decision"), dict(name="person_ok")]
+    (folder / "labels.json").write_text(json.dumps([dict(name="boots_review", attributes=attrs)]), encoding="utf-8", newline="\n")
+    with (AUDIT / "_private" / "train_v3_items.csv").open("w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, list(mapped[0]), lineterminator="\n")
+        w.writeheader()
+        w.writerows(mapped)
+    bad = leak_tokens((folder / "annotations.xml").read_text(encoding="utf-8")) + leak_tokens((folder / "labels.json").read_text(encoding="utf-8"))
+    print(f"Đã tạo train_v3: {len(mapped)} hộp, {len(pages)} ảnh | kiểm tra lộ nhãn: lỗi", len(bad), bad[:5])
+    if bad:
+        sys.exit(1)
+
+
+def cmd_train_v3_import(reviewer):
+    """Ghi train_v3_review.csv (human_reviewed, ủng bản 3). Không ghi human_review.csv."""
+    if reviewer.strip().lower() in NOT_A_PERSON or reviewer.lower().startswith("machine"):
+        sys.exit("Cần tên người thật.")
+    p = REVIEW / "fast_train_v3_state.json"
+    if not p.exists():
+        sys.exit("Chưa có phiên train_v3.")
+    s = json.loads(p.read_text(encoding="utf-8"))
+    if s["reviewer"] != reviewer:
+        sys.exit("Phiên train_v3 thuộc người khác.")
+    mapping = {r["audit_id"]: r for r in read_csv(AUDIT / "_private" / "train_v3_items.csv")}
+    now = datetime.now().isoformat(timespec="seconds")
+    rows, missing = [], 0
+    for k, v in s["boxes"].items():
+        if UNSET in v.values():
+            missing += 1
+            continue
+        m = mapping[k]
+        rows.append(dict(box_id=m["box_id"], item_id=k, kind="box", target="boots", source=m["source"], origin=m["origin"], after=v["decision"], person_ok=v["person_ok"], reviewer=reviewer, reviewed_at=now, guide_version=3))
+    if missing:
+        sys.exit(f"Còn {missing} mục chưa chọn, chưa ghi gì.")
+    with (REVIEW / "train_v3_review.csv").open("w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, list(rows[0]), lineterminator="\n")
+        w.writeheader()
+        w.writerows(rows)
+    print(f"Đã ghi train_v3_review.csv: {len(rows)} dòng, human_reviewed, ủng bản 3.", dict(Counter((r["origin"], mapping[r["item_id"]]["agent_label"], r["after"]) for r in rows)))
+
+
+def image_pack(name, task, ask_target, skip=()):
+    """Gói xem cả ảnh: ảnh của một task gói mù, vẽ hộp đã có, ghi lớp được hỏi. skip: tên ảnh gốc đã có người xem."""
+    c = cfg()["audit"]
+    if (AUDIT / name).exists():
+        sys.exit(f"Gói {name} đã có, không ghi đè.")
+    p = load_pack(BLIND / task)
+    names = {r["image_name"]: r["file"] for r in read_csv(BLIND / "_private" / f"{task}_images.csv")}
+    sizes = {im["name"]: (task, im["width"], im["height"]) for im in p["images"] if names[im["name"]] not in skip}
+    shown = {im["name"]: im["boxes"] for im in p["images"]}
+    _, imgs = build_pack(name, [], sizes, False, c["seed"] + 7, shown, {k: ask_target for k in sizes})
+    with (AUDIT / "_private" / f"{name}_images.csv").open("w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, ["audit_image", "image", "task", "file"], lineterminator="\n")
+        w.writeheader()
+        w.writerows(dict(i, file=names[i["image"]]) for i in imgs)
+    bad = leak_tokens((AUDIT / name / "annotations.xml").read_text(encoding="utf-8"))
+    sec = cfg()["sec_per_image_measured"]
+    print(f"{name}: {len(imgs)} ảnh, ước tính {round(len(imgs) * sec / 60)} phút | kiểm tra lộ nhãn: lỗi", len(bad))
+    if bad:
+        sys.exit(1)
+
+
+def read_image_session(name, reviewer):
+    p = REVIEW / f"fast_{name}_state.json"
+    if not p.exists():
+        sys.exit(f"Chưa có phiên {name}.")
+    s = json.loads(p.read_text(encoding="utf-8"))
+    if s["reviewer"] != reviewer:
+        sys.exit(f"Phiên {name} thuộc người khác.")
+    out, missing = [], 0
+    for r in read_csv(AUDIT / "_private" / f"{name}_images.csv"):
+        n = r["audit_image"]
+        flagged, val = bool(s["flags"].get("image:" + n)), s["images"].get(n, "")
+        if not flagged and not val:
+            missing += 1
+            continue
+        out.append((r["file"], "missing_box" if flagged else "reject" if val == "reject_image" else "no_missing"))
+    if missing:
+        sys.exit(f"Còn {missing} ảnh chưa chọn, chưa ghi gì.")
+    return out
+
+
+def cmd_chv_boots_import(reviewer):
+    """P2_chv: ghi chv_boots_seen.csv, chv_boots_added.csv cho 03n gates. Ảnh có ủng bảo hộ chưa có hộp ghi một dòng (chưa vẽ hộp)."""
+    if reviewer.strip().lower() in NOT_A_PERSON or reviewer.lower().startswith("machine"):
+        sys.exit("Cần tên người thật.")
+    res = read_image_session("chv_boots", reviewer)
+    now = datetime.now().isoformat(timespec="seconds")
+    with (REVIEW / "chv_boots_seen.csv").open("w", encoding="utf-8", newline="") as f:
+        w = csv.writer(f, lineterminator="\n")
+        w.writerow(["box_id", "after", "result", "reviewer", "reviewed_at"])
+        w.writerows([f"image:{fn}", "checked", r, reviewer, now] for fn, r in res)
+    with (REVIEW / "chv_boots_added.csv").open("w", encoding="utf-8", newline="") as f:
+        w = csv.writer(f, lineterminator="\n")
+        w.writerow(["file", "note"])
+        w.writerows([fn, "co_ung_bao_ho_chua_co_hop"] for fn, r in res if r == "missing_box")
+    print(f"P2_chv: {len(res)} ảnh,", dict(Counter(r for _, r in res)))
+
+
+def cmd_glass_img_import(reviewer):
+    """Kính cả ảnh: ghi glass_img_review.csv (dấu ảnh image:<file>), gồm cả 42 ảnh task_b đã xem ở audit_img2."""
+    if reviewer.strip().lower() in NOT_A_PERSON or reviewer.lower().startswith("machine"):
+        sys.exit("Cần tên người thật.")
+    res = read_image_session("glass_img", reviewer)
+    names = {r["image_name"]: r["file"] for r in read_csv(BLIND / "_private" / "task_b_images.csv")}
+    old = [(names[r["item_id"]], r["after"]) for r in read_csv(REVIEW / "audit_review.csv") if r["kind"] == "image" and r["target"] == "task_b"]
+    now = datetime.now().isoformat(timespec="seconds")
+    with (REVIEW / "glass_img_review.csv").open("w", encoding="utf-8", newline="") as f:
+        w = csv.writer(f, lineterminator="\n")
+        w.writerow(["box_id", "after", "origin", "reviewer", "reviewed_at"])
+        w.writerows([f"image:{fn}", r, "glass_img", reviewer, now] for fn, r in res)
+        w.writerows([f"image:{fn}", r, "audit_img2", reviewer, now] for fn, r in old)
+    print(f"glass_img: {len(res)} ảnh + {len(old)} ảnh audit_img2,", dict(Counter(r for _, r in res + old)))
+
+
 def cmd_rest_import(reviewer):
     """Ghi rest_review.csv, trạng thái human_reviewed (người xem từng hộp, không qua nhãn máy). Không ghi human_review.csv."""
     if reviewer.strip().lower() in NOT_A_PERSON or reviewer.lower().startswith("machine"):
@@ -624,10 +811,11 @@ def cmd_audit_report():
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["sheets", "collect", "merge", "compare", "audit", "audit-img2", "audit-import", "audit-report", "rest", "recheck", "rest-import", "eval-count", "boots-v3", "boots-v3-import"])
+    ap.add_argument("cmd", choices=["sheets", "collect", "merge", "compare", "audit", "audit-img2", "audit-import", "audit-report", "rest", "recheck", "rest-import", "eval-count", "boots-v3", "boots-v3-import", "train-v3", "train-v3-import", "chv-boots", "chv-boots-import", "glass-img", "glass-img-import"])
     ap.add_argument("--pass", dest="which", choices=["a", "b"])
     ap.add_argument("--out")
     ap.add_argument("--reviewer", default="")
+    ap.add_argument("--dry", action="store_true", help="train-v3: chỉ đếm, không tạo gói")
     args = ap.parse_args()
     sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
     if args.cmd in ("sheets", "collect") and not (args.which and args.out):
@@ -648,6 +836,20 @@ def main():
         cmd_rest()
     elif args.cmd == "recheck":
         cmd_recheck(args.out or sys.exit("Cần --out <file danh sách item_id>."))
+    elif args.cmd == "train-v3":
+        cmd_train_v3(args.dry)
+    elif args.cmd == "train-v3-import":
+        cmd_train_v3_import(args.reviewer)
+    elif args.cmd == "chv-boots":
+        image_pack("chv_boots", "task_d", "boots")
+    elif args.cmd == "chv-boots-import":
+        cmd_chv_boots_import(args.reviewer)
+    elif args.cmd == "glass-img":
+        names = {r["image_name"]: r["file"] for r in read_csv(BLIND / "_private" / "task_b_images.csv")}
+        done = {names[r["item_id"]] for r in read_csv(REVIEW / "audit_review.csv") if r["kind"] == "image" and r["target"] == "task_b"}
+        image_pack("glass_img", "task_b", "goggles", done)
+    elif args.cmd == "glass-img-import":
+        cmd_glass_img_import(args.reviewer)
     elif args.cmd == "boots-v3":
         cmd_boots_v3()
     elif args.cmd == "boots-v3-import":

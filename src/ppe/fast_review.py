@@ -18,7 +18,7 @@ from ppe.ppe6_data import DECISIONS, NOT_A_PERSON, UNSET, parse_cvat
 
 PERSON_VALUES = ("du_lon", "qua_nho", "khong_ro")
 IMAGE_VALUES = ("image_checked", "reject_image")
-IMAGE_STEP_TASKS = ("task_b", "task_d", "audit_img", "audit_img2")   # hướng dẫn duyệt: mọi ảnh của hai task này phải có tag
+IMAGE_STEP_TASKS = ("task_b", "task_d", "audit_img", "audit_img2", "chv_boots", "glass_img")   # hướng dẫn duyệt: mọi ảnh của hai task này phải có tag
 LOG_FIELDS = ["reviewer", "time", "task", "target", "field", "before", "after"]
 TEST_REVIEWER = "agent_test"
 

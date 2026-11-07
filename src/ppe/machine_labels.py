@@ -118,7 +118,8 @@ def audit_tiers(rows, max_rate):
     return out
 
 
-HUMAN_FILES = ("audit_review.csv", "rest_review.csv", "boots_v3_review.csv", "human_review.csv")
+HUMAN_FILES = ("audit_review.csv", "rest_review.csv", "boots_v3_review.csv", "train_v3_review.csv", "human_review.csv")
+V3_FILES = ("boots_v3_review.csv", "train_v3_review.csv")
 
 
 def human_box_labels(review_dir):
@@ -127,12 +128,12 @@ def human_box_labels(review_dir):
     Ủng chỉ lấy từ boots_v3 khi file này có: nhãn ủng bản 2 không được dùng."""
     review_dir = Path(review_dir)
     out = {}
-    v3 = read_csv(review_dir / "boots_v3_review.csv")
+    v3 = [r for f in V3_FILES for r in read_csv(review_dir / f)]
     for name in HUMAN_FILES:
         for r in read_csv(review_dir / name):
             if r.get("kind", "box") != "box" or r.get("reviewer", "").startswith("machine"):
                 continue
-            if v3 and name != "boots_v3_review.csv" and r.get("target") == "boots":
+            if v3 and name not in V3_FILES and r.get("target") == "boots":
                 continue
             out[r["box_id"]] = dict(r, file_from=name)
     return out

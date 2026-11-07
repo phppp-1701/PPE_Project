@@ -170,3 +170,7 @@ labeling:
     max_queue_boxes: 300       # hàng đợi bất đồng quá mức này thì dừng và đề xuất lấy mẫu; Claude đặt
     max_disagreement: 0.10
     image_sample: 60           # mẫu ảnh đồng thuận ở task_b, task_d; Claude đặt
+  # Ước tính thời gian gói mới. Đo 07/11/2026 trên log 03q của Phuong: audit 3,4 giây mỗi hộp, boots_v3 2,9 giây (hai phím).
+  # Dùng 5 giây để chừa chỗ cho chấm chậm. Ảnh: config pack.sec_per_image 8 giây (giả định, audit_img2 đo 2 giây, quá nhanh để tin).
+  sec_per_box_measured: 5
+  sec_per_image_measured: 8

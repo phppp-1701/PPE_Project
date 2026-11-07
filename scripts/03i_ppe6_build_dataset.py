@@ -55,6 +55,9 @@ def load_human():
         for r in rd(path):
             last[r["box_id"]] = r
     last.update(human_box_labels(BASE / "review"))
+    gi = BASE / "review" / "glass_img_review.csv"
+    if gi.exists():
+        last.update({r["box_id"]: r for r in rd(gi)})
     return last
 
 
@@ -238,6 +241,7 @@ def build(cfg):
         write_item(n, f, BASE / "external" / "chvg" / "extracted" / f.replace("chvg__", ""), written[n][f])
         # CHVG cần người xem cả ảnh không có hộp glass, nên ảnh chưa có dấu người duyệt luôn là pending.
         seen = human.get("image:" + f)
+        seen = seen if seen and seen["after"] not in ("missing_box",) else None   # ảnh thiếu hộp kính: chờ vẽ hộp
         dec = [(b["label"], b["src"]) for b in boxes[f]]
         st = final_status(f, "ready" if seen and eval_status(dec, unclear_as_ignore=True) == "ready" else "pending")
         status_rows.append((f, r["split"], "chvg", "external", scene[f], st, sum(b["src"] != "human" for b in boxes[f])))

@@ -37,6 +37,18 @@ python scripts/03t_ppe6_machine_label.py eval-count
 
 Kết quả ghi `rest_review.csv`, trạng thái `human_reviewed`.
 
+**Ủng train bản 3 và P2, P2_chv (07/11/2026):**
+
+```
+python scripts/03q_ppe6_fast_review.py --task train_v3 --reviewer "Tên bạn"
+python scripts/03t_ppe6_machine_label.py train-v3-import --reviewer "Tên bạn"
+python scripts/03q_ppe6_fast_review.py --task chv_boots --reviewer "Tên bạn"
+python scripts/03t_ppe6_machine_label.py chv-boots-import --reviewer "Tên bạn"
+python scripts/03n_ppe6_readiness.py gates
+```
+
+Ưu tiên thấp, kính cả ảnh: `--task glass_img`, rồi `03t glass-img-import`.
+
 Dành cho người duyệt. Dùng gói mù ở `data/ppe6/review/cvat_pack_blind/` (không có trên git). **Không mở thư mục `_private`** và không mở gói cũ `cvat_pack/`, vì ở đó có ý kiến của Claude.
 
 Gói mù không hiện nhãn của agent, nguồn ảnh hay nhóm. Tự nhìn ảnh rồi quyết định. Ảnh không đủ rõ thì chọn `unclear`, đừng đoán.

@@ -248,6 +248,10 @@ def group_progress():
     return rows
 
 
+# Kính là thử nghiệm, không chặn ủng (CLAUDE.md): CHVG chỉ đo kính, không vào train; chưa xong thì kính báo riêng, không chặn train ủng.
+NOT_BLOCKING = "(kính, không chặn train) "
+
+
 def machine_items():
     """Checklist của quy trình máy gán, người kiểm định."""
     out = [((REVIEW / f"machine_pass_{p}.csv").exists(), f"Lượt máy {p} đã khóa") for p in ("a", "b")]
@@ -255,14 +259,19 @@ def machine_items():
     out.append(((REVIEW / "audit_review.csv").exists(), "Người đã kiểm định gói audit"))
     rep = REVIEW / "audit_report.json"
     tiers = json.loads(rep.read_text(encoding="utf-8"))["tiers"] if rep.exists() else {}
-    out.append((bool(tiers) and all(v["passed"] for v in tiers.values()), f"Các tầng đạt kiểm định: {sum(v['passed'] for v in tiers.values())}/{len(tiers)}"))
+    out.append((bool(tiers) and all(v["passed"] for v in tiers.values()), f"(nhãn máy không dùng cho val, test, train, không chặn train) Các tầng nhãn máy đạt kiểm định: {sum(v['passed'] for v in tiers.values())}/{len(tiers)}"))
+    out.append(((REVIEW / "train_v3_review.csv").exists(), "Ủng ở train đã chấm theo định nghĩa bản 3 (train_v3)"))
+    full = cfg()
+    gate = {n: s for n, (s, _) in (("P0a", gate_p0a(full["gates"])), ("P2", gate_p2(full["gates"])), ("P2_chv", gate_chv(full["gates"], full)))}
+    out.append((all(s != "pending" for s in gate.values()), f"03n gates đã có kết quả, chờ người dùng chọn nếu có action/stop: {gate}"))
     man = BASE / "dataset" / "manifest.json"
     m = json.loads(man.read_text(encoding="utf-8")) if man.exists() else {}
     out.append(("eval_counts" in m and (BASE / "dataset" / "ignore.csv").exists(), "03i đọc nhãn người mới, ghi vùng bỏ qua ignore.csv"))
     st = m.get("eval_status", {})
     for s in ("val_new", "test_new", "chvg_glass_val", "chvg_glass_test"):
         v = st.get(s, {})
-        out.append((bool(v) and set(v) == {"ready"}, f"{s}: mọi ảnh đã có người chốt {v}"))
+        soft = NOT_BLOCKING if s.startswith("chvg") else ""
+        out.append((bool(v) and set(v) == {"ready"}, f"{soft}{s}: mọi ảnh đã có người chốt {v}"))
     return out
 
 
@@ -297,7 +306,7 @@ def cmd_checklist():
     print()
     for good, text in items:
         print(("[x] " if good else "[ ] ") + text)
-    missing = sum(not g for g, _ in items)
+    missing = sum(not g for g, t in items if not t.startswith(NOT_BLOCKING) and "không chặn train" not in t)
     print(f"\nCòn thiếu {missing}/{len(items)} mục." if missing else "\nSẵn sàng train.")
     sys.exit(1 if missing else 0)
 

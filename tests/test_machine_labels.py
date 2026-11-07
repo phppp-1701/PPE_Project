@@ -250,3 +250,30 @@ def test_boots_v3_import_writes_own_file_and_eval_count_uses_v3_for_boots(tmp_pa
     m.cmd_eval_count()
     out = capsys.readouterr().out
     assert "bản 3" in out and "'ordinary') 1" in out and "safety" not in out
+
+
+def test_train_v3_import_counts_as_boots_v3_and_refuses_machine(tmp_path):
+    import json
+    from ppe.machine_labels import human_box_labels
+    m = load_03t()
+    rev = write_audit_state(m, tmp_path, "Nguoi That")
+    (m.AUDIT / "_private" / "train_v3_items.csv").write_text("audit_id,box_id,target,source,origin,agent_label\nt1,b77,boots,sh17,p2,unclear\n", encoding="utf-8")
+    (rev / "fast_train_v3_state.json").write_text(json.dumps(dict(reviewer="Nguoi That", boxes=dict(t1=dict(decision="safety", person_ok="du_lon")))), encoding="utf-8")
+    with pytest.raises(SystemExit):
+        m.cmd_train_v3_import("machine_pass_b")
+    m.cmd_train_v3_import("Nguoi That")
+    out = human_box_labels(rev)
+    assert out["b77"]["after"] == "safety" and out["b77"]["file_from"] == "train_v3_review.csv" and not (rev / "human_review.csv").exists()
+
+
+def test_chv_boots_import_writes_gate_files(tmp_path):
+    import csv
+    import json
+    m = load_03t()
+    rev = write_audit_state(m, tmp_path, "Nguoi That")
+    (m.AUDIT / "_private" / "chv_boots_images.csv").write_text("audit_image,image,task,file\nx1.jpg,o1.jpg,task_d,chv__a.jpg\nx2.jpg,o2.jpg,task_d,chv__b.jpg\n", encoding="utf-8")
+    (rev / "fast_chv_boots_state.json").write_text(json.dumps(dict(reviewer="Nguoi That", images={"x1.jpg": "image_checked", "x2.jpg": "image_checked"}, flags={"image:x2.jpg": True})), encoding="utf-8")
+    m.cmd_chv_boots_import("Nguoi That")
+    seen = list(csv.DictReader((rev / "chv_boots_seen.csv").open(encoding="utf-8")))
+    added = list(csv.DictReader((rev / "chv_boots_added.csv").open(encoding="utf-8")))
+    assert [r["after"] for r in seen] == ["checked", "checked"] and [r["file"] for r in added] == ["chv__b.jpg"]
