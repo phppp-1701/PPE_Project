@@ -100,6 +100,16 @@ mask:
   side: 1920           # ảnh che lưu cạnh dài tối đa, lớn hơn imgsz 960
   quality: 95
 
+# P2_chv (03n gates action theo nhãn máy machine_pass_c, 08/11/2026; người dùng giao agent chọn trong ba cách của quy tắc: gán, che, bỏ).
+# Che theo hộp người đã thử và bỏ: xem mẫu, vùng che rơi vào thân người ở khoảng nửa số ảnh (người bị cắt, chân dung).
+# Chọn bỏ ảnh khỏi C2, C1 giữ nguyên. Tầng `lon`: 3/23 ảnh còn sót sau khi bỏ ảnh thấy chân (13%, vẫn từ mức 10%) nên bỏ cả tầng.
+# Tầng `vua`: bỏ ảnh thấy chân; phần giữ lại 0/8 ảnh sót trong mẫu. Tầng `nho` đạt (0/33), giữ.
+chv_boot_drop:
+  drop_all: [lon]
+  drop_feet_visible: [vua]
+  min_aspect: 1.6    # hộp người cao từ 1,6 lần rộng coi là dáng cả người; Claude đặt sau khi xem mẫu, chưa đo
+  max_bottom: 0.97   # đáy hộp người từ mức này coi như chạm mép dưới, chân không trong ảnh
+
 # Quyết định chọn bản (04e_ppe6_eval.py), khóa 06/11/2026 trước khi train. Chi tiết ở docs/experiments/2026-11-06_ppe6_plan.md.
 # Tự nhất quán trên khung lặp (03u). Khung lặp dùng scene.phash_max, scene.emb_strong; min_iou Claude đặt, chưa đo.
 consistency:

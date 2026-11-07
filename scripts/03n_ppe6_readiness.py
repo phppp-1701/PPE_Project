@@ -149,6 +149,10 @@ def gate_chv(c, full):
         k = sum(added[f] > 0 for f in files)
         p, lo, hi = wilson(k, len(files))
         lines.append(f"{st}: {k}/{len(files)} = {pct(p)} (KTC {pct(lo)}; {pct(hi)})")
+        drop = full.get("chv_boot_drop", {})
+        if p >= c["min_chv_rate"] and (st in drop.get("drop_all", []) or st in drop.get("drop_feet_visible", [])):
+            lines.append(f"  tầng {st}: đã xử lý ở C2 theo chv_boot_drop ({'bỏ cả tầng' if st in drop.get('drop_all', []) else 'bỏ ảnh thấy chân'}), C1 giữ nguyên.")
+            continue
         if p >= c["min_chv_rate"]:
             bad = True
             n = len(pop[st])

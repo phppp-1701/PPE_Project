@@ -1,5 +1,5 @@
 {
-  "commit": "054185f",
+  "commit": "8bd19ed",
   "seed": 0,
   "scene": {
     "phash_max": 8,
@@ -51,11 +51,11 @@
       "gloves": 55
     },
     "unclear_box": {
-      "images": 654,
-      "person": 1350,
-      "helmet": 618,
-      "vest": 559,
-      "gloves": 859
+      "images": 618,
+      "person": 1287,
+      "helmet": 586,
+      "vest": 537,
+      "gloves": 808
     }
   },
   "counts": {
@@ -117,36 +117,36 @@
     },
     "train": {
       "images": {
-        "construction_ppe": 553,
-        "sh17": 5352
+        "construction_ppe": 565,
+        "sh17": 5376
       },
       "boxes": {
-        "boots|construction_ppe": 47,
-        "boots|sh17": 73,
-        "gloves|construction_ppe": 306,
-        "gloves|sh17": 1706,
-        "goggles|construction_ppe": 29,
+        "boots|construction_ppe": 62,
+        "boots|sh17": 112,
+        "gloves|construction_ppe": 322,
+        "gloves|sh17": 1741,
+        "goggles|construction_ppe": 31,
         "goggles|sh17": 200,
-        "helmet|construction_ppe": 637,
-        "helmet|sh17": 530,
-        "person|construction_ppe": 1025,
-        "person|sh17": 9030,
-        "vest|construction_ppe": 569,
-        "vest|sh17": 283
+        "helmet|construction_ppe": 649,
+        "helmet|sh17": 550,
+        "person|construction_ppe": 1041,
+        "person|sh17": 9077,
+        "vest|construction_ppe": 585,
+        "vest|sh17": 289
       },
       "scenes": {
-        "boots|construction_ppe": 5,
-        "boots|sh17": 27,
-        "gloves|construction_ppe": 75,
-        "gloves|sh17": 685,
-        "goggles|construction_ppe": 17,
+        "boots|construction_ppe": 10,
+        "boots|sh17": 45,
+        "gloves|construction_ppe": 78,
+        "gloves|sh17": 698,
+        "goggles|construction_ppe": 19,
         "goggles|sh17": 139,
-        "helmet|construction_ppe": 173,
-        "helmet|sh17": 246,
-        "person|construction_ppe": 371,
-        "person|sh17": 3962,
-        "vest|construction_ppe": 177,
-        "vest|sh17": 118
+        "helmet|construction_ppe": 177,
+        "helmet|sh17": 257,
+        "person|construction_ppe": 375,
+        "person|sh17": 3983,
+        "vest|construction_ppe": 181,
+        "vest|sh17": 121
       }
     },
     "val_new_draft": {
@@ -341,5 +341,5 @@
       }
     }
   },
-  "content_hash": "c8661b1ea9979caea754e25b311acb4302e7a546d2bac9f69acd065e60e84c96"
+  "content_hash": "43abf2cdc6c358912f656d2240ed886712d6fda499819bfa62393e8a84738081"
 }

@@ -376,6 +376,27 @@ def main():
         labels[f] = lines + extra
         status["saved"] += 1
         mask_rows.append(dict(file=f, status="saved", worst_cover=round(worst, 3), regions=len(regions)))
+    # P2_chv (configs/ppe6.yaml mục chv_boot_drop): bỏ khỏi C2 ảnh CHV có thể chứa ủng chưa gán nhãn. C1 giữ nguyên làm đối chứng.
+    fm = cfg["chv_boot_drop"]
+    for f in sorted(x for x in c2 if stats[x]["source"] == "chv"):
+        persons = [p for p in parse_yolo("\n".join(labels[f])) if p[0] == 0]
+        top = max((p[4] for p in persons), default=0)
+        st = "nho" if top < 0.3 else "vua" if top < 0.6 else "lon"
+        if st in fm["drop_all"]:
+            why = "chv_boot_stratum"
+        elif st in fm["drop_feet_visible"]:
+            with Image.open(PPE4 / "images" / "train" / f) as _im:
+                iw, ih = _im.size
+            # chân có thể trong ảnh: hộp người dáng cả người và không chạm mép dưới
+            if not any(h * ih >= fm["min_aspect"] * w * iw and y + h / 2 < fm["max_bottom"] for _, x, y, w, h in persons):
+                continue
+            why = "chv_boot_feet_visible"
+        else:
+            continue
+        c2.discard(f)
+        masked.pop(f, None)
+        status[why] += 1
+        mask_rows.append(dict(file=f, status=why, worst_cover="", regions=""))
     print("C2:", dict(status), "ảnh", len(c2))
     build_variant("c2", c2, labels, masked, stats, scene, cfg)
     wr(BASE / "dataset_c2" / "mask_map.csv", [dict(source=f, masked=f"{Path(f).stem}.jpg", regions=json.dumps([[round(v, 6) for v in q] for q in masked[f]])) for f in sorted(masked)])
