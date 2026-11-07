@@ -142,10 +142,19 @@ def main():
     ap.add_argument("--reviewer", default="")
     ap.add_argument("--second-reviewer", default="")
     ap.add_argument("--partial", action="store_true")
+    ap.add_argument("--review-dir", help="chỉ để kiểm thử: thư mục ghi kết quả, chỉ dùng với tên kiểm thử")
+    ap.add_argument("--blind-dir", help="chỉ để kiểm thử: thư mục gói mù")
     ap.add_argument("--report", action="store_true")
     ap.add_argument("--agreement", action="store_true")
     args = ap.parse_args()
     sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
+    global REVIEW, BLIND
+    if args.review_dir:
+        REVIEW = Path(args.review_dir)
+    if args.blind_dir:
+        BLIND = Path(args.blind_dir)
+    if (args.review_dir or args.blind_dir) and args.reviewer and not args.reviewer.strip().lower().startswith(TEST_REVIEWER):
+        sys.exit("--review-dir, --blind-dir chỉ dùng với tên kiểm thử.")
     if args.report:
         report()
         return
@@ -177,7 +186,7 @@ def main():
     if not (args.task and args.file):
         sys.exit("Cần --task và --file.")
     try:
-        rows, added, unset = import_blind(args.task, read_export(args.file), name, datetime.now().isoformat(timespec="seconds"), args.partial)
+        rows, added, unset = import_blind(args.task, read_export(args.file), name, datetime.now().isoformat(timespec="seconds"), args.partial, blind=BLIND, review=REVIEW)
     except UnsetError as e:
         print(f"Không nhập gì: còn {len(e.items)} ô chưa chọn hoặc hộp bị xóa.")
         for x in e.items[:40]:

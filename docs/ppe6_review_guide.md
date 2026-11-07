@@ -13,6 +13,42 @@ Gói mù không hiện nhãn của agent, nguồn ảnh hay nhóm. Tự nhìn �
 | `task_b` | Kính ở tập đánh giá | 5 |
 | `second` | Dành cho người thứ hai, không bắt buộc | bất kỳ lúc nào |
 
+## Công cụ duyệt nhanh
+
+Dùng cho `task_a`, `task_b`, `task_c`, `task_d`, thay cho bấm trong CVAT. Công cụ chỉ giảm thao tác: mọi lựa chọn do bạn bấm cho từng hộp, không có gợi ý hay chọn hàng loạt. Quy tắc nhãn ở các mục dưới vẫn giữ nguyên.
+
+```
+python scripts/03q_ppe6_fast_review.py --task task_a --reviewer "Tên bạn"
+```
+
+Mở http://127.0.0.1:8765 bằng Chrome. Tự lưu sau mỗi phím; đóng rồi chạy lại lệnh là tiếp tục đúng chỗ.
+
+| Phím | Việc |
+|---|---|
+| `1` `2` `3` `4` | `decision`: bảo hộ, thường, không rõ, bỏ qua |
+| `7` `8` `9` | `person_ok`: đủ lớn, quá nhỏ, không chắc |
+| `V` / `R` | Ảnh: đã xem xong / loại ảnh |
+| `←` hoặc `Z` / `→` | Quay lại / đi tiếp, không đổi giá trị |
+| `S` / `N` | Xem sau / nhảy tới ô thiếu kế tiếp |
+| `Del` | Xóa lựa chọn của hộp đang xem |
+| `C` / `M` | Hộp này / ảnh này cần mở CVAT; bấm lại để bỏ đánh dấu |
+
+Đủ ô của một hộp thì tự sang hộp sau. `task_b`, `task_d` có thêm bước xem cả ảnh, phải bấm `V` hoặc `R`.
+
+Cần mở CVAT khi hộp lệch, ảnh thiếu hộp, hoặc ca khó: bấm `C` hoặc `M`, link nằm cuối trang. Trong CVAT chỉ sửa vị trí hoặc vẽ hộp mới rồi Save, **không đặt `decision`, `person_ok` ở đó**. Quay lại công cụ, chọn phím, rồi bấm `C` hoặc `M` lần nữa để bỏ đánh dấu.
+
+`task_d`: không thấy ủng rõ thì `V`. Nhìn rõ ủng bảo hộ thì `M`, vẽ `boots_new` trong CVAT, quay lại bỏ đánh dấu rồi bấm `V`. Ảnh chỉ tính là thiếu nhãn khi có hộp `boots_new`.
+
+Cuối buổi, trong PowerShell đã đặt token:
+
+```
+$s = Read-Host "Token CVAT" -AsSecureString
+$env:CVAT_LOCAL_TOKEN = [Net.NetworkCredential]::new('', $s).Password
+python scripts/03r_ppe6_fast_finish.py --task task_a --reviewer "Tên bạn"
+```
+
+Lệnh dừng nếu còn ô thiếu hoặc mục cần mở CVAT; thêm `--partial` nếu cố ý nhập dở. Nó cũng dừng, không ghi đè, nếu giá trị trên CVAT khác công cụ.
+
 ## Tạo task
 
 1. Trên CVAT, tạo task mới, đặt đúng tên thư mục (`trial`, `task_a`...). Mục Labels chọn tab Raw, dán nội dung `labels.json` của task đó.

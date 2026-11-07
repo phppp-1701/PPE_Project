@@ -21,6 +21,8 @@ Lớp: 0-3 như `ppe4`, 4 kính bảo hộ, 5 ủng bảo hộ. Kế hoạch: `d
 
 `review/cvat_pack_blind/`: gói duyệt mù (`03p`), dùng gói này để duyệt. `_private/` giữ nhóm gốc, giá trị agent: người duyệt không mở. `review/second_review.csv`, `agreement.json`: người thứ hai, chỉ để kiểm tra chất lượng.
 
+`review/fast_<task>_state.json`, `fast_<task>_log.csv`: phiên và nhật ký của công cụ duyệt nhanh (`03q`). `review/export_<task>_<thời gian>.zip`: file xuất CVAT giữ lại (`03r`).
+
 `review/cvat_pack/`: gói duyệt (`03k`), hướng dẫn ở `docs/ppe6_review_guide.md`. `review/human_review.csv`: kết quả người duyệt (`03l`), chỉ xuất hiện khi có người nhập.
 
 `external/chvg/`: CHVG tải từ figshare (`03g`), không đưa lên git. Chưa dùng cho train.

@@ -133,3 +133,11 @@ blind:
   side: 1920           # mọi ảnh đưa về cùng cạnh dài để kích thước không lộ nguồn
   second_boxes: 50     # số hộp cho người thứ hai
   second_floor: 2      # mỗi tầng (lớp, nguồn, nhãn agent) tối thiểu chừng này hộp nếu có; Claude đặt
+
+# Công cụ duyệt nhanh (03q, 03r). Chỉ thao tác, không có giá trị nhãn. tasks: mã task trên CVAT cục bộ.
+fast_review:
+  port: 8765
+  cvat_url: http://localhost:8080
+  token_env: CVAT_LOCAL_TOKEN   # token CVAT cục bộ, người dùng tự đặt trong phiên; khác CVAT_ACCESS_TOKEN của CVAT cloud
+  zoom_context: 1.0             # ảnh phóng to: nới mỗi phía theo cạnh dài của hộp
+  tasks: {task_a: 5, task_b: 6, task_c: 7, task_d: 8}

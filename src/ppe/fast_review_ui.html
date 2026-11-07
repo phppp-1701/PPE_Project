@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Duyệt nhanh</title>
+<style>
+:root { --bg:#16181d; --panel:#21252c; --line:#3a404a; --text:#eceff4; --muted:#a4acb9; --on:#2f6fdb; --warn:#c9822b; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--text); font:15px/1.4 system-ui,sans-serif; height:100vh; display:flex; flex-direction:column; }
+header { display:flex; gap:18px; align-items:center; padding:8px 14px; background:var(--panel); border-bottom:1px solid var(--line); flex-wrap:wrap; }
+header b { font-size:16px; }
+#bar { flex:1; min-width:120px; height:8px; background:var(--line); border-radius:4px; overflow:hidden; }
+#fill { height:100%; width:0; background:var(--on); }
+main { flex:1; min-height:0; display:grid; grid-template-columns:3fr 2fr; gap:8px; padding:8px; }
+.pane { position:relative; min-height:0; background:#000; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+canvas { max-width:100%; max-height:100%; }
+.tagline { position:absolute; left:8px; top:6px; font-size:13px; color:var(--muted); background:#000a; padding:1px 6px; border-radius:4px; }
+footer { background:var(--panel); border-top:1px solid var(--line); padding:8px 14px; display:grid; gap:6px; }
+.row { display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+.row .name { width:96px; color:var(--muted); }
+button { background:#2c323c; color:var(--text); border:1px solid var(--line); border-radius:5px; padding:5px 10px; font:inherit; cursor:pointer; }
+button.on { background:var(--on); border-color:var(--on); }
+button.warn { background:var(--warn); border-color:var(--warn); }
+kbd { font:12px ui-monospace,monospace; background:#0006; padding:0 4px; border-radius:3px; margin-right:4px; }
+#links { max-height:64px; overflow:auto; font-size:13px; }
+#links a { color:#8db8ff; margin-right:12px; }
+#msg { color:#ffb86b; min-height:20px; }
+</style>
+</head>
+<body>
+<header>
+  <b id="title"></b><span id="pos"></span><div id="bar"><div id="fill"></div></div>
+  <span id="count"></span>
+  <button id="finish">Hoàn tất</button>
+</header>
+<main>
+  <div class="pane"><span class="tagline">Ảnh đầy đủ</span><canvas id="full"></canvas></div>
+  <div class="pane"><span class="tagline" id="zoomtag">Phóng to</span><canvas id="zoom"></canvas></div>
+</main>
+<footer>
+  <div class="row" id="rowd"><span class="name">Quyết định</span></div>
+  <div class="row" id="rowp"><span class="name">Cỡ người</span></div>
+  <div class="row" id="rowi"><span class="name">Ảnh</span></div>
+  <div class="row"><span class="name">Di chuyển</span>
+    <button data-k="ArrowLeft"><kbd>←</kbd>Quay lại</button>
+    <button data-k="s"><kbd>S</kbd>Xem sau</button>
+    <button data-k="n"><kbd>N</kbd>Ô thiếu kế tiếp</button>
+    <button data-k="Delete"><kbd>Del</kbd>Xóa lựa chọn của hộp này</button>
+    <button id="bc" data-k="c"><kbd>C</kbd>Hộp này cần mở CVAT</button>
+    <button id="bm" data-k="m"><kbd>M</kbd>Ảnh này cần mở CVAT</button>
+  </div>
+  <div id="msg"></div>
+  <div id="links"></div>
+</footer>
+<script>
+const DEC = [["1","safety","Bảo hộ"],["2","ordinary","Thường"],["3","unclear","Không rõ"],["4","ignore","Bỏ qua (quá nhỏ, mờ)"]];
+const PER = [["7","du_lon","Đủ lớn"],["8","qua_nho","Quá nhỏ"],["9","khong_ro","Không chắc"]];
+const IMG = [["v","image_checked","Đã xem ảnh"],["r","reject_image","Loại ảnh"]];
+const UNSET = "chua_chon", CONTEXT = __CONTEXT__;
+let S = null, shown = null, picture = new Image(), queue = Promise.resolve();
+const $ = id => document.getElementById(id);
+
+function buttons(row, list) {
+  for (const [k, , text] of list) {
+    const b = document.createElement("button");
+    b.dataset.k = k; b.innerHTML = `<kbd>${k.toUpperCase()}</kbd>${text}`;
+    row.appendChild(b);
+  }
+}
+buttons($("rowd"), DEC); buttons($("rowp"), PER); buttons($("rowi"), IMG);
+
+async function post(body) {
+  const r = await fetch("/api/action", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)});
+  const d = await r.json();
+  if (!r.ok) { $("msg").textContent = d.error || "Lỗi"; return false; }
+  S = d; $("msg").textContent = ""; return true;
+}
+const step = () => S.steps[S.cursor];
+function boxDone(id) { const v = S.boxes[id]; return v.decision !== UNSET && (!S.person || v.person_ok !== UNSET); }
+function stepDone(st) { return st.type === "box" ? boxDone(st.item_id) : !!S.images[st.image]; }
+function keyOf(st) { return st.type === "box" ? "box:" + st.item_id : "image:" + st.image; }
+
+async function go(n) {
+  n = Math.max(0, Math.min(n, S.steps.length - 1));
+  await post({kind:"cursor", cursor:n}); draw();
+}
+async function forward() { if (S.cursor < S.steps.length - 1) await go(S.cursor + 1); else { draw(); $("msg").textContent = "Đã tới bước cuối."; } }
+
+async function press(k) {
+  const st = step();
+  if (!st) { $("msg").textContent = "Task này không có bước nào."; return; }
+  const key = k.length === 1 ? k.toLowerCase() : k;
+  const d = DEC.find(x => x[0] === key), p = PER.find(x => x[0] === key), i = IMG.find(x => x[0] === key);
+  if (d || p) {
+    if (st.type !== "box") return;
+    if (p && !S.person) return;
+    if (!await post({kind:"box", item_id:st.item_id, field:d ? "decision" : "person_ok", value:(d || p)[1]})) return;
+    if (boxDone(st.item_id)) { if (S.skipped[keyOf(st)]) await post({kind:"mark", table:"skipped", key:keyOf(st), on:false}); await forward(); } else draw();
+  } else if (i) {
+    if (!await post({kind:"image", image:st.image, value:S.images[st.image] === i[1] ? "" : i[1]})) return;
+    if (st.type === "image" && S.images[st.image]) await forward(); else draw();
+  } else if (key === "ArrowLeft" || key === "z") { await go(S.cursor - 1); }
+  else if (key === "ArrowRight") { await forward(); }
+  else if (key === "s") { if (!stepDone(st)) await post({kind:"mark", table:"skipped", key:keyOf(st), on:true}); await forward(); }
+  else if (key === "n") {
+    const total = S.steps.length;
+    for (let a = 1; a <= total; a++) { const n = (S.cursor + a) % total; if (!stepDone(S.steps[n])) { await go(n); return; } }
+    $("msg").textContent = "Không còn ô thiếu.";
+  }
+  else if (key === "Delete") {
+    if (st.type === "box") { for (const f of S.person ? ["decision","person_ok"] : ["decision"]) await post({kind:"box", item_id:st.item_id, field:f, value:UNSET}); }
+    else await post({kind:"image", image:st.image, value:""});
+    draw();
+  }
+  else if (key === "c" || key === "m") {
+    const target = key === "m" ? "image:" + st.image : keyOf(st);
+    await post({kind:"mark", table:"flags", key:target, on:!S.flags[target]}); draw();
+  }
+}
+
+function paint(canvas, area, boxes, current) {
+  const [sx, sy, sw, sh] = area, pane = canvas.parentElement.getBoundingClientRect();
+  const k = Math.min(pane.width / sw, pane.height / sh);
+  canvas.width = Math.max(1, Math.round(sw * k)); canvas.height = Math.max(1, Math.round(sh * k));
+  const c = canvas.getContext("2d");
+  c.drawImage(picture, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+  for (const b of boxes) {
+    const on = b.item_id === current;
+    c.strokeStyle = on ? "#ff3b30" : "#ffffff"; c.lineWidth = on ? 3 : 1; c.setLineDash(on ? [] : [5, 4]);
+    c.strokeRect((b.xtl - sx) * k, (b.ytl - sy) * k, (b.xbr - b.xtl) * k, (b.ybr - b.ytl) * k);
+  }
+}
+function render() {
+  const st = step(); if (!st) return;
+  const [w, h] = S.sizes[st.image], boxes = Object.values(S.items).filter(b => S.steps.some(x => x.image === st.image && x.item_id === b.item_id));
+  paint($("full"), [0, 0, w, h], boxes, st.item_id);
+  if (st.type === "box") {
+    const b = S.items[st.item_id], m = Math.max(b.xbr - b.xtl, b.ybr - b.ytl) * (0.5 + CONTEXT);
+    const cx = (b.xtl + b.xbr) / 2, cy = (b.ytl + b.ybr) / 2, x = Math.max(0, cx - m), y = Math.max(0, cy - m);
+    paint($("zoom"), [x, y, Math.min(w - x, cx + m - x), Math.min(h - y, cy + m - y)], boxes, st.item_id);
+    $("zoomtag").textContent = "Phóng to: " + (b.target === "boots" ? "Ủng, giày" : "Kính");
+  } else {
+    paint($("zoom"), [0, 0, w, h], boxes, null);
+    $("zoomtag").textContent = "Xem cả ảnh: có đồ bảo hộ chưa có hộp không?";
+  }
+}
+function mark(row, list, value) { for (const b of row.querySelectorAll("button")) { const x = list.find(y => y[0] === b.dataset.k); b.classList.toggle("on", !!x && x[1] === value); } }
+function draw() {
+  $("title").textContent = S.task;
+  const st = step();
+  $("pos").textContent = st ? `Bước ${S.cursor + 1}/${S.steps.length}` + (st.type === "box" ? ` · hộp ${st.item_id}` : " · xem ảnh") : "";
+  const open = Object.keys(S.flags).length, later = Object.keys(S.skipped).length;
+  $("count").textContent = `Ô thiếu ${S.missing}/${S.cells} · Xem sau ${later} · Cần mở CVAT ${open}`;
+  $("fill").style.width = (S.cells ? 100 * (S.cells - S.missing) / S.cells : 0) + "%";
+  const isBox = st && st.type === "box";
+  $("rowd").style.display = isBox ? "" : "none";
+  $("rowp").style.display = S.person && isBox ? "" : "none";
+  $("finish").textContent = S.finished_at ? "Đã hoàn tất" : "Hoàn tất";
+  if (st) {
+    const v = st.type === "box" ? S.boxes[st.item_id] : {};
+    mark($("rowd"), DEC, v.decision); mark($("rowp"), PER, v.person_ok); mark($("rowi"), IMG, S.images[st.image] || "");
+    $("bc").classList.toggle("warn", !!S.flags[keyOf(st)]); $("bm").classList.toggle("warn", !!S.flags["image:" + st.image]);
+    if (shown !== st.image) { shown = st.image; picture = new Image(); picture.onload = render; picture.src = "/image/" + encodeURIComponent(st.image); }
+    else if (picture.complete) render();
+    const next = S.steps.slice(S.cursor + 1).find(x => x.image !== st.image);
+    if (next) new Image().src = "/image/" + encodeURIComponent(next.image);
+  }
+  const box = $("links"); box.textContent = "";
+  for (const l of S.links) { const a = document.createElement("a"); a.href = l.url; a.target = "_blank"; a.rel = "noopener"; a.textContent = l.key; box.appendChild(a); }
+}
+function enqueue(k) { queue = queue.then(() => press(k)).catch(e => { $("msg").textContent = String(e); }); }
+addEventListener("keydown", e => {
+  if (e.ctrlKey || e.altKey || e.metaKey || e.repeat) return;
+  const known = /^[1-4789vrsnzcm]$/i.test(e.key) || ["ArrowLeft","ArrowRight","Delete"].includes(e.key);
+  if (known) { e.preventDefault(); enqueue(e.key); }
+});
+document.querySelector("footer").addEventListener("click", e => { const b = e.target.closest("button[data-k]"); if (b) { enqueue(b.dataset.k); b.blur(); } });
+$("finish").onclick = async () => {
+  const r = await fetch("/api/finish", {method:"POST", headers:{"Content-Type":"application/json"}, body:"{}"});
+  const d = await r.json();
+  if (!r.ok) $("msg").textContent = d.error; else { S = d; draw(); $("msg").textContent = "Đã hoàn tất. Chạy lệnh cuối buổi."; }
+};
+addEventListener("resize", () => { if (S && step() && picture.complete) render(); });
+fetch("/api/state").then(r => r.json()).then(d => { S = d; draw(); window.__ready = true; });
+</script>
+</body>
+</html>
