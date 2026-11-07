@@ -10,6 +10,7 @@ Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
     python scripts/03t_ppe6_machine_label.py audit-import --reviewer "Tên"   # đọc phiên 03q, ghi audit_review.csv
     python scripts/03t_ppe6_machine_label.py audit-report
     python scripts/03t_ppe6_machine_label.py rest        # kiểm định không đạt: gói mọi hộp val, test người chưa xem
+    python scripts/03t_ppe6_machine_label.py recheck --out <danh sách item_id>   # gói xem lại một phần rest
     python scripts/03t_ppe6_machine_label.py rest-import --reviewer "Tên"    # ghi rest_review.csv, human_reviewed
     python scripts/03t_ppe6_machine_label.py eval-count  # số hộp theo tập, chỉ từ nhãn người
 
@@ -450,6 +451,33 @@ def read_box_session(task, mapping_file, reviewer, origin_default=None):
     return rows, missing
 
 
+def cmd_recheck(list_file):
+    """Gói `recheck`: các hộp rest người xem lại (danh sách item_id, mỗi dòng một mã). Không hiện lựa chọn cũ."""
+    c = cfg()["audit"]
+    if (AUDIT / "recheck").exists():
+        sys.exit("Gói recheck đã có, không ghi đè.")
+    want = [x.strip() for x in Path(list_file).read_text(encoding="utf-8").split() if x.strip()]
+    rest = {r["item_id"] for r in read_csv(AUDIT / "_private" / "rest_items.csv")}
+    if not want or not set(want) <= rest:
+        sys.exit("Danh sách rỗng hoặc có mã không thuộc gói rest.")
+    sizes, where = {}, {}
+    for t in TASKS:
+        for im in load_pack(BLIND / t)["images"]:
+            sizes[im["name"]] = (t, im["width"], im["height"])
+            for b in im["boxes"]:
+                where[b["item_id"]] = dict(b, image=im["name"])
+    its = [where[k] for k in sorted(set(want))]
+    mapped, imgs = build_pack("recheck", its, {i["image"]: sizes[i["image"]] for i in its}, True, c["seed"] + 4)
+    with (AUDIT / "_private" / "recheck_items.csv").open("w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, ["audit_id", "item_id", "origin"], lineterminator="\n")
+        w.writeheader()
+        w.writerows(dict(m, origin="recheck") for m in mapped)
+    bad = leak_tokens((AUDIT / "recheck" / "annotations.xml").read_text(encoding="utf-8"))
+    print(f"recheck: {len(mapped)} hộp, {len(imgs)} ảnh | kiểm tra lộ nhãn: lỗi", len(bad))
+    if bad:
+        sys.exit(1)
+
+
 def cmd_rest_import(reviewer):
     """Ghi rest_review.csv, trạng thái human_reviewed (người xem từng hộp, không qua nhãn máy). Không ghi human_review.csv."""
     if reviewer.strip().lower() in NOT_A_PERSON or reviewer.lower().startswith("machine"):
@@ -457,6 +485,13 @@ def cmd_rest_import(reviewer):
     rows, missing = read_box_session("rest", "rest_items.csv", reviewer)
     if missing:
         sys.exit(f"Còn {missing} mục chưa chọn, chưa ghi gì.")
+    # Lần xem lại (recheck) của cùng người thay lựa chọn lần đầu; lần đầu vẫn nằm trong fast_rest_state.json, fast_rest_log.csv.
+    if (AUDIT / "_private" / "recheck_items.csv").exists():
+        again, miss2 = read_box_session("recheck", "recheck_items.csv", reviewer)
+        if miss2:
+            sys.exit(f"recheck còn {miss2} mục chưa chọn, chưa ghi gì.")
+        new = {r["item_id"]: r for r in again}
+        rows = [dict(r, after=new[r["item_id"]]["after"], person_ok=new[r["item_id"]]["person_ok"], origin="rest_recheck", reviewed_at=new[r["item_id"]]["reviewed_at"]) if r["item_id"] in new else r for r in rows]
     with (REVIEW / "rest_review.csv").open("w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, list(rows[0]), lineterminator="\n")
         w.writeheader()
@@ -543,7 +578,7 @@ def cmd_audit_report():
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["sheets", "collect", "merge", "compare", "audit", "audit-img2", "audit-import", "audit-report", "rest", "rest-import", "eval-count"])
+    ap.add_argument("cmd", choices=["sheets", "collect", "merge", "compare", "audit", "audit-img2", "audit-import", "audit-report", "rest", "recheck", "rest-import", "eval-count"])
     ap.add_argument("--pass", dest="which", choices=["a", "b"])
     ap.add_argument("--out")
     ap.add_argument("--reviewer", default="")
@@ -565,6 +600,8 @@ def main():
         cmd_audit_img2()
     elif args.cmd == "rest":
         cmd_rest()
+    elif args.cmd == "recheck":
+        cmd_recheck(args.out or sys.exit("Cần --out <file danh sách item_id>."))
     elif args.cmd == "rest-import":
         cmd_rest_import(args.reviewer)
     elif args.cmd == "eval-count":

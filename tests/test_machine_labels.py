@@ -216,3 +216,18 @@ def test_rest_pack_refuses_overwrite(tmp_path):
     (m.AUDIT / "rest").mkdir()
     with pytest.raises(SystemExit):
         m.cmd_rest()
+
+
+def test_rest_import_takes_recheck_choice_over_first(tmp_path):
+    import csv
+    import json
+    m = load_03t()
+    rev = write_audit_state(m, tmp_path, "Nguoi That")
+    (m.AUDIT / "_private" / "rest_items.csv").write_text("audit_id,item_id,origin\na9,r1,rest\n", encoding="utf-8")
+    (m.AUDIT / "_private" / "recheck_items.csv").write_text("audit_id,item_id,origin\nb5,r1,recheck\n", encoding="utf-8")
+    (rev / "fast_rest_state.json").write_text(json.dumps(dict(reviewer="Nguoi That", boxes=dict(a9=dict(decision="safety", person_ok="du_lon")))), encoding="utf-8")
+    (rev / "fast_recheck_state.json").write_text(json.dumps(dict(reviewer="Nguoi That", boxes=dict(b5=dict(decision="ordinary", person_ok="du_lon")))), encoding="utf-8")
+    m.cmd_rest_import("Nguoi That")
+    rows = list(csv.DictReader((rev / "rest_review.csv").open(encoding="utf-8")))
+    assert [(r["origin"], r["after"]) for r in rows] == [("rest_recheck", "ordinary")]
+    assert json.loads((rev / "fast_rest_state.json").read_text(encoding="utf-8"))["boxes"]["a9"]["decision"] == "safety"
