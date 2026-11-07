@@ -1,5 +1,5 @@
 {
-  "commit": "05d06c8",
+  "commit": "054185f",
   "seed": 0,
   "mask": {
     "margin": 0.1,
@@ -23,14 +23,14 @@
     "box_mismatch_with_glass": 3
   },
   "c2_status": {
-    "saved": 284,
-    "scene_cap": 257,
-    "hits_label": 18,
+    "scene_cap": 262,
+    "saved": 397,
+    "hits_label": 20,
     "eval_scene": 5
   },
   "monitor": {
-    "c1": 1072,
+    "c1": 1077,
     "c2": 1070
   },
-  "content_hash": "69439c24c0555a028938cd7ae09c72318134b743a3a8529c537d6931c04278e5"
+  "content_hash": "f24f747cacee9dd5b9bd1916b0c7f2dfc435101638b57679423efe0019f668c8"
 }

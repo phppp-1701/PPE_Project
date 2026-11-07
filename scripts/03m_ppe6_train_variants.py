@@ -33,6 +33,7 @@ from PIL import Image, ImageOps
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
+from ppe.machine_labels import train_boot_override  # noqa: E402
 from ppe.ppe6_data import (NEW_CLASS, SAFE, blocks_train, box_iou_xyxy, check_label_rows, check_leaks, cover_fraction, mask_decision, merge_glass_status, parse_yolo)  # noqa: E402
 
 BASE = ROOT / "data" / "ppe6"
@@ -63,6 +64,8 @@ def load():
     scene = {r["file"]: r["scene_id"] for r in rd(BASE / "scene" / "scene_ids.csv")}
     roles = {r["scene_id"]: r["role"] for r in rd(BASE / "eval" / "scene_roles.csv")}
     dec = {r["box_id"]: r for r in rd(BASE / "review" / "decisions_v2.csv")}
+    for k, (lab, _src) in train_boot_override(BASE / "review").items():   # ủng train bản 3, như 03i
+        dec[k] = dict(dec[k], label=lab, note="")
     by_image = {r["image"]: r["file"] for r in stats.values()}
     boxes = defaultdict(list)
     for b in rd(BASE / "review" / "boxes.csv"):

@@ -32,7 +32,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
-from ppe.machine_labels import human_box_labels  # noqa: E402
+from ppe.machine_labels import human_box_labels, train_boot_override  # noqa: E402
 from ppe.ppe6_data import NEW_CLASS, SAFE, UNCLEAR, blocks_train, check_label_rows, check_leaks, diverse_pick, effective, eval_status  # noqa: E402
 
 PPE4 = ROOT / "data" / "ppe4" / "dataset"
@@ -131,12 +131,16 @@ def build(cfg):
     roles = {r["scene_id"]: r["role"] for r in rd(BASE / "eval" / "scene_roles.csv")}
     agent = {r["box_id"]: r for r in rd(BASE / "review" / "decisions_v2.csv")}
     human = load_human()
+    over = train_boot_override(BASE / "review")   # ủng train bản 3: người train_v3, nếu chưa có thì nhãn máy machine_pass_c
     boxes = defaultdict(list)
     for b in rd(BASE / "review" / "boxes.csv"):
         r = by_image.get(b["image"])
         if r is None:
             continue
         lab, note, src = effective(agent[b["box_id"]], human.get(b["box_id"]))
+        if b["box_id"] not in human and b["box_id"] in over:
+            lab, src = over[b["box_id"]]
+            note = ""
         if b["box_id"] in human and human[b["box_id"]].get("new_cx"):
             hb = human[b["box_id"]]
             b = dict(b, cx=hb["new_cx"], cy=hb["new_cy"], w=hb["new_w"], h=hb["new_h"])

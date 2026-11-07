@@ -16,6 +16,7 @@ Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
     python scripts/03t_ppe6_machine_label.py boots-v3-import --reviewer "Tên"
     python scripts/03t_ppe6_machine_label.py train-v3 [--dry]   # chấm mù ủng train theo bản 3 (gồm mẫu P2 giày SH17)
     python scripts/03t_ppe6_machine_label.py train-v3-import --reviewer "Tên"
+    python scripts/03t_ppe6_machine_label.py machine-c-import --out <thư mục>   # lượt máy c cho train_v3, chv_boots (nhãn máy)
     python scripts/03t_ppe6_machine_label.py chv-boots   # P2_chv: xem cả ảnh CHV train tìm ủng bảo hộ chưa có hộp
     python scripts/03t_ppe6_machine_label.py chv-boots-import --reviewer "Tên"
     python scripts/03t_ppe6_machine_label.py glass-img   # kính cả ảnh: CHVG và ảnh kính val, test (ưu tiên thấp)
@@ -44,7 +45,7 @@ from PIL import Image, ImageDraw, ImageFont
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 from ppe.fast_review import load_pack  # noqa: E402
-from ppe.machine_labels import MACHINE_CONSENSUS, MACHINE_LABELED, PASS_FIELDS, REPORT_NOTE, audit_tiers, check_labeler, check_pass_row, merge_passes, read_csv, stratified_sample  # noqa: E402
+from ppe.machine_labels import MACHINE_CHV, MACHINE_TRAIN, MACHINE_CONSENSUS, MACHINE_LABELED, PASS_FIELDS, REPORT_NOTE, audit_tiers, check_labeler, check_pass_row, merge_passes, read_csv, stratified_sample  # noqa: E402
 from ppe.ppe6_data import NOT_A_PERSON, UNSET, leak_tokens  # noqa: E402
 
 REVIEW = ROOT / "data" / "ppe6" / "review"
@@ -707,6 +708,36 @@ def cmd_glass_img_import(reviewer):
     print(f"glass_img: {len(res)} ảnh + {len(old)} ảnh audit_img2,", dict(Counter(r for _, r in res + old)))
 
 
+def cmd_machine_c_import(work):
+    """Lượt máy c (agent xem từng ô bảng ảnh của gói train_v3, chv_boots): ghi nhãn máy, tên machine_pass_c. Không phải nhãn người."""
+    labeler = "machine_pass_c"
+    check_labeler(labeler)
+    work = Path(work)
+    now = datetime.now().isoformat(timespec="seconds")
+    m1 = json.loads((work / "map_train_v3.json").read_text(encoding="utf-8"))
+    items = {r["audit_id"]: r for r in read_csv(AUDIT / "_private" / "train_v3_items.csv")}
+    got = {r["code"]: r["decision"] for r in read_csv(work / "train_v3.csv")}
+    if set(got) != set(m1) or any(v not in ("safety", "ordinary", "unclear", "ignore") for v in got.values()):
+        sys.exit("train_v3.csv thiếu ô hoặc có giá trị lạ.")
+    rows = [dict(labeler=labeler, guide_version=3, labeled_at=now, box_id=items[m1[c]]["box_id"], source=items[m1[c]]["source"], origin=items[m1[c]]["origin"], decision=v) for c, v in sorted(got.items())]
+    with (REVIEW / MACHINE_TRAIN).open("w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, list(rows[0]), lineterminator="\n")
+        w.writeheader()
+        w.writerows(rows)
+    m2 = json.loads((work / "map_chv_boots.json").read_text(encoding="utf-8"))
+    files = {r["audit_image"]: r["file"] for r in read_csv(AUDIT / "_private" / "chv_boots_images.csv")}
+    got2 = {r["code"]: r["image_result"] for r in read_csv(work / "chv_boots.csv")}
+    if set(got2) != set(m2) or any(v not in ("no_missing", "missing_box", "reject") for v in got2.values()):
+        sys.exit("chv_boots.csv thiếu ô hoặc có giá trị lạ.")
+    rows2 = [dict(labeler=labeler, labeled_at=now, file=files[m2[c]], image_result=v) for c, v in sorted(got2.items())]
+    with (REVIEW / MACHINE_CHV).open("w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, list(rows2[0]), lineterminator="\n")
+        w.writeheader()
+        w.writerows(rows2)
+    print(f"{REPORT_NOTE.split(',')[0]} (machine_pass_c, chưa kiểm định): train_v3 {len(rows)} hộp", dict(Counter((r["origin"], r["decision"]) for r in rows)),
+          f"| chv_boots {len(rows2)} ảnh", dict(Counter(r["image_result"] for r in rows2)))
+
+
 def cmd_rest_import(reviewer):
     """Ghi rest_review.csv, trạng thái human_reviewed (người xem từng hộp, không qua nhãn máy). Không ghi human_review.csv."""
     if reviewer.strip().lower() in NOT_A_PERSON or reviewer.lower().startswith("machine"):
@@ -811,7 +842,7 @@ def cmd_audit_report():
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["sheets", "collect", "merge", "compare", "audit", "audit-img2", "audit-import", "audit-report", "rest", "recheck", "rest-import", "eval-count", "boots-v3", "boots-v3-import", "train-v3", "train-v3-import", "chv-boots", "chv-boots-import", "glass-img", "glass-img-import"])
+    ap.add_argument("cmd", choices=["sheets", "collect", "merge", "compare", "audit", "audit-img2", "audit-import", "audit-report", "rest", "recheck", "rest-import", "eval-count", "boots-v3", "boots-v3-import", "train-v3", "train-v3-import", "chv-boots", "chv-boots-import", "glass-img", "glass-img-import", "machine-c-import"])
     ap.add_argument("--pass", dest="which", choices=["a", "b"])
     ap.add_argument("--out")
     ap.add_argument("--reviewer", default="")
@@ -836,6 +867,8 @@ def main():
         cmd_rest()
     elif args.cmd == "recheck":
         cmd_recheck(args.out or sys.exit("Cần --out <file danh sách item_id>."))
+    elif args.cmd == "machine-c-import":
+        cmd_machine_c_import(args.out or sys.exit("Cần --out <thư mục lượt máy c>."))
     elif args.cmd == "train-v3":
         cmd_train_v3(args.dry)
     elif args.cmd == "train-v3-import":

@@ -24,7 +24,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
-from ppe.machine_labels import human_box_labels  # noqa: E402
+from ppe.machine_labels import MACHINE_CHV, MACHINE_TRAIN, human_box_labels  # noqa: E402
 from ppe.ppe6_data import check_monitor, scope_threshold, stratified_rate, wilson  # noqa: E402
 
 BASE = ROOT / "data" / "ppe6"
@@ -101,6 +101,11 @@ def gate_p2(c):
     sample = {r["box_id"]: r for r in rd(REVIEW / "p2_shoe_sample.csv")}
     last = last_review()
     done = {k: last[k] for k in sample if k in last}
+    src = "người"
+    if len(done) < len(sample):
+        mc = {r["box_id"]: dict(r, after=r["decision"]) for r in rd(REVIEW / MACHINE_TRAIN)} if (REVIEW / MACHINE_TRAIN).exists() else {}
+        if all(k in mc for k in sample):
+            done, src = {k: mc[k] for k in sample}, "NHÃN MÁY machine_pass_c, chưa kiểm định"
     if len(done) < len(sample):
         return "pending", f"mới duyệt {len(done)}/{len(sample)} hộp giày"
     noise = json.loads((ROOT / "outputs" / "results" / "ppe6_noise" / "noise.json").read_text(encoding="utf-8"))["strata"]
@@ -112,7 +117,7 @@ def gate_p2(c):
     k = sum(r[1] for r in rows)
     n = sum(r[2] for r in rows)
     raw = wilson(k, n)
-    detail = f"có trọng số {pct(p)} (KTC 95% {pct(lo)}; {pct(hi)}), thô {k}/{n} = {pct(k / n)} (KTC {pct(raw[1])}; {pct(raw[2])})"
+    detail = f"[{src}] có trọng số {pct(p)} (KTC 95% {pct(lo)}; {pct(hi)}), thô {k}/{n} = {pct(k / n)} (KTC {pct(raw[1])}; {pct(raw[2])})"
     if p >= c["min_shoe_rate"]:
         return "action", detail + ". Đề xuất che vùng thay vì giữ làm nền, tạo phiên bản train mới."
     return "pass", detail
@@ -120,16 +125,25 @@ def gate_p2(c):
 
 def gate_chv(c, full):
     sample = {r["file"]: r["stratum"] for r in rd(PACK / "P2_chv" / "sample.csv")}
-    seen = {r["box_id"].replace("image:", ""): r for r in rd(REVIEW / "chv_boots_seen.csv") if r["box_id"].startswith("image:")}
-    seen = {f: r for f, r in seen.items() if r["after"] == "checked"}
+    src = "người"
+    if (REVIEW / "chv_boots_seen.csv").exists():
+        seen = {r["box_id"].replace("image:", ""): r for r in rd(REVIEW / "chv_boots_seen.csv") if r["box_id"].startswith("image:")}
+        seen = {f: r for f, r in seen.items() if r["after"] == "checked"}
+        added = Counter(r["file"] for r in rd(REVIEW / "chv_boots_added.csv"))
+    elif (REVIEW / MACHINE_CHV).exists():
+        mc = rd(REVIEW / MACHINE_CHV)
+        seen = {r["file"]: r for r in mc}
+        added = Counter(r["file"] for r in mc if r["image_result"] == "missing_box")
+        src = "NHÃN MÁY machine_pass_c, chưa kiểm định"
+    else:
+        seen, added = {}, Counter()
     if not sample:
         return "pending", "chưa có mẫu"
     if len([f for f in sample if f in seen]) < len(sample):
         return "pending", f"mới xem {len([f for f in sample if f in seen])}/{len(sample)} ảnh"
-    added = Counter(r["file"] for r in rd(REVIEW / "chv_boots_added.csv"))
     pop = strata_of_chv(p.name for p in (BASE / "dataset_c2" / "images" / "train").iterdir() if p.name.startswith("chv__"))
     stats = {r["file"]: r for r in rd(ROOT / "data" / "ppe4" / "stats.csv")}
-    lines, bad = [], False
+    lines, bad = [f"[{src}]"], False
     for st in sorted(set(sample.values())):
         files = [f for f, s in sample.items() if s == st]
         k = sum(added[f] > 0 for f in files)

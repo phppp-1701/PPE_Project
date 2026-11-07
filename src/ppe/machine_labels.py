@@ -139,5 +139,18 @@ def human_box_labels(review_dir):
     return out
 
 
+MACHINE_TRAIN = "machine_pass_c_train.csv"
+MACHINE_CHV = "machine_pass_c_chv.csv"
+
+
+def train_boot_override(review_dir):
+    """Nhãn ủng train theo định nghĩa bản 3: {box_id: (nhãn, nguồn)}. Người (train_v3_review.csv) thắng máy (machine_pass_c).
+    Chỉ dùng cho train; val, test luôn là nhãn người."""
+    review_dir = Path(review_dir)
+    out = {r["box_id"]: (r["decision"], r["labeler"]) for r in read_csv(review_dir / MACHINE_TRAIN)}
+    out.update({r["box_id"]: (r["after"], "human") for r in read_csv(review_dir / "train_v3_review.csv")})
+    return out
+
+
 def read_csv(path):
     return list(csv.DictReader(path.open(encoding="utf-8"))) if path.exists() else []
