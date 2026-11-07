@@ -25,15 +25,18 @@ def blocks_train(label, note, target):
     return target == "goggles" or note not in SOFT_NOTES
 
 
-def eval_status(decisions):
+def eval_status(decisions, unclear_as_ignore=False):
     """Trạng thái một ảnh đánh giá theo các hộp kính, ủng của nó: (label, source) mỗi hộp.
 
-    ready: mọi hộp đã có người chốt và không còn `unclear`.
-    pending: còn hộp chưa có người chốt. rejected: người chốt `unclear`, ảnh loại khỏi đánh giá lớp mới.
+    ready: mọi hộp đã có người chốt. pending: còn hộp chưa có người chốt.
+    Luật cũ (unclear_as_ignore=False): ảnh có hộp `unclear` là rejected, loại khỏi đánh giá lớp mới.
+    Cách A (configs/ppe6.yaml mục eval_ignore): hộp `unclear` thành vùng bỏ qua, ảnh vẫn ready.
     """
     if any(src != "human" for _, src in decisions):
         return "pending"
-    return "rejected" if any(lab == UNCLEAR for lab, _ in decisions) else "ready"
+    if not unclear_as_ignore and any(lab == UNCLEAR for lab, _ in decisions):
+        return "rejected"
+    return "ready"
 
 
 def diverse_pick(emb, keys, k, seed):
@@ -242,13 +245,24 @@ def mask_decision(regions, labelled, max_cover):
     return worst <= max_cover, worst
 
 
-def ignore_filter(tp, boxes, classes, ignore, iou_min=0.5):
-    """Bỏ dự đoán sai trùng vùng `ignore` (không tính đúng, không tính sai). ignore: (lớp, x1, y1, x2, y2). Trả về mặt nạ giữ lại."""
+def intersection_over_detection(det, region):
+    """Phần giao chia diện tích dự đoán (COCO maskApi.c bbIou khi iscrowd: u = da)."""
+    ix = max(0.0, min(det[2], region[2]) - max(det[0], region[0]))
+    iy = max(0.0, min(det[3], region[3]) - max(det[1], region[1]))
+    return ix * iy / max((det[2] - det[0]) * (det[3] - det[1]), 1e-12)
+
+
+def ignore_filter(tp, boxes, classes, ignore, min_overlap=0.5):
+    """Bỏ dự đoán không ghép được hộp thật mà nằm trên vùng bỏ qua cùng lớp (không tính đúng, không tính sai).
+
+    tp: [n, n_iou] của validator, cột 0 là IoU 0,5. Hộp thật thắng vùng bỏ qua: dự đoán đã đúng ở 0,5 luôn giữ.
+    Dự đoán trùng thứ hai trên cùng hộp thật (validator tính sai) mà nằm trên vùng bỏ qua thì bỏ, như COCO.
+    ignore: (lớp, x1, y1, x2, y2). Một vùng nhận nhiều dự đoán. Trả về mặt nạ giữ lại."""
     keep = np.ones(len(boxes), dtype=bool)
     for i, b in enumerate(boxes):
-        if tp[i].any():
+        if tp[i][0]:
             continue
-        if any(c == classes[i] and box_iou_xyxy(b, g) >= iou_min for c, *g in ignore):
+        if any(c == classes[i] and intersection_over_detection(b, g) >= min_overlap for c, *g in ignore):
             keep[i] = False
     return keep
 

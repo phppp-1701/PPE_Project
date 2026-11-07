@@ -106,20 +106,12 @@ def compare_old(a, b, cfg):
 
 
 def load_ignore():
-    """Hộp người duyệt chốt `ignore`: {file: [(lớp, cx, cy, w, h)]}."""
-    path = ROOT / "data" / "ppe6" / "review" / "human_review.csv"
+    """Vùng bỏ qua do 03i ghi (hộp người chốt unclear, ignore): {file: [(lớp, cx, cy, w, h)]}."""
+    path = ROOT / "data" / "ppe6" / "dataset" / "ignore.csv"
     out = defaultdict(list)
-    if not path.exists():
-        return out
-    last = {r["box_id"]: r for r in rd(path)}
-    index = {}
-    for g in (ROOT / "data" / "ppe6" / "review" / "cvat_pack").iterdir():
-        if (g / "index.csv").exists():
-            index.update({r["box_id"]: r for r in rd(g / "index.csv")})
-    for k, r in last.items():
-        if r["after"] == "ignore" and k in index:
-            b = index[k]
-            out[b["file"]].append((4 if b["target"] == "goggles" else 5, float(b["cx"]), float(b["cy"]), float(b["w"]), float(b["h"])))
+    if path.exists():
+        for r in rd(path):
+            out[r["file"]].append((int(r["cls"]), float(r["cx"]), float(r["cy"]), float(r["w"]), float(r["h"])))
     return out
 
 
@@ -131,7 +123,7 @@ def to_canvas(box, ori, ratio_pad):
     return ((cx - w / 2) * ow * gain + px, (cy - h / 2) * oh * gain + py, (cx + w / 2) * ow * gain + px, (cy + h / 2) * oh * gain + py)
 
 
-def apply_ignore(z, ignore):
+def apply_ignore(z, ignore, min_overlap=0.5):
     """Bỏ dự đoán sai trùng vùng ignore. Hộp ignore không phải nhãn nên không làm tăng số nhãn."""
     keep = np.ones(len(z["conf"]), dtype=bool)
     for i, f in enumerate(z["files"].tolist()):
@@ -139,12 +131,12 @@ def apply_ignore(z, ignore):
             continue
         m = np.nonzero(z["img"] == i)[0]
         reg = [(b[0], *to_canvas(b, z["ori"][i], z["ratio_pad"][i])) for b in ignore[f]]
-        keep[m] = ignore_filter(z["tp"][m], z["box"][m], z["cls"][m], reg)
+        keep[m] = ignore_filter(z["tp"][m], z["box"][m], z["cls"][m], reg, min_overlap)
     return {k: (v[keep] if k in ("img", "box", "conf", "cls", "tp") else v) for k, v in z.items()}, int((~keep).sum())
 
 
-def eval_new(z, cfg):
-    z, dropped = apply_ignore(z, load_ignore())
+def eval_new(z, cfg, min_overlap):
+    z, dropped = apply_ignore(z, load_ignore(), min_overlap)
     scene, _ = scenes()
     files = z["files"].tolist()
     groups = defaultdict(list)
@@ -175,8 +167,11 @@ def main():
     ap.add_argument("--name", required=True)
     args = ap.parse_args()
     sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
-    cfg = yaml.safe_load((ROOT / "configs" / "ppe6.yaml").read_text(encoding="utf-8"))["decision"]
-    res = compare_old(load(args.baseline), load(args.candidate), cfg) if args.mode == "old" else eval_new(load(args.capture), cfg)
+    full = yaml.safe_load((ROOT / "configs" / "ppe6.yaml").read_text(encoding="utf-8"))
+    cfg = full["decision"]
+    if full["eval_ignore"]["overlap"] != "intersection_over_detection":
+        sys.exit("Chỉ hỗ trợ overlap intersection_over_detection.")
+    res = compare_old(load(args.baseline), load(args.candidate), cfg) if args.mode == "old" else eval_new(load(args.capture), cfg, full["eval_ignore"]["min_overlap"])
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / f"{args.name}.json").write_text(json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(res, ensure_ascii=False))

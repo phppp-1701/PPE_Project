@@ -32,7 +32,8 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
-from ppe.ppe6_data import NEW_CLASS, SAFE, blocks_train, check_label_rows, check_leaks, diverse_pick, effective, eval_status  # noqa: E402
+from ppe.machine_labels import human_box_labels  # noqa: E402
+from ppe.ppe6_data import NEW_CLASS, SAFE, UNCLEAR, blocks_train, check_label_rows, check_leaks, diverse_pick, effective, eval_status  # noqa: E402
 
 PPE4 = ROOT / "data" / "ppe4" / "dataset"
 BASE = ROOT / "data" / "ppe6"
@@ -47,11 +48,13 @@ def rd(path):
 
 
 def load_human():
+    """Nhãn người: human_review.csv (dấu ảnh) và các file duyệt mới (audit, rest, boots_v3). Không đọc nhãn máy."""
     path = BASE / "review" / "human_review.csv"
     last = {}
     if path.exists():
         for r in rd(path):
             last[r["box_id"]] = r
+    last.update(human_box_labels(BASE / "review"))
     return last
 
 
@@ -207,15 +210,26 @@ def build(cfg):
         written["train"][r["file"]] = lines_of(r)
         write_item("train", r["file"], PPE4 / "images" / r["split"] / r["file"], written["train"][r["file"]])
     status_rows, ready = [], defaultdict(list)
+    ig_cfg = cfg["eval_ignore"]
+    ignore_rows, alt = [], defaultdict(list)
+
+    def note_ignore(f, s):
+        for b in boxes[f]:
+            if b["label"] in ig_cfg["labels"]:
+                ignore_rows.append((s, f, NEW_CLASS[b["target"]], b["target"], b["label"], f"{float(b['cx']):.6f}", f"{float(b['cy']):.6f}", f"{float(b['w']):.6f}", f"{float(b['h']):.6f}"))
     for role in ("val_new", "test_new"):
         for r in eval_files[role]:
             n = f"{role}_draft"
             written[n][r["file"]] = lines_of(r)
             write_item(n, r["file"], PPE4 / "images" / r["split"] / r["file"], written[n][r["file"]])
-            st = final_status(r["file"], eval_status([(b["label"], b["src"]) for b in boxes[r["file"]]]))
+            dec = [(b["label"], b["src"]) for b in boxes[r["file"]]]
+            st = final_status(r["file"], eval_status(dec, unclear_as_ignore=True))
             status_rows.append((r["file"], role, r["source"], r["split"], scene[r["file"]], st, sum(b["src"] != "human" for b in boxes[r["file"]])))
             if st == "ready":
                 ready[role].append(r["file"])
+                note_ignore(r["file"], role)
+            if final_status(r["file"], eval_status(dec)) == "ready":
+                alt[role].append(r["file"])
     for r in rd(BASE / "eval" / "chvg_split.csv"):
         f, n = r["file"], f"{r['split']}_draft"
         source_of[f] = "chvg"
@@ -224,16 +238,38 @@ def build(cfg):
         write_item(n, f, BASE / "external" / "chvg" / "extracted" / f.replace("chvg__", ""), written[n][f])
         # CHVG cần người xem cả ảnh không có hộp glass, nên ảnh chưa có dấu người duyệt luôn là pending.
         seen = human.get("image:" + f)
-        st = final_status(f, "ready" if seen and eval_status([(b["label"], b["src"]) for b in boxes[f]]) == "ready" else "pending")
+        dec = [(b["label"], b["src"]) for b in boxes[f]]
+        st = final_status(f, "ready" if seen and eval_status(dec, unclear_as_ignore=True) == "ready" else "pending")
         status_rows.append((f, r["split"], "chvg", "external", scene[f], st, sum(b["src"] != "human" for b in boxes[f])))
         if st == "ready":
             ready[r["split"]].append(f)
+            note_ignore(f, r["split"])
+        if final_status(f, "ready" if seen and eval_status(dec) == "ready" else "pending") == "ready":
+            alt[r["split"]].append(f)
 
     for s in SETS:
         (OUT / f"{s}.txt").write_text("".join(f"./images/{s}_draft/{f}\n" for f in sorted(ready[s])), encoding="utf-8", newline="\n")
     (OUT / "data.yaml").write_text("# Bộ 6 lớp thử nghiệm, tạo bởi scripts/03i_ppe6_build_dataset.py. val rỗng cho tới khi người duyệt xong.\n"
                                    "train: images/train\nval: val_new.txt\ntest: test_new.txt\n"
                                    + "names:\n" + "".join(f"  {i}: {n}\n" for i, n in enumerate(NAMES)), encoding="utf-8", newline="\n")
+    with (OUT / "ignore.csv").open("w", encoding="utf-8", newline="") as f:
+        w = csv.writer(f, lineterminator="\n")
+        w.writerow(["set", "file", "cls", "target", "label", "cx", "cy", "w", "h"])
+        w.writerows(sorted(ignore_rows))
+
+    def eval_counts(lists, with_ignore):
+        out = {}
+        ig = Counter((s, t) for s, _, _, t, *_ in ignore_rows)
+        for s in SETS:
+            fs = lists[s]
+            d = dict(images=len(fs), scenes=len({scene[f] for f in fs}))
+            for t in NEW_CLASS:
+                pos = [f for f in fs if any(b["target"] == t and b["label"] == SAFE for b in boxes[f])]
+                d[t] = dict(safety=sum(1 for f in fs for b in boxes[f] if b["target"] == t and b["label"] == SAFE), images_with_safety=len(pos),
+                            scenes_with_safety=len({scene[f] for f in pos}), ignore_regions=ig[(s, t)] if with_ignore else 0)
+            out[s] = d
+        return out
+    rule_counts = dict(ignore_regions=eval_counts(ready, True), drop_unclear_images=eval_counts(alt, False))
     with (OUT / "excluded.csv").open("w", encoding="utf-8", newline="") as f:
         w = csv.writer(f, lineterminator="\n")
         w.writerow(["file", "ppe4_split", "reason"])
@@ -267,6 +303,7 @@ def build(cfg):
         counts=count(written, source_of, scene),
         eval_status={k: dict(v) for k, v in sorted(_status(status_rows).items())},
         human_reviewed_boxes=sum(1 for k in human if not k.startswith("image:")),
+        eval_ignore=cfg["eval_ignore"], eval_counts=rule_counts,
     )
     h = hashlib.sha256()
     for n in sorted(written):
@@ -277,7 +314,7 @@ def build(cfg):
     manifest["content_hash"] = h.hexdigest()
     (OUT / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
     (OUT / "scene_map.json").write_text(json.dumps({f: scene[f] for v in written.values() for f in v}, sort_keys=True), encoding="utf-8", newline="\n")
-    print(json.dumps({k: manifest[k] for k in ("ppe4_train", "lost_from_train", "eval_status", "content_hash", "capped_scenes")}, ensure_ascii=False))
+    print(json.dumps({k: manifest[k] for k in ("ppe4_train", "lost_from_train", "eval_status", "eval_counts", "content_hash", "capped_scenes")}, ensure_ascii=False))
     return manifest
 
 

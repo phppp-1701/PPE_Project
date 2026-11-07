@@ -8,6 +8,7 @@ Trạng thái một hộp hoặc ảnh, không trộn lẫn:
 """
 
 import csv
+from pathlib import Path
 import random
 import re
 from collections import Counter, defaultdict
@@ -114,6 +115,26 @@ def audit_tiers(rows, max_rate):
         pattern = top[0] if top and top[0][1] >= 3 and top[0][1] * 2 > len(wrong) else None
         out[t] = dict(n=len(v), different=len(wrong), rate=round(p, 4), ci=[round(lo, 4), round(hi, 4)], pattern=None if pattern is None else f"{pattern[0][0]} -> {pattern[0][1]} ({pattern[1]})",
                       passed=p < max_rate and pattern is None)
+    return out
+
+
+HUMAN_FILES = ("audit_review.csv", "rest_review.csv", "boots_v3_review.csv", "human_review.csv")
+
+
+def human_box_labels(review_dir):
+    """Nhãn người hiệu lực cho từng box_id (chỉ người, không nhãn máy). File sau thắng file trước:
+    audit (human_audited), rest (human_reviewed, có recheck), boots_v3 (ủng định nghĩa bản 3), human_review (03l).
+    Ủng chỉ lấy từ boots_v3 khi file này có: nhãn ủng bản 2 không được dùng."""
+    review_dir = Path(review_dir)
+    out = {}
+    v3 = read_csv(review_dir / "boots_v3_review.csv")
+    for name in HUMAN_FILES:
+        for r in read_csv(review_dir / name):
+            if r.get("kind", "box") != "box" or r.get("reviewer", "").startswith("machine"):
+                continue
+            if v3 and name != "boots_v3_review.csv" and r.get("target") == "boots":
+                continue
+            out[r["box_id"]] = dict(r, file_from=name)
     return out
 
 

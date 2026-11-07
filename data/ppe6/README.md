@@ -15,7 +15,7 @@ Lớp: 0-3 như `ppe4`, 4 kính bảo hộ, 5 ủng bảo hộ. Kế hoạch: `d
 
 `eval/`: `scene_roles.csv` (cảnh đánh giá), `chvg_split.csv`, `tradeoff.csv` (`03h`).
 
-`dataset/`: bộ 6 lớp (`03i`). `images/`, `labels/` chỉ có trên máy; `manifest.json`, `excluded.csv`, `eval_status.csv` có trên git. `val_new.txt`, `test_new.txt` chỉ gồm ảnh đã có người chốt.
+`dataset/`: bộ 6 lớp (`03i`). `images/`, `labels/` chỉ có trên máy; `manifest.json`, `excluded.csv`, `eval_status.csv`, `ignore.csv` có trên git. `val_new.txt`, `test_new.txt` chỉ gồm ảnh đã có người chốt. `ignore.csv`: vùng bỏ qua khi đánh giá lớp mới (hộp người chốt `unclear`, `ignore`), luật ở `configs/ppe6.yaml` mục `eval_ignore`.
 
 `dataset_c1/`, `dataset_c2/`: train C1, C2 (`03m`); `dataset/` là C0, không sửa. `dataset_c2/mask_map.csv`: ảnh gốc, ảnh che, vùng che. `variants/`: bảng mất dữ liệu, so sánh, gói Kaggle.
 

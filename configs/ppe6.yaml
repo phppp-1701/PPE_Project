@@ -101,6 +101,20 @@ mask:
   quality: 95
 
 # Quyết định chọn bản (04e_ppe6_eval.py), khóa 06/11/2026 trước khi train. Chi tiết ở docs/experiments/2026-11-06_ppe6_plan.md.
+# Tự nhất quán trên khung lặp (03u). Khung lặp dùng scene.phash_max, scene.emb_strong; min_iou Claude đặt, chưa đo.
+consistency:
+  min_iou: 0.5
+
+# Vùng bỏ qua khi đánh giá lớp mới (người dùng chọn cách A, 07/11/2026, sau khi thấy số nhãn, trước khi có kết quả mô hình).
+# Hộp người chốt unclear hoặc ignore không phải nhãn và không bỏ cả ảnh. Theo COCO (iscrowd) và CityPersons (ignore):
+# 1) dự đoán ghép với hộp thật trước (IoU >= 0.5, cùng lớp, như validator Ultralytics); 2) dự đoán không ghép được hộp thật
+# mà phần giao với một vùng bỏ qua cùng lớp chia diện tích dự đoán >= min_overlap thì không tính đúng, không tính sai;
+# 3) một vùng nhận được nhiều dự đoán; 4) vùng không bao giờ là hộp bị sót. Chỉ áp dụng cho mAP50 của lớp mới.
+eval_ignore:
+  labels: [unclear, ignore]
+  overlap: intersection_over_detection
+  min_overlap: 0.5
+
 decision:
   seed: 0
   n_boot: 1000

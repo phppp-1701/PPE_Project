@@ -18,6 +18,7 @@ data/**
 !data/ppe6/dataset_c2/mask_map.csv
 !data/ppe6/dataset/excluded.csv
 !data/ppe6/dataset/eval_status.csv
+!data/ppe6/dataset/ignore.csv
 outputs/**
 !outputs/**/
 !outputs/**/README.md

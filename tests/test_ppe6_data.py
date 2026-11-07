@@ -325,3 +325,62 @@ def test_test_reviewer_only_reaches_trial(tmp_path):
     m.import_blind("trial", FULL_XML, "AGENT_TEST", "t", blind=tmp_path / "pack2", review=tmp_path)
     assert (tmp_path / "trial_review.csv").exists() and not (tmp_path / "human_review.csv").exists()
 
+
+
+# Luật vùng bỏ qua (configs/ppe6.yaml mục eval_ignore), khóa 07/11/2026 trước khi train.
+def _ig(tp, boxes, classes, regions, thr=0.5):
+    return ignore_filter(np.array(tp).reshape(-1, 1), np.array(boxes, dtype=float), np.array(classes), regions, thr).tolist()
+
+
+def test_ignore_true_positive_wins_over_ignore_region():
+    assert _ig([True], [[0, 0, 10, 10]], [5], [(5, 0, 0, 10, 10)]) == [True]
+
+
+def test_ignore_unmatched_detection_on_region_is_dropped():
+    assert _ig([False], [[0, 0, 10, 10]], [5], [(5, 1, 1, 10, 10)]) == [False]
+
+
+def test_ignore_uses_intersection_over_detection_not_iou():
+    # dự đoán nhỏ nằm trong vùng lớn: IoU 0,04 nhưng giao/diện tích dự đoán = 1
+    assert box_iou_xyxy((0, 0, 10, 10), (0, 0, 50, 50)) < 0.5
+    assert _ig([False], [[0, 0, 10, 10]], [5], [(5, 0, 0, 50, 50)]) == [False]
+
+
+def test_ignore_large_detection_mostly_outside_region_stays_false_positive():
+    assert _ig([False], [[0, 0, 40, 40]], [5], [(5, 0, 0, 10, 10)]) == [True]
+
+
+def test_ignore_region_of_other_class_does_not_apply():
+    assert _ig([False], [[0, 0, 10, 10]], [4], [(5, 0, 0, 10, 10)]) == [True]
+
+
+def test_ignore_region_absorbs_many_detections():
+    assert _ig([False, False], [[0, 0, 10, 10], [2, 2, 9, 9]], [5, 5], [(5, 0, 0, 10, 10)]) == [False, False]
+
+
+def test_ignore_duplicate_on_true_box_that_also_lies_on_region_is_dropped():
+    # hai dự đoán trên cùng hộp thật, hộp thật nằm trong vùng bỏ qua lớn hơn: dự đoán thứ hai (validator tính sai) bỏ, như COCO
+    assert _ig([True, False], [[0, 0, 10, 10], [0, 0, 10, 10]], [5, 5], [(5, 0, 0, 20, 20)]) == [True, False]
+
+
+def test_ignore_threshold_is_inclusive_at_half():
+    assert _ig([False], [[0, 0, 10, 10]], [5], [(5, 0, 0, 5, 10)]) == [False]
+    assert _ig([False], [[0, 0, 10, 10]], [5], [(5, 0, 0, 4.9, 10)]) == [True]
+
+
+def test_eval_status_unclear_becomes_ignore_region_only_in_rule_a():
+    d = [("unclear", "human"), ("safety", "human")]
+    assert eval_status(d) == "rejected" and eval_status(d, unclear_as_ignore=True) == "ready"
+    assert eval_status([("unclear", "agent")], unclear_as_ignore=True) == "pending"
+
+
+def test_human_box_labels_priority_and_no_machine(tmp_path):
+    from ppe.machine_labels import human_box_labels
+    h = "box_id,item_id,kind,target,source,origin,after,person_ok,reviewer,reviewed_at\n"
+    (tmp_path / "audit_review.csv").write_text(h + "b1,r1,box,boots,sh17,sample,safety,du_lon,P,t\ng1,r2,box,goggles,chvg,sample,safety,du_lon,P,t\n", encoding="utf-8")
+    (tmp_path / "rest_review.csv").write_text(h + "g1,r2,box,goggles,chvg,rest,unclear,du_lon,P,t\nb2,r3,box,boots,sh17,rest,safety,du_lon,machine_pass_a,t\n", encoding="utf-8")
+    out = human_box_labels(tmp_path)
+    assert out["b1"]["after"] == "safety" and out["g1"]["after"] == "unclear" and "b2" not in out
+    (tmp_path / "boots_v3_review.csv").write_text(h.strip() + ",guide_version\nb9,r9,box,boots,sh17,boots_v3,ordinary,du_lon,P,t,3\n", encoding="utf-8")
+    out = human_box_labels(tmp_path)
+    assert "b1" not in out and out["b9"]["after"] == "ordinary" and out["g1"]["after"] == "unclear"

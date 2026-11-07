@@ -24,6 +24,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
+from ppe.machine_labels import human_box_labels  # noqa: E402
 from ppe.ppe6_data import check_monitor, scope_threshold, stratified_rate, wilson  # noqa: E402
 
 BASE = ROOT / "data" / "ppe6"
@@ -43,7 +44,13 @@ def cfg():
 
 
 def last_review():
-    return {r["box_id"]: r for r in rd(REVIEW / "human_review.csv")}
+    """Nhãn người hiệu lực: human_review.csv và các file duyệt mới (audit, rest, boots_v3), không nhãn máy.
+    `before` là nhãn agent cũ trong file ánh xạ của gói mù, chỉ để đo bất đồng agent, người."""
+    out = {r["box_id"]: r for r in rd(REVIEW / "human_review.csv")} if (REVIEW / "human_review.csv").exists() else {}
+    agent = {r["box_id"]: r["agent_label"] for p in (REVIEW / "cvat_pack_blind" / "_private").glob("task_*_items.csv") for r in rd(p)}
+    for k, r in human_box_labels(REVIEW).items():
+        out[k] = dict(r, before=r.get("before") or agent.get(k, ""))
+    return out
 
 
 def pct(x):
@@ -249,7 +256,13 @@ def machine_items():
     rep = REVIEW / "audit_report.json"
     tiers = json.loads(rep.read_text(encoding="utf-8"))["tiers"] if rep.exists() else {}
     out.append((bool(tiers) and all(v["passed"] for v in tiers.values()), f"Các tầng đạt kiểm định: {sum(v['passed'] for v in tiers.values())}/{len(tiers)}"))
-    out.append((False, "Đã nối 03i với trạng thái nhãn mới và khóa dataset"))
+    man = BASE / "dataset" / "manifest.json"
+    m = json.loads(man.read_text(encoding="utf-8")) if man.exists() else {}
+    out.append(("eval_counts" in m and (BASE / "dataset" / "ignore.csv").exists(), "03i đọc nhãn người mới, ghi vùng bỏ qua ignore.csv"))
+    st = m.get("eval_status", {})
+    for s in ("val_new", "test_new", "chvg_glass_val", "chvg_glass_test"):
+        v = st.get(s, {})
+        out.append((bool(v) and set(v) == {"ready"}, f"{s}: mọi ảnh đã có người chốt {v}"))
     return out
 
 
