@@ -141,3 +141,17 @@ fast_review:
   token_env: CVAT_LOCAL_TOKEN   # token CVAT cục bộ, người dùng tự đặt trong phiên; khác CVAT_ACCESS_TOKEN của CVAT cloud
   zoom_context: 1.0             # ảnh phóng to: nới mỗi phía theo cạnh dài của hộp
   tasks: {task_a: 5, task_b: 6, task_c: 7, task_d: 8}
+
+# Máy gán nhãn trước, người kiểm định sau (người dùng đổi 07/11/2026). Nhãn máy không phải nhãn người.
+labeling:
+  mode: machine_audit
+  guide_version: 2
+  passes: {a: 101, b: 202}     # seed trộn thứ tự của từng lượt
+  sheet: {box_cols: 3, box_rows: 4, panel_px: 240, image_cols: 3, image_rows: 3, image_px: 460, zoom_context: 1.0}
+  batch_sheets: 16             # số bảng ảnh mỗi ngữ cảnh mới
+  audit:
+    seed: 303
+    consensus_sample: 150
+    floor: 8                   # mỗi tầng tối thiểu chừng này hộp nếu có; Claude đặt
+    max_queue_boxes: 300       # hàng đợi bất đồng quá mức này thì dừng và đề xuất lấy mẫu; Claude đặt
+    max_disagreement: 0.10

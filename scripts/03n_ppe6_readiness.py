@@ -241,21 +241,37 @@ def group_progress():
     return rows
 
 
+def machine_items():
+    """Checklist của quy trình máy gán, người kiểm định."""
+    out = [((REVIEW / f"machine_pass_{p}.csv").exists(), f"Lượt máy {p} đã khóa") for p in ("a", "b")]
+    out.append(((REVIEW / "machine_merged.csv").exists(), "Đã gộp hai lượt máy"))
+    out.append(((REVIEW / "audit_review.csv").exists(), "Người đã kiểm định gói audit"))
+    rep = REVIEW / "audit_report.json"
+    tiers = json.loads(rep.read_text(encoding="utf-8"))["tiers"] if rep.exists() else {}
+    out.append((bool(tiers) and all(v["passed"] for v in tiers.values()), f"Các tầng đạt kiểm định: {sum(v['passed'] for v in tiers.values())}/{len(tiers)}"))
+    out.append((False, "Đã nối 03i với trạng thái nhãn mới và khóa dataset"))
+    return out
+
+
 def cmd_checklist():
     full = cfg()
     items = []
-    for name, (a, b) in group_progress().items():
-        items.append((a == b and b > 0, f"Duyệt và nhập {name}: {a}/{b}"))
-    human = REVIEW / "human_review.csv"
-    manifest = BASE / "dataset" / "manifest.json"
-    fresh = human.exists() and manifest.stat().st_mtime >= human.stat().st_mtime
-    items.append((fresh, "Đã chạy lại 03i sau lần nhập cuối"))
+    if full["labeling"]["mode"] == "machine_audit":
+        items += machine_items()
+    else:
+        for name, (a, b) in group_progress().items():
+            items.append((a == b and b > 0, f"Duyệt và nhập {name}: {a}/{b}"))
+        human = REVIEW / "human_review.csv"
+        manifest = BASE / "dataset" / "manifest.json"
+        fresh = human.exists() and manifest.stat().st_mtime >= human.stat().st_mtime
+        items.append((fresh, "Đã chạy lại 03i sau lần nhập cuối"))
     ok = subprocess.run([sys.executable, str(ROOT / "scripts" / "03i_ppe6_build_dataset.py"), "--check"], cwd=ROOT, capture_output=True).returncode == 0
     items.append((ok, "03i --check không lỗi"))
     scope = full["scope"]["min_person_px"]
     items.append((all(v is not None for v in scope.values()), f"Ngưỡng người đủ lớn đã chốt: {scope}"))
-    gates = cmd_gates()
-    items.append((all(v == "pass" for v in gates.values()), f"Các quy tắc sau duyệt: {gates}"))
+    if full["labeling"]["mode"] != "machine_audit":
+        gates = cmd_gates()
+        items.append((all(v == "pass" for v in gates.values()), f"Các quy tắc sau duyệt: {gates}"))
     fin = full["final"]
     items.append((bool(fin["data_locked"]), f"Bản dữ liệu đã chốt: chính {fin['main']}, đối chứng {fin['control']}, data_locked {fin['data_locked']}"))
     for v in (fin["main"], fin["control"]):

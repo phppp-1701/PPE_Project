@@ -118,7 +118,7 @@ def ap_from_tp(tp, conf, n_gt, weight=None):
 UNREVIEWED = "chua_duyet"
 DECISIONS = (SAFE, ORDINARY, UNCLEAR, IGNORE)
 BOX_MOVED = 0.01     # hộp lệch quá tỉ lệ này của cạnh ảnh thì coi là người đã sửa hộp
-NOT_A_PERSON = {"", "agent", "claude", "auto", "machine"}
+NOT_A_PERSON = {"", "agent", "claude", "auto", "machine", "machine_pass_a", "machine_pass_b"}
 
 
 def parse_cvat(xml_text):
