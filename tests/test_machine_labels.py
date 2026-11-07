@@ -192,3 +192,27 @@ def test_audit_rebuild_refused_once_human_session_exists(tmp_path):
     with pytest.raises(SystemExit):
         m.cmd_audit()
     assert (m.AUDIT / "_private" / "audit_items.csv").exists()
+
+
+def test_rest_import_is_human_reviewed_and_never_touches_human_review(tmp_path):
+    import csv
+    import json
+    m = load_03t()
+    rev = write_audit_state(m, tmp_path, "Nguoi That")
+    (m.AUDIT / "_private" / "rest_items.csv").write_text("audit_id,item_id,origin\na9,r1,rest\n", encoding="utf-8")
+    (rev / "fast_rest_state.json").write_text(json.dumps(dict(reviewer="Nguoi That", boxes=dict(a9=dict(decision="ordinary", person_ok="qua_nho")))), encoding="utf-8")
+    m.cmd_rest_import("Nguoi That")
+    rows = list(csv.DictReader((rev / "rest_review.csv").open(encoding="utf-8")))
+    assert [(r["origin"], r["after"]) for r in rows] == [("rest", "ordinary")] and not (rev / "human_review.csv").exists()
+    with pytest.raises(SystemExit):
+        m.cmd_rest_import("machine_pass_b")
+    with pytest.raises(SystemExit):
+        m.cmd_rest_import("Nguoi Khac")
+
+
+def test_rest_pack_refuses_overwrite(tmp_path):
+    m = load_03t()
+    write_audit_state(m, tmp_path, "Nguoi That")
+    (m.AUDIT / "rest").mkdir()
+    with pytest.raises(SystemExit):
+        m.cmd_rest()

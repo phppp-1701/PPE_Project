@@ -9,6 +9,9 @@ Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
     python scripts/03t_ppe6_machine_label.py audit-img2  # gói ảnh làm lại, có hộp đã có và lớp được hỏi
     python scripts/03t_ppe6_machine_label.py audit-import --reviewer "Tên"   # đọc phiên 03q, ghi audit_review.csv
     python scripts/03t_ppe6_machine_label.py audit-report
+    python scripts/03t_ppe6_machine_label.py rest        # kiểm định không đạt: gói mọi hộp val, test người chưa xem
+    python scripts/03t_ppe6_machine_label.py rest-import --reviewer "Tên"    # ghi rest_review.csv, human_reviewed
+    python scripts/03t_ppe6_machine_label.py eval-count  # số hộp theo tập, chỉ từ nhãn người
 
 Tham số ở configs/ppe6.yaml mục `labeling`. Quy trình ở docs/experiments/2026-11-06_ppe6_plan.md.
 """
@@ -393,6 +396,90 @@ def cmd_audit_img2():
         sys.exit(1)
 
 
+EVAL_SETS = ("val_new", "test_new", "chvg_glass_val", "chvg_glass_test")
+
+
+def cmd_rest():
+    """Gói `rest`: mọi hộp val, test chưa có người xem trong `audit`, để val, test hoàn toàn là nhãn người (human_reviewed).
+
+    Dùng khi kiểm định không đạt. Không xóa hay ghi đè gói, ánh xạ hay phiên đã có."""
+    c = cfg()["audit"]
+    if (AUDIT / "rest").exists():
+        sys.exit("Gói rest đã có, không ghi đè.")
+    seen = {r["item_id"] for r in read_csv(AUDIT / "_private" / "audit_items.csv")}
+    if not seen:
+        sys.exit("Chưa có gói audit.")
+    items = private_items()
+    sizes, where = {}, {}
+    for t in TASKS:
+        for im in load_pack(BLIND / t)["images"]:
+            sizes[im["name"]] = (t, im["width"], im["height"])
+            for b in im["boxes"]:
+                where[b["item_id"]] = dict(b, image=im["name"])
+    todo = sorted(k for k, it in items.items() if it["set"] in EVAL_SETS and k not in seen)
+    its = [where[k] for k in todo]
+    mapped, imgs = build_pack("rest", its, {i["image"]: sizes[i["image"]] for i in its}, True, c["seed"] + 3)
+    with (AUDIT / "_private" / "rest_items.csv").open("w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, ["audit_id", "item_id", "origin"], lineterminator="\n")
+        w.writeheader()
+        w.writerows(dict(m, origin="rest") for m in mapped)
+    bad = leak_tokens((AUDIT / "rest" / "annotations.xml").read_text(encoding="utf-8")) + leak_tokens((AUDIT / "rest" / "labels.json").read_text(encoding="utf-8"))
+    print(f"rest: {len(mapped)} hộp, {len(imgs)} ảnh, theo tập", dict(sorted(Counter((items[k]["set"], items[k]["target"]) for k in todo).items())), "| kiểm tra lộ nhãn: lỗi", len(bad), bad[:5])
+    if bad:
+        sys.exit(1)
+
+
+def read_box_session(task, mapping_file, reviewer, origin_default=None):
+    """Đọc phiên hộp của 03q, trả về (dòng, số ô chưa chọn). Từ chối phiên của người khác."""
+    p = REVIEW / f"fast_{task}_state.json"
+    if not p.exists():
+        sys.exit(f"Chưa có phiên {task}.")
+    s = json.loads(p.read_text(encoding="utf-8"))
+    if s["reviewer"] != reviewer:
+        sys.exit(f"Phiên {task} thuộc người khác.")
+    mapping = {r["audit_id"]: r for r in read_csv(AUDIT / "_private" / mapping_file)}
+    items = private_items()
+    now = datetime.now().isoformat(timespec="seconds")
+    rows, missing = [], 0
+    for k, v in s["boxes"].items():
+        if v["decision"] == UNSET or v["person_ok"] == UNSET:
+            missing += 1
+            continue
+        it = items[mapping[k]["item_id"]]
+        rows.append(dict(box_id=it["box_id"], item_id=mapping[k]["item_id"], kind="box", target=it["target"], source=it["source"], origin=mapping[k]["origin"], after=v["decision"], person_ok=v["person_ok"], reviewer=reviewer, reviewed_at=now))
+    return rows, missing
+
+
+def cmd_rest_import(reviewer):
+    """Ghi rest_review.csv, trạng thái human_reviewed (người xem từng hộp, không qua nhãn máy). Không ghi human_review.csv."""
+    if reviewer.strip().lower() in NOT_A_PERSON or reviewer.lower().startswith("machine"):
+        sys.exit("Cần tên người thật.")
+    rows, missing = read_box_session("rest", "rest_items.csv", reviewer)
+    if missing:
+        sys.exit(f"Còn {missing} mục chưa chọn, chưa ghi gì.")
+    with (REVIEW / "rest_review.csv").open("w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, list(rows[0]), lineterminator="\n")
+        w.writeheader()
+        w.writerows(rows)
+    print(f"Đã ghi rest_review.csv: {len(rows)} dòng, trạng thái human_reviewed. Không ghi human_review.csv.")
+
+
+def cmd_eval_count():
+    """Số hộp bảo hộ theo tập, chỉ từ nhãn người (audit_review.csv, rest_review.csv)."""
+    items = private_items()
+    human = {r["item_id"]: r for f in ("audit_review.csv", "rest_review.csv") for r in read_csv(REVIEW / f) if r["kind"] == "box"}
+    c, left = Counter(), Counter()
+    for k, it in items.items():
+        if it["set"] in EVAL_SETS:
+            if k in human:
+                c[(it["set"], it["target"], human[k]["after"])] += 1
+            else:
+                left[(it["set"], it["target"])] += 1
+    for k in sorted(c):
+        print(" ", k, c[k])
+    print("Chưa có người xem:", dict(sorted(left.items())))
+
+
 def cmd_audit_import(reviewer):
     if reviewer.strip().lower() in NOT_A_PERSON or reviewer.lower().startswith("machine"):
         sys.exit("Cần tên người thật.")
@@ -456,7 +543,7 @@ def cmd_audit_report():
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["sheets", "collect", "merge", "compare", "audit", "audit-img2", "audit-import", "audit-report"])
+    ap.add_argument("cmd", choices=["sheets", "collect", "merge", "compare", "audit", "audit-img2", "audit-import", "audit-report", "rest", "rest-import", "eval-count"])
     ap.add_argument("--pass", dest="which", choices=["a", "b"])
     ap.add_argument("--out")
     ap.add_argument("--reviewer", default="")
@@ -476,6 +563,12 @@ def main():
         cmd_audit()
     elif args.cmd == "audit-img2":
         cmd_audit_img2()
+    elif args.cmd == "rest":
+        cmd_rest()
+    elif args.cmd == "rest-import":
+        cmd_rest_import(args.reviewer)
+    elif args.cmd == "eval-count":
+        cmd_eval_count()
     elif args.cmd == "audit-import":
         cmd_audit_import(args.reviewer)
     else:
