@@ -1,0 +1,1295 @@
+labeler,guide_version,labeled_at,task,kind,id,decision,person_ok,image_result,reason
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r00218,unclear,du_lon,,giay toi nhin tu sau khong thay co
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r00368,unclear,qua_nho,,nguoi nho giay mo
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r00419,safety,du_lon,,ung den
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r00579,ordinary,du_lon,,giay co thap kieu the thao
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r00729,unclear,du_lon,,ong quan che co giay
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r01163,ignore,qua_nho,,mo va nho
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r01708,unclear,du_lon,,giay toi khong thay co
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r01861,ordinary,du_lon,,giay cao got
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r03202,safety,du_lon,,giày cổ cao màu nâu đế dày một phần trong cỏ
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r04747,unclear,du_lon,,thay de nhung khong thay co giay
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r05354,safety,du_lon,,bốt đen cổ cao buộc dây đế dày
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r05833,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r07146,ordinary,du_lon,,giay the thao thap
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r07476,safety,du_lon,,ủng cao su
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r07944,unclear,du_lon,,giay toi khong thay co
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r08248,unclear,du_lon,,cổ thấp đế khuất trong cỏ
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r09009,ordinary,du_lon,,giay thap co kieu the thao
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r09341,ignore,qua_nho,,
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r09389,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r100202,unclear,du_lon,,khong ro co giay
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r10187,ordinary,du_lon,,giay kieu the thao de xanh
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r10361,unclear,du_lon,,giày nâu lẫn đất không rõ đế
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r105453,safety,du_lon,,ung cao su den
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r10657,safety,du_lon,,
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r107004,safety,du_lon,,
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r107053,unclear,khong_ro,,hop nam tren khoi tuong khong thay giay
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r107145,unclear,khong_ro,,giày nâu không thấy cổ
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r107674,unclear,du_lon,,giay nau mo khong thay co
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r107913,unclear,du_lon,,giày tối hộp lệch một phần
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r108239,safety,du_lon,,ung cao su co cao
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r110869,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r111320,unclear,khong_ro,,giày đen trong ảnh tối không thấy cổ
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r111336,ordinary,du_lon,,giay the thao
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r112034,ignore,qua_nho,,
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r113031,safety,du_lon,,ủng cao cổ dù ảnh tối
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r113174,safety,du_lon,,giay co cao buoc day de day
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r11331,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r114519,ignore,qua_nho,,toi va rat nho
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r115509,unclear,du_lon,,giay toi khong thay co
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r116310,ordinary,du_lon,,đế giày thể thao trắng
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r116367,safety,du_lon,,ủng cao su
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r116616,safety,du_lon,,giày cổ cao đế dày công trình
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r116832,unclear,du_lon,,hộp chỉ trùm một phần gót
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r117053,unclear,du_lon,,hộp lệch ở mép chân
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r11777,safety,du_lon,,ung den cao co
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r117885,unclear,du_lon,,giay toi khong thay co
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r118079,safety,du_lon,,bốt nâu cổ cao đế dày
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r119254,safety,du_lon,,ung cao anh toi
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r120595,unclear,du_lon,,giày đen tối ống quần che cổ
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r120969,ordinary,du_lon,,boot da cao thoi trang khong phai kieu cong trinh
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r122045,unclear,du_lon,,qua toi khong thay co va de
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r123223,unclear,du_lon,,giay toi trong bong
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r123225,ordinary,du_lon,,giày thể thao
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r12411,unclear,du_lon,,giày đen ống quần che cổ
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r125149,unclear,khong_ro,,mo khong phan biet kieu giay
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r125803,safety,du_lon,,giay toi de day tren thang cot
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r12601,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r126404,safety,du_lon,,giay cong trinh mui boc de day dinh dat
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r126666,unclear,qua_nho,,hộp lệch khỏi chân
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r127014,safety,khong_ro,,bốt nâu cổ cao đế dày người ở xa
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r127266,unclear,du_lon,,giày cổ cao nhưng tối không thấy đế
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r127951,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r127968,unclear,du_lon,,cỏ che đế không rõ loại giày
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r128782,unclear,du_lon,,giày nâu nhạt mờ không rõ cổ
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r129708,ignore,qua_nho,,người rất xa giày mờ
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r129951,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r130610,ordinary,du_lon,,bốt da thời trang
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r130704,unclear,du_lon,,hộp lệch khoảng nửa chiếc ủng
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r13082,safety,du_lon,,boot den co cao de day nhung boi canh thoi trang
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r130967,unclear,khong_ro,,chân tối bị che một phần
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r131398,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r131520,unclear,khong_ro,,co che khong thay giay
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r13205,unclear,khong_ro,,giày tối bụi hộp trùm một phần
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r132380,unclear,du_lon,,giay toi trong bong
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r132985,unclear,khong_ro,,hop lech toi khong thay ro vat
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r133013,unclear,du_lon,,giay den co lung khong ro the thao hay bao ho
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r134237,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r135210,ignore,qua_nho,,người xa ảnh mờ
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r137220,unclear,du_lon,,chi thay de ong quan che co
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r138025,unclear,du_lon,,hop lech khoi giay
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r13825,unclear,du_lon,,hộp lệch khỏi bàn chân
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r138908,unclear,du_lon,,chân đen mờ không rõ vật trong hộp
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r139586,safety,du_lon,,giay co cao de day cong trinh
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r140309,safety,du_lon,,giày da nâu cổ cao đế dày
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r141006,unclear,du_lon,,giày tối mờ
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r141286,unclear,du_lon,,giay buoc day khong ro the thao hay bao ho
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r142831,unclear,du_lon,,giày sát mép ảnh bị cắt
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r143124,unclear,du_lon,,giay toi khong thay co
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r144071,unclear,du_lon,,bốt đi xe máy tối không rõ
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r144360,safety,du_lon,,ung cao su
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r145518,safety,du_lon,,giày cổ cao đế dày công trình
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r145827,safety,du_lon,,
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r145942,safety,du_lon,,
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r147148,unclear,du_lon,,giay den khong thay co va de
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r148950,unclear,khong_ro,,giày tối không thấy cổ
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r150302,unclear,du_lon,,giay toi ong quan che co
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r150767,unclear,khong_ro,,mo khong phan biet kieu giay
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r15109,ignore,qua_nho,,người xa giày đen mờ
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r151675,unclear,du_lon,,giay toi khong thay co
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r152409,safety,khong_ro,,ủng đen cao người nhỏ trong ảnh
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r152517,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r153154,ordinary,du_lon,,giày cao gót
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r153168,unclear,du_lon,,giay xam bi ong quan che khong ro
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r153189,ordinary,du_lon,,boot da bong thoi trang
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r153675,ordinary,du_lon,,giay da den
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r154511,unclear,du_lon,,giày tối không thấy cổ và đế
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r155024,safety,du_lon,,giày cổ cao đế dày
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r155354,unclear,du_lon,,hộp lệch chỉ ở gót giày
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r155677,safety,du_lon,,bốt cổ cao đế dày trong cảnh thời trang
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r157196,unclear,khong_ro,,chan mo khong ro giay hay chan tran
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r158118,unclear,du_lon,,boot thoi trang de day khong ro kieu cong trinh
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r159522,safety,du_lon,,ung cao su
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r160475,unclear,du_lon,,giay toi bi che mot phan
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r161152,unclear,du_lon,,giày tối ống quần che cổ
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r161299,unclear,du_lon,,giay toi kieu dang khong ro
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r162025,unclear,du_lon,,giày tối không thấy rõ cổ
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r162453,ordinary,du_lon,,giày thể thao cổ thấp
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r162505,safety,du_lon,,giay co cao da nau de day co bi ong quan che mot phan
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r162572,unclear,du_lon,,ảnh tối giày kiểu thời trang không rõ
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r162774,unclear,khong_ro,,chi thay de giay tu duoi len
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r163175,unclear,du_lon,,anh mo giay duoi ong quan
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r163598,unclear,du_lon,,giay den bong khong thay ro co
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r163784,safety,du_lon,,giay cong trinh co cao de ran
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r164728,unclear,du_lon,,chan toi mo khong thay co va de
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r164735,unclear,du_lon,,hop chong len hop khac khong ro co giay
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r16485,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r165641,unclear,khong_ro,,khong thay co giay
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r166486,unclear,du_lon,,anh toi khong ro giay
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r167308,unclear,du_lon,,hộp lệch chỉ phủ một phần giày
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r167731,safety,du_lon,,giày da nâu cổ cao đế dày
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r168535,unclear,du_lon,,giay toi bi che mot phan khong thay co
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r168630,unclear,du_lon,,hộp hẹp trên ống chân không rõ vật
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r168787,unclear,du_lon,,khong thay co giay
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r168870,safety,du_lon,,ung cao su
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r169185,ordinary,du_lon,,giay the thao
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r16924,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r170114,unclear,du_lon,,ong quan che co giay
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r170124,unclear,du_lon,,bàn chân quấn dây không thấy rõ cổ và đế
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r170445,unclear,du_lon,,giay nau nhat khong ro co
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r170735,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r171354,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r172808,unclear,du_lon,,hop sat mep anh chan bi cat
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r172961,safety,du_lon,,giay cong trinh de day
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r172966,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r173331,unclear,du_lon,,giay toi mo hop lech
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r173900,unclear,du_lon,,mo khong ro co giay
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r174462,safety,du_lon,,ung cao su
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r175025,unclear,du_lon,,hop o co chan lech khoi giay
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r176207,unclear,khong_ro,,giày đen không thấy cổ và đế
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r176386,unclear,du_lon,,chi thay de giay tu duoi
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r176396,ordinary,du_lon,,giày thể thao trắng
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r176951,ordinary,du_lon,,giay da thap
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r177394,unclear,du_lon,,anh den trang giay toi hop chong hop khac
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r177820,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r178500,unclear,du_lon,,hop chong hop khac khong tach duoc ung voi ong quan
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r178678,ordinary,qua_nho,,dep xang dan
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r179127,unclear,du_lon,,chan sau bi che phan lon giay
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r179246,ignore,qua_nho,,người xa giày đen mờ
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r179305,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r179636,safety,du_lon,,bốt đen đế răng dày trong cảnh thời trang
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r183576,unclear,du_lon,,giay vuong dai leo cot khong thay ro kieu
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r183889,safety,du_lon,,ủng đen cổ cao đế trắng
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r185649,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r186576,unclear,du_lon,,hop lech khoi giay nam tren nen trang
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r18664,safety,du_lon,,giày cổ cao đế dày
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r188344,unclear,du_lon,,anh toi khong ro co giay
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r188684,ordinary,du_lon,,giay the thao
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r189540,ordinary,du_lon,,dép xăng đan
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r189844,unclear,du_lon,,giay da loc toi hop lech mot phan
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r190352,safety,du_lon,,ủng đen cao quần nhét trong ống
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r190628,ordinary,du_lon,,giay kieu the thao
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r191145,safety,du_lon,,giay nau buoc day de day co bi ong quan che mot phan
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r191176,unclear,du_lon,,giay mo to toi khong ro kieu cong trinh
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r191214,unclear,du_lon,,hộp lệch sang sàn và ống quần
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r191432,unclear,du_lon,,giày tối không thấy cổ
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r192641,unclear,du_lon,,giay den khong thay co
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r194226,ordinary,du_lon,,giay do thap co kieu the thao
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r194802,unclear,khong_ro,,giay toi mo
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r195181,unclear,khong_ro,,hop hep lech canh vat
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r196550,unclear,du_lon,,hop lech khoi giay
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r196675,unclear,khong_ro,,hộp lệch sang ống quần
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r197337,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r19872,unclear,du_lon,,giày đen ống quần che cổ
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r20126,unclear,du_lon,,giay nau co bi ong quan che khong ro giay da hay bao ho
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r20290,unclear,du_lon,,giay toi trong bong
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r20334,unclear,khong_ro,,giày nâu nhạt lấm đất không rõ đế
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r20810,unclear,khong_ro,,giay toi mo
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r21392,unclear,khong_ro,,chân bị cỏ che
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r21624,safety,du_lon,,giay co cao de day
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r22031,ignore,qua_nho,,
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r24877,unclear,du_lon,,giày đen nhòe không thấy cổ và đế
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r27418,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r27557,ignore,qua_nho,,nguoi nho giay mo
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r27930,safety,du_lon,,giay co cao de day kieu cong trinh
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r27950,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r28591,unclear,du_lon,,giay xam khong thay co
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r28692,ordinary,du_lon,,giày thể thao
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r28934,unclear,du_lon,,giày đen mờ không thấy cổ
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r30059,unclear,du_lon,,giay toi ong quan che co
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r30173,safety,du_lon,,giay nau de day
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r30701,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r30895,ignore,qua_nho,,
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r31464,unclear,du_lon,,anh mo giay toi
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r31670,unclear,du_lon,,co giay bi ong quan che
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r32171,safety,du_lon,,ủng cao su
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r33011,unclear,khong_ro,,nhìn từ sau giày đen không thấy cổ
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r34624,safety,du_lon,,giay cong trinh co cao de day
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r34869,unclear,du_lon,,giày tối ống quần che cổ
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r35804,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r35861,safety,du_lon,,giay buoc day co cao de day
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r36097,unclear,du_lon,,ong quan che co va vat tre cot che mot phan
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r36135,unclear,du_lon,,giay da lon buoc day khong ro the thao hay bao ho
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r36249,unclear,khong_ro,,giay toi mo
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r37208,unclear,khong_ro,,giay toi mo dinh dat
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r38114,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r38831,unclear,du_lon,,giày da nâu cổ và đế bị che
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r39756,unclear,du_lon,,hộp lệch khỏi giày
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r39787,unclear,du_lon,,giày đen tối ống quần che cổ
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r39802,unclear,du_lon,,đế dày nhưng ống quần che cổ giày
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r40600,unclear,du_lon,,giay nau co bi ong quan che anh hoi mo
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r41761,safety,du_lon,,giay cong trinh mau da bo
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r41932,safety,du_lon,,ung cao su co cao
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r42623,ignore,qua_nho,,chan lan trong co mo
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r42848,safety,du_lon,,ủng cao su
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r46758,unclear,du_lon,,giay den toi khong thay ro co
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r47746,safety,du_lon,,giay cong trinh co cao buoc day
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r47812,unclear,du_lon,,cảnh tối không rõ đế
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r48262,safety,du_lon,,ung cao su
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r49751,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r49991,safety,du_lon,,giày cổ cao đế dày công trình
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r50129,unclear,du_lon,,giày đen ống quần che cổ
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r51038,safety,du_lon,,de gai day kieu cong trinh
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r51636,unclear,qua_nho,,hop tren ong quan nguoi xa
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r52030,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r52768,unclear,khong_ro,,giày nâu mờ lẫn trong cỏ
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r54465,unclear,khong_ro,,mờ giày tối
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r54806,unclear,khong_ro,,giay toi anh den trang khong thay de
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r54835,safety,du_lon,,ung cao su den co cao
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r54996,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r55146,safety,du_lon,,giay co cao de day kieu cong trinh
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r55724,safety,du_lon,,giày cổ cao đế dày công trình
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r57064,ordinary,du_lon,,giay thap co day kieu the thao
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r57398,unclear,khong_ro,,mo khong thay co giay
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r57900,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r58276,safety,du_lon,,giày cổ cao đế dày
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r58314,unclear,du_lon,,giày tối không thấy cổ và đế
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r59720,unclear,du_lon,,giày đen nhòe chuyển động
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r61371,ignore,qua_nho,,qua mo
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r62542,unclear,du_lon,,giay toi co bi ong quan che
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r62749,ignore,qua_nho,,nguoi rat nho anh mo
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r62914,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r63277,unclear,du_lon,,giày tối ống quần che cổ
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r63573,ordinary,du_lon,,giày da nâu buộc dây cổ thấp
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r64111,unclear,du_lon,,giay den chi thay mot phan
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r64477,safety,du_lon,,ung cao su
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r65096,ignore,qua_nho,,
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r66402,unclear,du_lon,,giay da den thap khong thay co
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r67147,ordinary,du_lon,,dep xang dan
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r67564,unclear,du_lon,,giày tối có thể là giày thể thao
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r67799,unclear,du_lon,,mo khong ro giay
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r68666,safety,du_lon,,giay cong trinh nau co cao
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r70626,unclear,du_lon,,giày tối ảnh lật không rõ
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r71479,safety,du_lon,,giay nau co day de day
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r71726,unclear,du_lon,,giày tối ống quần che cổ
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r72740,safety,du_lon,,ung cao su xanh nhin ro
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r74047,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r74511,unclear,du_lon,,ong quan che co giay
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r75123,unclear,khong_ro,,giay toi co logo khong ro co
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r75319,unclear,du_lon,,giay toi khong thay co
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r75780,unclear,khong_ro,,ảnh nhòe giày nâu không rõ
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r75825,unclear,du_lon,,hop o ong quan
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r77261,unclear,du_lon,,giay toi duoi ban
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r77955,unclear,du_lon,,giay toi duoi ong quan khong thay co
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r78558,unclear,du_lon,,giay toi khong thay ro co va de
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r80028,safety,du_lon,,giay co cao de day
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r80857,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r82027,ignore,qua_nho,,nguoi nho giay mo
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r82173,safety,du_lon,,ung cao dinh bun
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r82959,unclear,du_lon,,giày da lộn không rõ loại
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r84125,ignore,qua_nho,,
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r84593,ordinary,du_lon,,giày thể thao cổ thấp
+machine_pass_b,2,2026-11-07T19:31:48,task_a,box,r84697,unclear,du_lon,,giày đen ống quần che cổ
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r86102,unclear,khong_ro,,giay toi khong ro co
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r87497,safety,du_lon,,ung cao su
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r87514,unclear,du_lon,,giày đen đế dày nhưng ống quần che cổ
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r87671,safety,du_lon,,ủng cao su
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r88363,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r88831,unclear,du_lon,,giày tối không thấy cổ và đế
+machine_pass_b,2,2026-11-07T19:32:21,task_a,box,r89955,ordinary,du_lon,,giay da den
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r91164,unclear,du_lon,,hộp ở ống quần
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r91387,unclear,du_lon,,giày đen đế dày nhưng ống quần che cổ
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r92501,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r94295,safety,khong_ro,,ủng đen cao người nhỏ trong ảnh
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r94657,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_a,box,r95705,safety,du_lon,,giay co cao buoc day de day anh den trang
+machine_pass_b,2,2026-11-07T19:32:18,task_a,box,r95743,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r96279,ordinary,du_lon,,giay da thap
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r97797,safety,du_lon,,giày cổ cao đế dày buộc dây
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r98386,ordinary,du_lon,,boot da bong thoi trang
+machine_pass_b,2,2026-11-07T19:31:39,task_a,box,r98491,unclear,khong_ro,,giay toi khong thay co
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r98541,unclear,du_lon,,giay toi khong thay co
+machine_pass_b,2,2026-11-07T19:31:51,task_a,box,r98727,safety,du_lon,,ung cao su
+machine_pass_b,2,2026-11-07T19:32:03,task_a,box,r99175,unclear,khong_ro,,hộp chỉ trùm mũi giày
+machine_pass_b,2,2026-11-07T15:30:25,task_a,box,r99782,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r00490,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r00850,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r01196,unclear,du_lon,,kinh toi kho phan biet kinh ram
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r01224,unclear,du_lon,,gong manh trong trong khong chac
+machine_pass_b,2,2026-11-07T15:30:25,task_b,box,r01564,safety,du_lon,,kinh om mat vien toi tron nhin thay mat
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r01601,unclear,du_lon,,mo nhin nghieng
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r02650,safety,du_lon,,kính kín tròng ôm mặt
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r03532,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r03824,unclear,khong_ro,,cui mat anh mo
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r04101,unclear,du_lon,,gọng mảnh tròng trong
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r04320,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r05152,safety,du_lon,,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,box,r05910,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r05950,unclear,du_lon,,tron trong mo khong thay ro gong
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r06108,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r06275,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r06322,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r06415,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r06436,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r07796,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r07903,safety,du_lon,,tròng vàng
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r08057,unclear,du_lon,,gọng mảnh tròng trong không tấm chắn
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r08162,ordinary,du_lon,,kinh ram thoi trang
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r08246,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r08425,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r08593,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r08746,unclear,du_lon,,trong toi anh chay mau
+machine_pass_b,2,2026-11-07T15:30:25,task_b,box,r09928,unclear,du_lon,,anh mo gong thuong khong ro tam chan
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r100154,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r101093,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r102182,safety,du_lon,,tròng trong ôm mặt
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r102280,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r102716,unclear,khong_ro,,mat mo khong thay ro kinh
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r103162,unclear,du_lon,,ảnh mờ
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r103164,ordinary,du_lon,,kính râm thời trang
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r103407,unclear,du_lon,,gong den trong trong khong thay tam chan
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r103587,safety,du_lon,,tròng ôm mặt có che bên
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r103730,safety,du_lon,,anh hoi mo
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r104143,unclear,khong_ro,,ảnh phóng to mờ
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r104175,ordinary,du_lon,,kinh day len dau
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r104354,unclear,du_lon,,gọng mảnh tròng trong
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r104452,unclear,du_lon,,kính tối mờ
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r105218,unclear,du_lon,,anh mo kinh khong ro
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r10575,unclear,du_lon,,toc che kinh
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r106266,safety,du_lon,,kính kín kiểu goggle
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r106923,safety,du_lon,,tròng vàng ôm mặt
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r108416,unclear,du_lon,,kính tối không phân biệt với kính râm
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r108769,safety,du_lon,,kính kín kiểu goggle
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r109036,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r111119,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r111749,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r11265,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r114090,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r114285,unclear,du_lon,,mo trong toi
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r114580,safety,du_lon,,tròng trong ôm mặt
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r115003,unclear,du_lon,,kính tối không phân biệt với kính râm
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r115179,safety,du_lon,,tròng ôm mặt
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r115428,unclear,du_lon,,cui mat khong thay ro kinh
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r11584,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r116076,unclear,du_lon,,anh mo gong mong tron trong
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r118182,unclear,du_lon,,anh mo nhin nghieng
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r11839,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r118683,unclear,du_lon,,gong toi tron trong khong chac
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r11957,unclear,khong_ro,,ảnh phóng to mờ
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r119872,safety,du_lon,,kính kín kiểu goggle
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r120245,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r120829,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r121082,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r121312,ignore,qua_nho,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r12165,unclear,khong_ro,,mờ hộp ở rìa mặt
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r123085,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r123664,unclear,du_lon,,ảnh mờ
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r124031,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r124510,unclear,du_lon,,anh mo khong ro dang kinh
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r124842,unclear,du_lon,,khong ro kieu kinh
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r125719,safety,du_lon,,anh hoi mo nhung trong om mat
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r126235,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r126518,ordinary,du_lon,,kinh ram thuong
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r126546,safety,du_lon,,kinh om mat
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r127303,safety,du_lon,,gong om mat
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r127638,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r127702,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r12841,unclear,du_lon,,nhìn nghiêng gọng mảnh tròng trong
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r128826,safety,du_lon,,gọng kiểu kính an toàn
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r129325,unclear,du_lon,,anh mo trong hoi toi
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r129493,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r12951,unclear,du_lon,,gong thuong trong trong
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r130226,safety,du_lon,,gong kieu kinh an toan
+machine_pass_b,2,2026-11-07T15:30:25,task_b,box,r13154,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r131895,safety,du_lon,,tròng rộng ôm mặt
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r131912,unclear,khong_ro,,mat bi che hop lech
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r132179,safety,du_lon,,tròng ôm mặt
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r132391,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r132487,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r132527,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r132557,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r133518,unclear,khong_ro,,mờ không thấy kính
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r133861,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r134680,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r135310,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r135520,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r136435,unclear,du_lon,,anh mo chi thay gong xanh
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r136644,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r137448,safety,du_lon,,trong om mat
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r138232,safety,du_lon,,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,box,r139936,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r14041,unclear,du_lon,,hop hep lech canh mat
+machine_pass_b,2,2026-11-07T15:30:25,task_b,box,r142606,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r143145,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r143952,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r145243,unclear,du_lon,,gọng mảnh tròng trong không chắc kính cận
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r146431,unclear,du_lon,,ảnh vỡ hạt
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r146487,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r147374,unclear,khong_ro,,ảnh mờ không rõ kiểu kính
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r147496,safety,du_lon,,tròng ôm mặt
+machine_pass_b,2,2026-11-07T15:30:25,task_b,box,r147675,unclear,khong_ro,,anh toi mo khong ro loai kinh
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r147754,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r148152,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r148720,unclear,du_lon,,nhìn nghiêng mờ gọng mảnh tròng trong
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r148914,unclear,du_lon,,gong mong tron trong khong chac
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r149120,unclear,khong_ro,,nhìn nghiêng rất mờ
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r151366,unclear,du_lon,,gong toi trong trong khong thay tam chan
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r151810,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r15183,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r152653,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r153386,unclear,du_lon,,mặt quay đi tối không thấy rõ kính
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r153755,safety,du_lon,,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,box,r153926,unclear,du_lon,,gong toi khong chac kinh an toan
+machine_pass_b,2,2026-11-07T15:30:25,task_b,box,r154281,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r15447,unclear,du_lon,,kính tối nhìn nghiêng
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r155167,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r155580,unclear,du_lon,,cui mat khong thay ro kieu kinh
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r155656,safety,du_lon,,tròng vàng ôm mặt
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r15624,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r156292,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r156295,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r156493,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r15686,safety,du_lon,,tròng trong rộng ôm mặt dù hơi mờ
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r15708,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r158352,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r158392,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r160285,unclear,du_lon,,trong toi anh den trang
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r160407,unclear,du_lon,,anh sang xanh toi kho xac dinh
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r160415,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r160570,unclear,du_lon,,anh mo gong toi khong ro kieu kinh
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r161874,unclear,du_lon,,gong den tron trong khong chac kinh can
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r162156,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r162580,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r162722,safety,du_lon,,tròng ôm mặt
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r163342,unclear,du_lon,,tron trong khong thay ro tam chan
+machine_pass_b,2,2026-11-07T15:30:25,task_b,box,r166324,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r166738,unclear,du_lon,,ảnh tối mờ
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r166851,unclear,du_lon,,gọng thường tròng trong không rõ tấm chắn
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r167156,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r16719,unclear,du_lon,,ảnh mờ gọng mảnh
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r168749,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r169105,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r170188,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r170687,unclear,du_lon,,ảnh mờ
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r171987,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r17213,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r172366,unclear,du_lon,,mặt cúi không thấy rõ kính
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r173043,safety,du_lon,,tròng ôm mặt
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r174203,unclear,du_lon,,gong toi tron trong khong ro tam chan
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r174689,unclear,du_lon,,nhìn nghiêng gọng mảnh không chắc
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r174828,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r175255,safety,du_lon,,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,box,r177013,unclear,du_lon,,gong trong khong thay tam chan anh hoi mo
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r177705,ordinary,du_lon,,kinh ram thoi trang
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r177944,unclear,du_lon,,gong toi cui dau khong ro kieu kinh
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r178627,unclear,du_lon,,anh mo khong ro kieu kinh
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r178818,unclear,du_lon,,anh phong to mo khong thay ro dau hieu kinh an toan
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r178921,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r179874,safety,du_lon,,anh mo nhung trong om mat
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r179957,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r18075,unclear,du_lon,,ảnh mờ không rõ kiểu kính
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r181494,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r181815,ordinary,du_lon,,kính đẩy lên đầu không đeo trên mắt
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r181827,unclear,du_lon,,nhìn nghiêng chỉ thấy gọng
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r182024,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r183877,unclear,du_lon,,gọng mảnh tròng trong không chắc
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r186133,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r187248,unclear,du_lon,,ảnh mờ
+machine_pass_b,2,2026-11-07T15:30:25,task_b,box,r188683,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r189379,safety,du_lon,,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,box,r18990,unclear,du_lon,,trong toi anh nho khong ro loai kinh
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r19033,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r190586,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r191152,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r191520,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r192009,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r192440,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r192450,unclear,du_lon,,anh mo khong ro kieu kinh
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r192592,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r193496,unclear,du_lon,,gong den trong trong khong co tam chan ro
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r193743,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r193983,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r19399,unclear,du_lon,,mặt nạ che mặt không rõ kính bên trong
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r195237,unclear,du_lon,,anh den trang kinh toi
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r195576,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r195887,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r196049,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r197626,safety,du_lon,,gong xanh kieu an toan
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r197810,unclear,du_lon,,gọng tối nhìn nghiêng không rõ
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r198162,safety,du_lon,,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,box,r199083,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r199282,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r199424,unclear,du_lon,,anh mo khong ro kieu kinh
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r199481,unclear,du_lon,,nhin nghieng mo
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r199803,safety,du_lon,,tròng ôm mặt nhìn nghiêng
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r199875,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r199900,safety,du_lon,,tròng ôm mặt
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r21187,safety,du_lon,,tròng rộng ôm mặt
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r22904,unclear,du_lon,,cui dau khong thay ro kinh
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r23123,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r24158,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r24516,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r25769,safety,du_lon,,tròng ôm mặt có che bên
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r25808,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r26488,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r27093,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r30778,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r30926,unclear,khong_ro,,anh vo mo
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r33012,unclear,du_lon,,anh mo khong ro kieu kinh
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r34608,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r34741,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r34809,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r36989,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r37192,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r39080,ordinary,du_lon,,kinh can gong tron
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r39183,unclear,du_lon,,anh chay sang khong ro kieu kinh
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r39264,unclear,du_lon,,ảnh mờ gọng tối không rõ kiểu kính
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r39868,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r40757,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r41163,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r41920,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r41933,safety,du_lon,,tròng rộng ôm mặt
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r42250,safety,du_lon,,tròng ôm mặt
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r42739,safety,du_lon,,tròng ôm mặt
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r43310,safety,du_lon,,trong vang
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r43578,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r43698,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r44522,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r44789,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r44908,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r45057,ignore,qua_nho,,mat qua mo
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r45770,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r45988,unclear,du_lon,,anh mo khong ro kieu kinh
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r46059,unclear,du_lon,,mo goc nghieng
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r46277,unclear,du_lon,,tròng trong không chắc kiểu kính
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r46400,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r47315,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r48100,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r48101,unclear,du_lon,,gọng tròn thường tròng trong
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r49592,unclear,du_lon,,trong toi khong phan biet voi kinh ram
+machine_pass_b,2,2026-11-07T15:30:25,task_b,box,r50039,unclear,khong_ro,,mat mo khong thay ro kinh
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r50251,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r51859,unclear,du_lon,,ảnh mờ không rõ kiểu kính
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r52233,unclear,du_lon,,gọng mảnh tròng trong không chắc
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r52449,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r52722,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r53028,ignore,qua_nho,,qua nho va mo
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r54746,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r55245,safety,du_lon,,trong vang
+machine_pass_b,2,2026-11-07T15:30:25,task_b,box,r55762,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r57181,unclear,du_lon,,anh mo khong ro kieu kinh
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r57526,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r57612,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r58120,ordinary,du_lon,,kính râm thời trang
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r59653,unclear,du_lon,,ảnh mờ
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r59853,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r60543,unclear,du_lon,,mat bi ong dong che
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r61427,safety,du_lon,,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,box,r62065,ordinary,du_lon,,kinh can khong vien
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r63266,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r63515,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r64309,unclear,du_lon,,gong den khong ro kinh an toan
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r65121,unclear,khong_ro,,anh rat mo
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r65220,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r65349,unclear,du_lon,,nhin tu sau khong thay kinh
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r68013,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r69059,safety,du_lon,,anh hoi mo
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r69482,unclear,du_lon,,mặt cúi chỉ thấy gọng tối
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r69632,safety,du_lon,,trong mau kieu kinh an toan
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r70227,unclear,du_lon,,ảnh mờ không thấy rõ kính
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r71329,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r71576,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r72772,unclear,du_lon,,nghiêng mặt mờ
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r74436,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r74500,unclear,du_lon,,khong ro kieu kinh
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r74576,safety,du_lon,,trong om mat nhin nghieng
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r75360,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r75457,unclear,du_lon,,anh mo cui dau
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r77192,ignore,qua_nho,,mặt quá mờ
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r77653,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r78364,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r78424,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,box,r79506,safety,du_lon,,tròng trong ôm mặt
+machine_pass_b,2,2026-11-07T15:30:25,task_b,box,r80270,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r80652,safety,du_lon,,tròng ôm mặt
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r81179,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r82651,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r82745,safety,du_lon,,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,box,r83085,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r83144,unclear,du_lon,,hop lech khoi kinh
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r84802,safety,du_lon,,trong om mat
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r84927,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r85338,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r85694,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r85738,unclear,du_lon,,ánh sáng đêm tròng tối không rõ
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r86131,safety,du_lon,,tròng rộng ôm mặt
+machine_pass_b,2,2026-11-07T15:30:25,task_b,box,r86280,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,box,r87669,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r87764,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r88194,unclear,du_lon,,kinh toi kho phan biet kinh ram
+machine_pass_b,2,2026-11-07T15:30:25,task_b,box,r89575,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,box,r90111,unclear,du_lon,,gong toi trong trong khong chac
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r90528,unclear,du_lon,,ảnh mờ không rõ kiểu kính
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r91375,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r91610,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,box,r92190,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,box,r93677,safety,du_lon,,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,box,r94570,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,box,r95298,safety,du_lon,,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r96705,unclear,du_lon,,ảnh vỡ hạt gọng tối
+machine_pass_b,2,2026-11-07T19:32:03,task_b,box,r99612,unclear,du_lon,,ảnh mờ
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_000536.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_001230.jpg,,,no_missing,quay lung
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_001591.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_002037.jpg,,,no_missing,người ở xa
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_002249.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_002968.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_004060.jpg,,,no_missing,người ở xa
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_004090.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_004399.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_004480.jpg,,,no_missing,kinh can trong phong hop
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_005433.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_006169.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_006596.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_007401.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_008297.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_008938.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_009759.jpg,,,no_missing,goc cao nguoi xa
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_010480.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_010618.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_010717.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_011848.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_011945.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_012293.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_013031.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_013706.jpg,,,no_missing,kinh toi khong phan biet kinh ram
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_013925.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_014210.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_014345.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_014350.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_014522.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_014541.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_014665.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_015769.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_017427.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_018065.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_018654.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_018758.jpg,,,no_missing,kinh gong thuong khong phai kinh bao ho
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_018785.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_019440.jpg,,,no_missing,kinh can gong thuong
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_020360.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_021659.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_021892.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_022054.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_022374.jpg,,,no_missing,người ở xa
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_022795.jpg,,,no_missing,goc cao
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_023210.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_023652.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_023974.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_024219.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_024873.jpg,,,no_missing,mặt cúi không thấy rõ kính
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_024968.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_025900.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_026736.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_027358.jpg,,,no_missing,nguoi o xa
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_028028.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_028108.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_028474.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_029864.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_030448.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_030938.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_030951.jpg,,,no_missing,hai nguoi nu deo kinh khong ro loai
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_031429.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_031510.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_032063.jpg,,,no_missing,người ở xa
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_032403.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_033210.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_033882.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_034355.jpg,,,no_missing,người ở xa
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_034845.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_035500.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_035617.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_035996.jpg,,,no_missing,nguoi nen o xa khong ro
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_036569.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_036771.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_037580.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_037725.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_039141.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_039865.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_041950.jpg,,,no_missing,nguoi nu deo kinh gong thuong
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_041999.jpg,,,no_missing,kinh gong toi kieu thuong
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_042030.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_043086.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_043435.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_043653.jpg,,,no_missing,nguoi xa
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_044566.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_045488.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_045696.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_046218.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_047025.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_048036.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_048282.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_048402.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_048520.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_048947.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_049154.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_049161.jpg,,,missing_box,nguoi phia truoc deo kinh trong cam chua co hop
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_049551.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_051236.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_051460.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_051736.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_051899.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_052330.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_052894.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_053240.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_053303.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_053771.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_054543.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_055042.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_055594.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_055750.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_055810.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_056150.jpg,,,no_missing,hai nguoi deo kinh nhung khong ro la kinh bao ho
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_056206.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_056238.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_056662.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_056944.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_057440.jpg,,,no_missing,nguoi xa
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_057447.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_057646.jpg,,,no_missing,mat bi may che
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_058559.jpg,,,no_missing,nguoi o xa
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_058906.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_059076.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_059189.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_060854.jpg,,,no_missing,người ở xa
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_060989.jpg,,,no_missing,goggle dat tren mu khong deo tren mat
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_061161.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_061181.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_061654.jpg,,,no_missing,nguoi o xa
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_062134.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_063686.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_064803.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_064991.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_065123.jpg,,,no_missing,kính thường
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_065484.jpg,,,no_missing,kinh gong thuong
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_065544.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_065722.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_065905.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_065949.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_066377.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_068270.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_068566.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_069349.jpg,,,no_missing,nguoi cui khong thay mat
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_070595.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_070732.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_071169.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_071230.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_071626.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_072085.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_073757.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_074311.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_074447.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_074705.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_074833.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_075305.jpg,,,no_missing,goc cao nguoi xa
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_075332.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_075605.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_076224.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_076243.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_076870.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_077320.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_077358.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_078018.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_078938.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_078998.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_079095.jpg,,,no_missing,góc cao người nhỏ
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_079129.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_079770.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_079780.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_079830.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_080388.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_080757.jpg,,,no_missing,nguoi ben phai co the deo kinh nhung nhin nghieng khong ro loai
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_080871.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_082197.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_082465.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_082942.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_084069.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_084099.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_085076.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_086668.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_086680.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_086776.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_087495.jpg,,,no_missing,người ở xa
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_087592.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_088335.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_088336.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_089452.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_090235.jpg,,,no_missing,quay lung o xa
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_090445.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_092393.jpg,,,no_missing,nguoi phia sau co the deo kinh nhung khong nhin ro loai
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_093198.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_093510.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_093662.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_093829.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_093933.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_095439.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_095956.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_096634.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_097475.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_097633.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_098104.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_099120.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_100056.jpg,,,no_missing,nguoi xa
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_100123.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_101038.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_101253.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_102037.jpg,,,no_missing,kinh gong thuong
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_102903.jpg,,,no_missing,goc cao
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_103155.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_103840.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_104230.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_105309.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_105381.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_105489.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_105695.jpg,,,no_missing,người ở xa
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_105962.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_106348.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_106434.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_106769.jpg,,,no_missing,kính gọng thường không rõ là kính bảo hộ
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_107042.jpg,,,no_missing,người đội mũ vàng có kính không rõ loại
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_107379.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_107500.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_108442.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_108496.jpg,,,missing_box,nguoi tien canh ben trai deo kinh om mat trong chua co hop
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_108728.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_108834.jpg,,,no_missing,người ở xa không rõ
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_109198.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_109253.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_110239.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_110451.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_111494.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_111775.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_111828.jpg,,,missing_box,nguoi tien canh mu xanh deo kinh bao ho chua co hop
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_112052.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_112806.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_112960.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_114286.jpg,,,no_missing,không có đồ bảo hộ
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_115556.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_115724.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_116445.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_116543.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_117998.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_118068.jpg,,,no_missing,nguoi quay lung
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_118434.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_120402.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_120561.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_120904.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_121613.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_121927.jpg,,,no_missing,giày thường
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_122742.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_122802.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_123004.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_123443.jpg,,,no_missing,người ở xa
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_123851.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_123898.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_124739.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_125026.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_125133.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_125990.jpg,,,no_missing,người ở xa ảnh tối
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_126059.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_126136.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_127269.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_127596.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_127660.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_127780.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_127930.jpg,,,no_missing,nguoi o xa
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_130230.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_130790.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_130878.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_131609.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_131947.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_132209.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_132425.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_133656.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_133761.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_134808.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_135361.jpg,,,no_missing,nguoi xa
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_135887.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_135969.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_135997.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_137856.jpg,,,no_missing,kính cận văn phòng
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_138188.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_138984.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_140286.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_140864.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_141255.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_141591.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_141762.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_142276.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_143132.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_143555.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_143638.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_145410.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_146464.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_146556.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_146612.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_147198.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_147922.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_148318.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_148734.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_149290.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_150175.jpg,,,no_missing,goggle dat tren mu khong deo tren mat
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_150697.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_151224.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_151367.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_151845.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_152989.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_153003.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_154737.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_154995.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_155635.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_156648.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_156792.jpg,,,no_missing,kinh nguoi nu day len dau da co hop
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_157573.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_158132.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_158207.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_158401.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_158465.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_159228.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_159243.jpg,,,no_missing,người ở xa
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_159847.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_161174.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_161482.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_161843.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_162761.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_163573.jpg,,,no_missing,người ở xa
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_163606.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_163821.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_164875.jpg,,,no_missing,kinh day len mu khong tinh
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_165271.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_166588.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_166788.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_166811.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_166871.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_167252.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_168019.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_168082.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_168141.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_168236.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_168278.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_168817.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_169514.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_170006.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_170204.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_170318.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_170567.jpg,,,no_missing,nguoi phia sau mo khong ro kinh
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_170917.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_171122.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_171743.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_172122.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_172603.jpg,,,no_missing,nguoi rat xa
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_172736.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_175374.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_175953.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_176066.jpg,,,no_missing,nguoi o xa goc cao
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_176121.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_176617.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_176904.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_176993.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_177457.jpg,,,no_missing,kính cận
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_177502.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_177663.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_177928.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_178833.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_180307.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_180652.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_180817.jpg,,,no_missing,kính cận
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_181020.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_181071.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_181475.jpg,,,no_missing,người ở xa
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_182131.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_182135.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_182161.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_182274.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_182861.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_183627.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_183746.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_183987.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_184938.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_185733.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_185903.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_186399.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_186659.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_186961.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_186981.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_187507.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_190173.jpg,,,no_missing,kính tối người ở xa không rõ
+machine_pass_b,2,2026-11-07T19:32:03,task_b,image,img_190793.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_191065.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_191117.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_191161.jpg,,,no_missing,nguoi o xa
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_191635.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_191646.jpg,,,no_missing,kinh thuong va kinh ram
+machine_pass_b,2,2026-11-07T19:31:39,task_b,image,img_192175.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_192524.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_192546.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_192705.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_193074.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_193832.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_b,image,img_194169.jpg,,,no_missing,nguoi xa
+machine_pass_b,2,2026-11-07T15:30:25,task_b,image,img_194404.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_195569.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_195915.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_196125.jpg,,,no_missing,kính râm thường
+machine_pass_b,2,2026-11-07T19:32:21,task_b,image,img_196376.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_196990.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_b,image,img_198383.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_b,image,img_198689.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_198742.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_b,image,img_199790.jpg,,,no_missing,không thấy rõ mắt
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r02163,safety,,,
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r02522,ordinary,,,giay the thao
+machine_pass_b,2,2026-11-07T19:31:51,task_c,box,r05276,ordinary,,,giay the thao trang
+machine_pass_b,2,2026-11-07T19:31:39,task_c,box,r05553,unclear,,,mat cui mo khong thay kinh
+machine_pass_b,2,2026-11-07T19:32:18,task_c,box,r05794,unclear,,,mặt cúi mờ không rõ kính
+machine_pass_b,2,2026-11-07T19:31:48,task_c,box,r06334,unclear,,,chỉ thấy đế tối không thấy cổ
+machine_pass_b,2,2026-11-07T19:31:39,task_c,box,r09703,unclear,,,toi khong thay giay
+machine_pass_b,2,2026-11-07T19:32:03,task_c,box,r100537,ordinary,,,giày thể thao
+machine_pass_b,2,2026-11-07T19:31:51,task_c,box,r102634,unclear,,,kinh toi kho phan biet kinh ram
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r103422,unclear,,,hop lech chi trum got va ong quan
+machine_pass_b,2,2026-11-07T19:31:51,task_c,box,r105645,safety,,,
+machine_pass_b,2,2026-11-07T19:32:18,task_c,box,r108197,unclear,,,ảnh mờ không rõ kiểu kính
+machine_pass_b,2,2026-11-07T15:30:25,task_c,box,r108411,ordinary,,,giay da
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r109206,safety,,,
+machine_pass_b,2,2026-11-07T19:32:18,task_c,box,r110065,unclear,,,hộp sát mép ảnh chỉ thấy một phần
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r11261,unclear,,,giay toi khong thay co va de
+machine_pass_b,2,2026-11-07T19:32:18,task_c,box,r112745,unclear,,,ảnh mờ không rõ cổ giày
+machine_pass_b,2,2026-11-07T15:30:25,task_c,box,r113472,unclear,,,trong toi phan quang khong phan biet voi kinh ram
+machine_pass_b,2,2026-11-07T19:31:51,task_c,box,r114179,unclear,,,giay toi khong ro co
+machine_pass_b,2,2026-11-07T19:31:51,task_c,box,r114531,ordinary,,,giay the thao trang
+machine_pass_b,2,2026-11-07T15:30:25,task_c,box,r116868,safety,,,
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r117177,ordinary,,,dep suc kieu crocs
+machine_pass_b,2,2026-11-07T19:32:18,task_c,box,r118553,unclear,,,giày tối không thấy cổ và đế
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r118930,unclear,,,giay den khong thay co
+machine_pass_b,2,2026-11-07T19:31:48,task_c,box,r121315,unclear,,,kính tối không phân biệt với kính râm
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r121594,ordinary,,,giay the thao
+machine_pass_b,2,2026-11-07T19:32:18,task_c,box,r12362,safety,,,
+machine_pass_b,2,2026-11-07T19:32:03,task_c,box,r124350,unclear,,,ảnh tối gọng thường tròng trong
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r125664,unclear,,,hop duoi may khong ro vat
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r126197,ordinary,,,giay cao got
+machine_pass_b,2,2026-11-07T19:32:03,task_c,box,r128123,ordinary,,,giày da buộc dây
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r128861,ordinary,,,dep tong
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r129476,unclear,,,giay toi mo
+machine_pass_b,2,2026-11-07T19:31:48,task_c,box,r130046,unclear,,,gọng mảnh tròng trong không rõ tấm chắn
+machine_pass_b,2,2026-11-07T19:31:48,task_c,box,r133376,unclear,,,kính tối không phân biệt với kính râm
+machine_pass_b,2,2026-11-07T19:31:51,task_c,box,r133992,ordinary,,,giay cao got
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r136137,safety,,,
+machine_pass_b,2,2026-11-07T19:31:51,task_c,box,r136818,safety,,,
+machine_pass_b,2,2026-11-07T15:30:25,task_c,box,r138423,ignore,,,nguoi phia sau mo
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r13956,ordinary,,,giay cao got
+machine_pass_b,2,2026-11-07T19:32:18,task_c,box,r140426,ordinary,,,dép nhựa kiểu crocs
+machine_pass_b,2,2026-11-07T19:32:18,task_c,box,r140921,safety,,,
+machine_pass_b,2,2026-11-07T19:31:39,task_c,box,r141631,ordinary,,,giay the thao day
+machine_pass_b,2,2026-11-07T19:31:51,task_c,box,r14575,unclear,,,gong den trong trong khong chac
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r145893,ordinary,,,giay cao got
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r147188,unclear,,,mo khong chac kieu kinh
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r147266,ignore,,,nguoi rat xa
+machine_pass_b,2,2026-11-07T19:32:03,task_c,box,r147906,unclear,,,giày tối không thấy cổ và đế
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r149310,unclear,,,giay toi khong thay co
+machine_pass_b,2,2026-11-07T19:32:03,task_c,box,r150180,ordinary,,,giày da
+machine_pass_b,2,2026-11-07T19:32:03,task_c,box,r154853,ordinary,,,giày thể thao
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r155394,unclear,,,gong mong tron trong anh mo
+machine_pass_b,2,2026-11-07T19:31:51,task_c,box,r157248,ordinary,,,giay treo tuong khong co nguoi mang
+machine_pass_b,2,2026-11-07T15:30:25,task_c,box,r158971,ordinary,,,giay trang kieu the thao anh hoi mo
+machine_pass_b,2,2026-11-07T19:31:39,task_c,box,r159536,unclear,,,giay toi trong canh toi
+machine_pass_b,2,2026-11-07T19:32:18,task_c,box,r159804,unclear,,,hộp ở chân trần
+machine_pass_b,2,2026-11-07T19:32:03,task_c,box,r159856,unclear,,,gọng tối không rõ kiểu an toàn
+machine_pass_b,2,2026-11-07T19:31:51,task_c,box,r159985,ordinary,,,giay thoi trang
+machine_pass_b,2,2026-11-07T15:30:25,task_c,box,r160711,unclear,,,goc cao giay toi khong thay co va de
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r160833,ordinary,,,giay the thao trang
+machine_pass_b,2,2026-11-07T19:31:39,task_c,box,r161944,safety,,,
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r162379,safety,,,
+machine_pass_b,2,2026-11-07T19:32:03,task_c,box,r162520,safety,,,
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r163250,safety,,,
+machine_pass_b,2,2026-11-07T19:32:03,task_c,box,r164278,unclear,,,hộp lệch không trùm giày
+machine_pass_b,2,2026-11-07T19:31:51,task_c,box,r166604,ordinary,,,giay da nau
+machine_pass_b,2,2026-11-07T19:31:48,task_c,box,r16714,safety,,,tròng trong ôm mặt
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r168925,ordinary,,,dep tong dat tren nen khong mang
+machine_pass_b,2,2026-11-07T19:31:48,task_c,box,r169247,safety,,,tròng đỏ cam ôm mặt
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r16988,unclear,,,hop o ong quan khong thay giay
+machine_pass_b,2,2026-11-07T19:31:48,task_c,box,r170013,safety,,,tròng ôm mặt
+machine_pass_b,2,2026-11-07T19:32:18,task_c,box,r170132,ordinary,,,bốt gót cao thời trang
+machine_pass_b,2,2026-11-07T19:31:39,task_c,box,r170911,safety,,,
+machine_pass_b,2,2026-11-07T19:32:18,task_c,box,r171797,safety,,,
+machine_pass_b,2,2026-11-07T19:31:48,task_c,box,r172050,safety,,,tròng ôm mặt
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r173033,ordinary,,,giay thap mau be
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r174176,unclear,,,kinh toi om mat khong phan biet voi kinh ram
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r17439,unclear,,,giay nau kieu leo nui khong ro bao ho
+machine_pass_b,2,2026-11-07T15:30:25,task_c,box,r175633,unclear,,,trong toi khong phan biet voi kinh ram
+machine_pass_b,2,2026-11-07T19:31:48,task_c,box,r17685,ordinary,,,giày thể thao trắng
+machine_pass_b,2,2026-11-07T19:31:51,task_c,box,r17837,safety,,,
+machine_pass_b,2,2026-11-07T19:31:48,task_c,box,r178400,unclear,,,giày tối không thấy cổ
+machine_pass_b,2,2026-11-07T19:32:18,task_c,box,r18019,safety,,,ủng cao bị lau sậy che một phần
+machine_pass_b,2,2026-11-07T15:30:25,task_c,box,r182699,unclear,,,mui giay nau co bi ong quan che
+machine_pass_b,2,2026-11-07T19:32:18,task_c,box,r182874,unclear,,,ảnh mờ không rõ kiểu kính
+machine_pass_b,2,2026-11-07T19:31:51,task_c,box,r183214,ordinary,,,dep suc
+machine_pass_b,2,2026-11-07T19:31:51,task_c,box,r184788,unclear,,,khong thay ro kinh
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r184867,unclear,,,hop o dau goi khong thay giay
+machine_pass_b,2,2026-11-07T19:31:48,task_c,box,r184869,ignore,,,quá mờ và quá nhỏ
+machine_pass_b,2,2026-11-07T19:32:03,task_c,box,r185568,safety,,,
+machine_pass_b,2,2026-11-07T15:30:25,task_c,box,r186809,safety,,,
+machine_pass_b,2,2026-11-07T19:31:39,task_c,box,r187328,ordinary,,,giay the thao trong phong
+machine_pass_b,2,2026-11-07T15:30:25,task_c,box,r189192,ordinary,,,giay vai the thao
+machine_pass_b,2,2026-11-07T15:30:25,task_c,box,r191518,safety,,,
+machine_pass_b,2,2026-11-07T19:32:03,task_c,box,r192579,ordinary,,,giày thể thao
+machine_pass_b,2,2026-11-07T19:31:39,task_c,box,r194044,ordinary,,,giay the thao
+machine_pass_b,2,2026-11-07T19:31:48,task_c,box,r19498,ordinary,,,giày thể thao trắng
+machine_pass_b,2,2026-11-07T19:32:03,task_c,box,r197437,ignore,,,
+machine_pass_b,2,2026-11-07T19:32:18,task_c,box,r197980,unclear,,,kính tối không phân biệt với kính râm
+machine_pass_b,2,2026-11-07T15:30:25,task_c,box,r23217,safety,,,
+machine_pass_b,2,2026-11-07T19:31:48,task_c,box,r23362,unclear,,,hộp lệch ở ống quần góc cao
+machine_pass_b,2,2026-11-07T19:32:18,task_c,box,r23482,unclear,,,hộp lệch phía trên giày
+machine_pass_b,2,2026-11-07T19:31:48,task_c,box,r27107,safety,,,tròng ôm mặt
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r27642,safety,,,
+machine_pass_b,2,2026-11-07T19:31:39,task_c,box,r28410,ignore,,,qua mo qua nho
+machine_pass_b,2,2026-11-07T19:32:03,task_c,box,r29263,unclear,,,kính tối ảnh vỡ hạt
+machine_pass_b,2,2026-11-07T19:32:18,task_c,box,r32909,unclear,,,nhìn nghiêng không rõ kiểu kính
+machine_pass_b,2,2026-11-07T19:31:48,task_c,box,r32974,safety,,,tròng ôm mặt
+machine_pass_b,2,2026-11-07T19:31:39,task_c,box,r33010,unclear,,,gong den khong ro kinh an toan
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r34163,safety,,,trong vang
+machine_pass_b,2,2026-11-07T19:31:39,task_c,box,r34718,ordinary,,,giay vai
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r35286,ordinary,,,giay luoi
+machine_pass_b,2,2026-11-07T19:31:51,task_c,box,r38098,unclear,,,nguoi nho giay toi
+machine_pass_b,2,2026-11-07T19:31:51,task_c,box,r38182,safety,,,
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r39992,unclear,,,trong toi khong phan biet voi kinh ram
+machine_pass_b,2,2026-11-07T15:30:25,task_c,box,r40493,ordinary,,,giay the thao
+machine_pass_b,2,2026-11-07T19:31:48,task_c,box,r42394,safety,,,tròng ôm mặt
+machine_pass_b,2,2026-11-07T19:31:48,task_c,box,r45009,ordinary,,,giày cao gót văn phòng
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r46062,ordinary,,,giay cao got
+machine_pass_b,2,2026-11-07T19:31:39,task_c,box,r48457,ordinary,,,giay the thao thap
+machine_pass_b,2,2026-11-07T19:31:51,task_c,box,r48930,ordinary,,,giay the thao
+machine_pass_b,2,2026-11-07T19:32:18,task_c,box,r51178,ordinary,,,giày thể thao
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r53995,unclear,,,mo goc nghieng
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r55498,ignore,,,nguoi rat xa
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r56617,unclear,,,nguoi nho giay xam khong ro
+machine_pass_b,2,2026-11-07T19:32:03,task_c,box,r61783,ordinary,,,giày da
+machine_pass_b,2,2026-11-07T19:32:03,task_c,box,r65967,ordinary,,,giày cao gót
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r66182,unclear,,,trong toi khong phan biet voi kinh ram
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r67572,ordinary,,,giay da buoc day trong van phong
+machine_pass_b,2,2026-11-07T19:31:51,task_c,box,r68646,ordinary,,,dep
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r69135,ignore,,,nguoi nho tren thang
+machine_pass_b,2,2026-11-07T19:31:51,task_c,box,r71148,safety,,,
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r72270,ordinary,,,giay trung bay khong co nguoi mang
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r72350,ordinary,,,giay the thao trang
+machine_pass_b,2,2026-11-07T19:31:39,task_c,box,r72460,ordinary,,,giay da
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r74103,unclear,,,vat trang lan voi tay va co khong ro la dep hay chan
+machine_pass_b,2,2026-11-07T19:32:18,task_c,box,r74870,ordinary,,,giày trắng thường
+machine_pass_b,2,2026-11-07T19:31:39,task_c,box,r75984,safety,,,
+machine_pass_b,2,2026-11-07T19:31:48,task_c,box,r76097,safety,,,tròng trong ôm mặt nhìn nghiêng
+machine_pass_b,2,2026-11-07T19:32:03,task_c,box,r77370,ordinary,,,giày thể thao
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r78762,ordinary,,,giay the thao trang
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r80929,unclear,,,chan duoi ban hop khong ro vat
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r82954,ordinary,,,giay vai thuong
+machine_pass_b,2,2026-11-07T19:31:48,task_c,box,r84540,unclear,,,mờ không thấy tấm chắn
+machine_pass_b,2,2026-11-07T19:32:01,task_c,box,r85641,ordinary,,,giay da cong so
+machine_pass_b,2,2026-11-07T19:31:48,task_c,box,r86436,unclear,,,hộp lệch ở chân trần và sàn
+machine_pass_b,2,2026-11-07T19:32:18,task_c,box,r87317,ordinary,,,giày cao gót
+machine_pass_b,2,2026-11-07T19:32:18,task_c,box,r87691,safety,,,
+machine_pass_b,2,2026-11-07T15:30:25,task_c,box,r89193,safety,,,tre em mac do hoa trang nhung kinh trong vang om mat
+machine_pass_b,2,2026-11-07T19:32:18,task_c,box,r89758,ignore,,,người rất xa
+machine_pass_b,2,2026-11-07T19:31:39,task_c,box,r91292,safety,,,
+machine_pass_b,2,2026-11-07T19:32:18,task_c,box,r94183,ordinary,,,giày da thời trang
+machine_pass_b,2,2026-11-07T19:32:21,task_c,box,r94448,ordinary,,,ung trung bay khong dang mang
+machine_pass_b,2,2026-11-07T19:31:39,task_c,box,r97343,unclear,,,trong toi khong phan biet kinh ram
+machine_pass_b,2,2026-11-07T19:31:48,task_c,box,r97499,unclear,,,mặt cúi không thấy rõ kính
+machine_pass_b,2,2026-11-07T19:31:51,task_c,box,r98422,ordinary,,,giay the thao
+machine_pass_b,2,2026-11-07T19:32:01,task_d,image,img_006557.jpg,,,no_missing,nguoi xa
+machine_pass_b,2,2026-11-07T19:31:48,task_d,image,img_009734.jpg,,,no_missing,không thấy chân
+machine_pass_b,2,2026-11-07T19:31:51,task_d,image,img_012053.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_d,image,img_012538.jpg,,,missing_box,ủng vàng nhìn rõ chưa có hộp
+machine_pass_b,2,2026-11-07T19:31:51,task_d,image,img_012682.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_d,image,img_012705.jpg,,,no_missing,nguoi rat xa
+machine_pass_b,2,2026-11-07T19:32:01,task_d,image,img_014521.jpg,,,no_missing,nguoi rat xa
+machine_pass_b,2,2026-11-07T19:31:39,task_d,image,img_015671.jpg,,,no_missing,nguoi o xa
+machine_pass_b,2,2026-11-07T19:32:18,task_d,image,img_017374.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_d,image,img_019121.jpg,,,missing_box,nguoi trai mang giay cong trinh co cao chua co hop
+machine_pass_b,2,2026-11-07T19:31:51,task_d,image,img_019215.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_d,image,img_019342.jpg,,,no_missing,không thấy chân
+machine_pass_b,2,2026-11-07T19:32:18,task_d,image,img_020405.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_d,image,img_023788.jpg,,,no_missing,giay toi bi ong quan che khong nhin ro
+machine_pass_b,2,2026-11-07T15:30:25,task_d,image,img_026279.jpg,,,no_missing,nguoi o xa
+machine_pass_b,2,2026-11-07T19:32:01,task_d,image,img_027100.jpg,,,no_missing,nguoi xa chan bi lan can che
+machine_pass_b,2,2026-11-07T19:32:21,task_d,image,img_033607.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_d,image,img_040570.jpg,,,no_missing,khong thay chan
+machine_pass_b,2,2026-11-07T19:32:03,task_d,image,img_044090.jpg,,,no_missing,giày thường
+machine_pass_b,2,2026-11-07T19:32:18,task_d,image,img_048889.jpg,,,missing_box,giày cổ cao đế dày nhìn rõ chưa có hộp
+machine_pass_b,2,2026-11-07T19:31:51,task_d,image,img_050825.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_d,image,img_051556.jpg,,,no_missing,nguoi o xa
+machine_pass_b,2,2026-11-07T19:31:39,task_d,image,img_051912.jpg,,,no_missing,nguoi o xa
+machine_pass_b,2,2026-11-07T15:30:25,task_d,image,img_052050.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_d,image,img_052170.jpg,,,missing_box,giày công trình nâu nhìn rõ chưa có hộp
+machine_pass_b,2,2026-11-07T19:31:39,task_d,image,img_052483.jpg,,,no_missing,anh cat mat chan
+machine_pass_b,2,2026-11-07T19:32:01,task_d,image,img_055575.jpg,,,no_missing,nguoi xa
+machine_pass_b,2,2026-11-07T19:31:48,task_d,image,img_056188.jpg,,,no_missing,người ở xa chân không rõ
+machine_pass_b,2,2026-11-07T19:32:01,task_d,image,img_056222.jpg,,,no_missing,giay thuong nguoi xa
+machine_pass_b,2,2026-11-07T19:32:01,task_d,image,img_057175.jpg,,,no_missing,nguoi xa giay khong ro
+machine_pass_b,2,2026-11-07T19:31:51,task_d,image,img_059690.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_d,image,img_062799.jpg,,,no_missing,dep nhua thuong
+machine_pass_b,2,2026-11-07T19:31:51,task_d,image,img_064939.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_d,image,img_071811.jpg,,,no_missing,không thấy chân
+machine_pass_b,2,2026-11-07T19:31:51,task_d,image,img_072264.jpg,,,no_missing,giay nguoi sau nho khong ro
+machine_pass_b,2,2026-11-07T19:31:39,task_d,image,img_072909.jpg,,,no_missing,anh cat mat chan
+machine_pass_b,2,2026-11-07T19:31:51,task_d,image,img_074614.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_d,image,img_077163.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_d,image,img_080610.jpg,,,missing_box,hang cong nhan mo mang ung cao su den nhin ro chua co hop
+machine_pass_b,2,2026-11-07T19:31:48,task_d,image,img_080677.jpg,,,no_missing,không thấy chân
+machine_pass_b,2,2026-11-07T19:32:01,task_d,image,img_080920.jpg,,,no_missing,goc cao
+machine_pass_b,2,2026-11-07T19:32:18,task_d,image,img_083075.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:48,task_d,image,img_083881.jpg,,,no_missing,giày nhỏ không rõ loại
+machine_pass_b,2,2026-11-07T19:32:03,task_d,image,img_086663.jpg,,,missing_box,người quỳ mang giày cổ cao đế dày chưa có hộp
+machine_pass_b,2,2026-11-07T19:31:39,task_d,image,img_086939.jpg,,,no_missing,anh cat mat chan
+machine_pass_b,2,2026-11-07T19:32:21,task_d,image,img_087458.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_d,image,img_087995.jpg,,,no_missing,người ở xa
+machine_pass_b,2,2026-11-07T19:32:01,task_d,image,img_088098.jpg,,,no_missing,nguoi xa
+machine_pass_b,2,2026-11-07T19:32:03,task_d,image,img_088768.jpg,,,no_missing,người ở xa
+machine_pass_b,2,2026-11-07T15:30:25,task_d,image,img_090293.jpg,,,no_missing,nguoi o xa
+machine_pass_b,2,2026-11-07T15:30:25,task_d,image,img_092155.jpg,,,no_missing,nguoi o xa
+machine_pass_b,2,2026-11-07T19:31:51,task_d,image,img_094065.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_d,image,img_098123.jpg,,,no_missing,không thấy chân
+machine_pass_b,2,2026-11-07T19:32:01,task_d,image,img_098320.jpg,,,no_missing,khong thay chan
+machine_pass_b,2,2026-11-07T19:32:01,task_d,image,img_099282.jpg,,,missing_box,nguoi ben trai mang ung cao chua co hop
+machine_pass_b,2,2026-11-07T19:31:48,task_d,image,img_106537.jpg,,,no_missing,giày nhỏ không rõ
+machine_pass_b,2,2026-11-07T19:31:39,task_d,image,img_109712.jpg,,,no_missing,nguoi o xa
+machine_pass_b,2,2026-11-07T19:32:01,task_d,image,img_109841.jpg,,,no_missing,giay nguoi tren mai khong ro
+machine_pass_b,2,2026-11-07T19:32:03,task_d,image,img_113164.jpg,,,no_missing,người ở xa
+machine_pass_b,2,2026-11-07T19:31:39,task_d,image,img_114339.jpg,,,no_missing,anh cat mat chan
+machine_pass_b,2,2026-11-07T19:31:51,task_d,image,img_114548.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_d,image,img_117067.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_d,image,img_122644.jpg,,,no_missing,nguoi xa
+machine_pass_b,2,2026-11-07T19:32:03,task_d,image,img_123795.jpg,,,no_missing,chân bị che
+machine_pass_b,2,2026-11-07T15:30:25,task_d,image,img_125579.jpg,,,no_missing,giay thuong o xa khong ro
+machine_pass_b,2,2026-11-07T19:31:51,task_d,image,img_126060.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:01,task_d,image,img_127536.jpg,,,no_missing,nguoi xa
+machine_pass_b,2,2026-11-07T19:32:03,task_d,image,img_128240.jpg,,,no_missing,người ở xa
+machine_pass_b,2,2026-11-07T19:32:21,task_d,image,img_135721.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_d,image,img_138104.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_d,image,img_138511.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_d,image,img_139501.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_d,image,img_143158.jpg,,,no_missing,anh cat mat chan
+machine_pass_b,2,2026-11-07T15:30:25,task_d,image,img_145642.jpg,,,no_missing,nguoi o xa
+machine_pass_b,2,2026-11-07T19:32:03,task_d,image,img_147376.jpg,,,no_missing,không có người mang giày
+machine_pass_b,2,2026-11-07T19:31:39,task_d,image,img_152242.jpg,,,no_missing,nguoi o xa giay khong ro
+machine_pass_b,2,2026-11-07T19:32:21,task_d,image,img_152712.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_d,image,img_154736.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_d,image,img_154813.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_d,image,img_156819.jpg,,,no_missing,anh cat mat chan
+machine_pass_b,2,2026-11-07T19:32:03,task_d,image,img_158648.jpg,,,no_missing,giày da
+machine_pass_b,2,2026-11-07T15:30:25,task_d,image,img_158983.jpg,,,no_missing,chan khuat trong co
+machine_pass_b,2,2026-11-07T19:31:39,task_d,image,img_160072.jpg,,,no_missing,nguoi o xa giay khong ro
+machine_pass_b,2,2026-11-07T19:32:21,task_d,image,img_160255.jpg,,,missing_box,nguoi ben trai mang giay cong trinh co cao chua co hop
+machine_pass_b,2,2026-11-07T19:32:03,task_d,image,img_163316.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:21,task_d,image,img_166034.jpg,,,no_missing,chan ngap nuoc
+machine_pass_b,2,2026-11-07T19:31:51,task_d,image,img_175203.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T15:30:25,task_d,image,img_179004.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:39,task_d,image,img_181293.jpg,,,no_missing,nguoi o xa
+machine_pass_b,2,2026-11-07T19:32:01,task_d,image,img_187867.jpg,,,no_missing,nguoi xa
+machine_pass_b,2,2026-11-07T19:31:48,task_d,image,img_188132.jpg,,,no_missing,chỉ có mũ không có người
+machine_pass_b,2,2026-11-07T15:30:25,task_d,image,img_188463.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_d,image,img_188645.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:18,task_d,image,img_188949.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:31:51,task_d,image,img_195566.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_d,image,img_195581.jpg,,,no_missing,không thấy chân
+machine_pass_b,2,2026-11-07T19:32:18,task_d,image,img_199026.jpg,,,no_missing,
+machine_pass_b,2,2026-11-07T19:32:03,task_d,image,img_199195.jpg,,,no_missing,giày không rõ
+machine_pass_b,2,2026-11-07T19:31:48,task_d,image,img_199766.jpg,,,no_missing,không thấy chân
