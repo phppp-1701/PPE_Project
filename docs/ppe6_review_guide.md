@@ -13,10 +13,12 @@ python scripts/03q_ppe6_fast_review.py --task audit --reviewer "Tên bạn"
 Mở http://127.0.0.1:8765, dùng phím như mục "Công cụ duyệt nhanh". Phím `C` và `M` không dùng ở gói này. Xong, tắt bằng Ctrl + C rồi:
 
 ```
-python scripts/03q_ppe6_fast_review.py --task audit_img --reviewer "Tên bạn"
+python scripts/03q_ppe6_fast_review.py --task audit_img2 --reviewer "Tên bạn"
 ```
 
-Mỗi ảnh: thấy kính hoặc ủng bảo hộ nhìn rõ mà chưa có hộp thì bấm `M`; không có thì bấm `V`; ảnh không dùng được thì bấm `R`. Cuối cùng:
+Mỗi ảnh chỉ hỏi một lớp, ghi ở đầu khung phải (kính hoặc ủng, giày). Khung trắng là hộp đã có. Thấy đồ bảo hộ **của lớp được hỏi**, nhìn rõ, mà chưa có khung trắng thì bấm `M` rồi `V`; không có thì bấm `V`; ảnh hỏng (người đủ lớn mà ảnh quá mờ, tối, lỗi) thì bấm `R`. Đồ thường, người ở xa, không chắc: `V`.
+
+Gói `audit_img` bản đầu (07/11/2026) thiếu khung có sẵn và không ghi lớp được hỏi, nên câu hỏi với người khác câu hỏi hai lượt máy đã thấy. Phiên đã chấm giữ nguyên trên đĩa, không nhập, không dùng để kết luận; `audit-import` chỉ đọc `audit_img2`. Cuối cùng:
 
 ```
 python scripts/03t_ppe6_machine_label.py audit-import --reviewer "Tên bạn"

@@ -18,7 +18,7 @@ from ppe.ppe6_data import DECISIONS, NOT_A_PERSON, UNSET, parse_cvat
 
 PERSON_VALUES = ("du_lon", "qua_nho", "khong_ro")
 IMAGE_VALUES = ("image_checked", "reject_image")
-IMAGE_STEP_TASKS = ("task_b", "task_d", "audit_img")   # hướng dẫn duyệt: mọi ảnh của hai task này phải có tag
+IMAGE_STEP_TASKS = ("task_b", "task_d", "audit_img", "audit_img2")   # hướng dẫn duyệt: mọi ảnh của hai task này phải có tag
 LOG_FIELDS = ["reviewer", "time", "task", "target", "field", "before", "after"]
 TEST_REVIEWER = "agent_test"
 
@@ -29,11 +29,15 @@ def load_pack(folder):
     person = any(a["name"] == "person_ok" for lb in json.loads((folder / "labels.json").read_text(encoding="utf-8")) for a in lb.get("attributes", []))
     images = []
     for im in ET.fromstring((folder / "annotations.xml").read_text(encoding="utf-8")).iter("image"):
-        boxes = []
+        boxes, shown = [], []
         for b in im.findall("box"):
             attrs = {a.get("name"): (a.text or "") for a in b.findall("attribute")}
-            boxes.append(dict(item_id=attrs["item_id"], target=b.get("label").replace("_review", ""), xtl=float(b.get("xtl")), ytl=float(b.get("ytl")), xbr=float(b.get("xbr")), ybr=float(b.get("ybr"))))
-        images.append(dict(name=im.get("name"), width=int(im.get("width")), height=int(im.get("height")), boxes=boxes))
+            xy = dict(xtl=float(b.get("xtl")), ytl=float(b.get("ytl")), xbr=float(b.get("xbr")), ybr=float(b.get("ybr")))
+            if "item_id" in attrs:
+                boxes.append(dict(item_id=attrs["item_id"], target=b.get("label").replace("_review", ""), **xy))
+            else:
+                shown.append(xy)   # hộp đã có, chỉ vẽ để người duyệt biết, không phải bước duyệt
+        images.append(dict(name=im.get("name"), width=int(im.get("width")), height=int(im.get("height")), boxes=boxes, shown=shown, ask=im.get("ask", "")))
     return dict(person=person, images=images)
 
 
@@ -168,7 +172,8 @@ class Session:
         steps = self.steps()
         cells = len(self.items) * len(self.fields) + (len(self.names) if self.need_image else 0)
         return dict(task=self.task, person=self.pack["person"], need_image=self.need_image, cursor=self.s["cursor"], steps=steps, boxes=self.s["boxes"], images=self.s["images"], flags=self.s["flags"], skipped=self.s["skipped"],
-                    items=self.items, sizes={im["name"]: [im["width"], im["height"]] for im in self.pack["images"]}, cells=cells, missing=len(self.missing()), links=self.flag_links(cvat_url, task_id, job_id), finished_at=self.s["finished_at"])
+                    items=self.items, sizes={im["name"]: [im["width"], im["height"]] for im in self.pack["images"]},
+                    shown={im["name"]: im.get("shown", []) for im in self.pack["images"]}, ask={im["name"]: im.get("ask", "") for im in self.pack["images"]}, cells=cells, missing=len(self.missing()), links=self.flag_links(cvat_url, task_id, job_id), finished_at=self.s["finished_at"])
 
 
 class Conflict(Exception):

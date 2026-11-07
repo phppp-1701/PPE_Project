@@ -6,6 +6,7 @@ Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
     python scripts/03t_ppe6_machine_label.py merge       # gộp hai lượt, ghi machine_merged.csv; không xem nhãn cũ
     python scripts/03t_ppe6_machine_label.py compare     # sau khi khóa: so với nhãn agent cũ, chỉ in số tổng hợp
     python scripts/03t_ppe6_machine_label.py audit       # tạo gói audit, audit_img trong data/ppe6/review/cvat_pack_audit/
+    python scripts/03t_ppe6_machine_label.py audit-img2  # gói ảnh làm lại, có hộp đã có và lớp được hỏi
     python scripts/03t_ppe6_machine_label.py audit-import --reviewer "Tên"   # đọc phiên 03q, ghi audit_review.csv
     python scripts/03t_ppe6_machine_label.py audit-report
 
@@ -254,8 +255,11 @@ def cmd_compare():
         print(f"  {k}: khác {diff[k]}/{total[k]} ({diff[k] / total[k]:.1%})")
 
 
-def build_pack(name, items, images, person, seed):
-    """items: dòng ánh xạ có cx, cy.. theo pixel gói gốc. images: {tên ảnh gốc: (task, rộng, cao)}. Đặt tên mới ngẫu nhiên, trộn."""
+def build_pack(name, items, images, person, seed, shown=None, ask=None):
+    """items: dòng ánh xạ có cx, cy.. theo pixel gói gốc. images: {tên ảnh gốc: (task, rộng, cao)}. Đặt tên mới ngẫu nhiên, trộn.
+
+    shown: {tên ảnh gốc: [hộp]} hộp đã có, chỉ để vẽ (không item_id, không nhãn). ask: {tên ảnh gốc: lớp được hỏi ở bước xem ảnh}."""
+    shown, ask = shown or {}, ask or {}
     rng = random.Random(seed)
     folder = AUDIT / name
     folder.mkdir(parents=True)
@@ -277,7 +281,10 @@ def build_pack(name, items, images, person, seed):
         for fi, (new, src) in enumerate(pages):
             task, w, h = images[src]
             z.writestr(zipfile.ZipInfo(new, date_time=(2026, 1, 1, 0, 0, 0)), zips[task].read(src))
-            xml.append(f'<image id="{fi}" name={quoteattr(new)} width="{w}" height="{h}">')
+            q = f" ask={quoteattr(ask[src])}" if src in ask else ""
+            xml.append(f'<image id="{fi}" name={quoteattr(new)} width="{w}" height="{h}"{q}>')
+            for b in shown.get(src, []):
+                xml.append(f'<box label="shown" source="manual" occluded="0" xtl="{b["xtl"]:.2f}" ytl="{b["ytl"]:.2f}" xbr="{b["xbr"]:.2f}" ybr="{b["ybr"]:.2f}" z_order="0"></box>')
             group = by[src]
             rng.shuffle(group)
             for it in group:
@@ -297,6 +304,8 @@ def build_pack(name, items, images, person, seed):
 
 def cmd_audit():
     c = cfg()["audit"]
+    if list(REVIEW.glob("fast_audit*_state.json")):
+        sys.exit("Đã có phiên kiểm định của người, không tạo lại gói audit (sẽ mất ánh xạ).")
     rows = read_csv(REVIEW / "machine_merged.csv")
     if not rows:
         sys.exit("Chưa gộp.")
@@ -352,6 +361,38 @@ def cmd_audit():
         sys.exit(1)
 
 
+def cmd_audit_img2():
+    """Gói ảnh làm lại: cùng ảnh với audit_img, có vẽ hộp đã có và ghi lớp được hỏi như hai lượt máy đã thấy.
+
+    audit_img bản đầu thiếu hai thứ này nên câu hỏi với người khác câu hỏi với máy; giữ nguyên phiên đã chấm, không dùng để kết luận.
+    Không xóa hay ghi đè audit, audit_img, _private hiện có."""
+    c = cfg()["audit"]
+    old = read_csv(AUDIT / "_private" / "audit_img_images.csv")
+    if not old:
+        sys.exit("Chưa có audit_img.")
+    if (AUDIT / "audit_img2").exists():
+        sys.exit("audit_img2 đã có, không ghi đè.")
+    sizes, shown, ask = {}, {}, {}
+    for t in TASKS:
+        for im in load_pack(BLIND / t)["images"]:
+            sizes[im["name"]] = (t, im["width"], im["height"])
+            shown[im["name"]] = im["boxes"]
+            if t in TARGET_OF_IMAGE:
+                ask[im["name"]] = TARGET_OF_IMAGE[t]
+    origin = {r["image"]: r["origin"] for r in old}
+    _, imgs = build_pack("audit_img2", [], {k: sizes[k] for k in origin}, False, c["seed"] + 2, shown, ask)
+    with (AUDIT / "_private" / "audit_img2_images.csv").open("w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, ["audit_image", "image", "task", "origin"], lineterminator="\n")
+        w.writeheader()
+        w.writerows(dict(i, origin=origin[i["image"]]) for i in imgs)
+    text = (AUDIT / "audit_img2" / "annotations.xml").read_text(encoding="utf-8")
+    bad = leak_tokens(text) + leak_tokens((AUDIT / "audit_img2" / "labels.json").read_text(encoding="utf-8"))
+    n_shown = text.count('label="shown"')
+    print(f"audit_img2: {len(imgs)} ảnh, {n_shown} hộp có sẵn, hỏi", dict(Counter(ask[i["image"]] for i in imgs)), "| kiểm tra lộ nhãn: lỗi", len(bad), bad[:5])
+    if bad:
+        sys.exit(1)
+
+
 def cmd_audit_import(reviewer):
     if reviewer.strip().lower() in NOT_A_PERSON or reviewer.lower().startswith("machine"):
         sys.exit("Cần tên người thật.")
@@ -371,10 +412,15 @@ def cmd_audit_import(reviewer):
             continue
         it = items[mapping[k]["item_id"]]
         rows.append(dict(box_id=it["box_id"], item_id=mapping[k]["item_id"], kind="box", target=it["target"], source=it["source"], origin=mapping[k]["origin"], after=v["decision"], person_ok=v["person_ok"], reviewer=reviewer, reviewed_at=now))
-    p2 = REVIEW / "fast_audit_img_state.json"
+    # Chỉ dùng audit_img2; phiên audit_img bản đầu (thiếu hộp có sẵn, thiếu lớp được hỏi) giữ nguyên trên đĩa, không nhập.
+    p2 = REVIEW / "fast_audit_img2_state.json"
+    if not p2.exists():
+        sys.exit("Chưa có phiên audit_img2.")
     if p2.exists():
         s2 = json.loads(p2.read_text(encoding="utf-8"))
-        names = {r["audit_image"]: r for r in read_csv(AUDIT / "_private" / "audit_img_images.csv")}
+        if s2["reviewer"] != reviewer:
+            sys.exit("Phiên audit_img2 thuộc người khác.")
+        names = {r["audit_image"]: r for r in read_csv(AUDIT / "_private" / "audit_img2_images.csv")}
         for n, r in names.items():
             flagged, val = bool(s2["flags"].get("image:" + n)), s2["images"].get(n, "")
             if not flagged and not val:
@@ -410,7 +456,7 @@ def cmd_audit_report():
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["sheets", "collect", "merge", "compare", "audit", "audit-import", "audit-report"])
+    ap.add_argument("cmd", choices=["sheets", "collect", "merge", "compare", "audit", "audit-img2", "audit-import", "audit-report"])
     ap.add_argument("--pass", dest="which", choices=["a", "b"])
     ap.add_argument("--out")
     ap.add_argument("--reviewer", default="")
@@ -428,6 +474,8 @@ def main():
         cmd_compare()
     elif args.cmd == "audit":
         cmd_audit()
+    elif args.cmd == "audit-img2":
+        cmd_audit_img2()
     elif args.cmd == "audit-import":
         cmd_audit_import(args.reviewer)
     else:

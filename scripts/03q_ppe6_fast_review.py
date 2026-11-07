@@ -114,7 +114,7 @@ def build_server(session, zip_path, cfg, port, task_id, job_id):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--task", required=True, choices=["task_a", "task_b", "task_c", "task_d", "audit", "audit_img", "trial"])
+    ap.add_argument("--task", required=True, choices=["task_a", "task_b", "task_c", "task_d", "audit", "audit_img", "audit_img2", "trial"])
     ap.add_argument("--reviewer", required=True)
     ap.add_argument("--port", type=int)
     ap.add_argument("--state-dir", help="thư mục lưu phiên, bắt buộc với task trial")

@@ -118,7 +118,7 @@ async function press(k) {
   }
 }
 
-function paint(canvas, area, boxes, current) {
+function paint(canvas, area, boxes, current, shown) {
   const [sx, sy, sw, sh] = area, pane = canvas.parentElement.getBoundingClientRect();
   const k = Math.min(pane.width / sw, pane.height / sh);
   canvas.width = Math.max(1, Math.round(sw * k)); canvas.height = Math.max(1, Math.round(sh * k));
@@ -129,19 +129,23 @@ function paint(canvas, area, boxes, current) {
     c.strokeStyle = on ? "#ff3b30" : "#ffffff"; c.lineWidth = on ? 3 : 1; c.setLineDash(on ? [] : [5, 4]);
     c.strokeRect((b.xtl - sx) * k, (b.ytl - sy) * k, (b.xbr - b.xtl) * k, (b.ybr - b.ytl) * k);
   }
+  c.strokeStyle = "#ffffff"; c.lineWidth = 2; c.setLineDash([]);
+  for (const b of shown || []) c.strokeRect((b.xtl - sx) * k, (b.ytl - sy) * k, (b.xbr - b.xtl) * k, (b.ybr - b.ytl) * k);
 }
+const ASK = {goggles: "KÍNH bảo hộ", boots: "ỦNG, GIÀY bảo hộ"};
 function render() {
   const st = step(); if (!st) return;
   const [w, h] = S.sizes[st.image], boxes = Object.values(S.items).filter(b => S.steps.some(x => x.image === st.image && x.item_id === b.item_id));
-  paint($("full"), [0, 0, w, h], boxes, st.item_id);
+  const shown = (S.shown || {})[st.image] || [], ask = (S.ask || {})[st.image];
+  paint($("full"), [0, 0, w, h], boxes, st.item_id, shown);
   if (st.type === "box") {
     const b = S.items[st.item_id], m = Math.max(b.xbr - b.xtl, b.ybr - b.ytl) * (0.5 + CONTEXT);
     const cx = (b.xtl + b.xbr) / 2, cy = (b.ytl + b.ybr) / 2, x = Math.max(0, cx - m), y = Math.max(0, cy - m);
     paint($("zoom"), [x, y, Math.min(w - x, cx + m - x), Math.min(h - y, cy + m - y)], boxes, st.item_id);
     $("zoomtag").textContent = "Phóng to: " + (b.target === "boots" ? "Ủng, giày" : "Kính");
   } else {
-    paint($("zoom"), [0, 0, w, h], boxes, null);
-    $("zoomtag").textContent = "Xem cả ảnh: có đồ bảo hộ chưa có hộp không?";
+    paint($("zoom"), [0, 0, w, h], boxes, null, shown);
+    $("zoomtag").textContent = ask ? `Chỉ xét ${ASK[ask]}: có cái nào nhìn rõ mà chưa có khung trắng không? (${shown.length} khung có sẵn)` : "Xem cả ảnh: có đồ bảo hộ chưa có hộp không?";
   }
 }
 function mark(row, list, value) { for (const b of row.querySelectorAll("button")) { const x = list.find(y => y[0] === b.dataset.k); b.classList.toggle("on", !!x && x[1] === value); } }

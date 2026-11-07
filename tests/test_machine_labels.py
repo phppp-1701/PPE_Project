@@ -123,6 +123,8 @@ def write_audit_state(m, tmp_path, reviewer, decision="safety"):
     (m.AUDIT / "_private" / "audit_items.csv").write_text("audit_id,item_id,origin\na1,r1,sample\n", encoding="utf-8")
     m.private_items = lambda: dict(r1=dict(box_id="b1", target="boots", source="sh17"))
     (rev / "fast_audit_state.json").write_text(json.dumps(dict(reviewer=reviewer, boxes=dict(a1=dict(decision=decision, person_ok="du_lon" if decision != "chua_chon" else "chua_chon")))), encoding="utf-8")
+    (m.AUDIT / "_private" / "audit_img2_images.csv").write_text("audit_image,image,task,origin\nimg_2.jpg,src_1.jpg,task_d,sample\n", encoding="utf-8")
+    (rev / "fast_audit_img2_state.json").write_text(json.dumps(dict(reviewer=reviewer, images={"img_2.jpg": "image_checked"}, flags={})), encoding="utf-8")
     return rev
 
 
@@ -151,3 +153,42 @@ def test_audit_session_works_without_cvat_link():
     from ppe.fast_review import IMAGE_STEP_TASKS
     assert "audit_img" in IMAGE_STEP_TASKS and Path(__file__).exists()
 
+
+
+def test_audit_img2_shows_existing_boxes_and_question_without_new_steps(tmp_path):
+    from ppe.fast_review import Session, load_pack
+    from ppe.ppe6_data import leak_tokens
+    m = load_03t()
+    fake_blind(m, tmp_path)
+    shown = {"img_000001.jpg": [dict(item_id="r9", target="goggles", xtl=1.0, ytl=2.0, xbr=9.0, ybr=9.0)]}
+    _, imgs = m.build_pack("audit_img2", [], {"img_000001.jpg": ("task_a", 100, 80)}, False, 5, shown, {"img_000001.jpg": "goggles"})
+    xml = (m.AUDIT / "audit_img2" / "annotations.xml").read_text(encoding="utf-8")
+    assert leak_tokens(xml) == [] and "r9" not in xml and "img_000001" not in xml
+    pack = load_pack(m.AUDIT / "audit_img2")
+    im = pack["images"][0]
+    assert im["boxes"] == [] and len(im["shown"]) == 1 and im["ask"] == "goggles"
+    s = Session(pack, "audit_img2", "Nguoi That", tmp_path)
+    v = s.view("", 0, 0)
+    assert [x["type"] for x in v["steps"]] == ["image"] and v["shown"][im["name"]] and v["ask"][im["name"]] == "goggles"
+
+
+def test_audit_import_uses_img2_not_first_image_pack(tmp_path):
+    import csv
+    import json
+    m = load_03t()
+    rev = write_audit_state(m, tmp_path, "Nguoi That")
+    (m.AUDIT / "_private" / "audit_img_images.csv").write_text("audit_image,image,task,origin\nimg_1.jpg,src_1.jpg,task_d,sample\n", encoding="utf-8")
+    (rev / "fast_audit_img_state.json").write_text(json.dumps(dict(reviewer="Nguoi That", images={"img_1.jpg": "image_checked"}, flags={"image:img_1.jpg": True})), encoding="utf-8")
+    m.cmd_audit_import("Nguoi That")
+    rows = list(csv.DictReader((rev / "audit_review.csv").open(encoding="utf-8")))
+    assert [r["after"] for r in rows if r["kind"] == "image"] == ["no_missing"]
+    assert (rev / "fast_audit_img_state.json").exists()
+
+
+def test_audit_rebuild_refused_once_human_session_exists(tmp_path):
+    m = load_03t()
+    rev = write_audit_state(m, tmp_path, "Nguoi That")
+    (rev / "machine_merged.csv").write_text("id,kind,status\nr1,box,machine_consensus\n", encoding="utf-8")
+    with pytest.raises(SystemExit):
+        m.cmd_audit()
+    assert (m.AUDIT / "_private" / "audit_items.csv").exists()
