@@ -137,7 +137,16 @@ Duyệt từng hộp `glasses`, `shoes` của SH17 và `goggles`, `boots` của 
 
 **`goggles` là `safety` khi** đang đeo trên mắt và có ít nhất một dấu hiệu: tròng ôm mặt hoặc có tấm chắn bên, gọng dày kiểu kính an toàn, tròng vàng hoặc đỏ dùng trong phòng thí nghiệm, kính kín kiểu goggle. Từ định nghĩa 2 (06/11/2026): chỉ xét đặc điểm của chính chiếc kính, không xét mũ; kính tối không phân biệt được với kính râm thì `unclear`. Kính cận, kính râm thời trang, kính cầm tay, treo áo, đặt trên bàn, đẩy lên đầu đều không tính.
 
-**`boots` là `safety` khi** nhìn rõ là ủng cao su, ủng công trình, giày cổ cao đế dày kiểu công trình. Giày da, giày thể thao, dép là `ordinary`. Giày tối màu, quá mờ, bị che là `unclear`.
+**`boots` là `safety` khi** nhìn rõ là ủng cao su, ủng công trình, giày cổ cao đế dày kiểu công trình. Giày da, giày thể thao, dép là `ordinary`. Giày tối màu, quá mờ, bị che là `unclear`. (Bản 2, thay bằng bản 3 dưới đây.)
+
+**Ủng, định nghĩa bản 3 (người dùng duyệt 07/11/2026), chỉ nhìn chính chiếc giày.** Trang phục, nghề nghiệp, nơi làm việc không được làm đổi kết luận: che hết ảnh, chỉ chừa chiếc giày, thì chọn gì chọn đó. Lý do: tiêu chuẩn (EN ISO 20345) định nghĩa giày bảo hộ bằng mũi bọc 200 J nằm bên trong, không thấy được trên ảnh; SH17 và Construction-PPE không công bố định nghĩa. Lớp `boots` vì vậy là "trông giống đồ bảo hộ chân". Gán theo bối cảnh dạy mô hình mẹo "áo phản quang thì có ủng" và làm sót đúng ca vi phạm.
+
+| Chọn | Đặc điểm của chiếc giày |
+|---|---|
+| `safety` | Ủng cao su, nhựa, cổ cao, mọi màu. Giày, ủng công trình: cổ tới mắt cá trở lên, đế dày có gai rõ, thân da hoặc vải dày cứng. Hoặc thấy rõ mũi giày to, cứng, có bọc. |
+| `ordinary` | Giày thể thao (thân lưới, logo thể thao, đế mềm, đế trắng mỏng), giày tây, giày da đế mỏng, cao gót, dép, sandal, giày vải. Bốt có đặc điểm thời trang nhìn thấy: gót cao, đế độn, khóa kéo hoặc đinh trang trí. |
+| `unclear` | Giày da thấp cổ đế hơi dày (có thể là giày bảo hộ thấp cổ). Bị ống quần che mất cổ hoặc đế. Tối, mờ, không thấy hình dáng. |
+| `ignore` | Quá nhỏ, quá mờ. |
 
 Ghi kết quả ở `data/ppe6/review/decisions.csv`, cột `reviewer` nêu rõ `human` hay `claude`. Hộp chỉ Claude duyệt chỉ dùng cho train; hộp ở val, test phải có người duyệt lại trước khi báo cáo số.
 

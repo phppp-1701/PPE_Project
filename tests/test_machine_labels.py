@@ -231,3 +231,22 @@ def test_rest_import_takes_recheck_choice_over_first(tmp_path):
     rows = list(csv.DictReader((rev / "rest_review.csv").open(encoding="utf-8")))
     assert [(r["origin"], r["after"]) for r in rows] == [("rest_recheck", "ordinary")]
     assert json.loads((rev / "fast_rest_state.json").read_text(encoding="utf-8"))["boxes"]["a9"]["decision"] == "safety"
+
+
+def test_boots_v3_import_writes_own_file_and_eval_count_uses_v3_for_boots(tmp_path, capsys):
+    import csv
+    import json
+    m = load_03t()
+    rev = write_audit_state(m, tmp_path, "Nguoi That")
+    (m.AUDIT / "_private" / "boots_v3_items.csv").write_text("audit_id,item_id,origin\nc1,r1,boots_v3\n", encoding="utf-8")
+    (rev / "fast_boots_v3_state.json").write_text(json.dumps(dict(reviewer="Nguoi That", boxes=dict(c1=dict(decision="ordinary", person_ok="du_lon")))), encoding="utf-8")
+    with pytest.raises(SystemExit):
+        m.cmd_boots_v3_import("machine_pass_a")
+    m.cmd_boots_v3_import("Nguoi That")
+    rows = list(csv.DictReader((rev / "boots_v3_review.csv").open(encoding="utf-8")))
+    assert rows[0]["after"] == "ordinary" and rows[0]["guide_version"] == "3" and not (rev / "human_review.csv").exists()
+    m.cmd_audit_import("Nguoi That")
+    m.private_items = lambda: dict(r1=dict(box_id="b1", target="boots", source="sh17", set="val_new"))
+    m.cmd_eval_count()
+    out = capsys.readouterr().out
+    assert "bản 3" in out and "'ordinary') 1" in out and "safety" not in out

@@ -121,7 +121,16 @@ Hộp lệch thì kéo lại cho đúng. Đừng xóa hộp; hộp sai thì ch�
 
 **Kính bảo hộ:** đang đeo trên mắt và có dấu hiệu của chính chiếc kính: tròng ôm mặt, tấm chắn bên, gọng kiểu kính an toàn, tròng vàng hoặc đỏ, kính kín kiểu goggle. Không xét người đó có đội mũ hay không.
 
-**Ủng, giày bảo hộ:** nhìn rõ là ủng cao su, ủng công trình, giày cổ cao đế dày kiểu công trình. Giày thể thao, kể cả loại dày, giày da, dép là `ordinary`.
+**Ủng, định nghĩa bản 3 (người dùng duyệt 07/11/2026), chỉ nhìn chính chiếc giày.** Trang phục, nghề nghiệp, nơi làm việc không được làm đổi kết luận: che hết ảnh, chỉ chừa chiếc giày, thì chọn gì chọn đó. Lý do: tiêu chuẩn (EN ISO 20345) định nghĩa giày bảo hộ bằng mũi bọc 200 J nằm bên trong, không thấy được trên ảnh; SH17 và Construction-PPE không công bố định nghĩa. Lớp `boots` vì vậy là "trông giống đồ bảo hộ chân". Gán theo bối cảnh dạy mô hình mẹo "áo phản quang thì có ủng" và làm sót đúng ca vi phạm.
+
+| Chọn | Đặc điểm của chiếc giày |
+|---|---|
+| `safety` | Ủng cao su, nhựa, cổ cao, mọi màu. Giày, ủng công trình: cổ tới mắt cá trở lên, đế dày có gai rõ, thân da hoặc vải dày cứng. Hoặc thấy rõ mũi giày to, cứng, có bọc. |
+| `ordinary` | Giày thể thao (thân lưới, logo thể thao, đế mềm, đế trắng mỏng), giày tây, giày da đế mỏng, cao gót, dép, sandal, giày vải. Bốt có đặc điểm thời trang nhìn thấy: gót cao, đế độn, khóa kéo hoặc đinh trang trí. |
+| `unclear` | Giày da thấp cổ đế hơi dày (có thể là giày bảo hộ thấp cổ). Bị ống quần che mất cổ hoặc đế. Tối, mờ, không thấy hình dáng. |
+| `ignore` | Quá nhỏ, quá mờ. |
+
+Lệnh chấm lại ủng theo bản 3: `python scripts/03q_ppe6_fast_review.py --task boots_v3 --reviewer "Tên bạn"`, xong `python scripts/03t_ppe6_machine_label.py boots-v3-import --reviewer "Tên bạn"`.
 
 **Ca khó:**
 

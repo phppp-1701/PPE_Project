@@ -12,6 +12,8 @@ Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
     python scripts/03t_ppe6_machine_label.py rest        # kiểm định không đạt: gói mọi hộp val, test người chưa xem
     python scripts/03t_ppe6_machine_label.py recheck --out <danh sách item_id>   # gói xem lại một phần rest
     python scripts/03t_ppe6_machine_label.py rest-import --reviewer "Tên"    # ghi rest_review.csv, human_reviewed
+    python scripts/03t_ppe6_machine_label.py boots-v3    # gói chấm lại mọi hộp ủng val, test theo định nghĩa bản 3
+    python scripts/03t_ppe6_machine_label.py boots-v3-import --reviewer "Tên"
     python scripts/03t_ppe6_machine_label.py eval-count  # số hộp theo tập, chỉ từ nhãn người
 
 Tham số ở configs/ppe6.yaml mục `labeling`. Quy trình ở docs/experiments/2026-11-06_ppe6_plan.md.
@@ -478,6 +480,46 @@ def cmd_recheck(list_file):
         sys.exit(1)
 
 
+def cmd_boots_v3():
+    """Gói `boots_v3`: mọi hộp ủng val, test, chấm lại theo định nghĩa bản 3. Không hiện lựa chọn cũ, không ghi đè gói cũ."""
+    c = cfg()["audit"]
+    if (AUDIT / "boots_v3").exists():
+        sys.exit("Gói boots_v3 đã có, không ghi đè.")
+    items = private_items()
+    sizes, where = {}, {}
+    for t in TASKS:
+        for im in load_pack(BLIND / t)["images"]:
+            sizes[im["name"]] = (t, im["width"], im["height"])
+            for b in im["boxes"]:
+                where[b["item_id"]] = dict(b, image=im["name"])
+    todo = sorted(k for k, it in items.items() if it["set"] in EVAL_SETS and it["target"] == "boots")
+    its = [where[k] for k in todo]
+    mapped, imgs = build_pack("boots_v3", its, {i["image"]: sizes[i["image"]] for i in its}, True, c["seed"] + 5)
+    with (AUDIT / "_private" / "boots_v3_items.csv").open("w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, ["audit_id", "item_id", "origin"], lineterminator="\n")
+        w.writeheader()
+        w.writerows(dict(m, origin="boots_v3") for m in mapped)
+    bad = leak_tokens((AUDIT / "boots_v3" / "annotations.xml").read_text(encoding="utf-8"))
+    print(f"boots_v3: {len(mapped)} hộp, {len(imgs)} ảnh, theo tập", dict(Counter(items[k]["set"] for k in todo)), "| kiểm tra lộ nhãn: lỗi", len(bad))
+    if bad:
+        sys.exit(1)
+
+
+def cmd_boots_v3_import(reviewer):
+    """Ghi boots_v3_review.csv (human_reviewed, guide_version 3). Không ghi human_review.csv, không sửa file bản 2."""
+    if reviewer.strip().lower() in NOT_A_PERSON or reviewer.lower().startswith("machine"):
+        sys.exit("Cần tên người thật.")
+    rows, missing = read_box_session("boots_v3", "boots_v3_items.csv", reviewer)
+    if missing:
+        sys.exit(f"Còn {missing} mục chưa chọn, chưa ghi gì.")
+    rows = [dict(r, guide_version=3) for r in rows]
+    with (REVIEW / "boots_v3_review.csv").open("w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, list(rows[0]), lineterminator="\n")
+        w.writeheader()
+        w.writerows(rows)
+    print(f"Đã ghi boots_v3_review.csv: {len(rows)} dòng, human_reviewed, định nghĩa bản 3. Không ghi human_review.csv.")
+
+
 def cmd_rest_import(reviewer):
     """Ghi rest_review.csv, trạng thái human_reviewed (người xem từng hộp, không qua nhãn máy). Không ghi human_review.csv."""
     if reviewer.strip().lower() in NOT_A_PERSON or reviewer.lower().startswith("machine"):
@@ -503,6 +545,10 @@ def cmd_eval_count():
     """Số hộp bảo hộ theo tập, chỉ từ nhãn người (audit_review.csv, rest_review.csv)."""
     items = private_items()
     human = {r["item_id"]: r for f in ("audit_review.csv", "rest_review.csv") for r in read_csv(REVIEW / f) if r["kind"] == "box"}
+    v3 = {r["item_id"]: r for r in read_csv(REVIEW / "boots_v3_review.csv")}
+    # Ủng chỉ đếm theo bản 3 khi đã có; chưa có thì báo, không trộn hai bản.
+    human = {k: v for k, v in human.items() if items[k]["target"] != "boots"} | v3 if v3 else human
+    print("Ủng theo định nghĩa", "bản 3" if v3 else "bản 2 (chưa chấm lại bản 3)")
     c, left = Counter(), Counter()
     for k, it in items.items():
         if it["set"] in EVAL_SETS:
@@ -578,7 +624,7 @@ def cmd_audit_report():
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["sheets", "collect", "merge", "compare", "audit", "audit-img2", "audit-import", "audit-report", "rest", "recheck", "rest-import", "eval-count"])
+    ap.add_argument("cmd", choices=["sheets", "collect", "merge", "compare", "audit", "audit-img2", "audit-import", "audit-report", "rest", "recheck", "rest-import", "eval-count", "boots-v3", "boots-v3-import"])
     ap.add_argument("--pass", dest="which", choices=["a", "b"])
     ap.add_argument("--out")
     ap.add_argument("--reviewer", default="")
@@ -602,6 +648,10 @@ def main():
         cmd_rest()
     elif args.cmd == "recheck":
         cmd_recheck(args.out or sys.exit("Cần --out <file danh sách item_id>."))
+    elif args.cmd == "boots-v3":
+        cmd_boots_v3()
+    elif args.cmd == "boots-v3-import":
+        cmd_boots_v3_import(args.reviewer)
     elif args.cmd == "rest-import":
         cmd_rest_import(args.reviewer)
     elif args.cmd == "eval-count":
