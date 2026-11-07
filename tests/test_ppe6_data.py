@@ -288,3 +288,40 @@ def test_second_sample_is_stratified_and_fixed():
     assert len(a) == 20 and a == m.stratified_second(items, 20, 2, 0)
     assert len({(x["target"], x["agent_label"]) for x in a}) == 4
 
+
+FULL_XML = BLIND_XML.replace('<attribute name="decision">chua_chon</attribute><attribute name="person_ok">chua_chon</attribute>', '<attribute name="decision">unclear</attribute><attribute name="person_ok">qua_nho</attribute>').replace(
+    "</image>", '<box label="boots_new" xtl="50" ytl="50" xbr="60" ybr="70"></box><tag label="image_checked" source="manual"/></image>')
+
+
+def test_unset_lists_both_cells_of_a_box():
+    from ppe.ppe6_data import UnsetError, merge_blind
+    boxes, tags = parse_cvat(BLIND_XML)
+    with pytest.raises(UnsetError) as e:
+        merge_blind(boxes, tags, blind_items(), {"img_00001.jpg": "x"}, "Phuong", "task_a", "t", True)
+    assert len(e.value.items) == 2 and all("r2" in x for x in e.value.items)
+
+
+def test_reimport_adds_nothing_and_changed_value_is_kept(tmp_path):
+    m = load_script("03l_ppe6_import_review.py")
+    write_map(tmp_path / "pack", "task_a")
+    kw = dict(blind=tmp_path / "pack", review=tmp_path)
+    m.import_blind("task_a", FULL_XML, "Phuong", "t1", **kw)
+    a, b = m.rd(tmp_path / "human_review.csv"), m.rd(tmp_path / "human_added.csv")
+    assert len(a) == 3 and len(b) == 1
+    m.import_blind("task_a", FULL_XML, "Phuong", "t2", **kw)
+    assert len(m.rd(tmp_path / "human_review.csv")) == 3 and len(m.rd(tmp_path / "human_added.csv")) == 1
+    m.import_blind("task_a", FULL_XML.replace(">unclear<", ">safety<", 1), "Phuong", "t3", **kw)
+    rows = m.rd(tmp_path / "human_review.csv")
+    assert len(rows) == 4 and rows[-1]["after"] == "safety"
+
+
+def test_test_reviewer_only_reaches_trial(tmp_path):
+    m = load_script("03l_ppe6_import_review.py")
+    write_map(tmp_path / "pack", "task_a")
+    write_map(tmp_path / "pack2", "trial")
+    with pytest.raises(ValueError):
+        m.import_blind("task_a", FULL_XML, "AGENT_TEST", "t", blind=tmp_path / "pack", review=tmp_path)
+    assert not (tmp_path / "human_review.csv").exists()
+    m.import_blind("trial", FULL_XML, "AGENT_TEST", "t", blind=tmp_path / "pack2", review=tmp_path)
+    assert (tmp_path / "trial_review.csv").exists() and not (tmp_path / "human_review.csv").exists()
+

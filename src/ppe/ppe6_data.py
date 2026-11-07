@@ -379,6 +379,8 @@ def merge_blind(boxes, tags, items, images, reviewer, task, now, need_person, pa
         person = b["attrs"].get("person_ok", UNSET)
         if decision == UNSET:
             unset.append(f"{iid} ({b['image']}): decision")
+            if need_person and person == UNSET:
+                unset.append(f"{iid} ({b['image']}): person_ok")
             continue
         if decision not in DECISIONS:
             raise ValueError(f"Quyết định lạ: {decision}")
@@ -395,6 +397,24 @@ def merge_blind(boxes, tags, items, images, reviewer, task, now, need_person, pa
             rows.append(dict(box_id="image:" + images[name], target="image", source="", before="", after="checked" if label == "image_checked" else "reject", person_ok="",
                              reviewer=reviewer, reviewed_at=now, pack=task, new_cx="", new_cy="", new_w="", new_h=""))
     return rows, added, unset
+
+
+def new_review_rows(rows, existing):
+    """Bỏ dòng giống hệt giá trị đang có hiệu lực của hộp đó (trừ thời gian), để nhập lại cùng file không tạo trùng. Giá trị đổi thì vẫn ghi."""
+    def key(r):
+        return tuple(sorted((k, str(v)) for k, v in r.items() if k != "reviewed_at"))
+
+    last = {r["box_id"]: key(r) for r in existing}
+    return [r for r in rows if last.get(r["box_id"]) != key(r)]
+
+
+def new_added_rows(rows, existing):
+    """Bỏ hộp vẽ thêm đã có, tránh nhân đôi nhãn khi nhập lại. So tọa độ đã làm tròn."""
+    def key(r):
+        return (r["file"], r["target"], r["reviewer"], *(round(float(r[k]), 6) for k in ("cx", "cy", "w", "h")))
+
+    seen = {key(r) for r in existing}
+    return [r for r in rows if key(r) not in seen]
 
 
 def cohen_kappa(a, b):

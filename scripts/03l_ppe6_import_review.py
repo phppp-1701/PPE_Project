@@ -10,7 +10,7 @@ Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
 
 Xuất từ CVAT theo định dạng "CVAT for images 1.1". Sau khi nhập, chạy lại 03i.
 Gói mù ở data/ppe6/review/cvat_pack_blind/ (03p). Ô còn `chua_chon` hoặc hộp bị xóa làm lệnh dừng, không ghi gì và liệt kê mã hộp; `--partial` nhập phần
-đã chọn. Không bao giờ coi ô chưa chọn là đồng ý với agent. Nhập lại một hộp thì dòng sau cùng có hiệu lực, dòng cũ giữ làm dấu vết.
+đã chọn. Không bao giờ coi ô chưa chọn là đồng ý với agent. Nhập lại cùng file không tạo dòng trùng; nhập giá trị khác thì dòng sau cùng có hiệu lực, dòng cũ giữ làm dấu vết.
 
 Nơi ghi trong data/ppe6/review/:
     task_a, task_b, task_c  human_review.csv, human_added.csv
@@ -34,7 +34,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
-from ppe.ppe6_data import NOT_A_PERSON, UnsetError, agreement, disagreement, merge_blind, merge_review, parse_cvat, scope_threshold  # noqa: E402
+from ppe.ppe6_data import NOT_A_PERSON, UnsetError, agreement, disagreement, merge_blind, merge_review, new_added_rows, new_review_rows, parse_cvat, scope_threshold  # noqa: E402
 
 REVIEW = ROOT / "data" / "ppe6" / "review"
 PACK = REVIEW / "cvat_pack"
@@ -42,6 +42,7 @@ BLIND = REVIEW / "cvat_pack_blind"
 FIELDS = ["box_id", "target", "source", "before", "after", "person_ok", "reviewer", "reviewed_at", "pack", "new_cx", "new_cy", "new_w", "new_h"]
 ADDED = ["file", "target", "cx", "cy", "w", "h", "reviewer", "pack"]
 PERSON_TASKS = ("task_a", "task_b", "trial")
+TEST_REVIEWER = "agent_test"   # tên dùng cho kiểm thử kỹ thuật, chỉ được nhập vào task trial
 TARGET = dict(task_a=("human_review.csv", "human_added.csv"), task_b=("human_review.csv", "human_added.csv"), task_c=("human_review.csv", "human_added.csv"),
               task_d=("chv_boots_seen.csv", "chv_boots_added.csv"), trial=("trial_review.csv", "trial_added.csv"), second=("second_review.csv", "second_added.csv"))
 
@@ -72,6 +73,8 @@ def read_export(path):
 
 def import_blind(task, xml_text, reviewer, now, partial=False, blind=BLIND, review=REVIEW):
     """Nhập một task gói mù. Người thứ hai chỉ ghi second_review.csv, không đụng kết quả người chính."""
+    if reviewer.strip().lower().startswith(TEST_REVIEWER) and task != "trial":
+        raise ValueError("Tên kiểm thử chỉ dùng cho task trial, không ghi vào luồng người duyệt.")
     primary = {r["reviewer"].strip().lower() for r in rd(review / "human_review.csv")}
     if task == "second" and reviewer.strip().lower() in primary:
         raise ValueError("Người thứ hai phải khác người duyệt chính.")
@@ -80,6 +83,8 @@ def import_blind(task, xml_text, reviewer, now, partial=False, blind=BLIND, revi
     boxes, tags = parse_cvat(xml_text)
     rows, added, unset = merge_blind(boxes, tags, items, images, reviewer, task, now, task in PERSON_TASKS, partial)
     main_file, add_file = TARGET[task]
+    rows = new_review_rows(rows, rd(review / main_file))
+    added = new_added_rows(added, rd(review / add_file))
     append(review / main_file, FIELDS, rows)
     append(review / add_file, ADDED, added)
     return rows, added, unset
@@ -178,6 +183,8 @@ def main():
         for x in e.items[:40]:
             print(" ", x)
         sys.exit("Chọn đủ rồi xuất lại, hoặc thêm --partial để nhập phần đã chọn.")
+    except ValueError as e:
+        sys.exit(f"Không nhập gì: {e}")
     if args.task == "trial":
         for r in rows:
             print(" ", r["box_id"], r["before"], "->", r["after"], r["person_ok"], r["reviewer"])
