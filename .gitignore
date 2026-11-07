@@ -6,6 +6,9 @@ data/**
 !data/ppe6/review/boxes.csv
 !data/ppe6/review/decisions.csv
 !data/ppe6/review/decisions_v2.csv
+!data/ppe6/review/machine_pass_a.csv
+!data/ppe6/review/machine_pass_b.csv
+!data/ppe6/review/machine_merged.csv
 !data/ppe6/scene/scene_ids.csv
 !data/ppe6/review/p2_shoe_sample.csv
 !data/ppe6/eval/*.csv

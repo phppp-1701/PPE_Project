@@ -114,7 +114,7 @@ def build_server(session, zip_path, cfg, port, task_id, job_id):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--task", required=True, choices=["task_a", "task_b", "task_c", "task_d", "trial"])
+    ap.add_argument("--task", required=True, choices=["task_a", "task_b", "task_c", "task_d", "audit", "audit_img", "trial"])
     ap.add_argument("--reviewer", required=True)
     ap.add_argument("--port", type=int)
     ap.add_argument("--state-dir", help="thư mục lưu phiên, bắt buộc với task trial")
@@ -128,7 +128,8 @@ def main():
         sys.exit("Task trial chỉ để kiểm thử, cần --state-dir ngoài project.")
     if args.image_step and args.task != "trial":
         sys.exit("--image-step chỉ dùng với task trial.")
-    folder = Path(args.pack_dir) if args.pack_dir else ROOT / "data" / "ppe6" / "review" / "cvat_pack_blind" / args.task
+    pack_root = "cvat_pack_audit" if args.task.startswith("audit") else "cvat_pack_blind"
+    folder = Path(args.pack_dir) if args.pack_dir else ROOT / "data" / "ppe6" / "review" / pack_root / args.task
     task_id = args.cvat_task_id or cfg["tasks"].get(args.task, 0)
     try:
         session = Session(load_pack(folder), args.task, args.reviewer, Path(args.state_dir) if args.state_dir else ROOT / "data" / "ppe6" / "review", args.image_step)

@@ -155,3 +155,4 @@ labeling:
     floor: 8                   # mỗi tầng tối thiểu chừng này hộp nếu có; Claude đặt
     max_queue_boxes: 300       # hàng đợi bất đồng quá mức này thì dừng và đề xuất lấy mẫu; Claude đặt
     max_disagreement: 0.10
+    image_sample: 60           # mẫu ảnh đồng thuận ở task_b, task_d; Claude đặt

@@ -70,3 +70,84 @@ def test_sample_is_fixed_and_covers_each_stratum():
     x = stratified_sample(rows, 20, 5, 1, lambda r: r["s"])
     assert x == stratified_sample(rows, 20, 5, 1, lambda r: r["s"])
     assert sum(r["s"] == "b" for r in x) == 3 and 18 <= len(x) <= 22
+
+
+def load_03t():
+    import importlib.util
+    from pathlib import Path
+    spec = importlib.util.spec_from_file_location("m03t", Path(__file__).resolve().parents[1] / "scripts" / "03t_ppe6_machine_label.py")
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m
+
+
+def fake_blind(m, tmp_path):
+    import io
+    import zipfile
+
+    from PIL import Image
+    d = tmp_path / "blind" / "task_a"
+    d.mkdir(parents=True)
+    with zipfile.ZipFile(d / "images.zip", "w") as z:
+        b = io.BytesIO()
+        Image.new("RGB", (100, 80)).save(b, "JPEG")
+        z.writestr("img_000001.jpg", b.getvalue())
+    for t in m.TASKS[1:]:
+        e = tmp_path / "blind" / t
+        e.mkdir()
+        zipfile.ZipFile(e / "images.zip", "w").close()
+    m.BLIND, m.AUDIT = tmp_path / "blind", tmp_path / "audit"
+    m.AUDIT.mkdir()
+
+
+def test_audit_pack_hides_machine_label_source_and_ids(tmp_path):
+    from ppe.ppe6_data import leak_tokens
+    m = load_03t()
+    fake_blind(m, tmp_path)
+    it = dict(item_id="r123456", target="boots", image="img_000001.jpg", xtl=1.0, ytl=2.0, xbr=30.0, ybr=40.0, decision_a="safety", source="sh17", agent_label="safety")
+    mapped, imgs = m.build_pack("audit", [it], {"img_000001.jpg": ("task_a", 100, 80)}, True, 1)
+    xml = (m.AUDIT / "audit" / "annotations.xml").read_text(encoding="utf-8")
+    assert leak_tokens(xml) == [] and "r123456" not in xml and "img_000001" not in xml and "chua_chon" in xml
+    assert mapped[0]["item_id"] == "r123456" and mapped[0]["audit_id"] in xml
+    assert "safety" not in xml and "sh17" not in xml
+    assert sorted(p.name for p in (m.AUDIT / "audit").iterdir()) == ["annotations.xml", "images.zip", "labels.json"]
+
+
+def write_audit_state(m, tmp_path, reviewer, decision="safety"):
+    import json
+    rev = tmp_path / "rev"
+    rev.mkdir(exist_ok=True)
+    m.REVIEW = rev
+    m.AUDIT = tmp_path / "audit2"
+    (m.AUDIT / "_private").mkdir(parents=True, exist_ok=True)
+    (m.AUDIT / "_private" / "audit_items.csv").write_text("audit_id,item_id,origin\na1,r1,sample\n", encoding="utf-8")
+    m.private_items = lambda: dict(r1=dict(box_id="b1", target="boots", source="sh17"))
+    (rev / "fast_audit_state.json").write_text(json.dumps(dict(reviewer=reviewer, boxes=dict(a1=dict(decision=decision, person_ok="du_lon" if decision != "chua_chon" else "chua_chon")))), encoding="utf-8")
+    return rev
+
+
+def test_audit_import_never_touches_human_review_and_refuses_machine_name(tmp_path):
+    m = load_03t()
+    rev = write_audit_state(m, tmp_path, "Nguoi That")
+    m.cmd_audit_import("Nguoi That")
+    assert (rev / "audit_review.csv").exists() and not (rev / "human_review.csv").exists()
+    with pytest.raises(SystemExit):
+        m.cmd_audit_import("machine_pass_a")
+    with pytest.raises(SystemExit):
+        m.cmd_audit_import("Nguoi Khac")
+
+
+def test_audit_import_stops_on_unset_cell(tmp_path):
+    m = load_03t()
+    rev = write_audit_state(m, tmp_path, "Nguoi That", "chua_chon")
+    with pytest.raises(SystemExit):
+        m.cmd_audit_import("Nguoi That")
+    assert not (rev / "audit_review.csv").exists()
+
+
+def test_audit_session_works_without_cvat_link():
+    from pathlib import Path
+
+    from ppe.fast_review import IMAGE_STEP_TASKS
+    assert "audit_img" in IMAGE_STEP_TASKS and Path(__file__).exists()
+

@@ -18,7 +18,7 @@ from ppe.ppe6_data import DECISIONS, NOT_A_PERSON, UNSET, parse_cvat
 
 PERSON_VALUES = ("du_lon", "qua_nho", "khong_ro")
 IMAGE_VALUES = ("image_checked", "reject_image")
-IMAGE_STEP_TASKS = ("task_b", "task_d")   # hướng dẫn duyệt: mọi ảnh của hai task này phải có tag
+IMAGE_STEP_TASKS = ("task_b", "task_d", "audit_img")   # hướng dẫn duyệt: mọi ảnh của hai task này phải có tag
 LOG_FIELDS = ["reviewer", "time", "task", "target", "field", "before", "after"]
 TEST_REVIEWER = "agent_test"
 
@@ -160,7 +160,7 @@ class Session:
         for key in self.open_flags():
             kind, _, ident = key.partition(":")
             name = ident if kind == "image" else image_of[ident]
-            rows.append(dict(key=key, image=name, url=f"{cvat_url}/tasks/{task_id}/jobs/{job_id}?frame={frame[name]}"))
+            rows.append(dict(key=key, image=name, url=f"{cvat_url}/tasks/{task_id}/jobs/{job_id}?frame={frame[name]}" if task_id else ""))
         return rows
 
     def view(self, cvat_url, task_id, job_id):

@@ -166,7 +166,7 @@ function draw() {
     if (next) new Image().src = "/image/" + encodeURIComponent(next.image);
   }
   const box = $("links"); box.textContent = "";
-  for (const l of S.links) { const a = document.createElement("a"); a.href = l.url; a.target = "_blank"; a.rel = "noopener"; a.textContent = l.key; box.appendChild(a); }
+  for (const l of S.links) { const a = document.createElement("a"); if (l.url) { a.href = l.url; a.target = "_blank"; a.rel = "noopener"; } a.textContent = l.key; box.appendChild(a); }
 }
 function enqueue(k) { queue = queue.then(() => press(k)).catch(e => { $("msg").textContent = String(e); }); }
 addEventListener("keydown", e => {

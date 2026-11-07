@@ -1,5 +1,30 @@
 # Hướng dẫn duyệt nhãn thử nghiệm 6 lớp
 
+**Từ 07/11/2026 quy trình là máy gán nhãn, người kiểm định.** Bạn không duyệt toàn bộ `task_a`, `task_b`, `task_c`, `task_d` nữa mà làm mục "Kiểm định gói audit" ngay dưới đây. Định nghĩa nhãn và ca khó ở các mục sau vẫn áp dụng.
+
+## Kiểm định gói audit
+
+Gói ở `data/ppe6/review/cvat_pack_audit/`, không cần CVAT, không cần token. **Không mở `_private`.** Công cụ không hiện nhãn máy; tự nhìn ảnh rồi chọn, không rõ thì chọn `3`.
+
+```
+python scripts/03q_ppe6_fast_review.py --task audit --reviewer "Tên bạn"
+```
+
+Mở http://127.0.0.1:8765, dùng phím như mục "Công cụ duyệt nhanh". Phím `C` và `M` không dùng ở gói này. Xong, tắt bằng Ctrl + C rồi:
+
+```
+python scripts/03q_ppe6_fast_review.py --task audit_img --reviewer "Tên bạn"
+```
+
+Mỗi ảnh: thấy kính hoặc ủng bảo hộ nhìn rõ mà chưa có hộp thì bấm `M`; không có thì bấm `V`; ảnh không dùng được thì bấm `R`. Cuối cùng:
+
+```
+python scripts/03t_ppe6_machine_label.py audit-import --reviewer "Tên bạn"
+python scripts/03t_ppe6_machine_label.py audit-report
+```
+
+Kết quả ghi `audit_review.csv`, trạng thái `human_audited`, không ghi `human_review.csv`.
+
 Dành cho người duyệt. Dùng gói mù ở `data/ppe6/review/cvat_pack_blind/` (không có trên git). **Không mở thư mục `_private`** và không mở gói cũ `cvat_pack/`, vì ở đó có ý kiến của Claude.
 
 Gói mù không hiện nhãn của agent, nguồn ảnh hay nhóm. Tự nhìn ảnh rồi quyết định. Ảnh không đủ rõ thì chọn `unclear`, đừng đoán.
