@@ -143,7 +143,7 @@ gates:
 final:
   main: c2
   control: c1
-  data_locked: false
+  data_locked: true    # người dùng khóa 09/11/2026 (commit sau 8ed155c)
 
 # Kiểm tra đầu ra train (04f_check_run.py). r2 best.pt 19,2 MB.
 kaggle:
