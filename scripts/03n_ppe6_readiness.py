@@ -278,7 +278,8 @@ def machine_items():
     rep = REVIEW / "audit_report.json"
     tiers = json.loads(rep.read_text(encoding="utf-8"))["tiers"] if rep.exists() else {}
     out.append((bool(tiers) and all(v["passed"] for v in tiers.values()), f"(nhãn máy không dùng cho val, test, train, không chặn train) Các tầng nhãn máy đạt kiểm định: {sum(v['passed'] for v in tiers.values())}/{len(tiers)}"))
-    out.append(((REVIEW / "train_v3_review.csv").exists(), "Ủng ở train đã chấm theo định nghĩa bản 3 (train_v3)"))
+    v3_src = "người" if (REVIEW / "train_v3_review.csv").exists() else "nhãn máy machine_pass_c, chưa kiểm định" if (REVIEW / MACHINE_TRAIN).exists() else ""
+    out.append((bool(v3_src), f"Ủng ở train đã chấm theo định nghĩa bản 3 ({v3_src or 'chưa'})"))
     full = cfg()
     gate = {n: s for n, (s, _) in (("P0a", gate_p0a(full["gates"])), ("P2", gate_p2(full["gates"])), ("P2_chv", gate_chv(full["gates"], full)))}
     out.append((all(s != "pending" for s in gate.values()), f"03n gates đã có kết quả, chờ người dùng chọn nếu có action/stop: {gate}"))
