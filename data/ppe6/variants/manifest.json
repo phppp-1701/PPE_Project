@@ -1,5 +1,5 @@
 {
-  "commit": "8bd19ed",
+  "commit": "63430c9",
   "seed": 0,
   "mask": {
     "margin": 0.1,
@@ -27,12 +27,13 @@
     "hits_label": 19,
     "scene_cap": 262,
     "eval_scene": 5,
-    "chv_boot_stratum": 679,
-    "chv_boot_feet_visible": 145
+    "chv_boot_drawn_keep": 779,
+    "chv_boot_drawn_drop": 44,
+    "chv_boot_mask_hits_label": 1
   },
   "monitor": {
     "c1": 1073,
-    "c2": 1071
+    "c2": 1070
   },
-  "content_hash": "777ef5363ac6f726d858639f3bbd23103369795be115005d353420c33aa1d966"
+  "content_hash": "ce46b46e78215c59cc7427a0d1080d847d6c18cd303b1e38a9e88d6c27fd0043"
 }

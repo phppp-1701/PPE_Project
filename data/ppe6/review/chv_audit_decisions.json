@@ -1,0 +1,1220 @@
+{
+  "chv__ppe_0328.jpg": {
+    "action": "merge_tighter",
+    "label": "Gộp & Giữ khung chuẩn (NMS)",
+    "time": "2026-11-08T11:45:09.319Z",
+    "pairs": {
+      "0": {
+        "action": "merge_tighter",
+        "label": "Gộp & Giữ khung chuẩn (NMS)",
+        "box1": "V0220",
+        "box2": "V0222",
+        "iou": 0.702,
+        "time": "2026-11-08T11:45:09.319Z"
+      }
+    }
+  },
+  "chv__ppe_0375.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "time": "2026-11-08T12:13:53.229Z",
+    "pairs": {
+      "0": {
+        "action": "merge_tighter",
+        "label": "Gộp & Giữ khung chuẩn (NMS)",
+        "box1": "V0255",
+        "box2": "V0258",
+        "iou": 0.673,
+        "time": "2026-11-08T11:45:10.818Z"
+      }
+    }
+  },
+  "chv__ppe_1071.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "time": "2026-11-08T12:18:56.503Z",
+    "pairs": {
+      "0": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0984",
+        "box2": "V0985",
+        "iou": 0.67,
+        "time": "2026-11-08T11:45:14.173Z"
+      }
+    }
+  },
+  "chv__ppe_0597.jpg": {
+    "action": "keep_both",
+    "label": "Giữ Cả 2",
+    "time": "2026-11-08T11:45:23.947Z",
+    "pairs": {
+      "0": {
+        "action": "merge_tighter",
+        "label": "Gộp & Giữ khung chuẩn (NMS)",
+        "box1": "V0407",
+        "box2": "V0408",
+        "iou": 0.57,
+        "time": "2026-11-08T11:45:20.702Z"
+      },
+      "1": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0408",
+        "box2": "V0408",
+        "iou": 0.097,
+        "time": "2026-11-08T11:45:23.947Z"
+      }
+    }
+  },
+  "chv__ppe_0710.jpg": {
+    "action": "merge_tighter",
+    "label": "Gộp & Giữ khung chuẩn (NMS)",
+    "time": "2026-11-08T11:45:28.104Z",
+    "pairs": {
+      "0": {
+        "action": "merge_tighter",
+        "label": "Gộp & Giữ khung chuẩn (NMS)",
+        "box1": "V0494",
+        "box2": "V0495",
+        "iou": 0.569,
+        "time": "2026-11-08T11:45:26.075Z"
+      },
+      "1": {
+        "action": "merge_tighter",
+        "label": "Gộp & Giữ khung chuẩn (NMS)",
+        "box1": "V0497",
+        "box2": "V0498",
+        "iou": 0.421,
+        "time": "2026-11-08T11:45:28.104Z"
+      }
+    }
+  },
+  "chv__ppe_0941.jpg": {
+    "action": "keep_both",
+    "label": "Giữ Cả 2",
+    "time": "2026-11-08T11:45:38.134Z",
+    "pairs": {
+      "0": {
+        "action": "merge_tighter",
+        "label": "Gộp & Giữ khung chuẩn (NMS)",
+        "box1": "V0804",
+        "box2": "V0806",
+        "iou": 0.547,
+        "time": "2026-11-08T11:45:30.622Z"
+      },
+      "1": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0805",
+        "box2": "V0805",
+        "iou": 0.024,
+        "time": "2026-11-08T11:45:34.687Z"
+      },
+      "2": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0806",
+        "box2": "V0806",
+        "iou": 0.066,
+        "time": "2026-11-08T11:45:38.134Z"
+      }
+    }
+  },
+  "chv__ppe_1122.jpg": {
+    "action": "keep_both",
+    "label": "Giữ Cả 2",
+    "time": "2026-11-08T11:45:48.797Z",
+    "pairs": {
+      "0": {
+        "action": "merge_tighter",
+        "label": "Gộp & Giữ khung chuẩn (NMS)",
+        "box1": "V1036",
+        "box2": "V1038",
+        "iou": 0.119,
+        "time": "2026-11-08T11:45:40.777Z"
+      },
+      "1": {
+        "action": "merge_tighter",
+        "label": "Gộp & Giữ khung chuẩn (NMS)",
+        "box1": "V1036",
+        "box2": "V1038",
+        "iou": 0.523,
+        "time": "2026-11-08T11:45:42.685Z"
+      },
+      "2": {
+        "action": "merge_tighter",
+        "label": "Gộp & Giữ khung chuẩn (NMS)",
+        "box1": "V1037",
+        "box2": "V1038",
+        "iou": 0.171,
+        "time": "2026-11-08T11:45:45.160Z"
+      },
+      "3": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V1037",
+        "box2": "V1037",
+        "iou": 0.055,
+        "time": "2026-11-08T11:45:48.797Z"
+      }
+    }
+  },
+  "chv__ppe_0777.jpg": {
+    "action": "keep_both",
+    "label": "Giữ Cả 2",
+    "time": "2026-11-08T11:46:23.570Z",
+    "pairs": {
+      "0": {
+        "action": "merge_tighter",
+        "label": "Gộp & Giữ khung chuẩn (NMS)",
+        "box1": "V0580",
+        "box2": "V0582",
+        "iou": 0.489,
+        "time": "2026-11-08T11:45:52.532Z"
+      },
+      "1": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0581",
+        "box2": "V0581",
+        "iou": 0.053,
+        "time": "2026-11-08T11:45:54.196Z"
+      },
+      "2": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0582",
+        "box2": "V0582",
+        "iou": 0.073,
+        "time": "2026-11-08T11:46:23.570Z"
+      }
+    }
+  },
+  "chv__ppe_0164.jpg": {
+    "action": "merge_tighter",
+    "label": "Gộp & Giữ khung chuẩn (NMS)",
+    "time": "2026-11-08T11:46:25.601Z",
+    "pairs": {
+      "0": {
+        "action": "merge_tighter",
+        "label": "Gộp & Giữ khung chuẩn (NMS)",
+        "box1": "V0080",
+        "box2": "V0081",
+        "iou": 0.388,
+        "time": "2026-11-08T11:46:25.601Z"
+      }
+    }
+  },
+  "chv__ppe_0129.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "time": "2026-11-08T12:08:59.144Z",
+    "pairs": {
+      "0": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0039",
+        "box2": "V0039",
+        "iou": 0.167,
+        "time": "2026-11-08T11:46:28.888Z"
+      },
+      "1": {
+        "action": "keep_box2",
+        "label": "Giữ Khung 2 (V0040)",
+        "box1": "V0039",
+        "box2": "V0040",
+        "iou": 0.384,
+        "time": "2026-11-08T11:46:38.670Z"
+      },
+      "2": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0039",
+        "box2": "V0040",
+        "iou": 0.058,
+        "time": "2026-11-08T11:46:43.896Z"
+      }
+    }
+  },
+  "chv__ppe_0397.jpg": {
+    "action": "merge_tighter",
+    "label": "Gộp & Giữ khung chuẩn (NMS)",
+    "time": "2026-11-08T11:46:48.268Z",
+    "pairs": {
+      "0": {
+        "action": "merge_tighter",
+        "label": "Gộp & Giữ khung chuẩn (NMS)",
+        "box1": "V0273",
+        "box2": "V0274",
+        "iou": 0.373,
+        "time": "2026-11-08T11:46:48.268Z"
+      }
+    }
+  },
+  "chv__ppe_0818.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "time": "2026-11-08T12:15:48.900Z",
+    "pairs": {}
+  },
+  "chv__ppe_0873.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {
+      "0": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0690",
+        "box2": "V0691",
+        "iou": 0.365,
+        "time": "2026-11-08T11:47:01.386Z"
+      },
+      "1": {
+        "action": "merge_tighter",
+        "label": "Gộp & Giữ khung chuẩn (NMS)",
+        "box1": "V0692",
+        "box2": "V0693",
+        "iou": 0.072,
+        "time": "2026-11-08T11:47:04.122Z"
+      },
+      "2": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0693",
+        "box2": "V0693",
+        "iou": 0.094,
+        "time": "2026-11-08T11:47:06.870Z"
+      }
+    },
+    "time": "2026-11-08T12:16:25.074Z"
+  },
+  "chv__ppe_0614.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {
+      "0": {
+        "action": "merge_tighter",
+        "label": "Gộp & Giữ khung chuẩn (NMS)",
+        "box1": "V0426",
+        "box2": "V0427",
+        "iou": 0.335,
+        "time": "2026-11-08T11:47:15.839Z"
+      }
+    },
+    "time": "2026-11-08T12:14:32.976Z"
+  },
+  "chv__ppe_0148.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {
+      "0": {
+        "action": "merge_tighter",
+        "label": "Gộp & Giữ khung chuẩn (NMS)",
+        "box1": "V0061",
+        "box2": "V0062",
+        "iou": 0.318,
+        "time": "2026-11-08T11:47:20.553Z"
+      }
+    },
+    "time": "2026-11-08T12:09:04.924Z"
+  },
+  "chv__ppe_0510.jpg": {
+    "action": "merge_tighter",
+    "label": "Gộp & Giữ khung chuẩn (NMS)",
+    "pairs": {
+      "0": {
+        "action": "merge_tighter",
+        "label": "Gộp & Giữ khung chuẩn (NMS)",
+        "box1": "V0347",
+        "box2": "V0348",
+        "iou": 0.24,
+        "time": "2026-11-08T11:47:22.573Z"
+      },
+      "1": {
+        "action": "merge_tighter",
+        "label": "Gộp & Giữ khung chuẩn (NMS)",
+        "box1": "V0347",
+        "box2": "V0350",
+        "iou": 0.253,
+        "time": "2026-11-08T11:47:25.601Z"
+      }
+    },
+    "time": "2026-11-08T11:47:25.601Z"
+  },
+  "chv__ppe_0917.jpg": {
+    "action": "merge_tighter",
+    "label": "Gộp & Giữ khung chuẩn (NMS)",
+    "pairs": {
+      "0": {
+        "action": "merge_tighter",
+        "label": "Gộp & Giữ khung chuẩn (NMS)",
+        "box1": "V0768",
+        "box2": "V0770",
+        "iou": 0.231,
+        "time": "2026-11-08T11:47:55.590Z"
+      },
+      "1": {
+        "action": "merge_tighter",
+        "label": "Gộp & Giữ khung chuẩn (NMS)",
+        "box1": "V0769",
+        "box2": "V0770",
+        "iou": 0.047,
+        "time": "2026-11-08T11:48:00.443Z"
+      }
+    },
+    "time": "2026-11-08T11:48:00.443Z"
+  },
+  "chv__ppe_1203.jpg": {
+    "action": "keep_both",
+    "label": "Giữ Cả 2",
+    "pairs": {
+      "0": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V1108",
+        "box2": "V1108",
+        "iou": 0.225,
+        "time": "2026-11-08T11:48:02.799Z"
+      }
+    },
+    "time": "2026-11-08T11:48:02.799Z"
+  },
+  "chv__ppe_0973.jpg": {
+    "action": "keep_both",
+    "label": "Giữ Cả 2",
+    "pairs": {
+      "0": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0848",
+        "box2": "V0848",
+        "iou": 0.191,
+        "time": "2026-11-08T11:48:05.076Z"
+      }
+    },
+    "time": "2026-11-08T11:48:05.076Z"
+  },
+  "chv__ppe_0936.jpg": {
+    "action": "keep_both",
+    "label": "Giữ Cả 2",
+    "pairs": {
+      "0": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0800",
+        "box2": "V0800",
+        "iou": 0.131,
+        "time": "2026-11-08T11:48:07.571Z"
+      }
+    },
+    "time": "2026-11-08T11:48:07.571Z"
+  },
+  "chv__ppe_0881.jpg": {
+    "action": "merge_tighter",
+    "label": "Gộp & Giữ khung chuẩn (NMS)",
+    "pairs": {
+      "0": {
+        "action": "merge_tighter",
+        "label": "Gộp & Giữ khung chuẩn (NMS)",
+        "box1": "V0703",
+        "box2": "V0703",
+        "iou": 0.065,
+        "time": "2026-11-08T11:48:10.394Z"
+      },
+      "1": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0709",
+        "box2": "V0709",
+        "iou": 0.126,
+        "time": "2026-11-08T11:48:11.537Z"
+      },
+      "2": {
+        "action": "merge_tighter",
+        "label": "Gộp & Giữ khung chuẩn (NMS)",
+        "box1": "V0710",
+        "box2": "V0710",
+        "iou": 0.088,
+        "time": "2026-11-08T11:48:19.041Z"
+      }
+    },
+    "time": "2026-11-08T11:48:19.041Z"
+  },
+  "chv__ppe_1010.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {
+      "0": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0918",
+        "box2": "V0918",
+        "iou": 0.11,
+        "time": "2026-11-08T11:48:22.001Z"
+      },
+      "1": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0922",
+        "box2": "V0922",
+        "iou": 0.062,
+        "time": "2026-11-08T11:48:23.538Z"
+      },
+      "2": {
+        "action": "keep_box1",
+        "label": "Giữ Khung 1 (V0926)",
+        "box1": "V0926",
+        "box2": "V0926",
+        "iou": 0.031,
+        "time": "2026-11-08T11:48:31.984Z"
+      },
+      "3": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0927",
+        "box2": "V0927",
+        "iou": 0.091,
+        "time": "2026-11-08T11:48:34.566Z"
+      }
+    },
+    "time": "2026-11-08T12:18:12.790Z"
+  },
+  "chv__ppe_0905.jpg": {
+    "action": "keep_both",
+    "label": "Giữ Cả 2",
+    "pairs": {
+      "0": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0738",
+        "box2": "V0738",
+        "iou": 0.088,
+        "time": "2026-11-08T11:48:36.679Z"
+      }
+    },
+    "time": "2026-11-08T11:48:36.679Z"
+  },
+  "chv__ppe_0841.jpg": {
+    "action": "keep_both",
+    "label": "Giữ Cả 2",
+    "pairs": {
+      "0": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0650",
+        "box2": "V0650",
+        "iou": 0.086,
+        "time": "2026-11-08T11:48:38.445Z"
+      },
+      "1": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0650",
+        "box2": "V0651",
+        "iou": 0.027,
+        "time": "2026-11-08T11:48:40.558Z"
+      }
+    },
+    "time": "2026-11-08T11:48:40.558Z"
+  },
+  "chv__ppe_0891.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {
+      "0": {
+        "action": "merge_tighter",
+        "label": "Gộp & Giữ khung chuẩn (NMS)",
+        "box1": "V0721",
+        "box2": "V0723",
+        "iou": 0.084,
+        "time": "2026-11-08T11:48:45.813Z"
+      }
+    },
+    "time": "2026-11-08T12:16:33.084Z"
+  },
+  "chv__ppe_0642.jpg": {
+    "action": "keep_both",
+    "label": "Giữ Cả 2",
+    "pairs": {
+      "0": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0449",
+        "box2": "V0450",
+        "iou": 0.077,
+        "time": "2026-11-08T12:07:41.976Z"
+      }
+    },
+    "time": "2026-11-08T12:07:41.976Z"
+  },
+  "chv__ppe_0354.jpg": {
+    "action": "keep_both",
+    "label": "Giữ Cả 2",
+    "pairs": {
+      "0": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0241",
+        "box2": "V0242",
+        "iou": 0.072,
+        "time": "2026-11-08T12:07:43.550Z"
+      }
+    },
+    "time": "2026-11-08T12:07:43.550Z"
+  },
+  "chv__ppe_1000.jpg": {
+    "action": "keep_box1",
+    "label": "Giữ Khung 1 (V0891)",
+    "pairs": {
+      "0": {
+        "action": "keep_box1",
+        "label": "Giữ Khung 1 (V0891)",
+        "box1": "V0891",
+        "box2": "V0891",
+        "iou": 0.072,
+        "time": "2026-11-08T12:07:48.963Z"
+      }
+    },
+    "time": "2026-11-08T12:07:48.963Z"
+  },
+  "chv__ppe_0731.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {
+      "0": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0521",
+        "box2": "V0521",
+        "iou": 0.067,
+        "time": "2026-11-08T12:07:50.548Z"
+      }
+    },
+    "time": "2026-11-08T12:15:13.667Z"
+  },
+  "chv__ppe_0253.jpg": {
+    "action": "keep_both",
+    "label": "Giữ Cả 2",
+    "pairs": {
+      "0": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0158",
+        "box2": "V0158",
+        "iou": 0.06,
+        "time": "2026-11-08T12:07:57.055Z"
+      }
+    },
+    "time": "2026-11-08T12:07:57.055Z"
+  },
+  "chv__ppe_0898.jpg": {
+    "action": "keep_both",
+    "label": "Giữ Cả 2",
+    "pairs": {
+      "0": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0732",
+        "box2": "V0732",
+        "iou": 0.041,
+        "time": "2026-11-08T12:07:58.974Z"
+      }
+    },
+    "time": "2026-11-08T12:07:58.974Z"
+  },
+  "chv__ppe_0183.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {
+      "0": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V0099",
+        "box2": "V0099",
+        "iou": 0.038,
+        "time": "2026-11-08T12:08:03.414Z"
+      }
+    },
+    "time": "2026-11-08T12:09:11.679Z"
+  },
+  "chv__ppe_1170.jpg": {
+    "action": "keep_both",
+    "label": "Giữ Cả 2",
+    "pairs": {
+      "0": {
+        "action": "keep_both",
+        "label": "Giữ Cả 2",
+        "box1": "V1076",
+        "box2": "V1076",
+        "iou": 0.038,
+        "time": "2026-11-08T12:08:08.098Z"
+      }
+    },
+    "time": "2026-11-08T12:08:08.098Z"
+  },
+  "chv__ppe_0008.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:08:17.485Z"
+  },
+  "chv__ppe_0048.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:08:36.567Z"
+  },
+  "chv__ppe_0101.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:08:40.440Z"
+  },
+  "chv__ppe_0124.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:08:45.509Z"
+  },
+  "chv__ppe_0137.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:09:01.322Z"
+  },
+  "chv__ppe_0185.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:09:18.414Z"
+  },
+  "chv__ppe_0193.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:09:20.252Z"
+  },
+  "chv__ppe_0196.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:09:22.038Z"
+  },
+  "chv__ppe_0206.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:09:24.521Z"
+  },
+  "chv__ppe_0261.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:09:26.229Z"
+  },
+  "chv__ppe_0281.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:09:28.633Z"
+  },
+  "chv__ppe_0300.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:09:30.892Z"
+  },
+  "chv__ppe_0305.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:09:33.842Z"
+  },
+  "chv__ppe_0319.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:09:35.640Z"
+  },
+  "chv__ppe_0323.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:09:39.368Z"
+  },
+  "chv__ppe_0325.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:13:48.964Z"
+  },
+  "chv__ppe_0340.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:13:50.687Z"
+  },
+  "chv__ppe_0370.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:13:52.128Z"
+  },
+  "chv__ppe_0416.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:13:55.635Z"
+  },
+  "chv__ppe_0430.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:13:58.172Z"
+  },
+  "chv__ppe_0449.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:14:01.097Z"
+  },
+  "chv__ppe_0458.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:14:06.119Z"
+  },
+  "chv__ppe_0466.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:14:09.776Z"
+  },
+  "chv__ppe_0470.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:14:12.137Z"
+  },
+  "chv__ppe_0505.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:14:15.319Z"
+  },
+  "chv__ppe_0515.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:14:18.104Z"
+  },
+  "chv__ppe_0525.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:14:20.025Z"
+  },
+  "chv__ppe_0538.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:14:24.260Z"
+  },
+  "chv__ppe_0554.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:14:25.927Z"
+  },
+  "chv__ppe_0602.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:14:28.929Z"
+  },
+  "chv__ppe_0613.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:14:31.317Z"
+  },
+  "chv__ppe_0621.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:14:35.366Z"
+  },
+  "chv__ppe_0631.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:14:40.015Z"
+  },
+  "chv__ppe_0637.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:14:44.197Z"
+  },
+  "chv__ppe_0691.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:14:46.677Z"
+  },
+  "chv__ppe_0699.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:14:58.905Z"
+  },
+  "chv__ppe_0712.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:15:00.754Z"
+  },
+  "chv__ppe_0714.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:15:02.128Z"
+  },
+  "chv__ppe_0726.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:15:08.406Z"
+  },
+  "chv__ppe_0734.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:15:16.342Z"
+  },
+  "chv__ppe_0751.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:15:17.975Z"
+  },
+  "chv__ppe_0759.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:15:27.415Z"
+  },
+  "chv__ppe_0765.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:15:29.400Z"
+  },
+  "chv__ppe_0803.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:15:35.298Z"
+  },
+  "chv__ppe_0815.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:15:39.442Z"
+  },
+  "chv__ppe_0816.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:15:41.339Z"
+  },
+  "chv__ppe_0824.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:15:51.719Z"
+  },
+  "chv__ppe_0827.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:15:53.791Z"
+  },
+  "chv__ppe_0849.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:16:02.224Z"
+  },
+  "chv__ppe_0852.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:16:04.152Z"
+  },
+  "chv__ppe_0860.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:16:06.853Z"
+  },
+  "chv__ppe_0863.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:16:14.585Z"
+  },
+  "chv__ppe_0876.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:16:27.121Z"
+  },
+  "chv__ppe_0877.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:16:29.711Z"
+  },
+  "chv__ppe_0878.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:16:31.684Z"
+  },
+  "chv__ppe_0893.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:16:42.364Z"
+  },
+  "chv__ppe_0896.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:16:44.298Z"
+  },
+  "chv__ppe_0908.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:16:47.008Z"
+  },
+  "chv__ppe_0909.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:16:48.815Z"
+  },
+  "chv__ppe_0911.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:16:50.614Z"
+  },
+  "chv__ppe_0913.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:16:52.761Z"
+  },
+  "chv__ppe_0915.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:16:54.797Z"
+  },
+  "chv__ppe_0921.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:17:03.144Z"
+  },
+  "chv__ppe_0929.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:17:04.792Z"
+  },
+  "chv__ppe_0935.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:17:08.438Z"
+  },
+  "chv__ppe_0951.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:17:09.858Z"
+  },
+  "chv__ppe_0952.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:17:15.904Z"
+  },
+  "chv__ppe_0967.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:17:21.073Z"
+  },
+  "chv__ppe_0970.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:17:23.387Z"
+  },
+  "chv__ppe_0971.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:17:25.501Z"
+  },
+  "chv__ppe_0976.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:17:27.848Z"
+  },
+  "chv__ppe_0981.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:17:43.194Z"
+  },
+  "chv__ppe_0989.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:17:44.604Z"
+  },
+  "chv__ppe_0990.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:17:50.181Z"
+  },
+  "chv__ppe_0995.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:17:52.913Z"
+  },
+  "chv__ppe_1002.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:18:01.050Z"
+  },
+  "chv__ppe_1006.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:18:11.040Z"
+  },
+  "chv__ppe_1013.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:18:15.692Z"
+  },
+  "chv__ppe_1024.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:18:19.180Z"
+  },
+  "chv__ppe_1048.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:18:27.453Z"
+  },
+  "chv__ppe_1049.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:18:29.582Z"
+  },
+  "chv__ppe_1054.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:18:34.122Z"
+  },
+  "chv__ppe_1059.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:18:35.786Z"
+  },
+  "chv__ppe_1060.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:18:37.421Z"
+  },
+  "chv__ppe_1062.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:18:40.364Z"
+  },
+  "chv__ppe_1067.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:18:51.445Z"
+  },
+  "chv__ppe_1069.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:18:54.061Z"
+  },
+  "chv__ppe_1074.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:19:01.228Z"
+  },
+  "chv__ppe_1084.jpg": {
+    "action": "foot_occluded_ok",
+    "label": "Chân kia bị che (Đúng)",
+    "pairs": {},
+    "time": "2026-11-08T12:19:06.083Z"
+  },
+  "chv__ppe_1085.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:19:09.241Z"
+  },
+  "chv__ppe_1091.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:19:11.092Z"
+  },
+  "chv__ppe_1094.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:19:15.460Z"
+  },
+  "chv__ppe_1108.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:19:17.101Z"
+  },
+  "chv__ppe_1113.jpg": {
+    "action": "foot_missing",
+    "label": "Bị vẽ sót 1 chân",
+    "pairs": {},
+    "time": "2026-11-08T12:19:19.019Z"
+  }
+}

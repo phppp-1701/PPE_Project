@@ -378,7 +378,37 @@ def main():
         mask_rows.append(dict(file=f, status="saved", worst_cover=round(worst, 3), regions=len(regions)))
     # P2_chv (configs/ppe6.yaml mục chv_boot_drop): bỏ khỏi C2 ảnh CHV có thể chứa ủng chưa gán nhãn. C1 giữ nguyên làm đối chứng.
     fm = cfg["chv_boot_drop"]
-    for f in sorted(x for x in c2 if stats[x]["source"] == "chv"):
+    # Khung ủng agent vẽ cho ảnh CHV (nhãn máy machine_pass_c, người dùng duyệt khung trùng): ảnh đã xem thì giữ, thêm ủng
+    # bảo hộ thành lớp 5, che vùng ủng không rõ; ảnh agent không vẽ được đủ chân thì bỏ. Ảnh chưa xem theo luật bỏ ở dưới.
+    vb = defaultdict(list)
+    for r in rd(BASE / "review" / "machine_pass_c_chv_boxes.csv") if (BASE / "review" / "machine_pass_c_chv_boxes.csv").exists() else []:
+        vb[r["file"]].append(r)
+    vdrop = set((BASE / "review" / "machine_pass_c_chv_drop.txt").read_text(encoding="utf-8").split()) if (BASE / "review" / "machine_pass_c_chv_drop.txt").exists() else set()
+    seen_p = BASE / "review" / "machine_pass_c_chv_seen.txt"   # mọi ảnh agent đã xem vùng chân (kể cả không thấy ủng nào)
+    vseen = (set(seen_p.read_text(encoding="utf-8").split()) if seen_p.exists() else set()) | set(vb) | vdrop
+    for f in sorted(x for x in c2 if stats[x]["source"] == "chv" and x in vseen):
+        if f in vdrop:
+            c2.discard(f)
+            masked.pop(f, None)
+            status["chv_boot_drawn_drop"] += 1
+            mask_rows.append(dict(file=f, status="chv_boot_drawn_drop", worst_cover="", regions=""))
+            continue
+        labels[f] = labels[f] + [yline(NEW_CLASS["boots"], b) for b in vb[f] if b["decision"] == SAFE]
+        m = cfg["mask"]["margin"]
+        reg = [(float(b["cx"]) - float(b["w"]) / 2 * (1 + m), float(b["cy"]) - float(b["h"]) / 2 * (1 + m), float(b["cx"]) + float(b["w"]) / 2 * (1 + m), float(b["cy"]) + float(b["h"]) / 2 * (1 + m)) for b in vb[f] if b["decision"] != SAFE]
+        if reg:
+            labelled = [(c, x - w / 2, y - h / 2, x + w / 2, y + h / 2) for c, x, y, w, h in parse_yolo("\n".join(labels[f])) if c != 0]
+            ok, worst = mask_decision(masked.get(f, []) + reg, labelled, cfg["mask"]["max_cover"])
+            if not ok:
+                c2.discard(f)
+                masked.pop(f, None)
+                status["chv_boot_mask_hits_label"] += 1
+                mask_rows.append(dict(file=f, status="chv_boot_mask_hits_label", worst_cover=round(worst, 3), regions=len(reg)))
+                continue
+            masked[f] = masked.get(f, []) + reg
+        status["chv_boot_drawn_keep"] += 1
+        mask_rows.append(dict(file=f, status="chv_boot_drawn_keep", worst_cover="", regions=len(reg)))
+    for f in sorted(x for x in c2 if stats[x]["source"] == "chv" and x not in vseen):
         persons = [p for p in parse_yolo("\n".join(labels[f])) if p[0] == 0]
         top = max((p[4] for p in persons), default=0)
         st = "nho" if top < 0.3 else "vua" if top < 0.6 else "lon"
