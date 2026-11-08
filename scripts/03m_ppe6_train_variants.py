@@ -427,6 +427,19 @@ def main():
         masked.pop(f, None)
         status[why] += 1
         mask_rows.append(dict(file=f, status=why, worst_cover="", regions=""))
+    # Khung ủng, kính bị sót do OWLv2 đề xuất, agent duyệt (nhãn máy machine_pass_c_owl_added.csv). Tọa độ theo ảnh C2;
+    # ảnh C2 và ảnh gốc cùng tỉ lệ nên dùng chung tọa độ chuẩn hóa. Chỉ thêm vào C2.
+    owl_p = BASE / "review" / "machine_pass_c_owl_added.csv"
+    by_owl = defaultdict(list)
+    for r in rd(owl_p) if owl_p.exists() else []:
+        by_owl[r["file"]].append(r)
+    c2_by_stem = {Path(f).stem: f for f in c2}
+    for name, rs in by_owl.items():
+        f = c2_by_stem.get(Path(name).stem)
+        if f is None:
+            continue
+        labels[f] = labels[f] + [yline(int(r["cls"]), r) for r in rs]
+        status["owl_added_boxes"] += len(rs)
     print("C2:", dict(status), "ảnh", len(c2))
     build_variant("c2", c2, labels, masked, stats, scene, cfg)
     wr(BASE / "dataset_c2" / "mask_map.csv", [dict(source=f, masked=f"{Path(f).stem}.jpg", regions=json.dumps([[round(v, 6) for v in q] for q in masked[f]])) for f in sorted(masked)])

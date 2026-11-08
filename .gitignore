@@ -14,6 +14,7 @@ data/**
 !data/ppe6/review/machine_pass_c_chv_boxes.csv
 !data/ppe6/review/machine_pass_c_chv_drop.txt
 !data/ppe6/review/machine_pass_c_chv_seen.txt
+!data/ppe6/review/machine_pass_c_owl_added.csv
 !data/ppe6/review/chv_audit_decisions.json
 !data/ppe6/scene/scene_ids.csv
 !data/ppe6/review/p2_shoe_sample.csv
