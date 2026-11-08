@@ -53,3 +53,9 @@ ultralytics==8.4.189
 ultralytics-platform==0.1.94
 ultralytics-thop==2.2.3
 urllib3==2.8.0
+# Tìm khung ủng, kính bị sót bằng mô hình nhận diện theo chữ OWLv2 (03w), người dùng đồng ý cài 08/11/2026
+transformers==4.57.1
+tokenizers==0.22.2
+huggingface-hub==0.36.2
+safetensors==0.8.0
+regex==2025.11.3

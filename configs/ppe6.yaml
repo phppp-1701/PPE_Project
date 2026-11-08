@@ -184,3 +184,15 @@ labeling:
   # Dùng 5 giây để chừa chỗ cho chấm chậm. Ảnh: config pack.sec_per_image 8 giây (giả định, audit_img2 đo 2 giây, quá nhanh để tin).
   sec_per_box_measured: 5
   sec_per_image_measured: 8
+
+# Soát nhãn train bằng OWLv2 (03w), không train. Câu hỏi, ngưỡng do Claude đặt để chạy thử, chưa đo.
+owl_scan:
+  model: google/owlv2-base-patch16-ensemble
+  seed: 7
+  queries:
+    goggles: ["safety goggles", "safety glasses"]
+    boots: ["rubber boots", "work boots", "safety boots"]
+  min_score: 0.1
+  nms_iou: 0.5
+  match_iou: 0.3
+  report_scores: [0.2, 0.3, 0.4]
