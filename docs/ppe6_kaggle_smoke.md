@@ -7,7 +7,7 @@ Mục đích: xác nhận `--ppe6` chạy được trên Kaggle, lưu và tải 
 ## 1. Tải gói lên Kaggle
 
 1. Vào kaggle.com → Datasets → New Dataset.
-2. Tải file `data/ppe6/variants/kaggle/c2_pack.zip` (153 MB), đặt tên `khoa-luan-ppe6-c2-smoke`. Kaggle tự giải nén.
+2. Tải file `data/ppe6/variants/kaggle/c2_final_pack.zip` (239 MB), đặt tên tùy ý, ví dụ `khoa-luan-ppe6-c2-final`. Kaggle tự giải nén. Chỉ Add Input **một** gói final_pack mỗi notebook, vì ô đầu tự tìm `manifest.tsv`.
 3. Mở notebook mới, Add Input: dataset chính `phpp1701/khoa-luan-dataset` và dataset vừa tạo. Bật GPU T4, bật Internet.
 4. Trong cột Input, xem đường dẫn thật của hai dataset. Lần r3, đường dẫn có dạng `/kaggle/input/datasets/phpp1701/<tên>`.
 
@@ -16,7 +16,10 @@ Mục đích: xác nhận `--ppe6` chạy được trên Kaggle, lưu và tải 
 Thay `PACK` nếu đường dẫn thật khác:
 
 ```
-PACK = "/kaggle/input/datasets/phpp1701/khoa-luan-ppe6-c2-smoke"
+# Tự tìm thư mục gói có manifest.tsv (gói final_pack), không phải gõ đường dẫn
+import glob, os
+PACK = os.path.dirname(sorted(glob.glob("/kaggle/input/**/manifest.tsv", recursive=True))[0])
+print("PACK =", PACK)
 !pip install -q ultralytics==8.4.189
 !git clone -b exp/ppe6 https://github.com/phppp-1701/PPE_Project.git
 %cd PPE_Project
