@@ -3,6 +3,7 @@
 Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
     python scripts/03b_make_extra_train.py --dry-run    # chỉ đếm
     python scripts/03b_make_extra_train.py
+    python scripts/03b_make_extra_train.py --dataset data/ppe6/dataset_c2 --out data/ppe6/c3_extra   # C3: cùng công thức trên train 6 lớp
 
 Tham số: configs/train.yaml mục `extra`. Ghi vào data/ppe4/r3_extra/:
     images/train, labels/train   ảnh cắt từng người nhỏ và nhãn YOLO của ảnh cắt, tên crop__<ảnh>__<số>.jpg
@@ -78,7 +79,14 @@ def crop_labels(boxes, box, min_visible):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--dataset", help="thư mục dataset có images/train, labels/train (mặc định data/ppe4/dataset)")
+    ap.add_argument("--out", help="thư mục ghi bộ phụ (mặc định data/ppe4/r3_extra)")
     args = ap.parse_args()
+    global DATASET, OUT
+    if args.dataset:
+        DATASET = ROOT / args.dataset
+    if args.out:
+        OUT = ROOT / args.out
     sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
     cfg = yaml.safe_load((ROOT / "configs" / "train.yaml").read_text(encoding="utf-8"))
     e, imgsz = cfg["extra"], cfg["train"]["imgsz"]
