@@ -18,7 +18,7 @@
 
 ## Quyết định đã chốt
 
-- 4 lớp, thứ tự cố định: 0 person, 1 helmet, 2 vest, 3 gloves. Không có ủng. Đây là bản chính ở `main`; bản 6 lớp đang thử ở nhánh `exp/ppe6` (xem mục dưới).
+- Người dùng đổi hướng 09/11/2026, sau khi thấy kết quả C2, r3: **6 lớp là bản chính** (0 person, 1 helmet, 2 vest, 3 gloves, 4 goggles, 5 boots, thứ tự cố định); bản 4 lớp (r1-r3, `main`) thành bản đối chứng và dự phòng. Việc làm vẫn ở nhánh `exp/ppe6` cho tới khi người dùng đồng ý gộp vào `main`. Báo cáo, `docs/spec.md` còn ghi 4 lớp, người dùng sẽ sửa.
 - YOLO11s (Ultralytics) + ByteTrack (`BYTETracker` của Ultralytics, chỉ track hộp người; không dùng `model.track()`) + gán PPE theo vùng cơ thể. YOLO11n-pose chỉ thêm khi kết quả trên tập xác thực cho thấy cần và người dùng đồng ý.
 - Huấn luyện YOLO11s trên Kaggle (ultralytics==8.4.189, cùng phiên bản với máy); laptop chỉ dùng để suy luận, chạy hệ thống và đo hiệu năng.
 - Dữ liệu: SH17 (chính), CHV và Construction-PPE (bổ sung), Pictor-PPE chỉ kiểm thử ngoài. Video kiểm thử lấy từ Internet.
@@ -33,7 +33,7 @@
 - Ủng là lớp mới chính, mốc 0,5 của ủng là điều kiện chọn bản. Kính là thử nghiệm, báo riêng nội bộ và CHVG; không đạt thì pipeline ghi "Chưa xác định" cho kính, không chặn ủng.
 - Ảnh riêng của CHVG chưa đưa vào train, chỉ dùng đo lớp kính. Ảnh CHV thuộc `ppe4` train được ghép nhãn kính từ CHVG (bản C1, C2). Bốn lớp cũ quyết định trên val sạch theo cảnh, so với r2. Agent không được đánh dấu hộp nào là người đã duyệt.
 - Quy trình nhãn lớp mới, người dùng đổi ngày 07/11/2026: máy gán nhãn trước, người kiểm định sau (kế hoạch mục "Quy trình máy gán, người kiểm định"). Nhãn máy không phải nhãn người: không mang tên người, không vào `human_review.csv`, không gọi là người đã duyệt. Trạng thái `machine_labeled`, `machine_consensus`, `human_audited`, `human_reviewed` không được trộn. Mọi báo cáo ghi "nhãn máy, có kiểm định mẫu của người". Hộp hai lượt máy khác nhau không vào val, test; tầng không đạt kiểm định thì không dùng để kết luận.
-- r3 và bản 4 lớp ưu tiên trước: không để thử nghiệm làm chậm bước 3-5 hay chiếm GPU Kaggle của r3.
+- Tiêu chí chọn bản đã khóa (C2 không tụt quá `max_class_drop` so với bản 4 lớp) vẫn dùng để báo cáo trung thực: C2 không đạt vì găng tụt 0,073. Đổi bản chính là quyết định của người dùng sau khi thấy kết quả, phải ghi rõ như vậy trong báo cáo.
 
 ## Cấm
 
