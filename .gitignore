@@ -49,3 +49,6 @@ __pycache__/
 # Hệ điều hành, Word
 Thumbs.db
 ~$*
+!data/ppe6/external/cppe2/
+!data/ppe6/external/cppe2/images.csv
+!data/ppe6/external/cppe2/eval_overlap.txt
