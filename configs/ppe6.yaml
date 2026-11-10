@@ -196,3 +196,11 @@ owl_scan:
   nms_iou: 0.5
   match_iou: 0.3
   report_scores: [0.2, 0.3, 0.4]
+
+# C4 (03x): thêm ảnh Construction-PPE bản mới vào train. Người dùng đồng ý tải, dùng 10/11/2026.
+# min_boot_px: Claude xem 63 hộp ủng mẫu; sai tập trung ở hộp nhỏ (14 sai, 12 dưới 30 px); từ 30 px: 2/47 sai (4%). Chưa đo thêm.
+cppe2:
+  side: 960
+  min_boot_px: 30
+  fill: [114, 114, 114]
+  class_map: {Person: 0, helmet: 1, vest: 2, gloves: 3, goggles: 4, boots: 5}

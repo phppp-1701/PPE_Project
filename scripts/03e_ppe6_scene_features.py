@@ -3,7 +3,7 @@
 Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
     python scripts/03e_ppe6_scene_features.py
 
-Đọc data/ppe4/stats.csv và, nếu có, data/ppe6/external/chvg/images.csv (cột file, image).
+Đọc data/ppe4/stats.csv và, nếu có, data/ppe6/external/{chvg,cppe2}/images.csv (cột file, image).
 Ghi data/ppe6/scene/features.npz: `key` (tên file), `phash` (64 bit), `emb` (đặc trưng YOLO đã chuẩn hóa), `hist` (biểu đồ màu).
 Ảnh đã có đặc trưng thì không tính lại. Tham số ở configs/ppe6.yaml mục `scene`.
 """
@@ -45,9 +45,10 @@ def hist(im):
 
 def image_list():
     rows = [(r["file"], ROOT / r["image"]) for r in csv.DictReader((ROOT / "data" / "ppe4" / "stats.csv").open(encoding="utf-8"))]
-    extra = ROOT / "data" / "ppe6" / "external" / "chvg" / "images.csv"
-    if extra.exists():
-        rows += [(r["file"], ROOT / r["image"]) for r in csv.DictReader(extra.open(encoding="utf-8"))]
+    for name in ("chvg", "cppe2"):   # cppe2: Construction-PPE bản mới (data/raw/construction_ppe_v2)
+        extra = ROOT / "data" / "ppe6" / "external" / name / "images.csv"
+        if extra.exists():
+            rows += [(r["file"], ROOT / r["image"]) for r in csv.DictReader(extra.open(encoding="utf-8"))]
     return rows
 
 
