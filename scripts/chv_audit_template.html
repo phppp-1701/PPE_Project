@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Duyệt & Kiểm Tra Khung Ủng CHV (PPE6)</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --primary: #3b82f6;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
+    body { background-color: var(--bg); color: var(--text); font-family: ui-sans-serif, system-ui, sans-serif; }
+    .badge { font-size: 0.75rem; padding: 0.15rem 0.5rem; border-radius: 9999px; font-weight: 600; }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #1e293b; }
+    ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col h-screen overflow-hidden">
+  <!-- Top Navbar -->
+  <header class="bg-[#1e293b] border-b border-[#334155] px-6 py-3 flex items-center justify-between flex-shrink-0">
+    <div class="flex items-center space-x-4">
+      <div class="bg-blue-600 text-white p-2 rounded-lg font-bold text-sm shadow">PPE6</div>
+      <div>
+        <h1 class="text-base font-bold text-slate-100 flex items-center gap-2">
+          Duyệt Khung Ủng CHV (Phương Án A)
+          <span class="badge bg-blue-500/20 text-blue-400 border border-blue-500/30">Lượt máy machine_pass_c</span>
+        </h1>
+        <p class="text-xs text-slate-400">Kiểm tra khung vẽ bị trùng và các trường hợp nghi ngờ thiếu khung</p>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex bg-slate-900/60 p-1 rounded-xl border border-slate-700 text-xs font-medium">
+      <button onclick="switchTab('overlaps')" id="tab-btn-overlaps" class="px-4 py-2 rounded-lg flex items-center gap-2 bg-blue-600 text-white font-semibold transition">
+        <span>⚠️ Khung Trùng</span>
+        <span id="badge-overlaps" class="bg-red-500/30 text-red-300 px-1.5 py-0.5 rounded-full text-[11px]">32</span>
+      </button>
+      <button onclick="switchTab('single_foot')" id="tab-btn-single_foot" class="px-4 py-2 rounded-lg flex items-center gap-2 text-slate-400 hover:text-slate-200 transition">
+        <span>🔍 Chỉ Vẽ 1 Chân</span>
+        <span id="badge-single_foot" class="bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded-full text-[11px]">137</span>
+      </button>
+      <button onclick="switchTab('nofeet')" id="tab-btn-nofeet" class="px-4 py-2 rounded-lg flex items-center gap-2 text-slate-400 hover:text-slate-200 transition">
+        <span>❓ Chạm Mép Dưới</span>
+        <span id="badge-nofeet" class="bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded-full text-[11px]">353</span>
+      </button>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center gap-3">
+      <div id="save-status" class="text-xs text-slate-400">Tất cả thay đổi đã lưu</div>
+      <button onclick="saveDecisions()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs px-4 py-2 rounded-lg flex items-center gap-1.5 shadow transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+        Lưu Quyết Định
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content Layout -->
+  <main class="flex-1 flex overflow-hidden">
+    <!-- Left Sidebar: Item List -->
+    <section class="w-72 lg:w-80 bg-[#161f30] border-r border-[#334155] flex flex-col flex-shrink-0">
+      <div class="p-3 border-b border-[#334155] flex items-center justify-between text-xs">
+        <span id="list-title" class="font-semibold text-slate-300">Danh sách ảnh trùng</span>
+        <span id="list-count" class="text-slate-400">0 mục</span>
+      </div>
+      <div id="item-list" class="flex-1 overflow-y-auto divide-y divide-[#334155]/50">
+        <!-- List items rendered here -->
+      </div>
+    </section>
+
+    <!-- Center View: Canvas & Controls -->
+    <section class="flex-1 flex flex-col bg-[#0b1120] overflow-hidden min-w-0">
+      <!-- Image Toolbar -->
+      <div class="bg-[#1e293b]/80 border-b border-[#334155] px-4 py-2.5 flex items-center justify-between text-xs flex-wrap gap-2">
+        <div class="flex items-center gap-3">
+          <span id="current-filename" class="font-mono font-bold text-slate-200 text-sm">chv__ppe_0328.jpg</span>
+          <span id="current-meta" class="text-slate-400 hidden sm:inline">Kích thước: 640x480</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <label class="flex items-center gap-1.5 cursor-pointer text-slate-300">
+            <input type="checkbox" id="toggle-safety" checked onchange="renderCurrent()" class="rounded bg-slate-800 border-slate-600 text-green-500">
+            <span class="inline-block w-2.5 h-2.5 rounded-full bg-green-500"></span> Ủng an toàn (s)
+          </label>
+          <label class="flex items-center gap-1.5 cursor-pointer text-slate-300">
+            <input type="checkbox" id="toggle-unclear" checked onchange="renderCurrent()" class="rounded bg-slate-800 border-slate-600 text-yellow-500">
+            <span class="inline-block w-2.5 h-2.5 rounded-full bg-yellow-500"></span> Không rõ (u)
+          </label>
+          <label class="flex items-center gap-1.5 cursor-pointer text-slate-300">
+            <input type="checkbox" id="toggle-overlap-zoom" checked onchange="renderCurrent()" class="rounded bg-slate-800 border-slate-600 text-red-500">
+            <span class="inline-block w-2.5 h-2.5 rounded-full bg-red-500"></span> Tô đỏ trùng
+          </label>
+          <button onclick="toggleZoomPanel()" id="btn-toggle-zoom" class="px-2.5 py-1 bg-blue-600 text-white rounded border border-blue-500 flex items-center gap-1 font-medium">
+            <span>🔍 Ô Zoom</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Canvas Area -->
+      <div class="flex-1 relative overflow-auto p-3 flex items-center justify-center bg-[#070b14]" id="canvas-container">
+        <canvas id="view-canvas" class="max-h-full max-w-full rounded shadow-xl border border-slate-800 object-contain cursor-crosshair"></canvas>
+      </div>
+
+      <!-- Bottom Decision Panel -->
+      <div class="bg-[#1e293b] border-t border-[#334155] p-3 flex-shrink-0">
+        <div id="decision-controls" class="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+          <!-- Details & Decision buttons rendered dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Sidebar: ZOOM PANEL (Soi Chi Tiết Khung Chồng Nhau) -->
+    <aside id="zoom-panel" class="w-96 lg:w-[440px] bg-[#161f30] border-l border-[#334155] flex flex-col flex-shrink-0 overflow-hidden shadow-2xl transition-all">
+      <!-- Zoom Header -->
+      <div class="p-3 bg-[#1e293b] border-b border-[#334155] flex items-center justify-between text-xs">
+        <div class="flex items-center gap-2">
+          <span class="text-sm">🔍</span>
+          <span class="font-bold text-slate-200" id="zoom-header-title">Kính Lúp Phóng To Khung Trùng</span>
+        </div>
+        <div class="flex items-center gap-1.5" id="zoom-nav-controls">
+          <!-- Prev / Next Pair Buttons -->
+        </div>
+      </div>
+
+      <!-- Zoom Canvas Container -->
+      <div class="p-3 bg-[#070b14] flex flex-col items-center justify-center border-b border-[#334155] relative min-h-[250px]">
+        <canvas id="zoom-canvas" class="rounded border border-slate-700 shadow-lg object-contain"></canvas>
+        <div id="zoom-empty-msg" class="hidden text-center text-slate-400 text-xs p-6">
+          <svg class="w-8 h-8 mx-auto text-emerald-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Ảnh này không có khung bị đè nhau!
+        </div>
+      </div>
+
+      <!-- Zoom Details & Metrics -->
+      <div class="flex-1 overflow-y-auto p-4 space-y-3.5 text-xs text-slate-300" id="zoom-details-body">
+        <!-- Dynamic content for zoomed pair details -->
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    let auditData = null;
+    let decisions = {};
+    let currentTab = 'overlaps';
+    let currentIndex = 0;
+    let selectedPairIndex = 0;
+    let zoomLevel = 'normal'; // 'normal' (with padding) or 'tight'
+    let zoomPanelVisible = true;
+
+    async function init() {
+      try {
+        const [dataRes, decRes] = await Promise.all([
+          fetch('/api/data'),
+          fetch('/api/decisions')
+        ]);
+        auditData = await dataRes.json();
+        decisions = await decRes.json();
+        
+        document.getElementById('badge-overlaps').textContent = auditData.overlaps.length;
+        document.getElementById('badge-single_foot').textContent = auditData.single_foot.length;
+        document.getElementById('badge-nofeet').textContent = auditData.nofeet.length;
+
+        renderList();
+        selectItem(0);
+      } catch (err) {
+        console.error('Init error:', err);
+      }
+    }
+
+    function toggleZoomPanel() {
+      zoomPanelVisible = !zoomPanelVisible;
+      const zp = document.getElementById('zoom-panel');
+      zp.style.display = zoomPanelVisible ? 'flex' : 'none';
+      const btn = document.getElementById('btn-toggle-zoom');
+      btn.className = zoomPanelVisible 
+        ? 'px-2.5 py-1 bg-blue-600 text-white rounded border border-blue-500 flex items-center gap-1 font-medium'
+        : 'px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded border border-slate-700 flex items-center gap-1';
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      currentIndex = 0;
+      selectedPairIndex = 0;
+      
+      ['overlaps', 'single_foot', 'nofeet'].forEach(t => {
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (t === tab) {
+          btn.className = 'px-4 py-2 rounded-lg flex items-center gap-2 bg-blue-600 text-white font-semibold transition';
+        } else {
+          btn.className = 'px-4 py-2 rounded-lg flex items-center gap-2 text-slate-400 hover:text-slate-200 transition';
+        }
+      });
+
+      renderList();
+      selectItem(0);
+    }
+
+    function getItems() {
+      if (!auditData) return [];
+      return auditData[currentTab] || [];
+    }
+
+    function renderList() {
+      const items = getItems();
+      const listEl = document.getElementById('item-list');
+      listEl.innerHTML = '';
+
+      document.getElementById('list-count').textContent = `${items.length} mục`;
+      
+      items.forEach((item, idx) => {
+        const el = document.createElement('div');
+        const isSelected = (idx === currentIndex);
+        el.className = `p-3 cursor-pointer transition flex items-center justify-between ${
+          isSelected ? 'bg-blue-600/20 border-l-4 border-blue-500' : 'hover:bg-slate-800/50'
+        }`;
+        el.onclick = () => selectItem(idx);
+
+        let badgeHtml = '';
+        let detailHtml = '';
+        const dec = decisions[item.file];
+
+        if (currentTab === 'overlaps') {
+          const maxIou = item.max_iou || 0;
+          badgeHtml = `<span class="badge ${maxIou > 0.5 ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}">IoU ${(maxIou * 100).toFixed(0)}%</span>`;
+          detailHtml = `<div class="text-xs text-slate-400 mt-1">${(item.pairs || []).length} cặp trùng • ${item.boxes.length} khung vẽ</div>`;
+        } else if (currentTab === 'single_foot') {
+          badgeHtml = `<span class="badge bg-amber-500/20 text-amber-300">1 chân (${item.single_codes.length} ô)</span>`;
+          detailHtml = `<div class="text-xs text-slate-400 mt-1">Ô: ${item.single_codes.join(', ')}</div>`;
+        } else if (currentTab === 'nofeet') {
+          badgeHtml = `<span class="badge bg-slate-700 text-slate-300">Cao ${(item.max_h * 100).toFixed(0)}%</span>`;
+          detailHtml = `<div class="text-xs text-slate-400 mt-1">${item.n_persons} người • đáy ${(item.max_b * 100).toFixed(0)}%</div>`;
+        }
+
+        let decStatus = '';
+        if (dec) {
+          if (currentTab === 'overlaps' && item.pairs && item.pairs.length > 1) {
+            const numDec = dec.pairs ? Object.keys(dec.pairs).length : 1;
+            if (numDec >= item.pairs.length) {
+              decStatus = `<span class="badge bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 ml-1.5">✓ Đủ</span>`;
+            } else {
+              decStatus = `<span class="badge bg-blue-500/20 text-blue-300 border border-blue-500/30 ml-1.5">${numDec}/${item.pairs.length}</span>`;
+            }
+          } else {
+            decStatus = `<span class="badge bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 ml-1.5">✓</span>`;
+          }
+        }
+
+        el.innerHTML = `
+          <div class="overflow-hidden pr-2">
+            <div class="font-mono text-xs font-semibold text-slate-200 truncate flex items-center">
+              ${item.file} ${decStatus}
+            </div>
+            ${detailHtml}
+          </div>
+          <div>${badgeHtml}</div>
+        `;
+        listEl.appendChild(el);
+      });
+    }
+
+    function selectItem(idx) {
+      const items = getItems();
+      if (!items.length) return;
+      currentIndex = Math.max(0, Math.min(idx, items.length - 1));
+      selectedPairIndex = 0;
+      
+      const item = items[currentIndex];
+      document.getElementById('current-filename').textContent = item.file;
+      renderList();
+      loadImageAndRender(item);
+      renderControls(item);
+    }
+
+    let loadedImg = null;
+    let currentItem = null;
+
+    function loadImageAndRender(item) {
+      currentItem = item;
+      const img = new Image();
+      img.src = `/img/${item.file}`;
+      img.onload = () => {
+        loadedImg = img;
+        document.getElementById('current-meta').textContent = `Kích thước: ${img.naturalWidth} x ${img.naturalHeight} px`;
+        renderCurrent();
+        renderZoom();
+      };
+    }
+
+    function renderCurrent() {
+      if (!loadedImg || !currentItem) return;
+      const canvas = document.getElementById('view-canvas');
+      const ctx = canvas.getContext('2d');
+      const w = loadedImg.naturalWidth;
+      const h = loadedImg.naturalHeight;
+      
+      canvas.width = w;
+      canvas.height = h;
+      ctx.drawImage(loadedImg, 0, 0);
+
+      const showSafety = document.getElementById('toggle-safety').checked;
+      const showUnclear = document.getElementById('toggle-unclear').checked;
+      const showHighlight = document.getElementById('toggle-overlap-zoom').checked;
+
+      const boxes = currentItem.boxes || [];
+
+      // Draw all boxes
+      boxes.forEach((b, i) => {
+        const isSafe = (b.kind === 's');
+        if (isSafe && !showSafety) return;
+        if (!isSafe && !showUnclear) return;
+
+        const [nx1, ny1, nx2, ny2] = b.norm_xyxy;
+        const x1 = nx1 * w, y1 = ny1 * h, x2 = nx2 * w, y2 = ny2 * h;
+
+        ctx.strokeStyle = isSafe ? '#22c55e' : '#eab308';
+        ctx.lineWidth = Math.max(2, w / 400);
+        ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+
+        // Label background
+        ctx.fillStyle = isSafe ? '#22c55e' : '#eab308';
+        ctx.fillRect(x1, Math.max(0, y1 - 18), 52, 18);
+        ctx.fillStyle = '#000000';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.fillText(`${b.code} ${b.kind.toUpperCase()}`, x1 + 3, Math.max(12, y1 - 4));
+      });
+
+      // Highlight overlaps
+      if (currentTab === 'overlaps' && showHighlight && currentItem.pairs) {
+        currentItem.pairs.forEach((p, pidx) => {
+          const b1 = p.box1.norm_xyxy;
+          const b2 = p.box2.norm_xyxy;
+          
+          const ix1 = Math.max(b1[0], b2[0]) * w;
+          const iy1 = Math.max(b1[1], b2[1]) * h;
+          const ix2 = Math.min(b1[2], b2[2]) * w;
+          const iy2 = Math.min(b1[3], b2[3]) * h;
+
+          if (ix2 > ix1 && iy2 > iy1) {
+            ctx.fillStyle = (pidx === selectedPairIndex) ? 'rgba(239, 68, 68, 0.6)' : 'rgba(239, 68, 68, 0.35)';
+            ctx.fillRect(ix1, iy1, ix2 - ix1, iy2 - iy1);
+            ctx.strokeStyle = '#ef4444';
+            ctx.lineWidth = (pidx === selectedPairIndex) ? Math.max(4, w / 250) : Math.max(2.5, w / 350);
+            ctx.setLineDash([4, 4]);
+            ctx.strokeRect(ix1, iy1, ix2 - ix1, iy2 - iy1);
+            ctx.setLineDash([]);
+          }
+        });
+      }
+    }
+
+    // ==========================================
+    // ZOOM PANEL LOGIC (KÍNH LÚP SOI KHUNG TRÙNG)
+    // ==========================================
+    function nextPair() {
+      if (!currentItem || !currentItem.pairs || currentItem.pairs.length <= 1) return;
+      selectedPairIndex = (selectedPairIndex + 1) % currentItem.pairs.length;
+      renderCurrent();
+      renderZoom();
+    }
+
+    function prevPair() {
+      if (!currentItem || !currentItem.pairs || currentItem.pairs.length <= 1) return;
+      selectedPairIndex = (selectedPairIndex - 1 + currentItem.pairs.length) % currentItem.pairs.length;
+      renderCurrent();
+      renderZoom();
+    }
+
+    function setZoomLevel(lvl) {
+      zoomLevel = lvl;
+      renderZoom();
+    }
+
+    function renderZoom() {
+      const zoomCanvas = document.getElementById('zoom-canvas');
+      const emptyMsg = document.getElementById('zoom-empty-msg');
+      const navCtr = document.getElementById('zoom-nav-controls');
+      const detailsBody = document.getElementById('zoom-details-body');
+      const headerTitle = document.getElementById('zoom-header-title');
+
+      if (!loadedImg || !currentItem) return;
+      const w = loadedImg.naturalWidth;
+      const h = loadedImg.naturalHeight;
+      const zctx = zoomCanvas.getContext('2d');
+
+      // 1. TAB OVERLAPS
+      if (currentTab === 'overlaps') {
+        headerTitle.textContent = 'Kính Lúp Phóng To Khung Trùng';
+        const pairs = currentItem.pairs || [];
+        if (!pairs.length) {
+          zoomCanvas.classList.add('hidden');
+          emptyMsg.classList.remove('hidden');
+          navCtr.innerHTML = '';
+          detailsBody.innerHTML = `
+            <div class="bg-emerald-950/40 border border-emerald-800/60 p-4 rounded-xl text-emerald-300 text-xs">
+              <div class="font-bold mb-1 flex items-center gap-1.5 text-sm">
+                <span>✓</span> Không còn khung trùng
+              </div>
+              <div>Ảnh này đã được chuẩn hóa hoặc gộp khung. Tất cả các hộp bảo hộ đều hợp lệ (IoU = 0).</div>
+            </div>
+          `;
+          return;
+        }
+
+        zoomCanvas.classList.remove('hidden');
+        emptyMsg.classList.add('hidden');
+
+        if (selectedPairIndex >= pairs.length) selectedPairIndex = 0;
+        const p = pairs[selectedPairIndex];
+
+        // Nav buttons for multi-pairs
+        navCtr.innerHTML = `
+          <button onclick="setZoomLevel('${zoomLevel === 'normal' ? 'tight' : 'normal'}')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[11px] font-semibold">
+            ${zoomLevel === 'tight' ? '🔍 Zoom 3x' : '🔍 Zoom 1.5x'}
+          </button>
+          ${pairs.length > 1 ? `
+            <div class="flex items-center gap-1 bg-slate-800 px-2 py-0.5 rounded border border-slate-700 text-[11px]">
+              <button onclick="prevPair()" class="text-slate-300 hover:text-white font-bold">◀</button>
+              <span class="text-blue-400 font-bold px-1">${selectedPairIndex + 1}/${pairs.length}</span>
+              <button onclick="nextPair()" class="text-slate-300 hover:text-white font-bold">▶</button>
+            </div>
+          ` : ''}
+        `;
+
+        const b1 = p.box1.norm_xyxy;
+        const b2 = p.box2.norm_xyxy;
+
+        // Bounding union in pixels
+        const px1_min = Math.min(b1[0], b2[0]) * w;
+        const py1_min = Math.min(b1[1], b2[1]) * h;
+        const px2_max = Math.max(b1[2], b2[2]) * w;
+        const py2_max = Math.max(b1[3], b2[3]) * h;
+
+        const unionW = Math.max(10, px2_max - px1_min);
+        const unionH = Math.max(10, py2_max - py1_min);
+
+        // Margin around union
+        const padFactor = (zoomLevel === 'tight') ? 0.25 : 0.60;
+        const padX = Math.max(25, unionW * padFactor);
+        const padY = Math.max(25, unionH * padFactor);
+
+        const cropX1 = Math.max(0, px1_min - padX);
+        const cropY1 = Math.max(0, py1_min - padY);
+        const cropX2 = Math.min(w, px2_max + padX);
+        const cropY2 = Math.min(h, py2_max + padY);
+
+        const cropW = cropX2 - cropX1;
+        const cropH = cropY2 - cropY1;
+
+        // Render to zoomCanvas
+        const targetW = 390;
+        const aspect = cropH / cropW;
+        const targetH = Math.round(targetW * aspect);
+        zoomCanvas.width = targetW;
+        zoomCanvas.height = Math.max(220, Math.min(380, targetH));
+
+        zctx.clearRect(0, 0, zoomCanvas.width, zoomCanvas.height);
+        zctx.imageSmoothingEnabled = false; // keep pixel sharpness
+        zctx.drawImage(loadedImg, cropX1, cropY1, cropW, cropH, 0, 0, zoomCanvas.width, zoomCanvas.height);
+
+        const scaleX = zoomCanvas.width / cropW;
+        const scaleY = zoomCanvas.height / cropH;
+
+        function toZ(normBox) {
+          const x1 = (normBox[0] * w - cropX1) * scaleX;
+          const y1 = (normBox[1] * h - cropY1) * scaleY;
+          const x2 = (normBox[2] * w - cropX1) * scaleX;
+          const y2 = (normBox[3] * h - cropY1) * scaleY;
+          return [x1, y1, x2 - x1, y2 - y1];
+        }
+
+        // 1. Draw Box 1 (Green)
+        const [zx1, zy1, zw1, zh1] = toZ(b1);
+        zctx.strokeStyle = '#22c55e';
+        zctx.lineWidth = 3.5;
+        zctx.strokeRect(zx1, zy1, zw1, zh1);
+        zctx.fillStyle = '#22c55e';
+        zctx.fillRect(zx1, Math.max(0, zy1 - 22), 85, 22);
+        zctx.fillStyle = '#000000';
+        zctx.font = 'bold 12px sans-serif';
+        zctx.fillText(`${p.box1.code} (${p.box1.kind})`, zx1 + 4, Math.max(16, zy1 - 6));
+
+        // 2. Draw Box 2 (Cyan)
+        const [zx2, zy2, zw2, zh2] = toZ(b2);
+        zctx.strokeStyle = '#06b6d4';
+        zctx.lineWidth = 3.5;
+        zctx.strokeRect(zx2, zy2, zw2, zh2);
+        zctx.fillStyle = '#06b6d4';
+        zctx.fillRect(zx2, Math.max(0, zy2 - 22), 85, 22);
+        zctx.fillStyle = '#000000';
+        zctx.font = 'bold 12px sans-serif';
+        zctx.fillText(`${p.box2.code} (${p.box2.kind})`, zx2 + 4, Math.max(16, zy2 - 6));
+
+        // 3. Draw Overlap Intersection
+        const ix1 = Math.max(b1[0], b2[0]);
+        const iy1 = Math.max(b1[1], b2[1]);
+        const ix2 = Math.min(b1[2], b2[2]);
+        const iy2 = Math.min(b1[3], b2[3]);
+        if (ix2 > ix1 && iy2 > iy1) {
+          const [zix, ziy, ziw, zih] = toZ([ix1, iy1, ix2, iy2]);
+          zctx.fillStyle = 'rgba(239, 68, 68, 0.45)';
+          zctx.fillRect(zix, ziy, ziw, zih);
+          zctx.strokeStyle = '#ef4444';
+          zctx.lineWidth = 3;
+          zctx.setLineDash([4, 4]);
+          zctx.strokeRect(zix, ziy, ziw, zih);
+          zctx.setLineDash([]);
+
+          // Center IoU Tag
+          const tagW = 75, tagH = 20;
+          const tagX = Math.max(0, zix + ziw/2 - tagW/2);
+          const tagY = Math.max(0, ziy + zih/2 - tagH/2);
+          zctx.fillStyle = '#ef4444';
+          zctx.fillRect(tagX, tagY, tagW, tagH);
+          zctx.fillStyle = '#ffffff';
+          zctx.font = 'bold 11px sans-serif';
+          zctx.textAlign = 'center';
+          zctx.fillText(`IoU ${(p.iou * 100).toFixed(0)}%`, tagX + tagW/2, tagY + 14);
+          zctx.textAlign = 'left';
+        }
+
+        // Details Breakdown HTML
+        const b1W = Math.round((b1[2] - b1[0]) * w);
+        const b1H = Math.round((b1[3] - b1[1]) * h);
+        const b2W = Math.round((b2[2] - b2[0]) * w);
+        const b2H = Math.round((b2[3] - b2[1]) * h);
+
+        const fileDec = decisions[currentItem.file] || {};
+        const curPairDec = (fileDec.pairs && fileDec.pairs[selectedPairIndex]) || {};
+        const curPairAction = curPairDec.action || '';
+
+        detailsBody.innerHTML = `
+          <!-- Metric Badges -->
+          <div class="grid grid-cols-2 gap-2">
+            <div class="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80">
+              <div class="text-[11px] text-slate-400 font-medium">Độ trùng IoU</div>
+              <div class="text-lg font-bold ${(p.iou > 0.5) ? 'text-red-400' : 'text-amber-400'}">
+                ${(p.iou * 100).toFixed(1)}%
+              </div>
+            </div>
+            <div class="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80">
+              <div class="text-[11px] text-slate-400 font-medium">Trùng ô nhỏ (IoMin)</div>
+              <div class="text-lg font-bold text-slate-200">
+                ${(p.io_min * 100).toFixed(1)}%
+              </div>
+            </div>
+          </div>
+
+          <!-- Cause Explanation -->
+          <div class="bg-slate-800/60 p-2.5 rounded-xl border border-slate-700/60 text-xs">
+            <span class="text-slate-400">Nguyên nhân:</span>
+            <div class="font-medium text-slate-200 mt-0.5">${p.cause}</div>
+          </div>
+
+          <!-- Box Comparison Table -->
+          <div class="bg-slate-800/80 rounded-xl border border-slate-700/80 overflow-hidden text-xs">
+            <div class="px-3 py-2 bg-slate-900/50 border-b border-slate-700 font-semibold text-slate-300 flex justify-between">
+              <span>So sánh 2 khung vẽ</span>
+              <span>Cặp ${selectedPairIndex + 1}/${pairs.length}</span>
+            </div>
+            <div class="p-3 space-y-2.5">
+              <div class="flex items-center justify-between border-b border-slate-700/50 pb-2">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
+                  <span class="font-mono font-bold text-green-400">Khung 1: ${p.box1.code}</span>
+                </div>
+                <div class="text-slate-300">${b1W} × ${b1H} px</div>
+              </div>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-cyan-400 inline-block"></span>
+                  <span class="font-mono font-bold text-cyan-400">Khung 2: ${p.box2.code}</span>
+                </div>
+                <div class="text-slate-300">${b2W} × ${b2H} px</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Action Buttons for this Zoomed Pair -->
+          <div class="pt-1">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[11px] text-slate-400 font-semibold uppercase tracking-wide">Thao tác cho cặp này:</span>
+              <span class="badge ${curPairAction ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-800 text-slate-400'}">
+                ${curPairAction ? '✓ Đã chọn: ' + curPairAction : 'Chưa chọn'}
+              </span>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="setDecision('merge_tighter', 'Gộp & Giữ khung chuẩn (NMS)')" class="p-2.5 rounded-lg ${curPairAction === 'merge_tighter' ? 'bg-blue-600 ring-2 ring-blue-300 font-bold' : 'bg-blue-600/80 hover:bg-blue-500 font-semibold'} text-white text-xs flex items-center justify-center gap-1 shadow transition">
+                ✨ Gộp NMS
+              </button>
+              <button onclick="setDecision('keep_both', 'Giữ Cả 2')" class="p-2.5 rounded-lg ${curPairAction === 'keep_both' ? 'bg-purple-600 ring-2 ring-purple-300 font-bold' : 'bg-purple-600/80 hover:bg-purple-500 font-semibold'} text-white text-xs flex items-center justify-center gap-1 shadow transition">
+                Giữ Cả 2
+              </button>
+              <button onclick="setDecision('keep_box1', 'Giữ Khung 1 (${p.box1.code})')" class="p-2 rounded-lg ${curPairAction === 'keep_box1' ? 'bg-green-600 text-white ring-2 ring-green-300 font-bold' : 'bg-slate-800 hover:bg-slate-700 text-green-400 border border-green-500/40 font-semibold'} text-xs transition">
+                Giữ 1 (${p.box1.code})
+              </button>
+              <button onclick="setDecision('keep_box2', 'Giữ Khung 2 (${p.box2.code})')" class="p-2 rounded-lg ${curPairAction === 'keep_box2' ? 'bg-cyan-600 text-white ring-2 ring-cyan-300 font-bold' : 'bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-cyan-500/40 font-semibold'} text-xs transition">
+                Giữ 2 (${p.box2.code})
+              </button>
+            </div>
+          </div>
+        `;
+      } 
+      // 2. TAB SINGLE FOOT
+      else if (currentTab === 'single_foot') {
+        headerTitle.textContent = 'Kính Lúp: Soi Người Vẽ 1 Chân';
+        const singleCodes = currentItem.single_codes || [];
+        const sfBox = (currentItem.boxes || []).find(b => singleCodes.includes(b.code)) || currentItem.boxes[0];
+
+        if (!sfBox) {
+          zoomCanvas.classList.add('hidden');
+          emptyMsg.classList.remove('hidden');
+          return;
+        }
+
+        zoomCanvas.classList.remove('hidden');
+        emptyMsg.classList.add('hidden');
+        navCtr.innerHTML = `
+          <button onclick="setZoomLevel('${zoomLevel === 'normal' ? 'tight' : 'normal'}')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[11px] font-semibold">
+            ${zoomLevel === 'tight' ? '🔍 Zoom 3x' : '🔍 Zoom 1.5x'}
+          </button>
+        `;
+
+        const b = sfBox.norm_xyxy;
+        const bx1 = b[0] * w, by1 = b[1] * h, bx2 = b[2] * w, by2 = b[3] * h;
+        const bw = bx2 - bx1, bh = by2 - by1;
+        const padX = Math.max(40, bw * 1.0);
+        const padY = Math.max(40, bh * 1.0);
+
+        const cropX1 = Math.max(0, bx1 - padX);
+        const cropY1 = Math.max(0, by1 - padY);
+        const cropX2 = Math.min(w, bx2 + padX);
+        const cropY2 = Math.min(h, by2 + padY);
+
+        const cropW = cropX2 - cropX1;
+        const cropH = cropY2 - cropY1;
+
+        const targetW = 390;
+        zoomCanvas.width = targetW;
+        zoomCanvas.height = Math.round(targetW * (cropH / cropW));
+
+        zctx.clearRect(0, 0, zoomCanvas.width, zoomCanvas.height);
+        zctx.drawImage(loadedImg, cropX1, cropY1, cropW, cropH, 0, 0, zoomCanvas.width, zoomCanvas.height);
+
+        const scaleX = zoomCanvas.width / cropW;
+        const scaleY = zoomCanvas.height / cropH;
+
+        const zx = (bx1 - cropX1) * scaleX;
+        const zy = (by1 - cropY1) * scaleY;
+        const zw = bw * scaleX;
+        const zh = bh * scaleY;
+
+        zctx.strokeStyle = '#22c55e';
+        zctx.lineWidth = 3.5;
+        zctx.strokeRect(zx, zy, zw, zh);
+        zctx.fillStyle = '#22c55e';
+        zctx.fillRect(zx, Math.max(0, zy - 22), 85, 22);
+        zctx.fillStyle = '#000000';
+        zctx.font = 'bold 12px sans-serif';
+        zctx.fillText(`${sfBox.code} (${sfBox.kind})`, zx + 4, Math.max(16, zy - 6));
+
+        detailsBody.innerHTML = `
+          <div class="bg-amber-950/40 border border-amber-800/60 p-3 rounded-xl text-amber-200 text-xs">
+            <div class="font-bold mb-1">Ô người chỉ có 1 khung chân (${sfBox.code})</div>
+            <div>Quan sát xung quanh vùng phóng to xem chân thứ hai có bị đồ vật/quần áo che khuất, hay bị người vẽ bỏ sót.</div>
+          </div>
+          <div class="grid grid-cols-2 gap-2 pt-2">
+            <button onclick="setDecision('foot_occluded_ok', 'Chân kia bị che (Đúng)')" class="p-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow">
+              ✓ Chân kia bị che (Đúng)
+            </button>
+            <button onclick="setDecision('foot_missing', 'Bị vẽ sót 1 chân')" class="p-3 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs shadow">
+              ⚠️ Bị vẽ sót chân
+            </button>
+          </div>
+        `;
+      }
+      // 3. TAB NOFEET
+      else if (currentTab === 'nofeet') {
+        headerTitle.textContent = 'Kính Lúp: Soi Mép Dưới Ảnh';
+        const targetW = 390;
+        const cropY1 = Math.max(0, h - Math.round(h * 0.25));
+        const cropH = h - cropY1;
+        zoomCanvas.width = targetW;
+        zoomCanvas.height = Math.round(targetW * (cropH / w));
+
+        zctx.clearRect(0, 0, zoomCanvas.width, zoomCanvas.height);
+        zctx.drawImage(loadedImg, 0, cropY1, w, cropH, 0, 0, zoomCanvas.width, zoomCanvas.height);
+
+        // Draw red bottom guide line
+        zctx.strokeStyle = '#ef4444';
+        zctx.lineWidth = 2;
+        zctx.strokeRect(1, 1, zoomCanvas.width - 2, zoomCanvas.height - 2);
+
+        detailsBody.innerHTML = `
+          <div class="bg-slate-800/80 border border-slate-700 p-3 rounded-xl text-slate-300 text-xs">
+            <div class="font-bold mb-1 text-slate-100">Đang soi 25% đáy ảnh</div>
+            <div>Kiểm tra xem ở đáy ảnh này có lộ mũi ủng, đế giày hay bàn chân bị cắt ngang không.</div>
+          </div>
+          <div class="grid grid-cols-2 gap-2 pt-2">
+            <button onclick="setDecision('nofeet_ok', 'Không thấy chân (Đúng)')" class="p-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow">
+              ✓ Không thấy chân
+            </button>
+            <button onclick="setDecision('has_boots_at_edge', 'Có ủng ở mép ảnh')" class="p-3 rounded-lg bg-red-600 hover:bg-red-500 text-white font-semibold text-xs shadow">
+              ⚠️ Có ủng mép ảnh
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    function renderControls(item) {
+      const ctr = document.getElementById('decision-controls');
+      const dec = decisions[item.file] || {};
+
+      if (currentTab === 'overlaps') {
+        const pairs = item.pairs || [];
+        if (!pairs.length) {
+          ctr.innerHTML = `
+            <div class="flex-1">
+              <div class="text-sm font-semibold text-emerald-400 flex items-center gap-2">
+                <span>✓</span> Đã sạch bóng khung trùng
+              </div>
+              <div class="text-xs text-slate-400 mt-0.5">Tất cả các khung đều độc lập, không còn chồng lấn nào.</div>
+            </div>
+            <div class="text-xs text-slate-400">Trạng thái: <strong class="text-emerald-400">${dec.label || 'Đã chuẩn hóa'}</strong></div>
+          `;
+          return;
+        }
+
+        const pair = pairs[selectedPairIndex] || pairs[0];
+        const pairDec = (dec.pairs && dec.pairs[selectedPairIndex]) || {};
+        const curAction = pairDec.action || dec.action || '';
+        ctr.innerHTML = `
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-semibold text-slate-100 flex items-center gap-2 truncate">
+              <span>Trùng lặp: IoU = ${(pair.iou * 100).toFixed(1)}%</span>
+              ${pairs.length > 1 ? `
+                <div class="flex items-center gap-1 bg-slate-900 border border-slate-700 px-2 py-0.5 rounded-lg text-xs">
+                  <button onclick="prevPair()" class="text-slate-400 hover:text-white px-1 font-bold">◀</button>
+                  <span class="text-blue-400 font-bold">Cặp ${selectedPairIndex + 1}/${pairs.length}</span>
+                  <button onclick="nextPair()" class="text-slate-400 hover:text-white px-1 font-bold">▶</button>
+                </div>
+              ` : ''}
+              <span class="text-xs text-amber-400 truncate">(${pair.cause})</span>
+            </div>
+            <div class="text-xs text-slate-400 mt-0.5 truncate">
+              Khung 1: <strong class="text-green-400">${pair.box1.code} (${pair.box1.kind})</strong> | Khung 2: <strong class="text-cyan-400">${pair.box2.code} (${pair.box2.kind})</strong>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <button onclick="setDecision('merge_tighter', 'Gộp & Giữ khung chuẩn (NMS)')" class="px-3.5 py-2 rounded-lg text-xs font-semibold transition ${curAction === 'merge_tighter' ? 'bg-blue-600 text-white ring-2 ring-blue-300' : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'}">
+              ✨ Gộp Khung (NMS)
+            </button>
+            <button onclick="setDecision('keep_both', 'Giữ Cả 2')" class="px-3 py-2 rounded-lg text-xs font-semibold transition ${curAction === 'keep_both' ? 'bg-purple-600 text-white ring-2 ring-purple-300' : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'}">
+              Giữ Cả 2
+            </button>
+            <button onclick="setDecision('remove_both', 'Loại Cả 2')" class="px-3 py-2 rounded-lg text-xs font-semibold transition ${curAction === 'remove_both' ? 'bg-red-600 text-white ring-2 ring-red-300' : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'}">
+              Xóa Cả 2
+            </button>
+          </div>
+        `;
+      } else if (currentTab === 'single_foot') {
+        ctr.innerHTML = `
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-semibold text-slate-100">Đơn vị người chỉ có 1 khung chân</div>
+            <div class="text-xs text-slate-400 mt-0.5 truncate">Mã ô: ${item.single_codes.join(', ')}. Hãy kiểm tra xem chân kia có bị che khuất hay bị sót.</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="setDecision('foot_occluded_ok', 'Chân kia bị che (Đúng)')" class="px-4 py-2 rounded-lg text-xs font-semibold ${dec.action === 'foot_occluded_ok' ? 'bg-emerald-600 text-white' : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'}">
+              ✓ Chân kia bị che
+            </button>
+            <button onclick="setDecision('foot_missing', 'Bị vẽ sót 1 chân')" class="px-4 py-2 rounded-lg text-xs font-semibold ${dec.action === 'foot_missing' ? 'bg-amber-600 text-white' : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'}">
+              ⚠️ Bị sót chân
+            </button>
+          </div>
+        `;
+      } else if (currentTab === 'nofeet') {
+        ctr.innerHTML = `
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-semibold text-slate-100">Ảnh trong nofeet chạm đáy (${(item.max_b * 100).toFixed(0)}%)</div>
+            <div class="text-xs text-slate-400 mt-0.5 truncate">Người cao ${(item.max_h * 100).toFixed(0)}% ảnh. Kiểm tra xem có ủng bảo hộ lộ ở mép ảnh không.</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="setDecision('nofeet_ok', 'Không thấy chân (Đúng)')" class="px-4 py-2 rounded-lg text-xs font-semibold ${dec.action === 'nofeet_ok' ? 'bg-emerald-600 text-white' : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'}">
+              ✓ Không thấy chân
+            </button>
+            <button onclick="setDecision('has_boots_at_edge', 'Có ủng ở mép ảnh')" class="px-4 py-2 rounded-lg text-xs font-semibold ${dec.action === 'has_boots_at_edge' ? 'bg-red-600 text-white' : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'}">
+              ⚠️ Có ủng mép ảnh
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    function setDecision(action, label) {
+      if (!currentItem) return;
+
+      const pairs = (currentTab === 'overlaps') ? (currentItem.pairs || []) : [];
+
+      if (!decisions[currentItem.file]) {
+        decisions[currentItem.file] = {
+          action: action,
+          label: label,
+          pairs: {},
+          time: new Date().toISOString()
+        };
+      }
+      if (!decisions[currentItem.file].pairs) {
+        decisions[currentItem.file].pairs = {};
+      }
+
+      if (pairs.length > 0) {
+        const curPair = pairs[selectedPairIndex] || pairs[0];
+        decisions[currentItem.file].pairs[selectedPairIndex] = {
+          action: action,
+          label: label,
+          box1: curPair.box1.code,
+          box2: curPair.box2.code,
+          iou: curPair.iou,
+          time: new Date().toISOString()
+        };
+      }
+      decisions[currentItem.file].action = action;
+      decisions[currentItem.file].label = label;
+      decisions[currentItem.file].time = new Date().toISOString();
+
+      renderList();
+      saveDecisions();
+
+      // KIỂM TRA: Nếu ảnh có nhiều đối tượng trùng và chưa hết thì chuyển sang đối tượng tiếp theo trước!
+      if (currentTab === 'overlaps' && pairs.length > 1 && selectedPairIndex < pairs.length - 1) {
+        selectedPairIndex += 1;
+        renderCurrent();
+        renderZoom();
+        renderControls(currentItem);
+      } else {
+        // Đã duyệt hết các đối tượng trùng trong ảnh này -> Chuyển sang ảnh mới
+        renderControls(currentItem);
+        setTimeout(() => {
+          const items = getItems();
+          if (currentIndex < items.length - 1) {
+            selectItem(currentIndex + 1);
+          }
+        }, 250);
+      }
+    }
+
+    async function saveDecisions() {
+      const statusEl = document.getElementById('save-status');
+      statusEl.textContent = 'Đang lưu...';
+      try {
+        const res = await fetch('/api/save_decisions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(decisions)
+        });
+        if (res.ok) {
+          statusEl.textContent = `Đã lưu ${Object.keys(decisions).length} quyết định`;
+          setTimeout(() => { statusEl.textContent = 'Tất cả thay đổi đã lưu'; }, 2000);
+        } else {
+          statusEl.textContent = 'Lỗi lưu';
+        }
+      } catch (err) {
+        statusEl.textContent = 'Lỗi mạng khi lưu';
+      }
+    }
+
+    // Keyboard shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'd') {
+        const items = getItems();
+        if (currentIndex < items.length - 1) selectItem(currentIndex + 1);
+      } else if (e.key === 'ArrowUp' || e.key === 'a') {
+        if (currentIndex > 0) selectItem(currentIndex - 1);
+      } else if (e.key === 'ArrowRight' || e.key === ']') {
+        nextPair();
+      } else if (e.key === 'ArrowLeft' || e.key === '[') {
+        prevPair();
+      } else if (e.key === '1') {
+        if (currentTab === 'overlaps') setDecision('merge_tighter', 'Gộp & Giữ khung chuẩn (NMS)');
+        else if (currentTab === 'single_foot') setDecision('foot_occluded_ok', 'Chân kia bị che (Đúng)');
+        else if (currentTab === 'nofeet') setDecision('nofeet_ok', 'Không thấy chân (Đúng)');
+      } else if (e.key === '2') {
+        if (currentTab === 'overlaps') setDecision('keep_both', 'Giữ Cả 2');
+        else if (currentTab === 'single_foot') setDecision('foot_missing', 'Bị vẽ sót 1 chân');
+        else if (currentTab === 'nofeet') setDecision('has_boots_at_edge', 'Có ủng ở mép ảnh');
+      } else if (e.key === '3' && currentTab === 'overlaps') {
+        setDecision('remove_both', 'Loại Cả 2');
+      }
+    });
+
+    window.onload = () => {
+      init();
+
+      // Click on main canvas to select nearest overlap pair
+      const canvas = document.getElementById('view-canvas');
+      canvas.addEventListener('click', (e) => {
+        if (!loadedImg || !currentItem || currentTab !== 'overlaps') return;
+        const pairs = currentItem.pairs || [];
+        if (!pairs.length) return;
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = loadedImg.naturalWidth / rect.width;
+        const scaleY = loadedImg.naturalHeight / rect.height;
+        const clickX = (e.clientX - rect.left) * scaleX;
+        const clickY = (e.clientY - rect.top) * scaleY;
+        const normX = clickX / loadedImg.naturalWidth;
+        const normY = clickY / loadedImg.naturalHeight;
+
+        let bestIdx = -1;
+        let minD = 999999;
+        pairs.forEach((p, idx) => {
+          const b1 = p.box1.norm_xyxy;
+          const b2 = p.box2.norm_xyxy;
+          const inside1 = (normX >= b1[0] && normX <= b1[2] && normY >= b1[1] && normY <= b1[3]);
+          const inside2 = (normX >= b2[0] && normX <= b2[2] && normY >= b2[1] && normY <= b2[3]);
+          if (inside1 || inside2) {
+            bestIdx = idx;
+            minD = 0;
+          } else {
+            const cx = (b1[0] + b1[2] + b2[0] + b2[2]) / 4;
+            const cy = (b1[1] + b1[3] + b2[1] + b2[3]) / 4;
+            const d = Math.hypot(normX - cx, normY - cy);
+            if (d < minD && d < 0.25) {
+              minD = d;
+              bestIdx = idx;
+            }
+          }
+        });
+
+        if (bestIdx !== -1) {
+          selectedPairIndex = bestIdx;
+          renderCurrent();
+          renderZoom();
+        }
+      });
+    };
+  </script>
+</body>
+</html>

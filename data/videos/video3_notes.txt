@@ -1,0 +1,13 @@
+Ghi chú gán nhãn video3 (Safety_Full_Hat_and_Vest.mp4). Ngày 11/11/2026.
+
+Nguồn nhãn:
+- Hộp người: tạo bằng yolo11s.pt gốc (lớp person COCO, độc lập với C4) và ghép quỹ đạo theo IoU qua 1.950 khung (4 đợt người đi qua hành lang, tổng 7 người).
+- Trạng thái PPE 6 lớp (helmet, vest, glove_left, glove_right, goggles, boots): gán theo quan sát trực quan từng đợt người; khi người tiến sát mép dưới khung (y2 > 1060) khiến chân/tay ra ngoài khung thì chuyển sang chua_xac_dinh.
+  - Track 1 (khung 82-338): có mũ, có áo, tay khuất trong ống tay áo dài (chua_xac_dinh), thiếu kính, có ủng cao cổ.
+  - Track 2 (khung 524-767, trái): thiếu mũ, thiếu áo, thiếu găng, thiếu kính, giày vải thường (thiếu ủng).
+  - Track 3 (khung 566-757, phải): có mũ, có áo, thiếu găng, thiếu kính, có giày/ủng bảo hộ đen.
+  - Track 4 (khung 1054-1379, trái): có mũ, có áo, thiếu găng, thiếu kính, chân khuất ở mép dưới (chua_xac_dinh).
+  - Track 5 (khung 1152-1395, giữa): có mũ, thiếu áo (áo sơ mi đen), thiếu găng, thiếu kính, chân khuất (chua_xac_dinh).
+  - Track 6 (khung 1125-1388, phải): thiếu mũ, có áo, thiếu găng, thiếu kính, chân khuất (chua_xac_dinh).
+  - Track 7 (khung 1632-1880): có mũ, có áo, thiếu găng, thiếu kính, giày thể thao xám (thiếu ủng).
+

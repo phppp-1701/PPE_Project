@@ -71,7 +71,8 @@ class Associator:
 
     def limit(self, name):
         """Khoảng cách tối đa: 1 (biên elip) khi dùng cổ tay, còn lại `max_distance` (3.4)."""
-        return 1.0 if self.pose and self.ppe[name]["sides"] else self.max_distance[name]
+        p = self.ppe[name]
+        return 1.0 if self.pose and p["sides"] and p["region"] == "hands" else self.max_distance[name]
 
     def candidates(self, name, det, tracks):
         """[(d, track_id, side)] của các vùng chứa tâm PPE, sắp theo d tăng dần."""
@@ -81,7 +82,7 @@ class Associator:
         out = []
         for t in tracks:
             for side in (SIDES if p["sides"] else (None,)):
-                if self.pose and p["sides"]:
+                if self.pose and p["sides"] and p["region"] == "hands":
                     q = valid_wrist(t, side, self.pose)
                     if q is not None and (v := ellipse_value(c, t.xyxy, q, self.pose)) <= 1:
                         out.append((v, t.track_id, side))
@@ -106,11 +107,15 @@ class Associator:
                 a.rejected.append((name, det, "far", cand))
                 continue
             near = [x for x in cand if x[0] <= limit]
-            if len(near) >= 2 and (self.margin is None or near[1][0] - near[0][0] < self.margin):
-                for _, tid, side in near:
-                    a.contested[tid].add((name, side))
+            _, tid, side = near[0]
+            other_people = [x for x in near[1:] if x[1] != tid]
+            if other_people and (self.margin is None or other_people[0][0] - near[0][0] < self.margin):
+                for _, t_id, s in near:
+                    a.contested[t_id].add((name, s))
                 a.rejected.append((name, det, "contested", near))
                 continue
-            _, tid, side = near[0]
             a.owned[tid][(name, side)].append(det)
+            for _, t_id, s in near[1:]:
+                if t_id == tid and s != side:
+                    a.contested[tid].add((name, s))
         return a

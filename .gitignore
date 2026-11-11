@@ -52,3 +52,24 @@ Thumbs.db
 !data/ppe6/external/cppe2/
 !data/ppe6/external/cppe2/images.csv
 !data/ppe6/external/cppe2/eval_overlap.txt
+!data/videos/*_cvat.zip
+!data/videos/*_notes.txt
+
+# Giữ lại bảng số liệu/JSON kết quả huấn luyện, đánh giá C4, hiệu chỉnh và chạy thử video
+!outputs/train/yolo11s_ppe6_c4/results.csv
+!outputs/train/yolo11s_ppe6_c4/run_info.json
+!outputs/train/yolo11s_ppe6_c4/smoke_check.json
+!outputs/results/ppe6_eval/*.json
+!outputs/results/ppe6_eval/*/*.json
+!outputs/results/pipeline_calib_val/conf.json
+!outputs/results/pipeline_calib_val/conf_f1.csv
+!outputs/results/pipeline_calib_val/regions.json
+!outputs/results/pipeline_calib_video/*/*.csv
+!outputs/results/video/*/summary.json
+!outputs/results/video/*/frames.csv
+!outputs/results/video/*/events.jsonl
+
+# Thư mục nháp tạm thời
+scratch/
+*.bak
+preview_all.jpg

@@ -19,17 +19,28 @@ from ppe import Det, Track, load_config  # noqa: E402
 @pytest.fixture
 def test_cfg():
     cfg = copy.deepcopy(load_config())
+    cfg["required_ppe"] = ["helmet", "vest", "gloves"]
+    cfg["ppe"] = {k: v for k, v in cfg["ppe"].items() if k in ("helmet", "vest", "gloves")}
     cfg["association"]["regions"] = {
         "head": {"x0": 0.0, "x1": 1.0, "y0": 0.0, "y1": 0.3},
         "torso": {"x0": 0.2, "x1": 0.8, "y0": 0.25, "y1": 0.7},
         "hands": {"x0": -0.1, "x1": 1.1, "y0": 0.3, "y1": 0.9},
+        "feet": {"x0": 0.0, "x1": 1.0, "y0": 0.8, "y1": 1.02},
     }
-    cfg["association"]["max_distance"] = {"helmet": 0.5, "vest": 0.5, "gloves": 0.6}
+    cfg["association"]["max_distance"] = {
+        "helmet": 0.5, "vest": 0.5, "gloves": 0.6, "goggles": 0.5, "boots": 0.5,
+    }
     cfg["association"]["ambiguity_margin"] = None
     cfg["pose"]["enabled"] = False   # bài kiểm thử pose tự bật
-    cfg["compliance"]["tau_in"] = {"helmet": 0.9, "vest": 0.9, "gloves": 0.9}
-    cfg["compliance"]["tau_occ"] = {"helmet": 0.3, "vest": 0.3, "gloves": 0.3}
-    cfg["compliance"]["area_min_px"] = {"helmet": 10, "vest": 10, "gloves": 10}
+    cfg["compliance"]["tau_in"] = {
+        "helmet": 0.9, "vest": 0.9, "gloves": 0.9, "goggles": 0.9, "boots": 0.95,
+    }
+    cfg["compliance"]["tau_occ"] = {
+        "helmet": 0.3, "vest": 0.3, "gloves": 0.3, "goggles": 0.3, "boots": 0.3,
+    }
+    cfg["compliance"]["area_min_px"] = {
+        "helmet": 10, "vest": 10, "gloves": 10, "goggles": 10, "boots": 10,
+    }
     return cfg
 
 

@@ -75,6 +75,8 @@ def read_labels(path):
                 "helmet": a["helmet"], "vest": a["vest"],
                 "glove_left": a["glove_left"], "glove_right": a["glove_right"],
                 "gloves": merge_gloves(a["glove_left"], a["glove_right"]),
+                "goggles": a.get("goggles", UNKNOWN),
+                "boots": a.get("boots", UNKNOWN),
             })
     return frames
 

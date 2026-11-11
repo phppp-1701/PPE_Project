@@ -32,7 +32,61 @@ from ppe import load_config  # noqa: E402
 from ppe.association import SIDES, norm_distance, region_box  # noqa: E402
 
 DATASET = ROOT / "data" / "ppe4" / "dataset"
+PPE6_DATASET = ROOT / "data" / "ppe6" / "dataset"
 OUT = ROOT / "outputs" / "results" / "pipeline_calib_val"
+
+
+def val_new_items():
+    """Danh sách (img_path, label_path) của val_new (6 lớp) nếu có."""
+    vn = PPE6_DATASET / "val_new.txt"
+    if not vn.exists():
+        return []
+    out = []
+    for line in vn.read_text(encoding="utf-8").splitlines():
+        rel = line.strip().lstrip("./")
+        if not rel:
+            continue
+        img = PPE6_DATASET / rel
+        lab = (PPE6_DATASET / rel.replace("images/", "labels/")).with_suffix(".txt")
+        if img.exists() and lab.exists():
+            out.append((img, lab))
+    return out
+
+
+def label_sources(by_cls):
+    """Nguồn file nhãn cho từng nhóm lớp: lớp < 4 từ ppe4 val, lớp >= 4 từ ppe6 val_new."""
+    sources = [(sorted((DATASET / "labels" / "val").glob("*.txt")), {c for c in by_cls if c < 4})]
+    if any(c >= 4 for c in by_cls):
+        sources.append(([lab for _, lab in val_new_items()], {c for c in by_cls if c >= 4}))
+    return [(files, cls_set) for files, cls_set in sources if files and cls_set]
+
+
+def load_ignore_boxes():
+    """{stem: {cls: [(cx, cy, w, h)]}} từ data/ppe6/dataset/ignore.csv."""
+    p = PPE6_DATASET / "ignore.csv"
+    out = {}
+    if p.exists():
+        for r in csv.DictReader(p.open(encoding="utf-8")):
+            stem = Path(r["file"]).stem
+            out.setdefault(stem, {}).setdefault(int(r["cls"]), []).append(
+                (float(r["cx"]), float(r["cy"]), float(r["w"]), float(r["h"]))
+            )
+    return out
+
+
+def is_ignored(box, ig_boxes):
+    """Dự đoán không khớp GT nhưng trùng vùng ignore (IoU >= 0.5 hoặc IoA >= 0.5) thì bỏ qua."""
+    if not len(ig_boxes):
+        return False
+    b = box.reshape(1, 4)
+    ix = np.clip(np.minimum(b[:, None, 2], ig_boxes[None, :, 2]) - np.maximum(b[:, None, 0], ig_boxes[None, :, 0]), 0, None)
+    iy = np.clip(np.minimum(b[:, None, 3], ig_boxes[None, :, 3]) - np.maximum(b[:, None, 1], ig_boxes[None, :, 1]), 0, None)
+    inter = (ix * iy)[0]
+    area_b = max((box[2] - box[0]) * (box[3] - box[1]), 1e-9)
+    area_ig = (ig_boxes[:, 2] - ig_boxes[:, 0]) * (ig_boxes[:, 3] - ig_boxes[:, 1])
+    iou = inter / (area_b + area_ig - inter + 1e-9)
+    ioa = inter / area_b
+    return bool(np.any((iou >= 0.5) | (ioa >= 0.5)))
 
 
 def read_labels(path):
@@ -53,28 +107,31 @@ def regions(cfg):
     count = {name: dict(total=0, no_person=0, ambiguous=0, used=0) for name in cfg["ppe"]}
     by_cls = {p["cls"]: name for name, p in cfg["ppe"].items()}
     items = []
-    for f in sorted((DATASET / "labels" / "val").glob("*.txt")):
-        lab = read_labels(f)
-        persons = [to_xyxy(*r[1:]) for r in lab if r[0] == cfg["person_cls"]]
-        for r in lab:
-            name = by_cls.get(r[0])
-            if name is None:
-                continue
-            count[name]["total"] += 1
-            cx, cy = r[1], r[2]
-            owners = [p for p in persons
-                      if p[0] - margin * (p[2] - p[0]) <= cx <= p[2] + margin * (p[2] - p[0])
-                      and p[1] - margin * (p[3] - p[1]) <= cy <= p[3] + margin * (p[3] - p[1])]
-            if not owners:
-                count[name]["no_person"] += 1
-                continue
-            if len(owners) > 1:
-                count[name]["ambiguous"] += 1
-                continue
-            p = owners[0]
-            count[name]["used"] += 1
-            rel[name].append(((cx - p[0]) / (p[2] - p[0]), (cy - p[1]) / (p[3] - p[1])))
-            items.append((name, (cx, cy), p))
+    for files, cls_set in label_sources(by_cls):
+        for f in files:
+            lab = read_labels(f)
+            persons = [to_xyxy(*r[1:]) for r in lab if r[0] == cfg["person_cls"]]
+            for r in lab:
+                if r[0] not in cls_set:
+                    continue
+                name = by_cls.get(r[0])
+                if name is None:
+                    continue
+                count[name]["total"] += 1
+                cx, cy = r[1], r[2]
+                owners = [p for p in persons
+                          if p[0] - margin * (p[2] - p[0]) <= cx <= p[2] + margin * (p[2] - p[0])
+                          and p[1] - margin * (p[3] - p[1]) <= cy <= p[3] + margin * (p[3] - p[1])]
+                if not owners:
+                    count[name]["no_person"] += 1
+                    continue
+                if len(owners) > 1:
+                    count[name]["ambiguous"] += 1
+                    continue
+                p = owners[0]
+                count[name]["used"] += 1
+                rel[name].append(((cx - p[0]) / (p[2] - p[0]), (cy - p[1]) / (p[3] - p[1])))
+                items.append((name, (cx, cy), p))
 
     region_cfg, by_region = {}, {}
     for name, p in cfg["ppe"].items():
@@ -102,23 +159,44 @@ def regions(cfg):
     print(json.dumps(res, ensure_ascii=False, indent=2))
 
 
+def all_val_images():
+    """Map stem -> (img_path, ppe4_label_or_None, valnew_label_or_None)."""
+    by_stem = {}
+    for img in sorted((DATASET / "images" / "val").iterdir()):
+        by_stem[img.stem] = [img, DATASET / "labels" / "val" / f"{img.stem}.txt", None]
+    for img, lab in val_new_items():
+        if img.stem in by_stem:
+            by_stem[img.stem][2] = lab
+        else:
+            by_stem[img.stem] = [img, None, lab]
+    return by_stem
+
+
 def predict(cfg, rerun):
     """Dự đoán trên val với conf rất thấp và NMS IoU 0.95 (gần như không NMS), lưu cache."""
+    by_stem = all_val_images()
     cache = OUT / "preds.npz"
     if cache.exists() and not rerun:
-        return dict(np.load(cache, allow_pickle=True))["data"].item()
+        cached = dict(np.load(cache, allow_pickle=True))["data"].item()
+        if set(by_stem).issubset(cached):
+            return cached
     from ultralytics import YOLO
 
     d = cfg["detector"]
     model = YOLO(ROOT / d["weights"])
     data = {}
-    n = sum(1 for _ in (DATASET / "images" / "val").iterdir())
-    for i, r in enumerate(model.predict(str(DATASET / "images" / "val"), imgsz=d["imgsz"], conf=0.01, iou=0.95,
-                                        max_det=1000, device=d["device"], stream=True, verbose=False), 1):
-        b = r.boxes.cpu().numpy()
-        data[Path(r.path).stem] = dict(xyxy=b.xyxy, conf=b.conf, cls=b.cls.astype(int), shape=r.orig_shape)
-        if i % 200 == 0 or i == n:
-            print(f"  dự đoán {i}/{n}", flush=True)
+    val_dir = DATASET / "images" / "val"
+    extra = [str(v[0]) for v in by_stem.values() if v[0].parent != val_dir]
+    n = len(by_stem)
+    i = 0
+    for src in ([str(val_dir)] + ([extra] if extra else [])):
+        for r in model.predict(src, imgsz=d["imgsz"], conf=0.01, iou=0.95,
+                               max_det=1000, device=d["device"], stream=True, verbose=False):
+            i += 1
+            b = r.boxes.cpu().numpy()
+            data[Path(r.path).stem] = dict(xyxy=b.xyxy, conf=b.conf, cls=b.cls.astype(int), shape=r.orig_shape)
+            if i % 200 == 0 or i == n:
+                print(f"  dự đoán {i}/{n}", flush=True)
     OUT.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(cache, data=np.array(data, dtype=object))
     return data
@@ -141,18 +219,34 @@ def conf_nms(cfg, rerun):
     names = {cfg["person_cls"]: "person", **{p["cls"]: n for n, p in cfg["ppe"].items()}}
     g = cal["conf_grid"]
     grid = np.round(np.arange(g["start"], g["stop"] + 1e-9, g["step"]), 4)
-    gt = {}
+    by_stem = all_val_images()
+    ig_raw = load_ignore_boxes()
+    gt, ig = {}, {}
     for stem, p in data.items():
+        if stem not in by_stem:
+            continue
         h, w = p["shape"]
-        lab = read_labels(DATASET / "labels" / "val" / f"{stem}.txt")
-        gt[stem] = [(r[0], to_xyxy(r[1] * w, r[2] * h, r[3] * w, r[4] * h)) for r in lab]
+        _, lab4, lab6 = by_stem[stem]
+        boxes = []
+        if lab4 is not None and lab4.exists():
+            boxes += [(r[0], to_xyxy(r[1] * w, r[2] * h, r[3] * w, r[4] * h)) for r in read_labels(lab4) if r[0] < 4]
+        if lab6 is not None and lab6.exists():
+            boxes += [(r[0], to_xyxy(r[1] * w, r[2] * h, r[3] * w, r[4] * h)) for r in read_labels(lab6) if r[0] >= 4]
+        gt[stem] = boxes
+        ig[stem] = {c: np.array([to_xyxy(x * w, y * h, bw * w, bh * h) for x, y, bw, bh in b_list]).reshape(-1, 4)
+                    for c, b_list in ig_raw.get(stem, {}).items()}
 
     rows, best = [], {}
     for nms_iou in cal["nms_iou_grid"]:
         scores = {c: [] for c in names}       # (conf, khớp?) của mọi dự đoán sau NMS
         n_gt = {c: 0 for c in names}
         for stem, p in data.items():
+            if stem not in by_stem:
+                continue
+            _, lab4, lab6 = by_stem[stem]
             for c in names:
+                if (c < 4 and lab4 is None) or (c >= 4 and lab6 is None):
+                    continue
                 m = p["cls"] == c
                 boxes, conf = p["xyxy"][m], p["conf"][m]
                 if len(boxes):
@@ -171,6 +265,8 @@ def conf_nms(cfg, rerun):
                         if len(cand):
                             used[cand[np.argmax(ious[j][cand])]] = True
                             hit = True
+                    if not hit and c >= 4 and is_ignored(boxes[k], ig[stem].get(c, ())):
+                        continue
                     scores[c].append((float(conf[k]), hit))
         for c, name in names.items():
             s = np.array(scores[c]) if scores[c] else np.zeros((0, 2))
@@ -264,6 +360,7 @@ def crop_eval(cfg, rerun):
     ppe_cls = {p["cls"]: n for n, p in cfg["ppe"].items()}
     g = cal["conf_grid"]
     grid = np.round(np.arange(g["start"], g["stop"] + 1e-9, g["step"]), 4)
+    by_stem = all_val_images()
     cache = OUT / "crop_preds.npz"
     if cache.exists() and not rerun:
         crop_preds, timing = np.load(cache, allow_pickle=True)["data"]
@@ -271,7 +368,7 @@ def crop_eval(cfg, rerun):
         model = YOLO(ROOT / d["weights"])
         crop_preds = {s: {} for s in cal["crop_imgsz_grid"]}
         timing = {s: [] for s in cal["crop_imgsz_grid"]}
-        stems = sorted(full)
+        stems = sorted(by_stem)
         for i, stem in enumerate(stems, 1):
             p = full[stem]
             m = p["cls"] == cfg["person_cls"]
@@ -280,7 +377,7 @@ def crop_eval(cfg, rerun):
             if len(boxes):
                 keep = nms(torch.tensor(boxes), torch.tensor(conf), nms_iou).numpy()
                 persons = [b for b, s in zip(boxes[keep], conf[keep]) if s >= person_conf]
-            img = cv2.imread(str(next((DATASET / "images" / "val").glob(stem + ".*"))))
+            img = cv2.imread(str(by_stem[stem][0]))
             H, W = img.shape[:2]
             crops, offs = [], []
             for b in persons:
@@ -318,10 +415,17 @@ def crop_eval(cfg, rerun):
         scores = {c: [] for c in ppe_cls}
         n_gt = {c: 0 for c in ppe_cls}
         for stem, p in preds.items():
+            if stem not in by_stem:
+                continue
+            _, lab4, lab6 = by_stem[stem]
             persons = crop_preds[s0][stem]["persons"]
             H, W = crop_preds[s0][stem]["shape"]
-            lab = read_labels(DATASET / "labels" / "val" / f"{stem}.txt")
+            lab_4 = read_labels(lab4) if lab4 is not None and lab4.exists() else []
+            lab_6 = read_labels(lab6) if lab6 is not None and lab6.exists() else []
             for c in ppe_cls:
+                if (c < 4 and lab4 is None) or (c >= 4 and lab6 is None):
+                    continue
+                lab = lab_4 if c < 4 else lab_6
                 g_boxes = np.array([to_xyxy(r[1] * W, r[2] * H, r[3] * W, r[4] * H) for r in lab
                                     if r[0] == c and inside_any(r[1] * W, r[2] * H, persons, margin)]).reshape(-1, 4)
                 n_gt[c] += len(g_boxes)

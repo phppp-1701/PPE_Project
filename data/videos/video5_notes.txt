@@ -1,0 +1,8 @@
+Ghi chú gán nhãn video5 (demo3.mp4). Ngày 11/11/2026.
+
+Nguồn nhãn:
+- Hộp người: tạo bằng yolo11s.pt gốc (lớp person COCO, độc lập với C4) và ghép quỹ đạo liên tục qua 219 khung (2 công nhân đi lại bắt tay nhau).
+- Trạng thái PPE 6 lớp:
+  - Track 1 (trái, mũ vàng, áo vàng): có mũ, có áo, thiếu găng (tay trần bắt tay), có kính bảo hộ (goggles = co), giày thể thao đế trắng (boots = thieu).
+  - Track 2 (phải, mũ trắng, áo cam): có mũ, có áo, thiếu găng (tay trần bắt tay), có kính bảo hộ (goggles = co), giày sneaker trắng (boots = thieu).
+

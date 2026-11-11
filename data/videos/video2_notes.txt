@@ -1,0 +1,13 @@
+Ghi chú gán nhãn video2 (quy tắc: docs/video_labeling.md). Ngày 05/11/2026.
+
+Nguồn nhãn:
+- Hộp người: người gán vẽ tới khung 5; phần sau vẽ sẵn bằng yolo11s.pt gốc (scripts/05c_cvat_prefill_people.py), người gán và Claude sửa.
+- Trạng thái PPE: Claude gán theo yêu cầu của người dùng, xem ảnh phóng to cách 6 khung một lần, không dùng dự đoán của hệ thống. Chỗ mờ để chua_xac_dinh. Ranh giới đoạn lệch được vài khung. Người dùng cần xem lại trước khi dùng làm nhãn chuẩn.
+
+Trường hợp chưa chắc:
+- Người 4: tay tối màu ở khung 48-59, 66-83, 96-101 được gán co (nghi găng đen); có thể là tay áo.
+- Người 5: tay trái ảnh tối màu được gán co (nghi găng đen).
+- Người 2: tay sáng màu ở khung 48-59, 96-101 được gán thieu; có thể là găng mỏng trong suốt.
+- Người 9: tay có vật màu trắng ở nhiều khung (khung 24, 30, 84, 101), có thể là găng trắng hoặc giấy; để chua_xac_dinh.
+- Người 9 khung 0-18: có thể là người 10 (cùng áo cam). Người 9 khung 79 trở đi được coi là cùng người với đoạn trước.
+- Người 8 khung 42-49: chỉ thấy một phần thân, có thể là người khác.

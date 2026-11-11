@@ -103,3 +103,35 @@ def test_pose_both_gloves_inside_ellipse(test_cfg):
 def test_pose_glove_outside_ellipse_not_assigned(test_cfg):
     a, s = run(pose_cfg(test_cfg), [with_wrists((120, 300, 0.9), (280, 300, 0.9))], [det(3, 110, 490, 130, 510)])
     assert a.rejected[0][2] == "outside" and s[1]["gloves"]["state"] == MISSING
+
+
+def test_pose_clasped_hands_single_glove_box_marks_other_wrist_contested(test_cfg):
+    """Khi hai cổ tay sát nhau (chắp tay), 1 khung găng tay nằm trong cả 2 elip:
+    tay gần hơn nhận găng, tay còn lại được đánh dấu contested -> UNKNOWN thay vì báo sai MISSING."""
+    p = with_wrists((195, 500, 0.9), (215, 500, 0.9))
+    _, s = run(pose_cfg(test_cfg), [p], [det(3, 190, 490, 210, 510)])
+    assert s[1]["gloves"]["sides"]["left"][0] == HAVE
+    assert s[1]["gloves"]["sides"]["right"][0] == UNKNOWN
+    assert s[1]["gloves"]["state"] == UNKNOWN
+
+
+def test_six_class_goggles_and_boots_truncated_feet(test_cfg):
+    from ppe import load_config
+    full = load_config()
+    test_cfg["ppe"] = full["ppe"]
+    test_cfg["required_ppe"] = full["required_ppe"]
+    # Người 1 đứng trọn trong khung hình (y2=700 < 1000), đeo kính (cls 4) và đi ủng (cls 5)
+    p1 = person(1, 100, 100, 300, 700)
+    dets = [
+        det(4, 170, 140, 230, 180),  # kính ở vùng đầu
+        det(5, 120, 620, 180, 695),  # ủng trái
+        det(5, 220, 620, 280, 695),  # ủng phải
+    ]
+    _, s1 = run(test_cfg, [p1], dets)
+    assert s1[1]["goggles"]["state"] == HAVE
+    assert s1[1]["boots"]["state"] == HAVE
+
+    # Người 2 bị cắt ngang chân ở đáy khung hình (y2=1000), vùng feet (y1=1.02) tràn ra ngoài -> UNKNOWN
+    p2 = person(2, 400, 400, 600, 1000)
+    _, s2 = run(test_cfg, [p2], [])
+    assert s2[2]["boots"]["state"] == UNKNOWN

@@ -1,0 +1,192 @@
+{
+  "images": 1586,
+  "clean_images": 1046,
+  "scenes": 1243,
+  "n_boot": 1000,
+  "note": "sạch theo ngưỡng hiện tại; số rò rỉ đo được là mức thấp",
+  "full": {
+    "person": {
+      "baseline": 0.888,
+      "candidate": 0.8923,
+      "diff": 0.0043,
+      "ci_baseline": [
+        0.8441,
+        0.9202
+      ],
+      "ci_candidate": [
+        0.846,
+        0.9267
+      ],
+      "ci_diff": [
+        -0.0018,
+        0.0117
+      ]
+    },
+    "helmet": {
+      "baseline": 0.9043,
+      "candidate": 0.8922,
+      "diff": -0.0121,
+      "ci_baseline": [
+        0.8622,
+        0.9387
+      ],
+      "ci_candidate": [
+        0.8503,
+        0.9291
+      ],
+      "ci_diff": [
+        -0.0297,
+        0.0026
+      ]
+    },
+    "vest": {
+      "baseline": 0.7923,
+      "candidate": 0.7778,
+      "diff": -0.0144,
+      "ci_baseline": [
+        0.6393,
+        0.9043
+      ],
+      "ci_candidate": [
+        0.6312,
+        0.8917
+      ],
+      "ci_diff": [
+        -0.0332,
+        0.0061
+      ]
+    },
+    "gloves": {
+      "baseline": 0.5757,
+      "candidate": 0.6154,
+      "diff": 0.0397,
+      "ci_baseline": [
+        0.4451,
+        0.7065
+      ],
+      "ci_candidate": [
+        0.5029,
+        0.7221
+      ],
+      "ci_diff": [
+        0.0034,
+        0.0784
+      ]
+    },
+    "mean": {
+      "baseline": 0.7901,
+      "candidate": 0.7944,
+      "diff": 0.0044,
+      "ci_baseline": [
+        0.7138,
+        0.8576
+      ],
+      "ci_candidate": [
+        0.7193,
+        0.8574
+      ],
+      "ci_diff": [
+        -0.0067,
+        0.0184
+      ]
+    }
+  },
+  "clean": {
+    "person": {
+      "baseline": 0.8627,
+      "candidate": 0.8672,
+      "diff": 0.0045,
+      "ci_baseline": [
+        0.8095,
+        0.9035
+      ],
+      "ci_candidate": [
+        0.8113,
+        0.9091
+      ],
+      "ci_diff": [
+        -0.0041,
+        0.0138
+      ]
+    },
+    "helmet": {
+      "baseline": 0.8939,
+      "candidate": 0.8788,
+      "diff": -0.0151,
+      "ci_baseline": [
+        0.8482,
+        0.9324
+      ],
+      "ci_candidate": [
+        0.8347,
+        0.9197
+      ],
+      "ci_diff": [
+        -0.0334,
+        0.0032
+      ]
+    },
+    "vest": {
+      "baseline": 0.7299,
+      "candidate": 0.716,
+      "diff": -0.0139,
+      "ci_baseline": [
+        0.5585,
+        0.8639
+      ],
+      "ci_candidate": [
+        0.555,
+        0.8548
+      ],
+      "ci_diff": [
+        -0.0384,
+        0.0107
+      ]
+    },
+    "gloves": {
+      "baseline": 0.4343,
+      "candidate": 0.4939,
+      "diff": 0.0596,
+      "ci_baseline": [
+        0.3839,
+        0.4917
+      ],
+      "ci_candidate": [
+        0.4362,
+        0.5573
+      ],
+      "ci_diff": [
+        0.0263,
+        0.0926
+      ]
+    },
+    "mean": {
+      "baseline": 0.7302,
+      "candidate": 0.739,
+      "diff": 0.0087,
+      "ci_baseline": [
+        0.6652,
+        0.7817
+      ],
+      "ci_candidate": [
+        0.6748,
+        0.7941
+      ],
+      "ci_diff": [
+        -0.0039,
+        0.0224
+      ]
+    }
+  },
+  "decision": {
+    "overall": "dat",
+    "mean": "dat",
+    "classes": {
+      "person": "dat",
+      "helmet": "dat",
+      "vest": "dat",
+      "gloves": "dat"
+    },
+    "by": "val sạch"
+  }
+}

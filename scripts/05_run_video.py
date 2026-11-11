@@ -38,9 +38,15 @@ STATE_COLOR = {HAVE: (0, 200, 0), MISSING: (0, 0, 255)}      # Có: xanh lá, Th
 UNKNOWN_COLOR = (230, 230, 230)                               # Chưa xác định: trắng
 PERSON_COLOR = (255, 140, 0)                                  # người khi chưa có trạng thái (bước < comply): xanh dương
 LOST_COLOR = (160, 160, 160)                                  # quỹ đạo mất tạm: xám, nét đứt
-PPE_COLOR = {"helmet": (0, 165, 255), "vest": (0, 255, 255), "gloves": (255, 0, 255)}   # cam, vàng, tím
-TAG = {"helmet": "Mu", "vest": "Ao", "gloves": "Gang"}
-SHORT = {"helmet": "M", "vest": "A", "gloves": "G"}
+PPE_COLOR = {
+    "helmet": (0, 165, 255),    # cam
+    "vest": (0, 255, 255),      # vàng
+    "gloves": (255, 0, 255),    # tím
+    "goggles": (255, 255, 0),   # xanh lơ
+    "boots": (255, 180, 0),     # xanh biển sáng
+}
+TAG = {"helmet": "Mu", "vest": "Ao", "gloves": "Gang", "goggles": "Kinh", "boots": "Ung"}
+SHORT = {"helmet": "M", "vest": "A", "gloves": "G", "goggles": "K", "boots": "U"}
 
 
 def build(stage, source_id, session_id, on_event):

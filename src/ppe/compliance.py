@@ -40,7 +40,8 @@ class Compliance:
         self.pose = cfg["pose"] if cfg.get("pose", {}).get("enabled") else None
 
     def side_state(self, name, track, side, assoc, frame_box, others):
-        if self.pose and self.ppe[name]["sides"]:
+        p = self.ppe[name]
+        if self.pose and p["sides"] and p["region"] == "hands":
             # Có pose: không thấy cổ tay đạt ngưỡng thì tay đó không quan sát được (G = 0), không suy ra Thiếu.
             q = valid_wrist(track, side, self.pose)
             if q is None:
