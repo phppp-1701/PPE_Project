@@ -114,8 +114,20 @@ class Associator:
                     a.contested[t_id].add((name, s))
                 a.rejected.append((name, det, "contested", near))
                 continue
+            if a.owned[tid][(name, side)]:
+                alt = [x for x in near[1:] if x[1] == tid and x[2] != side and not a.owned[tid][(name, x[2])]]
+                if alt:
+                    side = alt[0][2]
             a.owned[tid][(name, side)].append(det)
+            track_by_id = {t.track_id: t for t in tracks}
             for _, t_id, s in near[1:]:
                 if t_id == tid and s != side:
-                    a.contested[tid].add((name, s))
+                    t_obj = track_by_id.get(tid)
+                    q1 = valid_wrist(t_obj, side, self.pose) if self.pose and t_obj else None
+                    q2 = valid_wrist(t_obj, s, self.pose) if self.pose and t_obj else None
+                    box_span = max(det.xyxy[2] - det.xyxy[0], det.xyxy[3] - det.xyxy[1])
+                    if q1 is not None and q2 is not None and box_span > math.hypot(q1[0] - q2[0], q1[1] - q2[1]):
+                        a.owned[tid][(name, s)].append(det)
+                    else:
+                        a.contested[tid].add((name, s))
         return a

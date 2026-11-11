@@ -57,7 +57,7 @@ class Compliance:
                       and track.confident)
         has = bool(assoc.owned.get(track.track_id, {}).get((name, side)))
         contested = (name, side) in assoc.contested.get(track.track_id, set())
-        if observable and has:
+        if track.confident and has:
             state = HAVE
         elif observable and not contested:
             state = MISSING

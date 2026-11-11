@@ -106,13 +106,23 @@ def test_pose_glove_outside_ellipse_not_assigned(test_cfg):
 
 
 def test_pose_clasped_hands_single_glove_box_marks_other_wrist_contested(test_cfg):
-    """Khi hai cổ tay sát nhau (chắp tay), 1 khung găng tay nằm trong cả 2 elip:
+    """Khi hai cổ tay sát nhau (chắp tay), 1 khung găng tay nhỏ nằm trong cả 2 elip:
     tay gần hơn nhận găng, tay còn lại được đánh dấu contested -> UNKNOWN thay vì báo sai MISSING."""
     p = with_wrists((195, 500, 0.9), (215, 500, 0.9))
     _, s = run(pose_cfg(test_cfg), [p], [det(3, 190, 490, 210, 510)])
     assert s[1]["gloves"]["sides"]["left"][0] == HAVE
     assert s[1]["gloves"]["sides"]["right"][0] == UNKNOWN
     assert s[1]["gloves"]["state"] == UNKNOWN
+
+
+def test_pose_clasped_hands_wide_glove_box_covers_both_wrists(test_cfg):
+    """Khi hai cổ tay chắp sát nhau và YOLO gom thành 1 khung găng tay rộng trùm qua cả 2 cổ tay:
+    cả 2 tay đều được tính là HAVE."""
+    p = with_wrists((195, 500, 0.9), (215, 500, 0.9))
+    _, s = run(pose_cfg(test_cfg), [p], [det(3, 180, 485, 230, 515)])
+    assert s[1]["gloves"]["sides"]["left"][0] == HAVE
+    assert s[1]["gloves"]["sides"]["right"][0] == HAVE
+    assert s[1]["gloves"]["state"] == HAVE
 
 
 def test_six_class_goggles_and_boots_truncated_feet(test_cfg):

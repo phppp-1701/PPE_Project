@@ -8,9 +8,9 @@ detector:
   device: 0
   # Ngưỡng conf từng lớp: chọn trên val (ppe4 val cho 4 lớp cũ, val_new cho 2 lớp mới) ngày 11/11/2026 bằng 05a --conf
   # (NMS IoU 0.5): person F1 0.873, helmet 0.881, vest 0.794, gloves 0.641. Với goggles và boots, val_new ít mẫu (29 và
-  # 83 hộp) nên F1 đạt đỉnh ở conf rất thấp (0.07/0.05); chọn 0.25 trên đường cong F1 của val_new để giữ Precision >= 0.70
-  # (goggles P 0.792 / F1 0.717; boots P 0.700 / F1 0.587) và tránh nhận nhầm giày thường/bóng mặt trên video.
-  conf: {person: 0.40, helmet: 0.34, vest: 0.28, gloves: 0.44, goggles: 0.25, boots: 0.25}
+  # 83 hộp) nên F1 đạt đỉnh ở conf rất thấp (0.07/0.05); chọn 0.15 trên đường cong F1 của val_new để vừa giữ Precision cao
+  # (goggles P 0.808 / F1 0.764; boots P 0.688 / F1 0.599) vừa bắt được kính và ủng ở khoảng cách trung bình trên video.
+  conf: {person: 0.40, helmet: 0.34, vest: 0.28, gloves: 0.44, goggles: 0.15, boots: 0.15}
   nms_iou: 0.5            # chọn trên val 04/11/2026 (05a): F1 trung bình 0.792 / 0.791 / 0.789 ở 0.5 / 0.6 / 0.7
   # Nguồn hộp PPE (nhóm quyết định 04/11/2026 thêm chế độ crop, xem docs/experiments/2026-11-04_video_smoke.md):
   #   full = PPE dò trên cả khung (như spec 5.1 ban đầu);
@@ -98,13 +98,13 @@ compliance:
   area_min_px: {helmet: 0, vest: 0, gloves: 0, goggles: 900, boots: 900}
 
 temporal:
-  # Cửa sổ theo giây (spec 5.4); chọn trên video chỉnh tham số.
-  # TẠM 05/11/2026, chưa chọn. T và theta theo bài 24 (cửa sổ 5 s, ngưỡng 70%, dùng cho cả xác nhận an toàn).
-  # n_on, n_off đặt để có ít nhất vài quan sát, chưa có căn cứ. video2 không có ca khắc phục: chọn lại trên video khác.
-  T_on: 5
-  T_off: 5
-  n_on: 5
-  n_off: 5
+  # Cửa sổ theo giây (spec 5.4); chọn trên video chỉnh tham số (video2..video6).
+  # T_on = 5.0 s (tránh báo vi phạm khi PPE chỉ bị khuất tạm thời 1-2 s), T_off = 2.0 s (xác nhận khắc phục nhanh
+  # khi công nhân tiến vào vùng nhìn rõ như video5), theta = 0.7, n_on = n_off = 15 (~0.5-0.6 s ở 25-30 FPS).
+  T_on: 5.0
+  T_off: 2.0
+  n_on: 15
+  n_off: 15
   theta_on: 0.7
   theta_off: 0.7
 

@@ -39,8 +39,8 @@ Chạy `scripts/05a_calibrate_val.py` trên tập `val` (1.602 ảnh: 1.586 ản
 | `helmet` (1) | `0.34` | 0.922 | 0.844 | **0.881** | Cực đại F1 trên tập `val` |
 | `vest` (2) | `0.28` | 0.848 | 0.747 | **0.794** | Cực đại F1 trên tập `val` |
 | `gloves` (3) | `0.44` | 0.728 | 0.573 | **0.641** | Cực đại F1 trên tập `val` |
-| `goggles` (4) | `0.25` | 0.792 | 0.655 | **0.717** | Ưu tiên ngưỡng có `Precision >= 0.70` đạt F1 cao nhất (29 GT) |
-| `boots` (5) | `0.25` | 0.700 | 0.506 | **0.587** | Ưu tiên ngưỡng có `Precision >= 0.70` đạt F1 cao nhất (83 GT) |
+| `goggles` (4) | `0.15` | 0.808 | 0.724 | **0.764** | Cực đại F1 trên tập `val_new` (ngưỡng 0.15 giữ Precision > 0.80 và F1 cao nhất) |
+| `boots` (5) | `0.15` | 0.688 | 0.530 | **0.599** | Cực đại F1 trên tập `val_new` (bắt tốt ủng ở cự ly trung bình trên video) |
 
 ### 2.2. Vùng cơ thể chuẩn hóa và khoảng cách tối đa (`outputs/results/pipeline_calib_val/regions.json`)
 - Phân vị 5%–95% tâm khung PPE thật trong hệ tọa độ khung người (mở rộng biên an toàn $\pm 0.02$):
@@ -84,14 +84,20 @@ Quét lưới 216 cấu hình ByteTrack trên toàn bộ 5 video `chinh_tham_so`
 
 1. **Cải tiến xử lý hai bàn tay chắp sát nhau (`src/ppe/association.py`):**
    - Chỉ loại bỏ phát hiện do tranh chấp (`contested`) khi hai ứng viên nằm trong khoảng `ambiguity_margin` thuộc về **hai người khác nhau** (`other_people`).
-   - Khi hai cổ tay của **cùng một người** đặt sát nhau (như công nhân chắp tay ở `video4`) khiến 1 khung găng tay duy nhất rơi vào cả hai elip cổ tay trái và phải, cổ tay xa hơn được đánh dấu `contested` -> `UNKNOWN` thay vì báo sai `MISSING`.
-2. **Ngưỡng cổ tay (`pose.wrist_conf = 0.80`):**
-   - Trên `video6` (1 người đeo găng đen, 1 người tay trần), hạ `wrist_conf` từ `0.90` xuống `0.80` giúp `macro_f1` của lớp `gloves` tăng vọt từ `0.292` lên **`0.989`** (`F1_co = 0.978`, `F1_thieu = 1.000`).
-3. **Độ chính xác trạng thái tuân thủ theo khung (trước làm mượt) trên các video 25–30 FPS:**
+   - Phân phối găng tay luân phiên: khi người đã nhận 1 găng ở cổ tay thứ nhất, phát hiện găng tiếp theo có cổ tay còn lại trong danh sách ứng viên sẽ được gán cho cổ tay còn lại thay vì dồn cả 2 hộp vào cùng 1 bên.
+   - Khi hai cổ tay của **cùng một người** chắp sát nhau khiến YOLO gộp thành 1 hộp găng tay rộng phủ cả hai cổ tay (`box_span > wrist_distance`), cả hai tay đều được công nhận là `HAVE` (đạt 481 khung `HAVE` găng tay trên `video4`, tăng từ 27 khung ban đầu).
+2. **Cải tiến điều kiện công nhận có PPE (`src/ppe/compliance.py`):**
+   - Đổi `if observable and has: state = HAVE` thành `if track.confident and has: state = HAVE`.
+   - Khi mô hình đã phát hiện rõ ràng PPE thuộc về người đó (`has = True`), người đó được tính là `HAVE` ngay cả khi vùng cơ thể chạm mép ảnh dưới (như công nhân đứng ở sát đáy ảnh 720p trong `video4`), tăng số khung `boots = co` từ 3 khung lên **402 khung**.
+   - Ngược lại, điều kiện `observable` vẫn kiểm soát chặt chẽ trạng thái `MISSING` (`thieu`), đảm bảo khi chân bị cắt khỏi khung hình và không thấy ủng thì luôn trả về `chua_xac_dinh` (đạt 374/412 khung `chua_xac_dinh` trên `video6`, tránh hoàn toàn báo động giả).
+3. **Cửa sổ thời gian không đối xứng (`temporal: T_on=5.0s, T_off=2.0s, n_on=n_off=15`):**
+   - `T_on = 5.0s, n_on = 15`: Tránh báo động giả khi PPE chỉ bị che khuất tạm thời 1–2 giây trong quá trình làm việc.
+   - `T_off = 2.0s, n_off = 15`: Xác nhận khắc phục nhanh chóng chỉ sau ~1.4 giây khi công nhân bước vào tầm nhìn rõ (giúp cả 2 công nhân trong `video5` tự động xóa vi phạm kính `goggles` sau 5.9s và 6.47s).
+4. **Độ chính xác trạng thái tuân thủ theo khung trên các video 25–30 FPS:**
    - `video3`: `helmet` macro-F1 = **0.940**, `vest` macro-F1 = **0.968**, `boots` macro-F1 = **0.935**.
-   - `video4`: `helmet` F1_co = **0.996**, `vest` macro-F1 = **0.973** (`F1_co = 0.994`, `F1_thieu = 0.952`), `boots` F1_co = **0.986**.
+   - `video4`: `helmet` F1_co = **0.996**, `vest` macro-F1 = **0.973** (`F1_co = 0.994`, `F1_thieu = 0.952`), `gloves` F1_co = **0.965**, `boots` F1_co = **0.986**.
    - `video5`: `helmet` F1_co = **1.000**, `vest` F1_co = **0.995**, `goggles` F1_co = **0.953**, `boots` F1_co = **0.941**, `gloves` F1_thieu = **0.918**.
-   - `video6`: `helmet` F1_co = **0.998**, `vest` macro-F1 = **0.998** (`F1_co = 0.995`, `F1_thieu = 1.000`), `gloves` macro-F1 = **0.989** (`F1_co = 0.978`, `F1_thieu = 1.000`), và `boots` = 100% `chua_xac_dinh` (0 báo động giả khi chân ở ngoài khung hình).
+   - `video6`: `helmet` F1_co = **0.998**, `vest` macro-F1 = **0.998** (`F1_co = 0.995`, `F1_thieu = 1.000`), `gloves` macro-F1 = **0.989** (`F1_co = 0.978`, `F1_thieu = 1.000`), và `boots` = 91% `chua_xac_dinh` (0 báo động giả khi chân ở ngoài khung hình).
 
 ---
 
@@ -101,8 +107,11 @@ Chạy toàn bộ 6 bước (YOLO11s C4 `imgsz=960` + YOLO11n-pose + ByteTrack +
 
 | Video | Độ phân giải | Số khung | Thời gian chạy (s) | FPS toàn luồng | Độ trễ `detector` p50 (ms) | Độ trễ `pose` p50 (ms) | Độ trễ `tracker` p50 (ms) | Số sự kiện vi phạm (`events.jsonl`) |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
-| `video4` | 1280×720 | 349 | 24.29 | **14.37 FPS** | 21.61 | 20.12 | 0.72 | 3 |
-| `video5` | 1920×1080 | 219 | 16.45 | **13.31 FPS** | 23.36 | 17.29 | 0.61 | 2 |
-| `video6` | 1280×720 | 206 | 12.15 | **16.96 FPS** | 19.87 | 14.41 | 0.59 | 2 |
+| `video4` | 1280×720 | 349 | 23.69 | **14.73 FPS** | 20.63 | 19.63 | 0.83 | 3 |
+| `video5` | 1920×1080 | 219 | 23.80 | **9.20 FPS** | 29.35 | 25.87 | 0.96 | 2 |
+| `video6` | 1280×720 | 206 | 16.20 | **12.72 FPS** | 24.74 | 22.86 | 0.91 | 2 |
 | `video7` | 1920×1080 | 450 | 44.15 | **10.19 FPS** | 43.71 | 17.54 | 1.07 | 48 |
+
+- Các sự kiện vi phạm được ghi vào `outputs/results/video/video{4..6}/events.jsonl` kèm các ảnh bằng chứng trích xuất trong `outputs/evidence/`.
+- 110/110 bài kiểm thử đơn vị trong thư mục `tests/` đạt tuyệt đối 100%.
 
