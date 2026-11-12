@@ -115,10 +115,24 @@ def init_db():
     )
     """)
 
+    # 7. Bảng Phản hồi / Góp ý của Giám sát viên (Event Feedback & Corrections)
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS event_feedback (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        event_id TEXT NOT NULL,
+        feedback_type TEXT NOT NULL,
+        false_alarm_items TEXT,
+        notes TEXT,
+        system_time TEXT NOT NULL,
+        FOREIGN KEY(event_id) REFERENCES violation_events(event_id) ON DELETE CASCADE
+    )
+    """)
+
     # Chỉ mục tối ưu truy vấn
     cur.execute("CREATE INDEX IF NOT EXISTS idx_events_source ON violation_events(source_id)")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_events_state ON violation_events(event_state)")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_events_session ON violation_events(session_id)")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_feedback_event ON event_feedback(event_id)")
 
     conn.commit()
     conn.close()

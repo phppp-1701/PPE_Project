@@ -342,19 +342,20 @@
       border: 1px solid var(--card-border);
       border-radius: 16px;
       width: 100%;
-      max-width: 800px;
-      max-height: 90vh;
+      max-width: 980px;
+      max-height: 92vh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
     }
     .modal-header {
-      padding: 18px 24px;
+      padding: 16px 24px;
       border-bottom: 1px solid var(--card-border);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      background: #162032;
     }
     .modal-header h3 { font-size: 18px; font-weight: 600; }
     .close-btn {
@@ -362,11 +363,11 @@
     }
     .close-btn:hover { color: #fff; }
     .modal-body {
-      padding: 24px;
+      padding: 20px 24px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
     }
     .evidence-img-container {
       width: 100%;
@@ -375,12 +376,67 @@
       overflow: hidden;
       border: 1px solid var(--card-border);
       text-align: center;
+      position: relative;
+      min-height: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .evidence-img-container img {
       max-width: 100%;
-      max-height: 450px;
+      max-height: 480px;
       object-fit: contain;
       display: inline-block;
+    }
+    .current-frame-info {
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: #94a3b8;
+      background: #0f172a;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid #1e293b;
+    }
+    /* Frame ribbon */
+    .frames-ribbon {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 6px 2px;
+    }
+    .frame-btn {
+      background: #0f172a;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .frame-btn:hover {
+      border-color: #60a5fa;
+      background: #1e293b;
+    }
+    .frame-btn.active {
+      background: #2563eb;
+      border-color: #3b82f6;
+      color: #fff;
+      font-weight: 600;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+    }
+    /* Modal 2 columns */
+    .modal-grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 18px;
     }
     .timeline {
       display: flex;
@@ -406,8 +462,64 @@
       color: var(--text-muted);
     }
     .timeline-content {
-      font-size: 14px;
+      font-size: 13px;
       margin-top: 2px;
+    }
+    /* Feedback section */
+    .feedback-card {
+      background: #131d2e;
+      border: 1px solid #23344d;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .feedback-type-group {
+      display: flex;
+      gap: 10px;
+    }
+    .fb-radio-label {
+      cursor: pointer;
+    }
+    .fb-radio-label input {
+      display: none;
+    }
+    .fb-badge {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      display: inline-block;
+      font-weight: 500;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #cbd5e1;
+      transition: all 0.2s;
+    }
+    .fb-radio-label input:checked + .fb-badge-correct {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: #10b981;
+      color: #34d399;
+      font-weight: 600;
+    }
+    .fb-radio-label input:checked + .fb-badge-false {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #ef4444;
+      color: #f87171;
+      font-weight: 600;
+    }
+    .textarea-input {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid #334155;
+      color: #fff;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 13px;
+      outline: none;
+      font-family: inherit;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+    .textarea-input:focus {
+      border-color: var(--primary);
     }
   </style>
 </head>
@@ -555,16 +667,94 @@
   <div class="modal-overlay" id="event-modal">
     <div class="modal">
       <div class="modal-header">
-        <h3 id="modal-title">Chi tiết vi phạm</h3>
+        <div>
+          <h3 id="modal-title">Chi tiết minh chứng vi phạm</h3>
+          <p id="modal-subtitle" style="font-size: 13px; color: var(--text-muted); margin-top: 2px;"></p>
+        </div>
         <button class="close-btn" onclick="closeModal()">&times;</button>
       </div>
       <div class="modal-body">
-        <div class="evidence-img-container" id="modal-img-wrap">
-          <div style="padding: 40px; color: var(--text-muted);">Không có ảnh minh chứng</div>
+        <!-- FRAME SELECTOR RIBBON -->
+        <div style="background: #0f172a; padding: 10px 14px; border-radius: 8px; border: 1px solid #1e293b;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span style="font-size: 13px; font-weight: 600; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.5px;">
+              📸 Khung hình tại từng thời điểm vi phạm:
+            </span>
+            <div style="display: flex; gap: 6px;">
+              <button class="btn btn-secondary" style="padding: 2px 10px; font-size: 12px;" onclick="stepFrame(-1)">◀ Mốc trước</button>
+              <button class="btn btn-secondary" style="padding: 2px 10px; font-size: 12px;" onclick="stepFrame(1)">Mốc sau ▶</button>
+            </div>
+          </div>
+          <div class="frames-ribbon" id="modal-frames-ribbon"></div>
         </div>
+
+        <!-- MAIN IMAGE CONTAINER -->
         <div>
-          <h4 style="font-size: 15px; margin-bottom: 8px;">Dòng thời gian sự kiện (Event Timeline)</h4>
-          <div class="timeline" id="modal-timeline"></div>
+          <div class="evidence-img-container" id="modal-img-wrap">
+            <div style="padding: 40px; color: var(--text-muted);">Đang tải ảnh minh chứng...</div>
+          </div>
+          <div id="current-frame-info" class="current-frame-info"></div>
+        </div>
+
+        <!-- TWO COLUMNS: TIMELINE & FEEDBACK -->
+        <div class="modal-grid-2col">
+          <!-- Left: Timeline -->
+          <div>
+            <h4 style="font-size: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+              <span>⏱ Dòng thời gian sự kiện (Timeline)</span>
+            </h4>
+            <div class="timeline" id="modal-timeline"></div>
+          </div>
+
+          <!-- Right: Feedback Form -->
+          <div class="feedback-card">
+            <h4 style="font-size: 15px; margin-bottom: 10px; color: #60a5fa; display: flex; align-items: center; gap: 8px;">
+              <span>📝 Góp ý & Chỉnh sửa của Giám sát viên</span>
+            </h4>
+            <div class="feedback-form">
+              <div style="margin-bottom: 12px;">
+                <label style="font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 6px;">Đánh giá cảnh báo này:</label>
+                <div class="feedback-type-group">
+                  <label class="fb-radio-label">
+                    <input type="radio" name="fb_type" value="correct" checked onchange="toggleFalseAlarmSection()">
+                    <span class="fb-badge fb-badge-correct">🟢 Cảnh báo đúng</span>
+                  </label>
+                  <label class="fb-radio-label">
+                    <input type="radio" name="fb_type" value="false_alarm" onchange="toggleFalseAlarmSection()">
+                    <span class="fb-badge fb-badge-false">🔴 Cảnh báo sai (phạt oan)</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- False alarm PPE checkboxes -->
+              <div id="false-alarm-items-wrap" style="display: none; margin-bottom: 12px; background: rgba(239,68,68,0.08); padding: 10px; border-radius: 8px; border: 1px solid rgba(239,68,68,0.2);">
+                <label style="font-size: 12px; color: #fca5a5; display: block; margin-bottom: 6px; font-weight: 600;">
+                  Trang bị công nhân THỰC TẾ CÓ MANG nhưng bị phạt nhầm:
+                </label>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap; font-size: 13px;">
+                  <label><input type="checkbox" id="fa-helmet"> Mũ</label>
+                  <label><input type="checkbox" id="fa-vest"> Áo</label>
+                  <label><input type="checkbox" id="fa-gloves"> Găng</label>
+                  <label><input type="checkbox" id="fa-goggles"> Kính</label>
+                  <label><input type="checkbox" id="fa-boots"> Ủng</label>
+                </div>
+              </div>
+
+              <div style="margin-bottom: 12px;">
+                <label style="font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 6px;">Ý kiến đóng góp / Lý do chỉnh sửa:</label>
+                <textarea id="fb-notes" class="textarea-input" placeholder="Góp ý ví dụ: Người này đang bê đá nên khuất tay, thực tế có mang găng..." rows="3"></textarea>
+              </div>
+
+              <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="submitFeedback()">
+                💾 Lưu góp ý & Điều chỉnh
+              </button>
+
+              <div id="fb-history-wrap" style="margin-top: 14px; border-top: 1px solid #334155; padding-top: 10px;">
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600;">Lịch sử góp ý của bạn:</div>
+                <div id="fb-history-list" style="max-height: 140px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -573,6 +763,8 @@
   <script>
     const API_BASE = window.location.origin;
     let allEvents = [];
+    let currentEventData = null;
+    let currentFrameIdx = 0;
 
     const PPE_LABELS = {
       helmet: "Mũ bảo hộ",
@@ -673,17 +865,44 @@
       try {
         const res = await fetch(`${API_BASE}/api/events/${eventId}`);
         const data = await res.json();
+        currentEventData = data;
 
-        document.getElementById('modal-title').textContent = `Chi tiết vi phạm - ID ${data.track_id} (${data.source_id})`;
+        document.getElementById('modal-title').textContent = `Chi tiết vi phạm - Người ID ${data.track_id}`;
+        document.getElementById('modal-subtitle').textContent = `Nguồn: ${data.source_id} | Phiên: ${data.session_id} | Khoảng thời gian: ${data.start_time.toFixed(2)}s - ${(data.end_time || data.last_seen_time).toFixed(2)}s`;
 
-        const imgWrap = document.getElementById('modal-img-wrap');
-        if (data.evidence && data.evidence.length > 0) {
-          const lastEv = data.evidence[data.evidence.length - 1];
-          imgWrap.innerHTML = `<img src="${API_BASE}${lastEv.url}" alt="Minh chứng vi phạm">`;
+        // Reset feedback form
+        document.querySelector('input[name="fb_type"][value="correct"]').checked = true;
+        toggleFalseAlarmSection();
+        document.getElementById('fb-notes').value = '';
+        ['helmet', 'vest', 'gloves', 'goggles', 'boots'].forEach(p => {
+          const el = document.getElementById(`fa-${p}`);
+          if (el) el.checked = false;
+        });
+
+        // Render frames ribbon
+        const ribbon = document.getElementById('modal-frames-ribbon');
+        const frames = (data.frames && data.frames.length > 0) ? data.frames : (data.evidence || []);
+        
+        if (frames.length > 0) {
+          ribbon.innerHTML = frames.map((f, idx) => {
+            const tVal = (typeof f.t === 'number') ? f.t.toFixed(2) : f.t;
+            const itemsCnt = f.missing_items ? f.missing_items.length : 0;
+            return `
+              <button class="frame-btn ${idx === 0 ? 'active' : ''}" id="frame-btn-${idx}" onclick="selectFrame(${idx})">
+                <span>⏱ ${tVal}s</span>
+                <span style="background: rgba(239,68,68,0.25); color: #f87171; padding: 1px 6px; border-radius: 4px; font-size: 11px;">Thiếu ${itemsCnt}</span>
+              </button>
+            `;
+          }).join('');
+          currentFrameIdx = 0;
+          selectFrame(0);
         } else {
-          imgWrap.innerHTML = `<div style="padding: 40px; color: var(--text-muted);">Chưa có ảnh minh chứng</div>`;
+          ribbon.innerHTML = `<span style="color: var(--text-muted); font-size: 12px;">Không có khung hình</span>`;
+          document.getElementById('modal-img-wrap').innerHTML = `<div style="padding: 40px; color: var(--text-muted);">Không có ảnh minh chứng</div>`;
+          document.getElementById('current-frame-info').textContent = '';
         }
 
+        // Render Timeline
         const timeline = document.getElementById('modal-timeline');
         timeline.innerHTML = data.history.map(h => {
           const itemsText = h.missing_items.map(i => PPE_LABELS[i] || i).join(', ') || 'Không thiếu trang bị nào';
@@ -695,10 +914,119 @@
           `;
         }).join('');
 
+        // Render Feedback History
+        renderFeedbackHistory(data.feedbacks || []);
+
         document.getElementById('event-modal').style.display = 'flex';
       } catch (err) {
         alert("Lỗi tải chi tiết sự kiện: " + err);
       }
+    }
+
+    function selectFrame(idx) {
+      if (!currentEventData || !currentEventData.frames || !currentEventData.frames[idx]) return;
+      currentFrameIdx = idx;
+
+      // Update active button
+      document.querySelectorAll('.frame-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', i === idx);
+      });
+
+      const frame = currentEventData.frames[idx];
+      const imgWrap = document.getElementById('modal-img-wrap');
+      const infoWrap = document.getElementById('current-frame-info');
+
+      if (frame.url) {
+        imgWrap.innerHTML = `<img src="${API_BASE}${frame.url}" alt="${frame.label}">`;
+      } else {
+        imgWrap.innerHTML = `<div style="padding: 40px; color: var(--text-muted);">Khung hình đang được chuẩn bị</div>`;
+      }
+
+      const ppeBadges = (frame.missing_items && frame.missing_items.length > 0)
+        ? frame.missing_items.map(i => `<span class="badge badge-ppe-${i}">${PPE_LABELS[i] || i}</span>`).join(' ')
+        : '<span style="color: #34d399; font-weight: 600;">Đủ trang bị</span>';
+
+      infoWrap.innerHTML = `
+        <div><strong>${frame.label}</strong></div>
+        <div>Trang bị thiếu tại mốc này: ${ppeBadges}</div>
+      `;
+    }
+
+    function stepFrame(delta) {
+      if (!currentEventData || !currentEventData.frames) return;
+      const count = currentEventData.frames.length;
+      if (count === 0) return;
+      let nextIdx = currentFrameIdx + delta;
+      if (nextIdx < 0) nextIdx = 0;
+      if (nextIdx >= count) nextIdx = count - 1;
+      selectFrame(nextIdx);
+    }
+
+    function toggleFalseAlarmSection() {
+      const isFalseAlarm = document.querySelector('input[name="fb_type"]:checked').value === 'false_alarm';
+      document.getElementById('false-alarm-items-wrap').style.display = isFalseAlarm ? 'block' : 'none';
+    }
+
+    async function submitFeedback() {
+      if (!currentEventData) return;
+      const fbType = document.querySelector('input[name="fb_type"]:checked').value;
+      const notes = document.getElementById('fb-notes').value.trim();
+      const falseAlarmItems = [];
+      if (fbType === 'false_alarm') {
+        ['helmet', 'vest', 'gloves', 'goggles', 'boots'].forEach(p => {
+          if (document.getElementById(`fa-${p}`) && document.getElementById(`fa-${p}`).checked) {
+            falseAlarmItems.push(p);
+          }
+        });
+      }
+
+      try {
+        const resp = await fetch(`${API_BASE}/api/events/${currentEventData.event_id}/feedback`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            feedback_type: fbType,
+            false_alarm_items: falseAlarmItems,
+            notes: notes
+          })
+        });
+        const resData = await resp.json();
+        alert("✅ " + resData.message);
+
+        // Reload current event details to refresh feedback list
+        const refreshed = await fetch(`${API_BASE}/api/events/${currentEventData.event_id}`).then(r => r.json());
+        currentEventData.feedbacks = refreshed.feedbacks;
+        renderFeedbackHistory(refreshed.feedbacks || []);
+        document.getElementById('fb-notes').value = '';
+      } catch (err) {
+        alert("Lỗi lưu góp ý: " + err);
+      }
+    }
+
+    function renderFeedbackHistory(feedbacks) {
+      const container = document.getElementById('fb-history-list');
+      if (!feedbacks || feedbacks.length === 0) {
+        container.innerHTML = `<span style="color: var(--text-muted); font-size: 12px;">Chưa có góp ý nào cho sự kiện này.</span>`;
+        return;
+      }
+      container.innerHTML = feedbacks.map(f => {
+        const typeBadge = f.feedback_type === 'correct'
+          ? `<span style="color: #34d399; font-weight: 600;">🟢 Cảnh báo đúng</span>`
+          : `<span style="color: #f87171; font-weight: 600;">🔴 Cảnh báo sai</span>`;
+        const items = (f.false_alarm_items && f.false_alarm_items.length > 0)
+          ? `(Phạt nhầm: ${f.false_alarm_items.map(p => PPE_LABELS[p] || p).join(', ')})`
+          : '';
+        const timeStr = f.system_time ? f.system_time.replace('T', ' ').substring(0, 19) : '';
+        return `
+          <div style="background: #0f172a; padding: 6px 10px; border-radius: 6px; font-size: 12px; border: 1px solid #1e293b;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+              <div>${typeBadge} <span style="color: #fbbf24;">${items}</span></div>
+              <span style="color: var(--text-muted); font-size: 11px;">${timeStr}</span>
+            </div>
+            ${f.notes ? `<div style="color: #cbd5e1; font-style: italic;">"${f.notes}"</div>` : ''}
+          </div>
+        `;
+      }).join('');
     }
 
     function closeModal() {
@@ -729,6 +1057,7 @@
     fetchData();
     setInterval(fetchData, 3000);
   </script>
+
 </body>
 </html>
 

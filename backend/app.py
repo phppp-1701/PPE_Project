@@ -67,6 +67,13 @@ class PolicyUpdateSchema(BaseModel):
     required_ppe: List[str]
 
 
+class FeedbackSchema(BaseModel):
+    feedback_type: str = "correct"  # 'correct', 'false_alarm', 'missed', 'custom'
+    false_alarm_items: Optional[List[str]] = []
+    notes: Optional[str] = ""
+
+
+
 # === API ENDPOINTS ===
 
 @app.get("/", include_in_schema=False)
@@ -238,6 +245,99 @@ def list_events(
     return {"count": len(events), "events": events}
 
 
+def extract_event_frames(row, cur):
+    """Trích xuất và trả về danh sách ảnh theo từng mốc thời gian vi phạm của sự kiện."""
+    event_id = row["event_id"]
+    session_id = row["session_id"]
+    track_id = row["track_id"]
+    out_dir = ROOT / "outputs" / "evidence" / session_id
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    # 1. Minh chứng đã ghi nhận trong bảng event_evidence
+    cur.execute("SELECT * FROM event_evidence WHERE event_id = ? ORDER BY t ASC", (event_id,))
+    ev_records = cur.fetchall()
+
+    # 2. Toàn bộ lịch sử các mốc thay đổi trạng thái
+    cur.execute("SELECT * FROM event_history WHERE event_id = ? ORDER BY t ASC", (event_id,))
+    hist_records = cur.fetchall()
+
+    milestones = []
+    seen_items = None
+    for h in hist_records:
+        items = json.loads(h["missing_items"])
+        if items != seen_items or not milestones:
+            milestones.append((float(h["t"]), h["change_type"], items))
+            seen_items = items
+    if hist_records and float(hist_records[-1]["t"]) not in [m[0] for m in milestones]:
+        milestones.append((float(hist_records[-1]["t"]), hist_records[-1]["change_type"], json.loads(hist_records[-1]["missing_items"])))
+
+    if not milestones:
+        milestones.append((float(row["confirmed_at"]), "confirmed", json.loads(row["missing_items"])))
+
+    # Mở video nếu có tệp video gốc
+    video_prefix = session_id.split("_")[0]
+    video_file = ROOT / "data" / "videos" / f"{video_prefix}.mp4"
+    cap = None
+    if video_file.exists():
+        import cv2
+        cap = cv2.VideoCapture(str(video_file))
+
+    frames = []
+    for idx, (t_sec, ctype, items) in enumerate(milestones):
+        matched_file = None
+        for er in ev_records:
+            if abs(float(er["t"]) - t_sec) < 0.05:
+                matched_file = Path(er["file_path"]).name
+                break
+
+        if not matched_file:
+            fname = f"{event_id}_t{int(t_sec*1000)}ms.jpg"
+            target = out_dir / fname
+            if not target.exists() and cap is not None:
+                cap.set(cv2.CAP_PROP_POS_MSEC, int(t_sec * 1000))
+                ret, frame = cap.read()
+                if not ret:
+                    total_f = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+                    if total_f > 0:
+                        cap.set(cv2.CAP_PROP_POS_FRAMES, max(0, total_f - 1))
+                        ret, frame = cap.read()
+                if ret:
+                    w = frame.shape[1]
+                    cv2.rectangle(frame, (0, 0), (w, 42), (15, 23, 42), -1)
+                    items_str = ", ".join(items) if items else "Không thiếu trang bị"
+                    banner = f"Moc t={t_sec:.2f}s | Nguoi ID {track_id} | {ctype} | Thieu: {items_str}"
+                    cv2.putText(frame, banner, (15, 28), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+                    cv2.imwrite(str(target), frame)
+            if target.exists():
+                matched_file = fname
+
+        rel_url = f"/api/evidence/{session_id}/{matched_file}" if matched_file else None
+
+        label_map = {
+            "created": "Bắt đầu & xác nhận vi phạm",
+            "confirmed": "Xác nhận vi phạm",
+            "missing_items": "Thay đổi danh sách vi phạm",
+            "pending_observation": "Tạm che khuất (chờ quan sát)",
+            "active": "Tái quan sát (đang vi phạm)",
+            "closed": "Kết thúc vi phạm",
+        }
+        friendly_label = label_map.get(ctype, ctype)
+
+        frames.append({
+            "index": idx,
+            "t": round(t_sec, 2),
+            "label": f"Mốc {t_sec:.2f}s: {friendly_label}",
+            "change_type": ctype,
+            "missing_items": items,
+            "url": rel_url
+        })
+
+    if cap is not None:
+        cap.release()
+
+    return frames
+
+
 @app.get("/api/events/{event_id}")
 def get_event_detail(event_id: str):
     """GET /events/{event_id}: Chi tiết sự kiện, danh sách minh chứng và toàn bộ lịch sử thay đổi."""
@@ -260,9 +360,24 @@ def get_event_detail(event_id: str):
     evidence = []
     for e in cur.fetchall():
         path = Path(e["file_path"])
-        # URL phục vụ ảnh qua API
         rel_url = f"/api/evidence/{row['session_id']}/{path.name}"
         evidence.append({"t": e["t"], "path": str(path), "url": rel_url, "system_time": e["system_time"]})
+
+    # Lấy các khung hình theo từng mốc thời gian
+    frames = extract_event_frames(row, cur)
+
+    # Lấy phản hồi / góp ý của giám sát viên
+    cur.execute("SELECT * FROM event_feedback WHERE event_id = ? ORDER BY id DESC", (event_id,))
+    feedbacks = [
+        {
+            "id": f["id"],
+            "feedback_type": f["feedback_type"],
+            "false_alarm_items": json.loads(f["false_alarm_items"]) if f["false_alarm_items"] else [],
+            "notes": f["notes"],
+            "system_time": f["system_time"]
+        }
+        for f in cur.fetchall()
+    ]
 
     conn.close()
     return {
@@ -282,7 +397,29 @@ def get_event_detail(event_id: str):
         "system_time": row["system_time"],
         "history": history,
         "evidence": evidence,
+        "frames": frames,
+        "feedbacks": feedbacks,
     }
+
+
+@app.post("/api/events/{event_id}/feedback")
+def submit_feedback(event_id: str, fb: FeedbackSchema):
+    """POST /events/{event_id}/feedback: Tiếp nhận góp ý / đánh giá chỉnh sửa từ giám sát viên."""
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT event_id FROM violation_events WHERE event_id = ?", (event_id,))
+    if not cur.fetchone():
+        conn.close()
+        raise HTTPException(status_code=404, detail="Event not found")
+    now = datetime.now().isoformat()
+    cur.execute("""
+    INSERT INTO event_feedback (event_id, feedback_type, false_alarm_items, notes, system_time)
+    VALUES (?, ?, ?, ?, ?)
+    """, (event_id, fb.feedback_type, json.dumps(fb.false_alarm_items or []), fb.notes or "", now))
+    conn.commit()
+    conn.close()
+    return {"status": "ok", "message": "Đã lưu góp ý thành công", "system_time": now}
+
 
 
 @app.get("/api/evidence/{session_id}/{filename}")
