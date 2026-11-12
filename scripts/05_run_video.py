@@ -147,6 +147,7 @@ def main():
     ap.add_argument("--max-frames", type=int)
     ap.add_argument("--no-video", action="store_true", help="không ghi annotated.mp4")
     ap.add_argument("--draw-regions", action="store_true", help="vẽ vùng cơ thể của từng người")
+    ap.add_argument("--api-url", default="http://127.0.0.1:8000/api", help="địa chỉ Backend API để đẩy sự kiện trực tiếp")
     args = ap.parse_args()
 
     video = Path(args.video)
@@ -166,6 +167,27 @@ def main():
         ev["system_time"] = datetime.now().isoformat(timespec="seconds")   # tách giờ hệ thống khỏi giờ trong video
         ev_file.write(json.dumps({"change": kind, **ev}, ensure_ascii=False) + "\n")
         ev_file.flush()
+        if args.api_url:
+            try:
+                import urllib.request
+                if kind == "created":
+                    data = json.dumps(ev).encode("utf-8")
+                    req = urllib.request.Request(f"{args.api_url}/events", data=data, headers={"Content-Type": "application/json"}, method="POST")
+                    urllib.request.urlopen(req, timeout=0.5)
+                else:
+                    patch_data = json.dumps({
+                        "last_seen_time": ev.get("last_seen_time"),
+                        "missing_items": ev.get("missing_items"),
+                        "event_state": ev.get("event_state"),
+                        "end_time": ev.get("end_time"),
+                        "close_reason": ev.get("close_reason"),
+                        "last_change_time": ev.get("last_change_time"),
+                        "change_type": kind
+                    }).encode("utf-8")
+                    req = urllib.request.Request(f"{args.api_url}/events/{ev['event_id']}", data=patch_data, headers={"Content-Type": "application/json"}, method="PATCH")
+                    urllib.request.urlopen(req, timeout=0.5)
+            except Exception:
+                pass
 
     pipe, stage, missing = build(args.stage, args.source_id, session_id, on_event)
     cfg = pipe.cfg

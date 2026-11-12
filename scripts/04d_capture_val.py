@@ -26,6 +26,7 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--imgsz", type=int, default=960)
     ap.add_argument("--batch", type=int, default=4)
+    ap.add_argument("--split", choices=["val", "test"], default="val")
     args = ap.parse_args()
     sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
     from ultralytics import YOLO
@@ -44,7 +45,7 @@ def main():
     DetectionValidator._process_batch = hooked
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    m = YOLO(args.weights).val(data=args.data, split="val", imgsz=args.imgsz, batch=args.batch, plots=False, project=str(out), name="val", exist_ok=True, device=0, verbose=False)
+    m = YOLO(args.weights).val(data=args.data, split=args.split, imgsz=args.imgsz, batch=args.batch, plots=False, project=str(out), name=args.split, exist_ok=True, device=0, verbose=False)
     DetectionValidator._process_batch = original
     idx = np.concatenate([[i] * len(r["conf"]) for i, r in enumerate(rows)] or [[]]).astype(int)
     gidx = np.concatenate([[i] * len(r["gc"]) for i, r in enumerate(rows)] or [[]]).astype(int)

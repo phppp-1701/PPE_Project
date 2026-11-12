@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hệ Thống Giám Sát Trang Bị Bảo Hộ Lao Động (PPE-6)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --purple: #8b5cf6;
+      --cyan: #06b6d4;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      padding: 24px;
+      line-height: 1.5;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--card-border);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .header-title h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .badge-ppe6 {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+      letter-spacing: 0.5px;
+    }
+    .header-title p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--success);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: var(--success);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--success);
+    }
+    .btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn:hover { background: var(--primary-hover); }
+    .btn-secondary {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+    }
+    .btn-secondary:hover { background: #273549; }
+
+    /* KPI Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .kpi-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 4px; height: 100%;
+    }
+    .kpi-total::before { background: var(--primary); }
+    .kpi-active::before { background: var(--danger); }
+    .kpi-pending::before { background: var(--warning); }
+    .kpi-closed::before { background: var(--success); }
+    .kpi-title {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .kpi-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #fff;
+      margin: 8px 0 4px 0;
+    }
+    .kpi-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Section Grid */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 1024px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    /* Progress bars for PPE classes */
+    .ppe-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .ppe-bar-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .ppe-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+    }
+    .ppe-bar-label span:first-child { font-weight: 500; }
+    .ppe-bar-track {
+      width: 100%;
+      height: 8px;
+      background: #0f172a;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .ppe-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+    .fill-helmet { background: #f97316; }
+    .fill-vest { background: #eab308; }
+    .fill-gloves { background: #ec4899; }
+    .fill-goggles { background: #06b6d4; }
+    .fill-boots { background: #3b82f6; }
+
+    /* Policy Form */
+    .policy-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #273549;
+    }
+    .policy-item:last-child { border-bottom: none; }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #334155;
+      transition: .3s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute; content: "";
+      height: 18px; width: 18px;
+      left: 3px; bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+    input:checked + .slider { background-color: var(--primary); }
+    input:checked + .slider:before { transform: translateX(20px); }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .select-input {
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+    }
+    .select-input:focus { border-color: var(--primary); }
+
+    /* Table */
+    .table-container {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+    th {
+      background: #0f172a;
+      padding: 12px 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    td {
+      padding: 14px;
+      border-bottom: 1px solid #273549;
+      vertical-align: middle;
+    }
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-right: 4px;
+    }
+    .badge-state-active {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+    .badge-state-pending {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+    .badge-state-closed {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+    .badge-ppe-helmet { background: rgba(249, 115, 22, 0.2); color: #fb923c; }
+    .badge-ppe-vest { background: rgba(234, 179, 8, 0.2); color: #fde047; }
+    .badge-ppe-gloves { background: rgba(236, 72, 153, 0.2); color: #f472b6; }
+    .badge-ppe-goggles { background: rgba(6, 182, 212, 0.2); color: #67e8f9; }
+    .badge-ppe-boots { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      backdrop-filter: blur(4px);
+      padding: 20px;
+    }
+    .modal {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 800px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h3 { font-size: 18px; font-weight: 600; }
+    .close-btn {
+      background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer;
+    }
+    .close-btn:hover { color: #fff; }
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .evidence-img-container {
+      width: 100%;
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+      text-align: center;
+    }
+    .evidence-img-container img {
+      max-width: 100%;
+      max-height: 450px;
+      object-fit: contain;
+      display: inline-block;
+    }
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border-left: 2px solid var(--card-border);
+      padding-left: 16px;
+      margin-left: 8px;
+    }
+    .timeline-item {
+      position: relative;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -21px; top: 4px;
+      width: 8px; height: 8px;
+      background: var(--primary);
+      border-radius: 50%;
+    }
+    .timeline-time {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .timeline-content {
+      font-size: 14px;
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-title">
+      <h1>HỆ THỐNG GIÁM SÁT PPE-6 <span class="badge-ppe6">6 LỚP HOÀN CHỈNH</span></h1>
+      <p>Khóa luận tốt nghiệp: Nhận diện & Giám sát tuân thủ trang bị bảo hộ lao động thời gian thực qua Camera</p>
+    </div>
+    <div class="header-actions">
+      <div class="status-pill">
+        <span class="dot"></span>
+        <span>Hệ thống trực tuyến</span>
+      </div>
+      <button class="btn btn-secondary" onclick="fetchData()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+        Làm mới
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="kpi-grid">
+    <div class="kpi-card kpi-total">
+      <div class="kpi-title">Tổng đợt vi phạm</div>
+      <div class="kpi-value" id="kpi-total">0</div>
+      <div class="kpi-desc">Tổng số sự kiện đã ghi nhận</div>
+    </div>
+    <div class="kpi-card kpi-active">
+      <div class="kpi-title">Đang vi phạm (Active)</div>
+      <div class="kpi-value" id="kpi-active" style="color: var(--danger);">0</div>
+      <div class="kpi-desc">Cần cảnh báo / xử lý tức thời</div>
+    </div>
+    <div class="kpi-card kpi-pending">
+      <div class="kpi-title">Chờ quan sát (Pending)</div>
+      <div class="kpi-value" id="kpi-pending" style="color: var(--warning);">0</div>
+      <div class="kpi-desc">Tạm mất dấu hoặc che khuất</div>
+    </div>
+    <div class="kpi-card kpi-closed">
+      <div class="kpi-title">Đã khắc phục / Đóng</div>
+      <div class="kpi-value" id="kpi-closed" style="color: var(--success);">0</div>
+      <div class="kpi-desc">Đã bổ sung PPE hoặc rời cảnh</div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD GRID: STATS & POLICY -->
+  <div class="dashboard-grid">
+    <!-- Phân bố vi phạm theo 5 trang bị -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Thống kê vi phạm theo từng loại trang bị bảo hộ</div>
+      </div>
+      <div class="ppe-bars" id="ppe-bars-container">
+        <!-- JS fill -->
+      </div>
+    </div>
+
+    <!-- Cấu hình chính sách nguồn -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Quy định PPE bắt buộc cho nguồn</div>
+      </div>
+      <div id="policy-container">
+        <div class="policy-item">
+          <span>Mũ bảo hộ (Helmet)</span>
+          <label class="switch"><input type="checkbox" id="pol-helmet" checked><span class="slider"></span></label>
+        </div>
+        <div class="policy-item">
+          <span>Áo phản quang (Vest)</span>
+          <label class="switch"><input type="checkbox" id="pol-vest" checked><span class="slider"></span></label>
+        </div>
+        <div class="policy-item">
+          <span>Găng tay bảo hộ (Gloves)</span>
+          <label class="switch"><input type="checkbox" id="pol-gloves" checked><span class="slider"></span></label>
+        </div>
+        <div class="policy-item">
+          <span>Kính bảo hộ (Goggles)</span>
+          <label class="switch"><input type="checkbox" id="pol-goggles" checked><span class="slider"></span></label>
+        </div>
+        <div class="policy-item">
+          <span>Giày / Ủng bảo hộ (Boots)</span>
+          <label class="switch"><input type="checkbox" id="pol-boots" checked><span class="slider"></span></label>
+        </div>
+      </div>
+      <button class="btn" style="width: 100%; margin-top: 16px; justify-content: center;" onclick="savePolicy()">
+        Lưu quy định bắt buộc
+      </button>
+    </div>
+  </div>
+
+  <!-- EVENTS TABLE -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Danh sách sự kiện vi phạm thời gian thực</div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <select class="select-input" id="filter-source" onchange="renderEvents()">
+        <option value="">Tất cả nguồn camera</option>
+        <option value="video">Luồng Video Chung</option>
+        <option value="video4">Video 4 (Công trường)</option>
+        <option value="video5">Video 5 (Demo bắt tay)</option>
+        <option value="video6">Video 6 (Công trường cắt biên)</option>
+      </select>
+      <select class="select-input" id="filter-state" onchange="renderEvents()">
+        <option value="">Tất cả trạng thái</option>
+        <option value="active">Đang vi phạm (Active)</option>
+        <option value="pending_observation">Chờ quan sát (Pending)</option>
+        <option value="closed">Đã đóng (Closed)</option>
+      </select>
+      <select class="select-input" id="filter-ppe" onchange="renderEvents()">
+        <option value="">Tất cả loại PPE</option>
+        <option value="helmet">Mũ bảo hộ</option>
+        <option value="vest">Áo phản quang</option>
+        <option value="gloves">Găng tay</option>
+        <option value="goggles">Kính bảo hộ</option>
+        <option value="boots">Ủng bảo hộ</option>
+      </select>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Thời điểm (s)</th>
+            <th>Nguồn / Phiên</th>
+            <th>Mã người (Track ID)</th>
+            <th>Trang bị thiếu</th>
+            <th>Trạng thái</th>
+            <th>Lý do đóng</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody id="events-tbody">
+          <tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">Đang tải dữ liệu...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- EVIDENCE & TIMELINE MODAL -->
+  <div class="modal-overlay" id="event-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modal-title">Chi tiết vi phạm</h3>
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="evidence-img-container" id="modal-img-wrap">
+          <div style="padding: 40px; color: var(--text-muted);">Không có ảnh minh chứng</div>
+        </div>
+        <div>
+          <h4 style="font-size: 15px; margin-bottom: 8px;">Dòng thời gian sự kiện (Event Timeline)</h4>
+          <div class="timeline" id="modal-timeline"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = window.location.origin;
+    let allEvents = [];
+
+    const PPE_LABELS = {
+      helmet: "Mũ bảo hộ",
+      vest: "Áo phản quang",
+      gloves: "Găng tay",
+      goggles: "Kính bảo hộ",
+      boots: "Ủng bảo hộ"
+    };
+
+    async function fetchData() {
+      try {
+        const [statsRes, eventsRes] = await Promise.all([
+          fetch(`${API_BASE}/api/stats`).then(r => r.json()),
+          fetch(`${API_BASE}/api/events?limit=200`).then(r => r.json())
+        ]);
+
+        // Update KPIs
+        document.getElementById('kpi-total').textContent = statsRes.total_events;
+        document.getElementById('kpi-active').textContent = statsRes.active_events;
+        document.getElementById('kpi-pending').textContent = statsRes.pending_events;
+        document.getElementById('kpi-closed').textContent = statsRes.closed_events;
+
+        // Update PPE distribution bars
+        const maxViolation = Math.max(...Object.values(statsRes.ppe_violations), 1);
+        const barsContainer = document.getElementById('ppe-bars-container');
+        barsContainer.innerHTML = '';
+        for (const [ppe, count] of Object.entries(statsRes.ppe_violations)) {
+          const pct = Math.round((count / maxViolation) * 100);
+          barsContainer.innerHTML += `
+            <div class="ppe-bar-item">
+              <div class="ppe-bar-label">
+                <span>${PPE_LABELS[ppe] || ppe}</span>
+                <span style="color: var(--text-muted); font-weight: 600;">${count} lượt vi phạm</span>
+              </div>
+              <div class="ppe-bar-track">
+                <div class="ppe-bar-fill fill-${ppe}" style="width: ${pct}%;"></div>
+              </div>
+            </div>
+          `;
+        }
+
+        allEvents = eventsRes.events;
+        renderEvents();
+      } catch (err) {
+        console.error("Lỗi tải dữ liệu:", err);
+      }
+    }
+
+    function renderEvents() {
+      const srcFilter = document.getElementById('filter-source').value;
+      const stateFilter = document.getElementById('filter-state').value;
+      const ppeFilter = document.getElementById('filter-ppe').value;
+
+      const filtered = allEvents.filter(ev => {
+        if (srcFilter && ev.source_id !== srcFilter) return false;
+        if (stateFilter && ev.event_state !== stateFilter) return false;
+        if (ppeFilter && !ev.missing_items.includes(ppeFilter)) return false;
+        return true;
+      });
+
+      const tbody = document.getElementById('events-tbody');
+      if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">Không có sự kiện vi phạm phù hợp với bộ lọc</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(ev => {
+        let stateBadge = '';
+        if (ev.event_state === 'active') stateBadge = `<span class="badge badge-state-active">Đang vi phạm</span>`;
+        else if (ev.event_state === 'pending_observation') stateBadge = `<span class="badge badge-state-pending">Chờ quan sát</span>`;
+        else stateBadge = `<span class="badge badge-state-closed">Đã đóng</span>`;
+
+        const ppeBadges = ev.missing_items.map(it => `<span class="badge badge-ppe-${it}">${PPE_LABELS[it] || it}</span>`).join(' ');
+
+        const closeText = ev.close_reason === 'recovered' ? 'Khắc phục hoàn toàn'
+                        : ev.close_reason === 'session_ended_unverified' ? 'Hết video (chưa xác minh)'
+                        : (ev.close_reason || '—');
+
+        return `
+          <tr>
+            <td style="font-weight: 600;">${ev.confirmed_at.toFixed(2)}s</td>
+            <td><span style="color: var(--text-muted); font-size: 13px;">${ev.source_id}</span></td>
+            <td><strong style="color: #60a5fa;">ID ${ev.track_id}</strong></td>
+            <td>${ppeBadges || '<span style="color: var(--text-muted);">Không</span>'}</td>
+            <td>${stateBadge}</td>
+            <td style="color: var(--text-muted); font-size: 13px;">${closeText}</td>
+            <td>
+              <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="viewEvent('${ev.event_id}')">
+                Xem minh chứng
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function viewEvent(eventId) {
+      try {
+        const res = await fetch(`${API_BASE}/api/events/${eventId}`);
+        const data = await res.json();
+
+        document.getElementById('modal-title').textContent = `Chi tiết vi phạm - ID ${data.track_id} (${data.source_id})`;
+
+        const imgWrap = document.getElementById('modal-img-wrap');
+        if (data.evidence && data.evidence.length > 0) {
+          const lastEv = data.evidence[data.evidence.length - 1];
+          imgWrap.innerHTML = `<img src="${API_BASE}${lastEv.url}" alt="Minh chứng vi phạm">`;
+        } else {
+          imgWrap.innerHTML = `<div style="padding: 40px; color: var(--text-muted);">Chưa có ảnh minh chứng</div>`;
+        }
+
+        const timeline = document.getElementById('modal-timeline');
+        timeline.innerHTML = data.history.map(h => {
+          const itemsText = h.missing_items.map(i => PPE_LABELS[i] || i).join(', ') || 'Không thiếu trang bị nào';
+          return `
+            <div class="timeline-item">
+              <div class="timeline-time">Mốc t = ${h.t.toFixed(2)}s (${h.change_type})</div>
+              <div class="timeline-content">Trang bị thiếu: <strong>${itemsText}</strong></div>
+            </div>
+          `;
+        }).join('');
+
+        document.getElementById('event-modal').style.display = 'flex';
+      } catch (err) {
+        alert("Lỗi tải chi tiết sự kiện: " + err);
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('event-modal').style.display = 'none';
+    }
+
+    async function savePolicy() {
+      const items = [];
+      if (document.getElementById('pol-helmet').checked) items.push('helmet');
+      if (document.getElementById('pol-vest').checked) items.push('vest');
+      if (document.getElementById('pol-gloves').checked) items.push('gloves');
+      if (document.getElementById('pol-goggles').checked) items.push('goggles');
+      if (document.getElementById('pol-boots').checked) items.push('boots');
+
+      try {
+        await fetch(`${API_BASE}/api/sources/video/policy`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ required_ppe: items })
+        });
+        alert("Đã cập nhật quy định PPE bắt buộc cho nguồn!");
+      } catch (err) {
+        alert("Lỗi lưu quy định: " + err);
+      }
+    }
+
+    // Auto refresh every 3 seconds
+    fetchData();
+    setInterval(fetchData, 3000);
+  </script>
+</body>
+</html>
+

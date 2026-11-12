@@ -30,10 +30,11 @@ outputs/**
 !outputs/**/
 !outputs/**/README.md
 
-# Trọng số mô hình
+# Trọng số mô hình và tệp nhị phân lớn
 *.pt
 *.onnx
 *.engine
+*.npz
 
 # Python
 .venv/
@@ -68,6 +69,7 @@ Thumbs.db
 !outputs/results/video/*/summary.json
 !outputs/results/video/*/frames.csv
 !outputs/results/video/*/events.jsonl
+!outputs/results/ablation/*.json
 
 # Thư mục nháp tạm thời
 scratch/

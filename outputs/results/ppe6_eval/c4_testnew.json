@@ -1,0 +1,25 @@
+{
+  "images": 117,
+  "scenes": 60,
+  "ignored_predictions": 153,
+  "classes": {
+    "goggles": {
+      "gt": 38,
+      "map50": 0.7359,
+      "ci": [
+        0.6003,
+        0.8596
+      ],
+      "enough_evidence": true
+    },
+    "boots": {
+      "gt": 102,
+      "map50": 0.4772,
+      "ci": [
+        0.3347,
+        0.648
+      ],
+      "enough_evidence": false
+    }
+  }
+}
