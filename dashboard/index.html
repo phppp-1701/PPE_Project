@@ -647,6 +647,7 @@
       <table>
         <thead>
           <tr>
+            <th>Ảnh vi phạm</th>
             <th>Thời điểm (s)</th>
             <th>Nguồn / Phiên</th>
             <th>Mã người (Track ID)</th>
@@ -657,7 +658,7 @@
           </tr>
         </thead>
         <tbody id="events-tbody">
-          <tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">Đang tải dữ liệu...</td></tr>
+          <tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 30px;">Đang tải dữ liệu...</td></tr>
         </tbody>
       </table>
     </div>
@@ -761,7 +762,7 @@
   </div>
 
   <script>
-    const API_BASE = window.location.origin;
+    const API_BASE = (window.location.protocol.startsWith('http')) ? window.location.origin : 'http://127.0.0.1:8000';
     let allEvents = [];
     let currentEventData = null;
     let currentFrameIdx = 0;
@@ -827,7 +828,7 @@
 
       const tbody = document.getElementById('events-tbody');
       if (!filtered.length) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">Không có sự kiện vi phạm phù hợp với bộ lọc</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 30px;">Không có sự kiện vi phạm phù hợp với bộ lọc</td></tr>`;
         return;
       }
 
@@ -843,8 +844,16 @@
                         : ev.close_reason === 'session_ended_unverified' ? 'Hết video (chưa xác minh)'
                         : (ev.close_reason || '—');
 
+        const thumbUrl = ev.thumbnail_url 
+          ? (ev.thumbnail_url.startsWith('http') ? ev.thumbnail_url : `${API_BASE}${ev.thumbnail_url}`)
+          : '';
+        const thumbHtml = thumbUrl 
+          ? `<img src="${thumbUrl}" alt="Ảnh vi phạm" style="width: 76px; height: 48px; object-fit: cover; border-radius: 6px; border: 1px solid #334155; cursor: pointer; display: block;" onclick="viewEvent('${ev.event_id}')" title="Bấm để xem chi tiết theo mốc thời gian">`
+          : '<span style="color: var(--text-muted); font-size: 11px;">Chưa có ảnh</span>';
+
         return `
           <tr>
+            <td style="width: 86px; padding: 8px;">${thumbHtml}</td>
             <td style="font-weight: 600;">${ev.confirmed_at.toFixed(2)}s</td>
             <td><span style="color: var(--text-muted); font-size: 13px;">${ev.source_id}</span></td>
             <td><strong style="color: #60a5fa;">ID ${ev.track_id}</strong></td>
@@ -865,6 +874,19 @@
       try {
         const res = await fetch(`${API_BASE}/api/events/${eventId}`);
         const data = await res.json();
+
+        // Đảm bảo data.frames luôn có dữ liệu đầy đủ
+        let rawFrames = (data.frames && data.frames.length > 0) ? data.frames : [];
+        if (rawFrames.length === 0 && data.evidence && data.evidence.length > 0) {
+          rawFrames = data.evidence.map((ev, i) => ({
+            index: i,
+            t: ev.t,
+            label: `Mốc ${typeof ev.t === 'number' ? ev.t.toFixed(2) : ev.t}s: Xác nhận vi phạm`,
+            url: ev.url,
+            missing_items: data.missing_items || []
+          }));
+        }
+        data.frames = rawFrames;
         currentEventData = data;
 
         document.getElementById('modal-title').textContent = `Chi tiết vi phạm - Người ID ${data.track_id}`;
@@ -881,7 +903,7 @@
 
         // Render frames ribbon
         const ribbon = document.getElementById('modal-frames-ribbon');
-        const frames = (data.frames && data.frames.length > 0) ? data.frames : (data.evidence || []);
+        const frames = data.frames;
         
         if (frames.length > 0) {
           ribbon.innerHTML = frames.map((f, idx) => {
@@ -936,10 +958,11 @@
       const imgWrap = document.getElementById('modal-img-wrap');
       const infoWrap = document.getElementById('current-frame-info');
 
-      if (frame.url) {
-        imgWrap.innerHTML = `<img src="${API_BASE}${frame.url}" alt="${frame.label}">`;
+      if (frame && frame.url) {
+        const fullUrl = frame.url.startsWith('http') ? frame.url : `${API_BASE}${frame.url}`;
+        imgWrap.innerHTML = `<img src="${fullUrl}" alt="${frame.label}" style="max-height: 480px; width: 100%; object-fit: contain;">`;
       } else {
-        imgWrap.innerHTML = `<div style="padding: 40px; color: var(--text-muted);">Khung hình đang được chuẩn bị</div>`;
+        imgWrap.innerHTML = `<div style="padding: 40px; color: var(--text-muted);">Không tìm thấy tệp ảnh cho mốc này</div>`;
       }
 
       const ppeBadges = (frame.missing_items && frame.missing_items.length > 0)

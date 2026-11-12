@@ -225,6 +225,15 @@ def list_events(
         items = json.loads(r["missing_items"])
         if ppe and ppe not in items:
             continue
+
+        # Lấy ảnh minh chứng đầu tiên làm thumbnail
+        cur.execute("SELECT file_path FROM event_evidence WHERE event_id = ? LIMIT 1", (r["event_id"],))
+        ev_row = cur.fetchone()
+        thumb_url = None
+        if ev_row and ev_row["file_path"]:
+            thumb_name = Path(ev_row["file_path"]).name
+            thumb_url = f"/api/evidence/{r['session_id']}/{thumb_name}"
+
         events.append({
             "event_id": r["event_id"],
             "source_id": r["source_id"],
@@ -239,6 +248,7 @@ def list_events(
             "close_reason": r["close_reason"],
             "last_change_time": r["last_change_time"],
             "system_time": r["system_time"],
+            "thumbnail_url": thumb_url,
         })
 
     conn.close()
