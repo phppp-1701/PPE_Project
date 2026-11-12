@@ -960,7 +960,7 @@
 
       if (frame && frame.url) {
         const fullUrl = frame.url.startsWith('http') ? frame.url : `${API_BASE}${frame.url}`;
-        imgWrap.innerHTML = `<img src="${fullUrl}" alt="${frame.label}" style="max-height: 480px; width: 100%; object-fit: contain;">`;
+        imgWrap.innerHTML = `<img src="${fullUrl}" alt="${frame.label}" style="max-height: 480px; width: 100%; object-fit: contain; cursor: zoom-in;" onclick="window.open(this.src, '_blank')" title="Bấm để mở ảnh gốc kích thước đầy đủ (Zoom)">`;
       } else {
         imgWrap.innerHTML = `<div style="padding: 40px; color: var(--text-muted);">Không tìm thấy tệp ảnh cho mốc này</div>`;
       }
@@ -1014,7 +1014,7 @@
           })
         });
         const resData = await resp.json();
-        alert("✅ " + resData.message);
+        showToast("✅ " + resData.message);
 
         // Reload current event details to refresh feedback list
         const refreshed = await fetch(`${API_BASE}/api/events/${currentEventData.event_id}`).then(r => r.json());
@@ -1022,9 +1022,37 @@
         renderFeedbackHistory(refreshed.feedbacks || []);
         document.getElementById('fb-notes').value = '';
       } catch (err) {
-        alert("Lỗi lưu góp ý: " + err);
+        showToast("❌ Lỗi lưu góp ý: " + err, "error");
       }
     }
+
+    function showToast(msg, type = 'success') {
+      let toast = document.getElementById('toast-notification');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast-notification';
+        toast.style.cssText = 'position: fixed; bottom: 24px; right: 24px; background: #1e293b; color: #fff; border: 1px solid #3b82f6; border-radius: 8px; padding: 12px 20px; font-size: 14px; font-weight: 500; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; gap: 10px; transition: all 0.3s ease;';
+        document.body.appendChild(toast);
+      }
+      toast.style.borderColor = (type === 'error') ? '#ef4444' : '#10b981';
+      toast.textContent = msg;
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+      }, 3000);
+    }
+
+    // Keyboard navigation (Arrow keys and ESC)
+    document.addEventListener('keydown', (e) => {
+      const modal = document.getElementById('event-modal');
+      if (modal && modal.style.display === 'flex') {
+        if (e.key === 'ArrowLeft') stepFrame(-1);
+        else if (e.key === 'ArrowRight') stepFrame(1);
+        else if (e.key === 'Escape') closeModal();
+      }
+    });
 
     function renderFeedbackHistory(feedbacks) {
       const container = document.getElementById('fb-history-list');
