@@ -56,6 +56,13 @@ class Compliance:
         observable = (v >= self.tau_in[name] and o <= self.tau_occ[name] and visible >= self.area_min[name]
                       and track.confident)
         has = bool(assoc.owned.get(track.track_id, {}).get((name, side)))
+        if name == "boots" and not has:
+            ankles = getattr(track, "extra", {}).get("ankles")
+            if ankles and ankles["conf"] >= 0.5:
+                dist_to_bottom = track.xyxy[3] - ankles["max_y"]
+                person_h = track.xyxy[3] - track.xyxy[1]
+                if dist_to_bottom < 0.065 * person_h:
+                    observable = False
         contested = (name, side) in assoc.contested.get(track.track_id, set())
         if track.confident and has:
             state = HAVE

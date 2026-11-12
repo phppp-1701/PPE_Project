@@ -7,6 +7,7 @@ Chạy theo lô trên ảnh cắt từng người rồi ghi cổ tay vào track.
 import numpy as np
 
 LEFT_WRIST, RIGHT_WRIST = 9, 10    # chỉ số điểm khớp COCO
+LEFT_ANKLE, RIGHT_ANKLE = 15, 16
 
 
 class PoseEstimator:
@@ -41,3 +42,7 @@ class PoseEstimator:
             pts = sorted(((float(kp[i][0]) + ox, float(kp[i][1]) + oy, float(kp[i][2]))
                           for i in (LEFT_WRIST, RIGHT_WRIST)), key=lambda q: q[0])
             t.extra["wrists"] = {"left": pts[0], "right": pts[1]}
+            if len(kp) > 16:
+                a_conf = max(float(kp[LEFT_ANKLE][2]), float(kp[RIGHT_ANKLE][2]))
+                a_y = max(float(kp[LEFT_ANKLE][1]) + oy, float(kp[RIGHT_ANKLE][1]) + oy)
+                t.extra["ankles"] = {"max_y": a_y, "conf": a_conf}

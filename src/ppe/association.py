@@ -102,7 +102,15 @@ class Associator:
             if not cand:
                 a.rejected.append((name, det, "outside", []))
                 continue
+            track_by_id = {t.track_id: t for t in tracks}
             limit = self.limit(name)
+            t_first = track_by_id.get(cand[0][1])
+            if t_first is not None:
+                pw = max(t_first.xyxy[2] - t_first.xyxy[0], 1.0)
+                ph = max(t_first.xyxy[3] - t_first.xyxy[1], 1.0)
+                aspect = ph / pw
+                if aspect < 2.8:
+                    limit *= (1.0 + 0.5 * (2.8 - aspect))
             if cand[0][0] > limit:
                 a.rejected.append((name, det, "far", cand))
                 continue

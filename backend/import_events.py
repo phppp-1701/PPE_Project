@@ -10,14 +10,24 @@ sys.path.insert(0, str(ROOT))
 from backend.db import get_db, init_db, ensure_default_sources
 
 
-def import_jsonl():
+def import_jsonl(clear_existing=False):
     init_db()
     ensure_default_sources()
     conn = get_db()
     cur = conn.cursor()
 
-    jsonl_files = list((ROOT / "outputs" / "results" / "video").glob("*/events.jsonl"))
-    print(f"Tìm thấy {len(jsonl_files)} tệp events.jsonl")
+    if clear_existing:
+        cur.execute("DELETE FROM event_evidence")
+        cur.execute("DELETE FROM event_history")
+        cur.execute("DELETE FROM violation_events")
+        conn.commit()
+
+    # Chỉ nạp các video thử nghiệm chính thức đã hiệu chuẩn (video4, video5, video6, video7)
+    # Loại trừ video cũ uncalibrated từ giai đoạn thử nghiệm ban đầu (video1, video2)
+    valid_videos = {"video4", "video5", "video6", "video7"}
+    all_jsonl = list((ROOT / "outputs" / "results" / "video").glob("*/events.jsonl"))
+    jsonl_files = [jf for jf in all_jsonl if jf.parent.name in valid_videos]
+    print(f"Tìm thấy {len(jsonl_files)} tệp events.jsonl hợp lệ: {[jf.parent.name for jf in jsonl_files]}")
 
     total_events = 0
     for jf in jsonl_files:
@@ -83,4 +93,5 @@ def import_jsonl():
 
 
 if __name__ == "__main__":
-    import_jsonl()
+    clear = "--clear" in sys.argv
+    import_jsonl(clear_existing=clear)

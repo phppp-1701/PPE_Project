@@ -145,3 +145,32 @@ def test_six_class_goggles_and_boots_truncated_feet(test_cfg):
     p2 = person(2, 400, 400, 600, 1000)
     _, s2 = run(test_cfg, [p2], [])
     assert s2[2]["boots"]["state"] == UNKNOWN
+
+
+def test_bending_person_adaptive_distance_accepts_displaced_ppe(test_cfg):
+    # Người cúi gập người (rộng 200, cao 400 -> tỉ lệ aspect = 2.0 < 2.8)
+    p = person(1, 100, 100, 300, 500)
+    # Đặt max_distance chuẩn = 0.10
+    test_cfg["association"]["max_distance"]["vest"] = 0.10
+    # Tâm áo ở y = 340 -> khoảng cách chuẩn hóa tới tâm torso (290) là 0.125 > 0.10
+    # Nếu không có hệ số nới rộng, áo sẽ bị từ chối do "far"
+    # Nhờ nới rộng theo tư thế cúi (0.10 * (1 + 0.5*(2.8-2.0)) = 0.14 > 0.125), áo được gán cho người
+    vest_det = det(2, 160, 310, 240, 370)
+    a, s = run(test_cfg, [p], [vest_det])
+    assert a.owned[1][("vest", None)]
+    assert s[1]["vest"]["state"] == HAVE
+
+
+def test_trench_buried_feet_marked_unknown_via_ankles(test_cfg):
+    from ppe import load_config
+    full = load_config()
+    test_cfg["ppe"] = full["ppe"]
+    test_cfg["required_ppe"] = full["required_ppe"]
+    # Người đứng trong rãnh / hố (y2=700 < 1000, không chạm đáy khung hình)
+    p = person(1, 100, 100, 300, 700)
+    # Cổ chân ở rất gần đáy bounding box (cách đáy 15px < 0.065 * 600 = 39px)
+    p.extra["ankles"] = {"max_y": 688.0, "conf": 0.85}
+    _, s = run(test_cfg, [p], [])
+    # Dù không chạm đáy ảnh nhưng cổ chân sát đáy hộp người -> chân bị vùi/khuất rãnh -> UNKNOWN
+    assert s[1]["boots"]["state"] == UNKNOWN
+

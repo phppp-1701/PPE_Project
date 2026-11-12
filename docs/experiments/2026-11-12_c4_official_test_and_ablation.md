@@ -83,3 +83,4 @@ Chạy `scripts/04e_ppe6_eval.py new --capture outputs/results/ppe6_eval/c4_test
 
 ### 3.3. Tích hợp E2E
 Khi chạy video qua script `scripts/05_run_video.py`, tham số `--api-url http://127.0.0.1:8000/api` sẽ tự động phát các HTTP requests thời gian thực tới Backend để cập nhật lên Web Dashboard ngay lập tức.
+
