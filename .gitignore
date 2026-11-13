@@ -77,3 +77,6 @@ scratch/
 preview_all.jpg
 !data/ppe6/parts/
 !data/ppe6/parts/summary.json
+!outputs/train/yolo11n_cls_parts/results.csv
+!outputs/train/yolo11n_cls_parts/run_info.json
+!outputs/results/parts_cls/*.json

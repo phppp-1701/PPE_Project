@@ -45,6 +45,7 @@
 | `05b_cvat_video_task.py` | Tạo task CVAT cho một video (`data/videos/<video_id>.mp4`) với bộ nhãn trong `docs/video_labeling.md`, không kèm dự đoán của hệ thống; task cùng tên đã có thì dừng. `--dry-run` chỉ in kế hoạch. Token đọc từ `CVAT_ACCESS_TOKEN` hoặc `~/.cvat_token` | 3 |
 | `05c_cvat_prefill_people.py` | Vẽ sẵn hộp người cho task video trên CVAT bằng `yolo11s.pt` gốc, nối tiếp các track người gán đã vẽ, không điền PPE; tham số ở `configs/prelabel.yaml` mục `video_people`. Mặc định chỉ tạo bản xem trước và `review.csv` (khung cần xem) trong `outputs/results/video/<video>/prefill/`; `--upload` sao lưu rồi ghi lên CVAT. Chỉ dùng cho video chỉnh tham số | 3 |
 | `05d_calibrate_video.py` | Chọn tham số trên video `chinh_tham_so` so với nhãn CVAT: `--tracker` thử ByteTrack (MOTA, IDF1, IDSW), `--state` thử `ambiguity_margin`, `tau_in`, `tau_occ`, `area_min_px` (ma trận 3×3, macro-F1, Coverage); `--rerun` chạy lại detector. Lưới ở `configs/pipeline.yaml` mục `calibration.video`; ghi đề xuất vào `outputs/results/pipeline_calib_video/<video>/`, người chép giá trị đã duyệt vào config | 3 |
+| `05e_select_part_cls.py` | Chọn hình học ảnh cắt (theo keypoint) và ngưỡng `t_pos`, `t_neg` của bộ phân loại bộ phận trên val (ảnh cắt kiểu pipeline); ghi `outputs/results/parts_cls/val_select.json`, in khối gợi ý, người chép vào `configs/pipeline.yaml` mục `part_cls` | thử nghiệm |
 | `06_evaluate.py` | Tính độ đo, so sánh cấu hình A-E | 5 |
 
 Các file sẽ được viết dần khi làm tới bước tương ứng.

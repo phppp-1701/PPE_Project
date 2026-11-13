@@ -32,6 +32,7 @@ from ppe.association import Association, Associator
 from ppe.compliance import Compliance
 from ppe.detector import Detector
 from ppe.events import EventManager
+from ppe.parts import PartClassifier
 from ppe.pose import PoseEstimator
 from ppe.temporal import TemporalConfirmer
 from ppe.tracker import PersonTracker
@@ -97,6 +98,13 @@ def run_ablation_for_video(video_path, cfg, gt_events):
     detector = Detector(cfg, ROOT)
     use_pose = cfg.get("pose", {}).get("enabled", True)
     pose_est = PoseEstimator(cfg, ROOT) if use_pose else None
+    # Bộ phân loại bộ phận (phương án 2) chạy ngay sau pose khi bật trong config, như pipeline.
+    part_cls = PartClassifier(cfg, ROOT) if use_pose and (cfg.get("part_cls") or {}).get("enabled") else None
+
+    def pose_and_parts(frame, tracks):
+        pose_est(frame, tracks)
+        if part_cls:
+            part_cls(frame, tracks)
     required_ppe = list(cfg["required_ppe"])
 
     name_of = {p["cls"]: n for n, p in cfg["ppe"].items()}
@@ -147,7 +155,7 @@ def run_ablation_for_video(video_path, cfg, gt_events):
         t = f["t"]
         tracks_b = [SimpleTrack(i + 1, p.xyxy, p.conf) for i, p in enumerate(f["persons"])]
         if pose_est and f["frame"] is not None:
-            pose_est(f["frame"], tracks_b)
+            pose_and_parts(f["frame"], tracks_b)
         assoc = associator_b(tracks_b, f["ppe"])
         states = compliance_b(tracks_b, assoc, f["shape"], required_ppe)
         for tr in tracks_b:
@@ -166,7 +174,7 @@ def run_ablation_for_video(video_path, cfg, gt_events):
         t = f["t"]
         tracks_c = tracker_c.update(f["persons"], f["frame"])
         if pose_est and f["frame"] is not None:
-            pose_est(f["frame"], tracks_c)
+            pose_and_parts(f["frame"], tracks_c)
         assoc = associator_b(tracks_c, f["ppe"])
         states = comp_c(tracks_c, assoc, f["shape"], required_ppe, t)   # có track: bật giữ trạng thái Có
         for tr in tracks_c:
@@ -188,7 +196,7 @@ def run_ablation_for_video(video_path, cfg, gt_events):
         t = f["t"]
         tracks_d = tracker_d.update(f["persons"], f["frame"])
         if pose_est and f["frame"] is not None:
-            pose_est(f["frame"], tracks_d)
+            pose_and_parts(f["frame"], tracks_d)
         assoc = associator_b(tracks_d, f["ppe"])
         states = comp_d(tracks_d, assoc, f["shape"], required_ppe, t)   # có track: bật giữ trạng thái Có
         for tr in tracks_d:
@@ -212,7 +220,7 @@ def run_ablation_for_video(video_path, cfg, gt_events):
         t = f["t"]
         tracks_e = tracker_e.update(f["persons"], f["frame"])
         if pose_est and f["frame"] is not None:
-            pose_est(f["frame"], tracks_e)
+            pose_and_parts(f["frame"], tracks_e)
         assoc = associator_b(tracks_e, f["ppe"])
         states = comp_e(tracks_e, assoc, f["shape"], required_ppe, t)   # có track: bật giữ trạng thái Có
         for tr in tracks_e:

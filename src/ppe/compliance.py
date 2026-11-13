@@ -41,6 +41,37 @@ class Compliance:
         self.gate = cfg.get("compliance", {}).get("keypoint_gate") if self.pose else None
         self.hold_s = cfg.get("compliance", {}).get("have_hold_s") or {}
         self.last_have = {}     # (track_id, ppe, side) -> t lần cuối thấy Có
+        pc = cfg.get("part_cls") or {}
+        self.part = pc if pc.get("enabled") and self.pose else None   # bộ phân loại bộ phận (parts.py), cần pose
+        self.p_hist = {}        # (track_id, ppe, bên) -> [(t, p)] trong vote_window_s giây gần nhất
+
+    def part_vote(self, name, track, side):
+        """Ý kiến của bộ phân loại bộ phận: "pos" (chắc có PPE), "neg" (chắc không có), "unsure", hoặc None (không có
+        ảnh cắt). Ủng không chia bên: một chân chắc không có ủng là "neg"; không chân nào "neg" mà có chân chắc có là "pos"."""
+        thr = (self.part or {}).get("thresholds", {}) or {}
+        if name not in thr:
+            return None
+        got = getattr(track, "extra", {}).get("parts", {})
+        ps = []
+        win = self.part.get("vote_window_s") or 0
+        for (n, s), p in got.items():
+            if n != name or (name != "boots" and s != side):
+                continue
+            if self.now is not None and win > 0:
+                # Gộp phiếu theo thời gian: trung bình p của bộ phận này trong vote_window_s giây gần nhất.
+                h = self.p_hist.setdefault((track.track_id, n, s), [])
+                h.append((self.now, p))
+                h[:] = [(t, q) for t, q in h if self.now - t <= win]
+                p = sum(q for _, q in h) / len(h)
+            ps.append(p)
+        if not ps:
+            return None
+        t_pos, t_neg = thr[name]["t_pos"], thr[name]["t_neg"]
+        if t_neg is not None and any(1 - p >= t_neg for p in ps):
+            return "neg"
+        if t_pos is not None and any(p >= t_pos for p in ps):
+            return "pos"
+        return "unsure"
 
     def keypoint_visible(self, name, track, frame_box):
         """Cổng quan sát theo pose (khi bật `keypoint_gate`): trả về False nếu bộ phận cần cho PPE này không nhìn thấy rõ.
@@ -91,16 +122,27 @@ class Compliance:
         contested = (name, side) in assoc.contested.get(track.track_id, set())
         key = (track.track_id, name, side)
         recently_have = self.now is not None and key in self.last_have and self.now - self.last_have[key] <= self.hold_s.get(name, 0)
-        if track.confident and has:
+        covered = bool(self.part) and name in (self.part.get("thresholds") or {})   # PPE có bước kiểm tra thứ hai
+        vote = self.part_vote(name, track, side) if covered else None
+        if not covered or (vote is None and self.part.get("fallback_old_rule", True)):
+            # Luật cũ: có hộp PPE gán hợp lệ là Có; vùng nhìn rõ mà không có hộp là Thiếu.
+            have = track.confident and has
+            missing = observable and not contested and not recently_have
+        else:
+            # Phương án 2, bản 2: detector thấy là Có; bộ phân loại chắc có cũng là Có. Thiếu chỉ khi bộ phân loại
+            # thấy rõ không có PPE và detector không thấy. Còn lại Chưa xác định.
+            have = track.confident and (has or vote == "pos")
+            missing = vote == "neg" and not has and observable and not contested and not recently_have
+        if have:
             state = HAVE
             if self.now is not None:
                 self.last_have[key] = self.now
-        elif observable and not contested and not recently_have:
+        elif missing:
             state = MISSING
         else:
             state = UNKNOWN
         return state, dict(v=round(v, 3), o=round(o, 3), area=round(visible), observable=observable,
-                           has=has, contested=contested)
+                           has=has, contested=contested, vote=vote)
 
     now = None
 

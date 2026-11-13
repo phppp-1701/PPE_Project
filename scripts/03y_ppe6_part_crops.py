@@ -4,7 +4,12 @@ Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
     python scripts/03y_ppe6_part_crops.py
 
 Ghi data/ppe6/parts/{train,val}/<lớp>/*.jpg (định dạng thư mục của YOLO-cls), summary.json và gói
-data/ppe6/variants/kaggle/parts_pack.zip. Tham số ở configs/ppe6.yaml mục `parts`. Không sửa data/raw.
+data/ppe6/variants/kaggle/parts_pack.zip (bản 1) hoặc parts_v2_pack.zip (bản 2). Tham số ở configs/ppe6.yaml mục `parts`.
+Không sửa data/raw.
+
+Bản 2 (`parts.version: 2`): ngoài ảnh cắt theo hộp (train: tâm, cỡ xê dịch ngẫu nhiên) còn có ảnh cắt theo keypoint như
+pipeline (pose trên ảnh cắt từng người, ghép hộp nhãn với cổ tay / mắt cá / mắt như 05e, hình học ngẫu nhiên ở train, hình
+học của configs/pipeline.yaml ở val), và tăng cường giống video cho train (nhòe, tối, nén). Tên file: <nguồn>_<box|kp>_<số>.jpg.
 
 Lớp (7): glove, bare_hand (tay); safety_boot, not_safety_foot (giày thường, dép, chân trần) (chân);
 goggles, ordinary_glasses, no_eyewear (mắt).
@@ -62,11 +67,10 @@ def yolo_boxes(path, w, h):
     return out
 
 
-def main():
-    sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
-    cfg = yaml.safe_load((ROOT / "configs" / "ppe6.yaml").read_text(encoding="utf-8"))
-    pc, cppe2_cfg = cfg["parts"], cfg["cppe2"]
-    rng = random.Random(pc["seed"])
+def collect_items(cfg, only=("train", "val")):
+    """Danh sách (phần, lớp, ảnh, hộp pixel, nguồn) của mọi hộp bộ phận thuộc các phần `only`, chưa giới hạn số lượng.
+    05e dùng lại với only=("val",)."""
+    cppe2_cfg = cfg["cppe2"]
     stats = rd(ROOT / "data" / "ppe4" / "stats.csv")
     scene = {r["file"]: r["scene_id"] for r in rd(ROOT / "data" / "ppe6" / "scene" / "scene_ids.csv")}
     roles = {r["scene_id"]: r["role"] for r in rd(ROOT / "data" / "ppe6" / "eval" / "scene_roles.csv")}
@@ -99,6 +103,8 @@ def main():
 
     items = []   # (phần, lớp, đường dẫn ảnh, hộp pixel, nguồn)
     for img, (part, _) in split.items():
+        if part not in only:
+            continue
         p = ROOT / img
         im = cv2.imdecode(np.fromfile(str(p), dtype=np.uint8), cv2.IMREAD_COLOR)
         if im is None:
@@ -129,6 +135,8 @@ def main():
                 if c in m:
                     items.append((part, m[c], img, bx, "cppe1"))
     # Construction-PPE bản mới: chỉ train, bỏ ảnh trùng cảnh đánh giá
+    if "train" not in only:
+        return items
     raw2 = ROOT / "data" / "raw" / "construction_ppe_v2"
     names2 = yaml.safe_load((raw2 / "data.yaml").read_text(encoding="utf-8"))["names"]
     bad = set((ROOT / "data" / "ppe6" / "external" / "cppe2" / "eval_overlap.txt").read_text(encoding="utf-8").split())
@@ -146,6 +154,39 @@ def main():
                 continue
             if cls:
                 items.append(("train", cls, img.relative_to(ROOT).as_posix(), bx, "cppe2"))
+    return items
+
+
+def augment(crop, rng, a):
+    """Tăng cường giống video (chỉ train): nhòe chuyển động, tối hơn, nén JPEG mạnh; mỗi kiểu xảy ra với xác suất a["prob"]."""
+    if rng.random() < a["prob"]:
+        n = rng.randint(*a["blur_px"])
+        k = np.zeros((n, n), np.float32)
+        k[n // 2, :] = 1.0 / n
+        rot = cv2.getRotationMatrix2D((n / 2 - 0.5, n / 2 - 0.5), rng.uniform(0, 180), 1.0)
+        k = cv2.warpAffine(k, rot, (n, n))
+        crop = cv2.filter2D(crop, -1, k / max(k.sum(), 1e-6))
+    if rng.random() < a["prob"]:
+        crop = np.clip(crop.astype(np.float32) * rng.uniform(*a["dark"]), 0, 255).astype(np.uint8)
+    if rng.random() < a["prob"]:
+        ok, buf = cv2.imencode(".jpg", crop, [cv2.IMWRITE_JPEG_QUALITY, rng.randint(*a["jpeg"])])
+        crop = cv2.imdecode(buf, cv2.IMREAD_COLOR)
+    return crop
+
+
+def square(bx, context, shift=(0.0, 0.0)):
+    """(cx, cy, cạnh) quanh hộp bx: cạnh = cạnh dài * context, tâm lệch shift * cạnh."""
+    side = max(bx[2] - bx[0], bx[3] - bx[1]) * context
+    return ((bx[0] + bx[2]) / 2 + shift[0] * side, (bx[1] + bx[3]) / 2 + shift[1] * side, side)
+
+
+def main():
+    sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
+    cfg = yaml.safe_load((ROOT / "configs" / "ppe6.yaml").read_text(encoding="utf-8"))
+    pc = cfg["parts"]
+    v2 = pc.get("version", 1) >= 2
+    rng = random.Random(pc["seed"])
+    items = collect_items(cfg)
 
     # Giới hạn số ảnh mỗi lớp ở train để không lệch quá
     rng.shuffle(items)
@@ -156,41 +197,90 @@ def main():
             continue
         per[k] += 1
         keep.append(it)
+    # Bản 2: ảnh cắt theo keypoint. Train: chọn ngẫu nhiên trước tới 1,6 lần mức giới hạn mỗi lớp (khoảng 1/3 hộp không
+    # ghép được keypoint), rồi dừng ở max_per_class khi lưu. Val: lấy hết.
+    kp_items, kp_per = [], Counter()
+    for it in (items if v2 else []):
+        k = (it[0], it[1])
+        if it[0] == "train" and kp_per[k] >= 1.6 * pc["max_per_class"]:
+            continue
+        kp_per[k] += 1
+        kp_items.append(it)
     if OUT.exists():
         shutil.rmtree(OUT)
     done, skipped = Counter(), Counter()
-    cache = {}
-    for i, (part, cls, img, bx, src) in enumerate(sorted(keep, key=lambda x: x[2])):
-        if img not in cache:
-            cache.clear()
-            cache[img] = cv2.imdecode(np.fromfile(str(ROOT / img), dtype=np.uint8), cv2.IMREAD_COLOR)
-        im = cache[img]
-        h, w = im.shape[:2]
-        side = max(bx[2] - bx[0], bx[3] - bx[1]) * pc["context"]
-        if side < pc["min_px"]:
-            skipped["small"] += 1
-            continue
-        cx, cy = (bx[0] + bx[2]) / 2, (bx[1] + bx[3]) / 2
-        a, b = int(max(cx - side / 2, 0)), int(max(cy - side / 2, 0))
-        crop = im[b:int(min(cy + side / 2, h)), a:int(min(cx + side / 2, w))]
-        if min(crop.shape[:2]) < pc["min_px"] // 2:
-            skipped["edge"] += 1
-            continue
-        if max(crop.shape[:2]) > pc["save_px"]:
-            f = pc["save_px"] / max(crop.shape[:2])
-            crop = cv2.resize(crop, (round(crop.shape[1] * f), round(crop.shape[0] * f)), interpolation=cv2.INTER_AREA)
-        d = OUT / part / cls
-        d.mkdir(parents=True, exist_ok=True)
-        cv2.imwrite(str(d / f"{src}_{i:06d}.jpg"), crop, [cv2.IMWRITE_JPEG_QUALITY, 92])
-        done[(part, cls)] += 1
-    summ = dict(counts={f"{p}/{c}": n for (p, c), n in sorted(done.items())}, skipped=dict(skipped), params=pc)
+    from ppe.parts import PART_CLASSES, cut, match_anchor, people_keypoints
+    cls2ppe = {c: ppe for ppe, (pos, negs) in PART_CLASSES.items() for c in (pos, *negs)}
+    if v2:
+        from ultralytics import YOLO
+
+        from ppe import load_config
+        from ppe.pose import PoseEstimator
+        pcfg = load_config()
+        person_model, pose = YOLO(ROOT / pcfg["pose"]["weights"]), PoseEstimator(pcfg, ROOT)
+        kp_conf, val_geom, dev = pcfg["part_cls"]["kp_conf"], pcfg["part_cls"]["geometry"], pcfg["detector"]["device"]
+    work = defaultdict(list)    # ảnh -> [(phần, lớp, hộp, nguồn, kiểu)]
+    for part, cls, img, bx, src in keep:
+        work[img].append((part, cls, bx, src, "box"))
+    for part, cls, img, bx, src in kp_items:
+        work[img].append((part, cls, bx, src, "kp"))
+    kp_count = Counter()
+    for n, img in enumerate(sorted(work)):
+        im = cv2.imdecode(np.fromfile(str(ROOT / img), dtype=np.uint8), cv2.IMREAD_COLOR)
+        people = None
+        for part, cls, bx, src, kind in work[img]:
+            if kind == "box":
+                if not v2 or part == "val":
+                    box = square(bx, pc["context"])
+                else:
+                    j = pc["box_jitter"]
+                    box = square(bx, rng.uniform(*j["context"]), (rng.uniform(-j["shift"], j["shift"]), rng.uniform(-j["shift"], j["shift"])))
+                if box[2] < pc["min_px"]:
+                    skipped["small"] += 1
+                    continue
+                crop = cut(im, box, pc["min_px"] // 2)
+            else:
+                if part == "train" and kp_count[(part, cls)] >= pc["max_per_class"]:
+                    continue
+                if people is None:
+                    people = people_keypoints(im, person_model, pose, dev)
+                ppe = cls2ppe[cls]
+                mk = match_anchor(people, ppe, bx, kp_conf)
+                if mk is None:
+                    skipped["kp_unmatched"] += 1
+                    continue
+                if part == "val":
+                    g = val_geom["eye" if ppe == "goggles" else ("hand" if ppe == "gloves" else "foot")]
+                else:
+                    kg = pc["kp_geom"]
+                    g = dict(s=rng.uniform(*kg["eye_s"])) if ppe == "goggles" else dict(k=rng.uniform(*kg["k"]), s=rng.uniform(*kg["s"]))
+                crop = cut(im, mk(g), pc["min_px"])
+                if crop is not None:
+                    kp_count[(part, cls)] += 1
+            if crop is None:
+                skipped["edge" if kind == "box" else "kp_small"] += 1
+                continue
+            if max(crop.shape[:2]) > pc["save_px"]:
+                f = pc["save_px"] / max(crop.shape[:2])
+                crop = cv2.resize(crop, (round(crop.shape[1] * f), round(crop.shape[0] * f)), interpolation=cv2.INTER_AREA)
+            if v2 and part == "train":
+                crop = augment(crop, rng, pc["aug"])
+            d = OUT / part / cls
+            d.mkdir(parents=True, exist_ok=True)
+            i = sum(done.values())
+            cv2.imwrite(str(d / f"{src}_{kind}_{i:06d}.jpg"), crop, [cv2.IMWRITE_JPEG_QUALITY, 92])
+            done[(part, cls, kind)] += 1
+        if (n + 1) % 500 == 0:
+            print(f"  {n + 1}/{len(work)} ảnh")
+    summ = dict(counts={f"{p}/{c}/{k}": v for (p, c, k), v in sorted(done.items())}, skipped=dict(skipped), params=pc)
     (OUT / "summary.json").write_text(json.dumps(summ, ensure_ascii=False, indent=2), encoding="utf-8")
-    PACK.parent.mkdir(parents=True, exist_ok=True)
-    with zipfile.ZipFile(PACK, "w", zipfile.ZIP_STORED) as z:
+    pack = PACK.with_name("parts_v2_pack.zip") if v2 else PACK
+    pack.parent.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(pack, "w", zipfile.ZIP_STORED) as z:
         for p in sorted(OUT.rglob("*")):
             if p.is_file():
                 z.write(p, "parts/" + p.relative_to(OUT).as_posix())
-    print(json.dumps(summ["counts"], ensure_ascii=False), summ["skipped"], f"| gói {PACK.stat().st_size / 1e6:.1f} MB")
+    print(json.dumps(summ["counts"], ensure_ascii=False, indent=1), summ["skipped"], f"| gói {pack.name} {pack.stat().st_size / 1e6:.1f} MB")
 
 
 if __name__ == "__main__":

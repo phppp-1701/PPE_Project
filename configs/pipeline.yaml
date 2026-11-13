@@ -70,6 +70,39 @@ pose:
   rho_x: 0.3
   rho_y: 0.3
 
+# Bước kiểm tra thứ hai cho găng, ủng, kính (phương án 2, người dùng duyệt 13/11/2026): phân loại ảnh cắt theo pose.
+# Bộ phân loại: outputs/train/yolo11n_cls_parts (04g, Kaggle). src/ppe/parts.py.
+# Luật bản 2 (compliance.py): Thiếu chỉ khi bộ phân loại thấy rõ không có PPE (1 - p >= t_neg) và detector không thấy PPE;
+# Có khi detector thấy, hoặc bộ phân loại chắc chắn (p >= t_pos); còn lại Chưa xác định. (Bản 1: detector và bộ phân loại
+# trái nhau -> Chưa xác định; đổi sau khi thấy kết quả bản 1 trên video 3-6, xem kế hoạch.)
+# Không có ảnh cắt (thiếu keypoint, quá nhỏ): dùng luật cũ nếu fallback_old_rule, ngược lại Chưa xác định.
+part_cls:
+  enabled: false            # 13/11/2026: thử bật trên video 3-6, không đạt tiêu chí (bỏ sót găng video5, ủng video3 tăng); xem kế hoạch
+  weights: outputs/train/yolo11n_cls_parts/weights/best.pt
+  imgsz: 160                # như lúc train (configs/ppe6.yaml parts.train)
+  min_px: 24                # cạnh ảnh cắt tối thiểu, như parts.min_px lúc tạo dữ liệu train
+  kp_conf: 0.5              # Claude đặt, như keypoint_gate
+  fallback_old_rule: true
+  vote_window_s: 1.0        # gộp phiếu: trung bình p trong khoảng này (giây). Claude đặt 13/11/2026, không chọn trên video
+  # Mục tiêu độ chính xác khi chọn ngưỡng trên val (Claude đặt 13/11/2026, trước khi chạy 05e):
+  # pos = p >= t_pos là Có đúng; neg = 1 - p >= t_neg là không có PPE đúng.
+  precision_target: {pos: 0.95, neg: 0.97}
+  # Chọn trên val 13/11/2026 bằng 05e (outputs/results/parts_cls/val_select.json), ảnh cắt theo keypoint như pipeline.
+  # Độ chính xác cân bằng ở ngưỡng 0,5: tay 0,899 (1.434 ảnh cắt, 189 găng), chân 0,804 (158, 35 ủng),
+  # mắt 0,920 (591, 26 kính BH). Ghép được keypoint: găng 189/320, tay trần 1.247/1.655, ủng 35/36, giày thường 123/155,
+  # kính BH 26/29, kính thường 68/115, không kính 497/715.
+  geometry:
+    hand: {k: 0.25, s: 1.6}
+    foot: {k: 0.2, s: 1.6}
+    eye: {s: 3.0}
+  # t_pos null: găng, ủng không có ngưỡng nào đạt độ chính xác 0,95 -> bộ phân loại không tự kết luận Có, cần detector.
+  # t_neg: găng 0,50 (độ chính xác 0,988, độ nhạy 0,866); ủng 0,98 (0,977; 0,691); kính 0,50 (0,993; 0,995).
+  # Kính t_pos 0,63 (0,957; 0,846, 23 ảnh cắt). Val ủng, kính BH rất ít: số dao động lớn.
+  thresholds:
+    gloves: {t_pos: null, t_neg: 0.50}
+    boots: {t_pos: null, t_neg: 0.98}
+    goggles: {t_pos: 0.63, t_neg: 0.50}
+
 association:
   # Vùng cơ thể theo tọa độ chuẩn hóa trong hộp người: x, y = 0 ở góc trên trái, 1 ở góc dưới phải;
   # được phép < 0 hoặc > 1 (PPE nhô ra ngoài hộp). Vùng `sides` chia đôi theo x = 0.5 thành trái/phải (theo ảnh).
@@ -134,6 +167,13 @@ calibration:
   crop_imgsz_grid: [256, 320, 480]   # cỡ ảnh cắt thử cho chế độ crop
   pose_wrist_grid: [0.3, 0.5, 0.7, 0.8, 0.9]   # lưới thử cho 05a --pose
   pose_rho_grid: [0.1, 0.15, 0.2, 0.3]
+  # Lưới thử hình học ảnh cắt bộ phận cho 05e (chỉ trên val). k: dịch tâm theo hướng khuỷu->cổ tay, gối->mắt cá; s: cạnh.
+  part_geom_grid:
+    # Lần chạy đầu 13/11/2026: tay, chân tốt nhất ở s = 1.6 (mép lưới) -> mở thêm 2.0, 2.5.
+    hand: {k: [0.0, 0.25, 0.5], s: [0.6, 0.9, 1.2, 1.6, 2.0, 2.5]}
+    foot: {k: [0.0, 0.2, 0.4], s: [0.6, 0.9, 1.2, 1.6, 2.0, 2.5]}
+    eye: {s: [1.5, 2.0, 2.5, 3.0, 4.0]}
+  part_thr_grid: {start: 0.50, stop: 0.99, step: 0.01}
   video:
     # Dùng bởi 05d_calibrate_video.py, chỉ trên video chinh_tham_so. Lưới thử, không phải giá trị đã chọn.
     match_iou: 0.5          # ghép người với nhãn (spec 7.4)

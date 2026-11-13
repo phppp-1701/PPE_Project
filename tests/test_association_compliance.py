@@ -225,3 +225,84 @@ def test_have_hold_short_dropout_not_missing(test_cfg):
     assert comp([p], assoc([p], [g]), FRAME, None, 0.0)[1]["goggles"]["state"] == HAVE
     assert comp([p], assoc([p], []), FRAME, None, 0.5)[1]["goggles"]["state"] == UNKNOWN
     assert comp([p], assoc([p], []), FRAME, None, 5.0)[1]["goggles"]["state"] == MISSING
+
+
+def _parts(test_cfg, fallback=True):
+    """Bật luật bộ phân loại bộ phận với ngưỡng giả (chỉ để kiểm tra luật, không phải ngưỡng đã chọn)."""
+    cfg = _six(test_cfg)
+    thr = {"t_pos": 0.9, "t_neg": 0.9}
+    cfg["part_cls"] = {"enabled": True, "fallback_old_rule": fallback,
+                       "thresholds": {"gloves": thr, "boots": thr, "goggles": thr}}
+    return cfg
+
+
+def test_parts_missing_only_when_classifier_sure(test_cfg):
+    """Không có hộp kính: bộ phân loại chắc không kính -> Thiếu; không chắc -> Chưa xác định (không suy từ thiếu hộp)."""
+    cfg = _parts(test_cfg)
+    p = _kps(person(1, 100, 100, 300, 700))
+    p.extra["parts"] = {("goggles", None): 0.02}
+    _, s = run(cfg, [p], [])
+    assert s[1]["goggles"]["state"] == MISSING
+    p.extra["parts"] = {("goggles", None): 0.4}
+    _, s = run(cfg, [p], [])
+    assert s[1]["goggles"]["state"] == UNKNOWN
+
+
+def test_parts_detector_have_wins(test_cfg):
+    """Bản 2: detector thấy kính là Có dù bộ phân loại nói không; bộ phân loại chắc có, detector không -> Có."""
+    cfg = _parts(test_cfg)
+    p = _kps(person(1, 100, 100, 300, 700))
+    p.extra["parts"] = {("goggles", None): 0.02}
+    _, s = run(cfg, [p], [det(4, 170, 130, 230, 160)])
+    assert s[1]["goggles"]["state"] == HAVE
+    p.extra["parts"] = {("goggles", None): 0.97}
+    _, s = run(cfg, [p], [])
+    assert s[1]["goggles"]["state"] == HAVE
+
+
+def test_parts_boots_one_foot_bare_missing(test_cfg):
+    cfg = _parts(test_cfg)
+    p = _kps(person(1, 100, 100, 300, 700))
+    p.extra["parts"] = {("boots", "15"): 0.97, ("boots", "16"): 0.03}
+    _, s = run(cfg, [p], [])
+    assert s[1]["boots"]["state"] == MISSING
+
+
+def test_parts_no_crop_fallback(test_cfg):
+    """Không có ảnh cắt: fallback_old_rule true -> luật cũ (Thiếu); false -> Chưa xác định."""
+    p = _kps(person(1, 100, 100, 300, 700))
+    _, s = run(_parts(test_cfg, fallback=True), [p], [])
+    assert s[1]["goggles"]["state"] == MISSING
+    _, s = run(_parts(test_cfg, fallback=False), [p], [])
+    assert s[1]["goggles"]["state"] == UNKNOWN
+
+
+def test_part_boxes_geometry():
+    from ppe.parts import part_boxes
+    k = [(0.0, 0.0, 0.0)] * 17
+    k[1], k[2] = (90.0, 100.0, 0.9), (110.0, 100.0, 0.9)          # hai mắt cách 20
+    k[7], k[9] = (300.0, 300.0, 0.9), (300.0, 400.0, 0.9)        # khuỷu, cổ tay trái COCO (x lớn hơn -> "right")
+    k[8], k[10] = (100.0, 300.0, 0.9), (100.0, 400.0, 0.2)       # cổ tay phải COCO thấp tin cậy -> bỏ
+    k[13], k[15] = (200.0, 600.0, 0.9), (200.0, 700.0, 0.9)      # gối, mắt cá
+    g = {"hand": {"k": 0.5, "s": 1.0}, "foot": {"k": 0.2, "s": 0.5}, "eye": {"s": 2.0}}
+    out = {(n, s): b for n, s, b in part_boxes(k, g, 0.5)}
+    assert out[("gloves", "right")] == (300.0, 450.0, 100.0)
+    assert out[("boots", "15")] == (200.0, 720.0, 50.0)
+    assert out[("goggles", None)] == (100.0, 100.0, 40.0)
+    assert ("gloves", "left") not in out
+
+
+def test_parts_vote_window_smooths_single_frame(test_cfg):
+    """Gộp phiếu: một khung lẻ p thấp sau nhiều khung p cao không đủ để báo Thiếu."""
+    cfg = _parts(test_cfg)
+    cfg["part_cls"]["vote_window_s"] = 1.0
+    comp, assoc = Compliance(cfg), Associator(cfg)
+    p = _kps(person(1, 100, 100, 300, 700))
+    for i, q in enumerate([0.6, 0.6, 0.6, 0.02]):
+        p.extra["parts"] = {("goggles", None): q}
+        st = comp([p], assoc([p], []), FRAME, None, i * 0.1)[1]["goggles"]["state"]
+    assert st == UNKNOWN
+    for i in range(20):
+        p.extra["parts"] = {("goggles", None): 0.02}
+        st = comp([p], assoc([p], []), FRAME, None, 0.4 + i * 0.1)[1]["goggles"]["state"]
+    assert st == MISSING
