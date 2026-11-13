@@ -77,7 +77,7 @@ pose:
 # trái nhau -> Chưa xác định; đổi sau khi thấy kết quả bản 1 trên video 3-6, xem kế hoạch.)
 # Không có ảnh cắt (thiếu keypoint, quá nhỏ): dùng luật cũ nếu fallback_old_rule, ngược lại Chưa xác định.
 part_cls:
-  enabled: true             # bản 2, 13/11/2026: chỉ kính đạt tiêu chí trên video 3-6 và A-E (kế hoạch); găng, ủng tắt
+  enabled: true             # bản 2, 13/11/2026: kính đạt tiêu chí; găng bật theo quyết định người dùng (ngoại lệ); ủng tắt
   weights: outputs/train/yolo11n_cls_parts_v2/weights/best.pt   # bản 2 (13/11/2026); bản 1: yolo11n_cls_parts
   imgsz: 160                # như lúc train (configs/ppe6.yaml parts.train)
   min_px: 24                # cạnh ảnh cắt tối thiểu, như parts.min_px lúc tạo dữ liệu train
@@ -98,8 +98,9 @@ part_cls:
   # ủng: t_pos 0,92 (0,955; 0,600, 22 ảnh cắt), không t_neg đạt 0,97 -> bộ phân loại không báo Thiếu ủng.
   # kính: t_pos 0,50 (1,0; 0,769, 20 ảnh cắt), t_neg 0,50 (0,990; 1,0). Val ủng, kính BH rất ít: số dao động lớn.
   thresholds:
-    # Tắt theo tiêu chí bản 2 (13/11/2026). Găng: bỏ sót video5 tăng 1 khung (36 -> 37), còn lại tốt hơn; chờ người dùng.
-    # gloves: {t_pos: null, t_neg: 0.50}
+    # Găng không đạt tiêu chí bản 2 (bỏ sót video5 tăng 1 khung, 36 -> 37); người dùng quyết định bật 13/11/2026 sau khi
+    # thấy số (ngoại lệ, ghi trong báo cáo): báo sai video3 195 -> 155, video4 69 -> 0, Event F1 A-E 0,917 -> 0,957.
+    gloves: {t_pos: null, t_neg: 0.50}
     # Ủng: không t_neg đạt 0,97 trên val -> bỏ sót video3 55 -> 465, video5 286 -> 438, mất sự kiện ủng video3.
     # boots: {t_pos: 0.92, t_neg: null}
     goggles: {t_pos: 0.50, t_neg: 0.50}
