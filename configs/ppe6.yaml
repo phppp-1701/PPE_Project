@@ -204,3 +204,16 @@ cppe2:
   min_boot_px: 30
   fill: [114, 114, 114]
   class_map: {Person: 0, helmet: 1, vest: 2, gloves: 3, goggles: 4, boots: 5}
+
+# Bộ phân loại ảnh cắt bộ phận (03y, bước kiểm tra thứ hai; người dùng duyệt phương án 2 ngày 13/11/2026).
+# Claude đặt để tạo dữ liệu, chưa đo: context = cạnh ảnh cắt / cạnh dài hộp; min_px bỏ hộp quá nhỏ.
+parts:
+  seed: 13
+  context: 1.6
+  min_px: 24
+  save_px: 224
+  max_per_class: 4000
+  train:
+    model: yolo11n-cls.pt
+    run_name: yolo11n_cls_parts
+    args: {imgsz: 160, epochs: 60, patience: 15, batch: 128, seed: 0, deterministic: true, workers: 4, fliplr: 0.5, degrees: 0}

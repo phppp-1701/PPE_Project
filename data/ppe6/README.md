@@ -28,3 +28,5 @@ Lớp: 0-3 như `ppe4`, 4 kính bảo hộ, 5 ủng bảo hộ. Kế hoạch: `d
 `review/cvat_pack/`: gói duyệt (`03k`), hướng dẫn ở `docs/ppe6_review_guide.md`. `review/human_review.csv`: kết quả người duyệt (`03l`), chỉ xuất hiện khi có người nhập.
 
 `external/chvg/`: CHVG tải từ figshare (`03g`), không đưa lên git. Chưa dùng cho train.
+
+`parts/`: ảnh cắt tay, chân, mắt cho bộ phân loại kiểm tra thứ hai (`03y`), dạng thư mục YOLO-cls `train/`, `val/`; chỉ có trên máy, `summary.json` ghi số lượng.

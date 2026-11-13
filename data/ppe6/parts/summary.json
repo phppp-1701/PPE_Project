@@ -1,0 +1,28 @@
+{
+  "counts": {
+    "train/bare_hand": 3986,
+    "train/glove": 3978,
+    "train/goggles": 986,
+    "train/no_eyewear": 3996,
+    "train/not_safety_foot": 1469,
+    "train/ordinary_glasses": 916,
+    "train/safety_boot": 2355,
+    "val/bare_hand": 1653,
+    "val/glove": 320,
+    "val/goggles": 29,
+    "val/no_eyewear": 715,
+    "val/not_safety_foot": 155,
+    "val/ordinary_glasses": 115,
+    "val/safety_boot": 36
+  },
+  "skipped": {
+    "small": 51
+  },
+  "params": {
+    "seed": 13,
+    "context": 1.6,
+    "min_px": 24,
+    "save_px": 224,
+    "max_per_class": 4000
+  }
+}

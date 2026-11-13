@@ -75,3 +75,5 @@ Thumbs.db
 scratch/
 *.bak
 preview_all.jpg
+!data/ppe6/parts/
+!data/ppe6/parts/summary.json

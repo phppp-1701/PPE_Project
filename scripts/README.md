@@ -33,6 +33,8 @@
 | `03u_ppe6_consistency.py` | Tỷ lệ tự nhất quán của nhãn người: khung lặp trong các tập đánh giá và hộp được chấm hai lần, ghi `outputs/results/ppe6_consistency.json` | thử nghiệm |
 | `03w_ppe6_owl_scan.py` | Soát nhãn train bằng OWLv2 (nhận diện theo chữ, không train): tìm khung ủng, kính bị sót hoặc sai, chỉ để chọn chỗ xem lại | thử nghiệm |
 | `03x_ppe6_c4_extra.py` | Bộ phụ C4: bộ phụ C3 + ảnh Construction-PPE bản mới (bỏ ảnh trùng cảnh đánh giá, đổi về 6 lớp, che ủng nhỏ), gói Kaggle | thử nghiệm |
+| `03y_ppe6_part_crops.py` | Bộ dữ liệu phân loại ảnh cắt tay, chân, mắt (7 lớp: găng/tay trần, ủng/giày thường-chân trần, kính bảo hộ/kính thường/không kính) cho bước kiểm tra thứ hai | thử nghiệm |
+| `04g_train_parts_cls.py` | Train bộ phân loại ảnh cắt (YOLO11n-cls) trên Kaggle | thử nghiệm |
 | `04_train.py` | Huấn luyện YOLO11s trên Kaggle theo `configs/train.yaml` (tự tìm `data.yaml` trong `/kaggle/input`), `--resume` chạy tiếp từ `last.pt`; `--extra` ghép bộ phụ của `03b` vào train; `--ppe6` dựng bộ 6 lớp từ gói của `03m`, `--smoke` kiểm tra đường chạy 1 epoch; xong thì đánh giá `best.pt` trên val, ghi `run_info.json` (GPU, phiên bản, thời gian, P/R/mAP từng lớp) | 2 |
 | `04b_analyze_val.py` | Phân tích lỗi một lần huấn luyện trên val (laptop): tính lại mAP, tỉ lệ tìm được theo lớp × bộ × cỡ hộp, danh sách dự đoán thừa, ô cắt mẫu bỏ sót / dự đoán thừa, tốc độ trên laptop (`speed.json`, batch 1; `--speed-only` chỉ đo tốc độ; `--imgsz` chạy ở cỡ ảnh khác lúc train, ghi vào `<run>_val_infer<cỡ>/`); tham số ở `configs/train.yaml` mục `analyze`, ghi `outputs/results/<run>_val/` | 2 |
 | `04d_capture_val.py` | Chạy `model.val`, lưu dự đoán, nhãn, `tp` của Ultralytics từng ảnh; chỉ dùng val | thử nghiệm |
