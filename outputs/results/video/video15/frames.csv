@@ -3,7 +3,7 @@ frame,t,track_id,x1,y1,x2,y2,confident,helmet,vest,gloves,goggles,boots,missing_
 0,0.0,2,820.7,81.9,1734.4,1064.7,1,co,co,chua_xac_dinh,chua_xac_dinh,chua_xac_dinh,
 0,0.0,3,33.3,0.0,451.3,724.6,1,chua_xac_dinh,co,thieu,chua_xac_dinh,chua_xac_dinh,gloves
 1,0.04,1,423.7,0.0,792.0,505.4,1,chua_xac_dinh,co,chua_xac_dinh,chua_xac_dinh,chua_xac_dinh,
-1,0.04,2,815.5,88.9,1725.3,1067.6,1,co,co,chua_xac_dinh,thieu,chua_xac_dinh,goggles
+1,0.04,2,815.5,88.9,1725.3,1067.6,1,co,co,chua_xac_dinh,chua_xac_dinh,chua_xac_dinh,
 1,0.04,3,26.1,0.0,450.2,735.6,1,chua_xac_dinh,co,thieu,chua_xac_dinh,chua_xac_dinh,gloves
 2,0.08,1,428.3,0.0,796.3,504.6,1,chua_xac_dinh,co,chua_xac_dinh,chua_xac_dinh,chua_xac_dinh,
 2,0.08,2,802.2,94.7,1711.1,1070.8,1,co,co,chua_xac_dinh,chua_xac_dinh,chua_xac_dinh,
@@ -53,7 +53,7 @@ frame,t,track_id,x1,y1,x2,y2,confident,helmet,vest,gloves,goggles,boots,missing_
 17,0.68,3,65.5,0.0,590.7,967.0,1,chua_xac_dinh,co,thieu,chua_xac_dinh,chua_xac_dinh,gloves
 18,0.72,2,583.2,108.9,1614.6,1075.1,1,co,chua_xac_dinh,chua_xac_dinh,chua_xac_dinh,chua_xac_dinh,
 18,0.72,3,109.7,0.0,577.0,802.8,1,chua_xac_dinh,co,thieu,chua_xac_dinh,chua_xac_dinh,gloves
-19,0.76,2,559.5,106.3,1610.2,1078.0,1,co,chua_xac_dinh,chua_xac_dinh,thieu,chua_xac_dinh,goggles
+19,0.76,2,559.5,106.3,1610.2,1078.0,1,co,chua_xac_dinh,chua_xac_dinh,chua_xac_dinh,chua_xac_dinh,
 19,0.76,3,48.9,0.8,628.6,990.4,1,chua_xac_dinh,co,thieu,chua_xac_dinh,chua_xac_dinh,gloves
 20,0.8,2,537.6,103.5,1599.9,1073.3,1,co,chua_xac_dinh,chua_xac_dinh,chua_xac_dinh,chua_xac_dinh,
 20,0.8,3,73.8,0.3,589.8,843.2,1,chua_xac_dinh,co,thieu,chua_xac_dinh,chua_xac_dinh,gloves

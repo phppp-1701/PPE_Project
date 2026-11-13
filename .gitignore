@@ -82,3 +82,5 @@ preview_all.jpg
 !outputs/results/parts_cls/*.json
 !outputs/train/yolo11n_cls_parts_v2/results.csv
 !outputs/train/yolo11n_cls_parts_v2/run_info.json
+!outputs/train/yolo11n_cls_parts_v3/results.csv
+!outputs/train/yolo11n_cls_parts_v3/run_info.json

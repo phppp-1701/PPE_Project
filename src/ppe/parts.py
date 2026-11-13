@@ -105,34 +105,43 @@ def ppe_prob(probs, names, ppe):
 
 
 class PartClassifier:
+    """Mỗi PPE dùng trọng số `weights_by_ppe[ppe]` nếu có, ngược lại `weights` (mỗi file nạp một lần).
+    Chỉ cắt, phân loại các PPE có trong `thresholds` (PPE khác không dùng kết quả)."""
+
     def __init__(self, cfg, root):
         from ultralytics import YOLO
 
         self.c = cfg["part_cls"]
         self.device = cfg["detector"]["device"]
-        self.model = YOLO(root / self.c["weights"])
-        self.names = self.model.names
+        self.use = set(self.c.get("thresholds") or {})
+        by = self.c.get("weights_by_ppe") or {}
+        self.path_of = {ppe: by.get(ppe, self.c["weights"]) for ppe in PART_CLASSES}
+        self.models = {w: YOLO(root / w) for w in {self.path_of[p] for p in self.use}}
 
-    def classify(self, crops):
+    def classify(self, crops, weights):
         if not crops:
             return []
-        rs = self.model.predict(crops, imgsz=self.c["imgsz"], device=self.device, verbose=False)
+        rs = self.models[weights].predict(crops, imgsz=self.c["imgsz"], device=self.device, verbose=False)
         return [r.probs.data.cpu().numpy() for r in rs]
 
     def __call__(self, frame, tracks):
         """Ghi track.extra["parts"] = {(ppe, side): p có PPE} cho người có keypoint."""
-        items = []
+        groups = {}
         for t in tracks:
             t.extra["parts"] = {}
             kps = t.extra.get("kps")
             if not kps:
                 continue
             for ppe, side, box in part_boxes(kps, self.c["geometry"], self.c["kp_conf"]):
+                if ppe not in self.use:
+                    continue
                 crop = cut(frame, box, self.c["min_px"])
                 if crop is not None:
-                    items.append((t, ppe, side, crop))
-        for (t, ppe, side, _), pr in zip(items, self.classify([x[3] for x in items])):
-            t.extra["parts"][(ppe, side)] = ppe_prob(pr, self.names, ppe)
+                    groups.setdefault(self.path_of[ppe], []).append((t, ppe, side, crop))
+        for w, items in groups.items():
+            names = self.models[w].names
+            for (t, ppe, side, _), pr in zip(items, self.classify([x[3] for x in items], w)):
+                t.extra["parts"][(ppe, side)] = ppe_prob(pr, names, ppe)
 
 
 def anchors(kps, ppe, c):

@@ -16,14 +16,14 @@
     {
       "stage": "B",
       "name": "B: A + Vùng cơ thể/Pose & Chưa xác định",
-      "total_alerts": 2397,
+      "total_alerts": 2385,
       "tp": 11,
-      "fp_false": 464,
+      "fp_false": 452,
       "fp_dup": 1922,
       "fn": 1,
       "precision": 0.0046,
       "recall": 0.9167,
-      "f1": 0.0091,
+      "f1": 0.0092,
       "mean_latency_s": 0.9
     },
     {
@@ -137,14 +137,14 @@
         "mean_latency_s": 0.0
       },
       "B": {
-        "total_alerts": 640,
+        "total_alerts": 628,
         "tp": 4,
-        "fp_false": 65,
+        "fp_false": 53,
         "fp_dup": 571,
         "fn": 0,
-        "precision": 0.0063,
+        "precision": 0.0064,
         "recall": 1.0,
-        "f1": 0.0124,
+        "f1": 0.0127,
         "mean_latency_s": 0.0
       },
       "C": {
