@@ -63,7 +63,7 @@ def main():
     pc = cfg["part_cls"]
     cal = cfg["calibration"]
     ppe6 = yaml.safe_load((ROOT / "configs" / "ppe6.yaml").read_text(encoding="utf-8"))
-    items = [it for it in load_03y().collect_items(ppe6, only=("val",)) if it[0] == "val"]
+    items = [it for it in load_03y().collect_items(ppe6, only=("val",), chv_torso=True) if it[0] == "val"]
     by_img = defaultdict(list)
     for _, cls, img, bx, src in items:
         by_img[img].append((cls, bx, src))
@@ -135,6 +135,8 @@ def main():
                     pick = dict(t=float(t), precision=round(prec, 4), n_selected=cnt, recall=round(rec, 4))
                     break
             thr[kind] = pick
+            bm = max(((precision_at(score, yy, t)[0] or 0, float(t)) for t in ts if precision_at(score, yy, t)[1] >= 10), default=None)
+            thr[kind + "_max_precision"] = bm and dict(precision=round(bm[0], 4), t=bm[1])   # để biết còn cách mục tiêu bao xa
         res["parts"][ppe] = dict(grid=rows, chosen=best, thresholds=thr)
         chosen_geom[part] = best["geom"]
         chosen_thr[ppe] = {"t_pos": thr["pos"] and thr["pos"]["t"], "t_neg": thr["neg"] and thr["neg"]["t"]}

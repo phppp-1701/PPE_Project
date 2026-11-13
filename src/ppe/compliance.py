@@ -126,6 +126,9 @@ class Compliance:
         key = (track.track_id, name, side)
         recently_have = self.now is not None and key in self.last_have and self.now - self.last_have[key] <= self.hold_s.get(name, 0)
         covered = bool(self.part) and name in (self.part.get("thresholds") or {})   # PPE có bước kiểm tra thứ hai
+        min_h = ((self.part or {}).get("min_person_px") or {}).get(name)
+        if covered and min_h and track.xyxy[3] - track.xyxy[1] < min_h:
+            covered = False     # người nhỏ hơn mức này: bộ phân loại không đáng tin, dùng luật cũ
         vote = self.part_vote(name, track, side) if covered else None
         if covered and vote == "neg" and name in (self.part.get("veto") or []):
             # Bộ phân loại chắc không có PPE (vd kính thường) thì phủ quyết hộp PPE của detector.

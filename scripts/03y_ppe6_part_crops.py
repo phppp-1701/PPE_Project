@@ -89,9 +89,10 @@ def torso_items(persons, vests, reg):
     return out
 
 
-def collect_items(cfg, only=("train", "val")):
+def collect_items(cfg, only=("train", "val"), chv_torso=False):
     """Danh sách (phần, lớp, ảnh, hộp pixel, nguồn) của mọi hộp bộ phận thuộc các phần `only`, chưa giới hạn số lượng.
-    05e dùng lại với only=("val",)."""
+    05e dùng lại với only=("val",). chv_torso: thêm ảnh CHV (cùng luật chia cảnh) nhưng chỉ lấy áo / không áo, vì CHV
+    không có nhãn tay, chân, kính thường (05e dùng để có thêm áo trong val, 14/11/2026)."""
     cppe2_cfg = cfg["cppe2"]
     stats = rd(ROOT / "data" / "ppe4" / "stats.csv")
     scene = {r["file"]: r["scene_id"] for r in rd(ROOT / "data" / "ppe6" / "scene" / "scene_ids.csv")}
@@ -100,7 +101,7 @@ def collect_items(cfg, only=("train", "val")):
     split = {}
     for r in stats:
         s = scene.get(r["file"])
-        if r["source"] not in ("sh17", "construction_ppe") or s is None:
+        if r["source"] not in ("sh17", "construction_ppe", *(("chv",) if chv_torso else ())) or s is None:
             continue
         if r["split"] == "train" and s not in roles:
             split[r["image"]] = ("train", r["file"])
@@ -133,7 +134,8 @@ def collect_items(cfg, only=("train", "val")):
         if im is None:
             continue
         h, w = im.shape[:2]
-        for cls, (cx, cy, bw, bh) in by_img.get(img, []):
+        torso_only = img.startswith("data/raw/chv/")
+        for cls, (cx, cy, bw, bh) in ([] if torso_only else by_img.get(img, [])):
             items.append((part, cls, img, [(cx - bw / 2) * w, (cy - bh / 2) * h, (cx + bw / 2) * w, (cy + bh / 2) * h], "decision"))
         # Áo / không áo theo nhãn ppe4 (0 người, 2 áo; nhãn ppe4 đã sửa ở bước 02-03)
         lab4 = ROOT / "data" / "ppe4" / "dataset" / "labels" / ("train" if part == "train" else "val") / (Path(fname).stem + ".txt")
@@ -141,6 +143,8 @@ def collect_items(cfg, only=("train", "val")):
             b4 = yolo_boxes(lab4, w, h)
             for cls, bx in torso_items([b for c, b in b4 if c == 0], [b for c, b in b4 if c == 2], reg):
                 items.append((part, cls, img, bx, "ppe4"))
+        if torso_only:
+            continue
         if img.startswith("data/raw/sh17/"):
             voc = ROOT / "data" / "raw" / "sh17" / "voc_labels" / (Path(img).stem + ".xml")
             obj = defaultdict(list)

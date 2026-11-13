@@ -89,6 +89,9 @@ part_cls:
   # Phủ quyết: với PPE trong danh sách, bộ phân loại chắc không có PPE (1 - p >= t_neg) thì bỏ hộp của detector.
   # Kính: phân biệt kính thường là điểm mạnh của bộ phân loại (người dùng duyệt 13/11/2026 sau video11 kiem_thu_gan).
   veto: [goggles]
+  # Cổng cỡ người (px chiều cao hộp người trên khung gốc): PPE có giá trị ở đây chỉ dùng bộ phân loại khi người cao từ mức
+  # này, người nhỏ hơn dùng luật cũ. Chọn trên video chỉnh tham số 3-6 (calibration.part_min_person_grid), xem kế hoạch.
+  min_person_px: {}
   vote_window_s: 1.0        # gộp phiếu: trung bình p trong khoảng này (giây). Claude đặt 13/11/2026, không chọn trên video
   # Mục tiêu độ chính xác khi chọn ngưỡng trên val (Claude đặt 13/11/2026, trước khi chạy 05e):
   # pos = p >= t_pos là Có đúng; neg = 1 - p >= t_neg là không có PPE đúng.
@@ -100,7 +103,7 @@ part_cls:
     hand: {k: 0.0, s: 1.6}
     foot: {k: 0.0, s: 1.6}
     eye: {s: 2.0}
-    torso: {s: 1.3, h: 1.2}     # h 1.2 và 1.6 bằng điểm nhau trên val (ít người không thấy hông), lấy giá trị đầu
+    torso: {s: 2.0, h: 1.6}     # 14/11: 05e có thêm người CHV val (279 áo / 1.159 không áo), độ chính xác cân bằng 0,941
   # găng: t_pos 0,99 (độ chính xác 0,955, độ nhạy 0,444), t_neg 0,50 (0,974; 0,937).
   # kính: t_pos 0,74 (0,95; 0,679, 20 ảnh cắt), t_neg 0,50 (0,988; 0,996).
   # áo: không t_pos đạt 0,95 (val 68 áo / 977 không áo) -> bộ phân loại không tự kết luận Có áo; t_neg 0,50 (0,990; 0,980).
@@ -182,8 +185,9 @@ calibration:
     hand: {k: [0.0, 0.25, 0.5], s: [0.6, 0.9, 1.2, 1.6, 2.0, 2.5]}
     foot: {k: [0.0, 0.2, 0.4], s: [0.6, 0.9, 1.2, 1.6, 2.0, 2.5]}
     eye: {s: [1.5, 2.0, 2.5, 3.0, 4.0]}
-    torso: {s: [1.0, 1.3, 1.6, 2.0], h: [1.2, 1.6, 2.0]}   # bản 3: vùng thân (s cạnh, h chiều dài thân / độ rộng vai khi không thấy hông)
+    torso: {s: [1.0, 1.3, 1.6, 2.0, 2.5, 3.0], h: [1.2, 1.6, 2.0]}   # 14/11: s 2.0 ở mép lưới -> mở thêm 2.5, 3.0   # bản 3: vùng thân (s cạnh, h chiều dài thân / độ rộng vai khi không thấy hông)
   part_thr_grid: {start: 0.50, stop: 0.99, step: 0.01}
+  part_min_person_grid: [0, 200, 300, 400, 500, 700]   # px; lưới chọn min_person_px trên video 3-6
   video:
     # Dùng bởi 05d_calibrate_video.py, chỉ trên video chinh_tham_so. Lưới thử, không phải giá trị đã chọn.
     match_iou: 0.5          # ghép người với nhãn (spec 7.4)

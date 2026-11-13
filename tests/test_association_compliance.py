@@ -330,3 +330,15 @@ def test_parts_veto_goggles(test_cfg):
     cfg["part_cls"]["veto"] = ["goggles"]
     _, s = run(cfg, [p], [det(4, 170, 130, 230, 160)])
     assert s[1]["goggles"]["state"] == MISSING
+
+
+def test_parts_min_person_px_uses_old_rule_for_small_people(test_cfg):
+    """Người thấp hơn min_person_px: bỏ qua bộ phân loại, dùng luật cũ (không hộp kính -> Thiếu)."""
+    cfg = _parts(test_cfg)
+    p = _kps(person(1, 100, 100, 300, 700))   # cao 600 px
+    p.extra["parts"] = {("goggles", None): 0.4}   # bộ phân loại không chắc -> Chưa xác định
+    _, s = run(cfg, [p], [])
+    assert s[1]["goggles"]["state"] == UNKNOWN
+    cfg["part_cls"]["min_person_px"] = {"goggles": 700}
+    _, s = run(cfg, [p], [])
+    assert s[1]["goggles"]["state"] == MISSING
