@@ -83,6 +83,9 @@ part_cls:
   min_px: 24                # cạnh ảnh cắt tối thiểu, như parts.min_px lúc tạo dữ liệu train
   kp_conf: 0.5              # Claude đặt, như keypoint_gate
   fallback_old_rule: true
+  # Phủ quyết: với PPE trong danh sách, bộ phân loại chắc không có PPE (1 - p >= t_neg) thì bỏ hộp của detector.
+  # Kính: phân biệt kính thường là điểm mạnh của bộ phân loại (người dùng duyệt 13/11/2026 sau video11 kiem_thu_gan).
+  veto: [goggles]
   vote_window_s: 1.0        # gộp phiếu: trung bình p trong khoảng này (giây). Claude đặt 13/11/2026, không chọn trên video
   # Mục tiêu độ chính xác khi chọn ngưỡng trên val (Claude đặt 13/11/2026, trước khi chạy 05e):
   # pos = p >= t_pos là Có đúng; neg = 1 - p >= t_neg là không có PPE đúng.

@@ -1,0 +1,48 @@
+{
+  "video": "data\\videos\\video13.mp4",
+  "session_id": "video13_20261113_203727",
+  "stage": "full",
+  "not_run_reason": null,
+  "frames": 247,
+  "video_fps": 30.0,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "elapsed_s": 16.99,
+  "pipeline_fps": 14.54,
+  "step_ms": {
+    "association": {
+      "p50": 0.01,
+      "p95": 0.07
+    },
+    "compliance": {
+      "p50": 0.18,
+      "p95": 0.26
+    },
+    "detector": {
+      "p50": 23.76,
+      "p95": 28.3
+    },
+    "parts": {
+      "p50": 7.12,
+      "p95": 9.97
+    },
+    "pose": {
+      "p50": 12.5,
+      "p95": 17.04
+    },
+    "temporal_events": {
+      "p50": 0.17,
+      "p95": 0.26
+    },
+    "tracker": {
+      "p50": 0.49,
+      "p95": 0.71
+    }
+  },
+  "events": 1,
+  "weights": "outputs/train/yolo11s_ppe6_c4/weights/best.pt",
+  "imgsz": 960,
+  "note": "FPS toàn luồng gồm đọc khung, xử lý và vẽ/ghi video (nếu bật)"
+}

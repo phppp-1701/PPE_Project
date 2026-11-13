@@ -83,7 +83,10 @@ class Compliance:
             return True
         c = g["kp_conf"]
         if name == "goggles":
-            return kps[1][2] >= c and kps[2][2] >= c
+            # Quay lưng: pose có thể đoán "mắt" ở sau gáy, nhưng vai COCO bị ngược (vai trái ở bên trái ảnh).
+            # Nhìn về camera thì vai trái (5) ở bên phải ảnh so với vai phải (6).
+            back = kps[5][2] >= c and kps[6][2] >= c and kps[5][0] < kps[6][0]
+            return kps[1][2] >= c and kps[2][2] >= c and not back
         if name == "helmet":
             if not any(kps[i][2] >= c for i in range(5)):
                 return False
@@ -124,6 +127,9 @@ class Compliance:
         recently_have = self.now is not None and key in self.last_have and self.now - self.last_have[key] <= self.hold_s.get(name, 0)
         covered = bool(self.part) and name in (self.part.get("thresholds") or {})   # PPE có bước kiểm tra thứ hai
         vote = self.part_vote(name, track, side) if covered else None
+        if covered and vote == "neg" and name in (self.part.get("veto") or []):
+            # Bộ phân loại chắc không có PPE (vd kính thường) thì phủ quyết hộp PPE của detector.
+            has = False
         if not covered or (vote is None and self.part.get("fallback_old_rule", True)):
             # Luật cũ: có hộp PPE gán hợp lệ là Có; vùng nhìn rõ mà không có hộp là Thiếu.
             have = track.confident and has

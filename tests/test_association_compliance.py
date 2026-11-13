@@ -306,3 +306,27 @@ def test_parts_vote_window_smooths_single_frame(test_cfg):
         p.extra["parts"] = {("goggles", None): 0.02}
         st = comp([p], assoc([p], []), FRAME, None, 0.4 + i * 0.1)[1]["goggles"]["state"]
     assert st == MISSING
+
+
+def test_gate_back_turned_shoulders_reversed_goggles_unknown(test_cfg):
+    """Pose đoán ra hai mắt nhưng vai bị ngược (quay lưng): không báo Thiếu kính."""
+    cfg = _six(test_cfg)
+    p = _kps(person(1, 100, 100, 300, 700))
+    p.extra["kps"][5], p.extra["kps"][6] = (150.0, 250.0, 0.9), (250.0, 250.0, 0.9)   # vai trái bên trái ảnh
+    _, s = run(cfg, [p], [])
+    assert s[1]["goggles"]["state"] == UNKNOWN
+    p.extra["kps"][5], p.extra["kps"][6] = (250.0, 250.0, 0.9), (150.0, 250.0, 0.9)   # nhìn về camera
+    _, s = run(cfg, [p], [])
+    assert s[1]["goggles"]["state"] == MISSING
+
+
+def test_parts_veto_goggles(test_cfg):
+    """Kính thường: detector thấy kính nhưng bộ phân loại chắc không phải kính BH -> Thiếu khi có phủ quyết."""
+    cfg = _parts(test_cfg)
+    p = _kps(person(1, 100, 100, 300, 700))
+    p.extra["parts"] = {("goggles", None): 0.02}
+    _, s = run(cfg, [p], [det(4, 170, 130, 230, 160)])
+    assert s[1]["goggles"]["state"] == HAVE
+    cfg["part_cls"]["veto"] = ["goggles"]
+    _, s = run(cfg, [p], [det(4, 170, 130, 230, 160)])
+    assert s[1]["goggles"]["state"] == MISSING
