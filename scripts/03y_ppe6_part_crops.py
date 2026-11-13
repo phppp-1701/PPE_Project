@@ -11,6 +11,9 @@ Bản 2 (`parts.version: 2`): ngoài ảnh cắt theo hộp (train: tâm, cỡ x
 pipeline (pose trên ảnh cắt từng người, ghép hộp nhãn với cổ tay / mắt cá / mắt như 05e, hình học ngẫu nhiên ở train, hình
 học của configs/pipeline.yaml ở val), và tăng cường giống video cho train (nhòe, tối, nén). Tên file: <nguồn>_<box|kp>_<số>.jpg.
 
+Bản 3 (`parts.version: 3`): thêm thân `vest` / `no_vest` (nhãn ppe4 và Construction-PPE mới, cùng vùng thân cho hai lớp;
+train có ảnh áo cắt mất phần dưới), ảnh cắt mắt khi mặt nghiêng (một mắt + mũi), tăng cường trắng đen. Gói parts_v3_pack.zip.
+
 Lớp (7): glove, bare_hand (tay); safety_boot, not_safety_foot (giày thường, dép, chân trần) (chân);
 goggles, ordinary_glasses, no_eyewear (mắt).
 Nguồn nhãn:
@@ -67,6 +70,25 @@ def yolo_boxes(path, w, h):
     return out
 
 
+def torso_items(persons, vests, reg):
+    """[(lớp, vùng thân)] cho từng người: có tâm hộp áo trong hộp người (đúng một người) -> vest; không hộp áo nào
+    -> no_vest; áo nằm trong nhiều người thì bỏ (không chắc của ai). Vùng thân lấy theo association.regions.torso
+    cho cả hai lớp, để ảnh cắt hai lớp giống cách cắt (không học mẹo theo hình dạng hộp)."""
+    out = []
+    owner = []
+    for v in vests:
+        c = ((v[0] + v[2]) / 2, (v[1] + v[3]) / 2)
+        owner.append([i for i, q in enumerate(persons) if q[0] <= c[0] <= q[2] and q[1] <= c[1] <= q[3]])
+    for i, q in enumerate(persons):
+        mine = [o for o in owner if i in o]
+        if any(len(o) > 1 for o in mine):
+            continue
+        w, h = q[2] - q[0], q[3] - q[1]
+        box = [q[0] + reg["x0"] * w, q[1] + reg["y0"] * h, q[0] + reg["x1"] * w, q[1] + reg["y1"] * h]
+        out.append(("vest" if mine else "no_vest", box))
+    return out
+
+
 def collect_items(cfg, only=("train", "val")):
     """Danh sách (phần, lớp, ảnh, hộp pixel, nguồn) của mọi hộp bộ phận thuộc các phần `only`, chưa giới hạn số lượng.
     05e dùng lại với only=("val",)."""
@@ -102,7 +124,8 @@ def collect_items(cfg, only=("train", "val")):
             by_img[b["image"]].append((cls, tuple(float(b[k]) for k in ("cx", "cy", "w", "h"))))
 
     items = []   # (phần, lớp, đường dẫn ảnh, hộp pixel, nguồn)
-    for img, (part, _) in split.items():
+    reg = yaml.safe_load((ROOT / "configs" / "pipeline.yaml").read_text(encoding="utf-8"))["association"]["regions"]["torso"]
+    for img, (part, fname) in split.items():
         if part not in only:
             continue
         p = ROOT / img
@@ -112,6 +135,12 @@ def collect_items(cfg, only=("train", "val")):
         h, w = im.shape[:2]
         for cls, (cx, cy, bw, bh) in by_img.get(img, []):
             items.append((part, cls, img, [(cx - bw / 2) * w, (cy - bh / 2) * h, (cx + bw / 2) * w, (cy + bh / 2) * h], "decision"))
+        # Áo / không áo theo nhãn ppe4 (0 người, 2 áo; nhãn ppe4 đã sửa ở bước 02-03)
+        lab4 = ROOT / "data" / "ppe4" / "dataset" / "labels" / ("train" if part == "train" else "val") / (Path(fname).stem + ".txt")
+        if lab4.exists():
+            b4 = yolo_boxes(lab4, w, h)
+            for cls, bx in torso_items([b for c, b in b4 if c == 0], [b for c, b in b4 if c == 2], reg):
+                items.append((part, cls, img, bx, "ppe4"))
         if img.startswith("data/raw/sh17/"):
             voc = ROOT / "data" / "raw" / "sh17" / "voc_labels" / (Path(img).stem + ".xml")
             obj = defaultdict(list)
@@ -148,7 +177,10 @@ def collect_items(cfg, only=("train", "val")):
         im = cv2.imdecode(np.fromfile(str(img), dtype=np.uint8), cv2.IMREAD_COLOR)
         h, w = im.shape[:2]
         s = min(1.0, cppe2_cfg["side"] / max(h, w))
-        for c, bx in yolo_boxes(lab, w, h):
+        b2 = yolo_boxes(lab, w, h)
+        for cls, bx in torso_items([b for c, b in b2 if names2[c] == "Person"], [b for c, b in b2 if names2[c] == "vest"], reg):
+            items.append(("train", cls, img.relative_to(ROOT).as_posix(), bx, "cppe2"))
+        for c, bx in b2:
             cls = m2.get(names2[c])
             if cls == "safety_boot" and max(bx[2] - bx[0], bx[3] - bx[1]) * s < cppe2_cfg["min_boot_px"]:
                 continue
@@ -171,6 +203,8 @@ def augment(crop, rng, a):
     if rng.random() < a["prob"]:
         ok, buf = cv2.imencode(".jpg", crop, [cv2.IMWRITE_JPEG_QUALITY, rng.randint(*a["jpeg"])])
         crop = cv2.imdecode(buf, cv2.IMREAD_COLOR)
+    if rng.random() < a.get("gray", 0):   # bản 3: ảnh trắng đen (camera đen trắng, kính trong suốt)
+        crop = cv2.cvtColor(cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY), cv2.COLOR_GRAY2BGR)
     return crop
 
 
@@ -249,11 +283,17 @@ def main():
                 if mk is None:
                     skipped["kp_unmatched"] += 1
                     continue
+                kg = pc["kp_geom"]
+                key = {"goggles": "eye", "gloves": "hand", "boots": "foot", "vest": "torso"}[ppe]
                 if part == "val":
-                    g = val_geom["eye" if ppe == "goggles" else ("hand" if ppe == "gloves" else "foot")]
+                    # Val: hình học của pipeline; vùng thân chưa có trong pipeline -> giữa khoảng của kp_geom
+                    g = val_geom.get(key) or dict(s=sum(kg["torso_s"]) / 2, h=sum(kg["torso_h"]) / 2)
+                elif ppe == "goggles":
+                    g = dict(s=rng.uniform(*kg["eye_s"]))
+                elif ppe == "vest":
+                    g = dict(s=rng.uniform(*kg["torso_s"]), h=rng.uniform(*kg["torso_h"]))
                 else:
-                    kg = pc["kp_geom"]
-                    g = dict(s=rng.uniform(*kg["eye_s"])) if ppe == "goggles" else dict(k=rng.uniform(*kg["k"]), s=rng.uniform(*kg["s"]))
+                    g = dict(k=rng.uniform(*kg["k"]), s=rng.uniform(*kg["s"]))
                 crop = cut(im, mk(g), pc["min_px"])
                 if crop is not None:
                     kp_count[(part, cls)] += 1
@@ -263,6 +303,10 @@ def main():
             if max(crop.shape[:2]) > pc["save_px"]:
                 f = pc["save_px"] / max(crop.shape[:2])
                 crop = cv2.resize(crop, (round(crop.shape[1] * f), round(crop.shape[0] * f)), interpolation=cv2.INTER_AREA)
+            tr = pc["aug"].get("trunc")
+            if v2 and part == "train" and tr and cls2ppe[cls] == "vest" and rng.random() < tr["prob"]:
+                # Người sát camera: khung cắt mất phần dưới thân, chỉ còn ngực hoặc vai
+                crop = crop[: max(pc["min_px"] // 2, int(crop.shape[0] * rng.uniform(*tr["keep"])))]
             if v2 and part == "train":
                 crop = augment(crop, rng, pc["aug"])
             d = OUT / part / cls
@@ -274,7 +318,8 @@ def main():
             print(f"  {n + 1}/{len(work)} ảnh")
     summ = dict(counts={f"{p}/{c}/{k}": v for (p, c, k), v in sorted(done.items())}, skipped=dict(skipped), params=pc)
     (OUT / "summary.json").write_text(json.dumps(summ, ensure_ascii=False, indent=2), encoding="utf-8")
-    pack = PACK.with_name("parts_v2_pack.zip") if v2 else PACK
+    ver = pc.get("version", 1)
+    pack = PACK.with_name(f"parts_v{ver}_pack.zip") if ver >= 2 else PACK
     pack.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(pack, "w", zipfile.ZIP_STORED) as z:
         for p in sorted(OUT.rglob("*")):

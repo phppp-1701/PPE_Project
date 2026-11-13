@@ -1,41 +1,49 @@
 {
   "counts": {
-    "train/bare_hand/box": 3988,
+    "train/bare_hand/box": 3992,
     "train/bare_hand/kp": 4000,
     "train/glove/box": 3986,
-    "train/glove/kp": 3845,
+    "train/glove/kp": 3846,
     "train/goggles/box": 986,
-    "train/goggles/kp": 821,
-    "train/no_eyewear/box": 3999,
+    "train/goggles/kp": 959,
+    "train/no_eyewear/box": 3998,
     "train/no_eyewear/kp": 4000,
+    "train/no_vest/box": 3993,
+    "train/no_vest/kp": 4000,
     "train/not_safety_foot/box": 1472,
     "train/not_safety_foot/kp": 1133,
     "train/ordinary_glasses/box": 916,
-    "train/ordinary_glasses/kp": 627,
+    "train/ordinary_glasses/kp": 778,
     "train/safety_boot/box": 2355,
     "train/safety_boot/kp": 2283,
+    "train/vest/box": 2855,
+    "train/vest/kp": 2146,
     "val/bare_hand/box": 1653,
     "val/bare_hand/kp": 1245,
     "val/glove/box": 320,
     "val/glove/kp": 189,
     "val/goggles/box": 29,
-    "val/goggles/kp": 26,
+    "val/goggles/kp": 29,
     "val/no_eyewear/box": 715,
-    "val/no_eyewear/kp": 497,
+    "val/no_eyewear/kp": 625,
+    "val/no_vest/box": 1494,
+    "val/no_vest/kp": 977,
     "val/not_safety_foot/box": 155,
     "val/not_safety_foot/kp": 123,
     "val/ordinary_glasses/box": 115,
-    "val/ordinary_glasses/kp": 68,
+    "val/ordinary_glasses/kp": 87,
     "val/safety_boot/box": 36,
-    "val/safety_boot/kp": 35
+    "val/safety_boot/kp": 35,
+    "val/vest/box": 121,
+    "val/vest/kp": 68
   },
   "skipped": {
-    "kp_unmatched": 5508,
-    "kp_small": 35,
-    "small": 35
+    "kp_small": 41,
+    "kp_unmatched": 6988,
+    "small": 45
   },
   "params": {
-    "version": 2,
+    "version": 3,
     "seed": 13,
     "context": 1.6,
     "min_px": 24,
@@ -60,6 +68,14 @@
       "eye_s": [
         2.0,
         4.0
+      ],
+      "torso_s": [
+        1.0,
+        2.2
+      ],
+      "torso_h": [
+        1.2,
+        2.0
       ]
     },
     "aug": {
@@ -75,11 +91,19 @@
       "jpeg": [
         20,
         60
-      ]
+      ],
+      "gray": 0.15,
+      "trunc": {
+        "prob": 0.3,
+        "keep": [
+          0.35,
+          0.7
+        ]
+      }
     },
     "train": {
       "model": "yolo11n-cls.pt",
-      "run_name": "yolo11n_cls_parts_v2",
+      "run_name": "yolo11n_cls_parts_v3",
       "args": {
         "imgsz": 160,
         "epochs": 60,

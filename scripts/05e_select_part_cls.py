@@ -15,6 +15,7 @@ Ghi outputs/results/parts_cls/val_select.json; in khối YAML gợi ý, người
 """
 
 import importlib.util
+import itertools
 import json
 import sys
 from collections import defaultdict
@@ -42,8 +43,10 @@ def load_03y():
 
 
 def geoms(grid, part):
+    """Mọi tổ hợp tham số của lưới bộ phận (k, s cho tay chân; s cho mắt; s, h cho thân)."""
     g = grid[part]
-    return [dict(k=k, s=s) for k in g["k"] for s in g["s"]] if "k" in g else [dict(s=s) for s in g["s"]]
+    keys = sorted(g)
+    return [dict(zip(keys, vals)) for vals in itertools.product(*(g[k] for k in keys))]
 
 
 def precision_at(p, y, t):
@@ -71,7 +74,13 @@ def main():
     clf = YOLO(ROOT / pc["weights"])
     names = clf.names
     part_of = {"gloves": "hand", "boots": "foot", "goggles": "eye"}
-    grid = {part: geoms(cal["part_geom_grid"], part) for part in ("hand", "foot", "eye")}
+    if "vest" in names.values():   # bản 3 có áo
+        part_of["vest"] = "torso"
+    items = [it for it in items if CLS2PPE[it[1]] in part_of]
+    by_img = defaultdict(list)
+    for _, cls, img, bx, src in items:
+        by_img[img].append((cls, bx, src))
+    grid = {part: geoms(cal["part_geom_grid"], part) for part in part_of.values()}
     probs = defaultdict(list)       # (part, chỉ số hình học) -> [(p, y)]
     cover = defaultdict(lambda: [0, 0])  # lớp -> [ghép được, tổng]
     for n, (img, objs) in enumerate(sorted(by_img.items())):

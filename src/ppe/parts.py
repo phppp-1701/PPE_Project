@@ -17,10 +17,13 @@ PART_CLASSES = {
     "gloves": ("glove", ("bare_hand",)),
     "boots": ("safety_boot", ("not_safety_foot",)),
     "goggles": ("goggles", ("ordinary_glasses", "no_eyewear")),
+    "vest": ("vest", ("no_vest",)),
 }
 HAND = ((9, 7), (10, 8))       # (cổ tay, khuỷu)
 FOOT = ((15, 13), (16, 14))    # (mắt cá, gối)
 EYES = (1, 2)
+NOSE = 0
+SHOULDERS, HIPS = (5, 6), (11, 12)
 
 
 def _ok(kps, i, c):
@@ -38,6 +41,28 @@ def eye_box(kps, g):
     return ((lx + rx) / 2, (ly + ry) / 2, g["s"] * math.hypot(lx - rx, ly - ry))
 
 
+def eye_profile_box(kps, i, g):
+    """Mặt nghiêng (chỉ thấy mắt i và mũi): tâm ở mắt, khoảng cách hai mắt ước lượng bằng 2 |mắt - mũi|."""
+    (x, y), (nx, ny) = kps[i][:2], kps[NOSE][:2]
+    return (x, y, g["s"] * 2 * math.hypot(x - nx, y - ny))
+
+
+def torso_box(kps, g, c):
+    """Vùng thân theo vai (bắt buộc) và hông. Không thấy hông: chiều dài thân = h * độ rộng vai.
+    Cạnh = s * max(độ rộng vai, chiều dài thân). Ảnh cắt bị cắt theo mép khung (người sát camera chỉ còn phần ngực)."""
+    (ax, ay), (bx, by) = kps[SHOULDERS[0]][:2], kps[SHOULDERS[1]][:2]
+    sw = math.hypot(ax - bx, ay - by)
+    mx, my = (ax + bx) / 2, (ay + by) / 2
+    if all(kps[i][2] >= c for i in HIPS):
+        hx, hy = (kps[HIPS[0]][0] + kps[HIPS[1]][0]) / 2, (kps[HIPS[0]][1] + kps[HIPS[1]][1]) / 2
+        H = math.hypot(hx - mx, hy - my)
+        cx, cy = (mx + hx) / 2, (my + hy) / 2
+    else:
+        H = g["h"] * sw
+        cx, cy = mx, my + H / 2
+    return (cx, cy, g["s"] * max(sw, H))
+
+
 def part_boxes(kps, geom, kp_conf):
     """[(ppe, side, (cx, cy, cạnh))] từ keypoint. side: "left"/"right" (tay, theo x trong ảnh như pose.py: cổ tay có
     x nhỏ hơn cổ tay kia là "left"), "15"/"16" (chân), None (mắt). Bộ phận thiếu điểm đạt kp_conf thì bỏ qua."""
@@ -51,6 +76,11 @@ def part_boxes(kps, geom, kp_conf):
             out.append(("boots", str(a), extend_box(kps, a, k, geom["foot"])))
     if all(_ok(kps, i, kp_conf) for i in EYES):
         out.append(("goggles", None, eye_box(kps, geom["eye"])))
+    elif _ok(kps, NOSE, kp_conf) and any(_ok(kps, i, kp_conf) for i in EYES):
+        i = EYES[0] if _ok(kps, EYES[0], kp_conf) else EYES[1]
+        out.append(("goggles", None, eye_profile_box(kps, i, geom["eye"])))
+    if "torso" in geom and all(_ok(kps, i, kp_conf) for i in SHOULDERS):
+        out.append(("vest", None, torso_box(kps, geom["torso"], kp_conf)))
     return out
 
 
@@ -116,9 +146,16 @@ def anchors(kps, ppe, c):
         for a, k in FOOT:
             if kps[a][2] >= c and kps[k][2] >= c:
                 out.append((kps[a][:2], lambda g, a=a, k=k: extend_box(kps, a, k, g)))
-    elif all(kps[i][2] >= c for i in EYES):
+    elif ppe == "goggles" and all(kps[i][2] >= c for i in EYES):
         mid = ((kps[1][0] + kps[2][0]) / 2, (kps[1][1] + kps[2][1]) / 2)
         out.append((mid, lambda g: eye_box(kps, g)))
+    elif ppe == "goggles" and kps[NOSE][2] >= c:
+        for i in EYES:
+            if kps[i][2] >= c:
+                out.append((kps[i][:2], lambda g, i=i: eye_profile_box(kps, i, g)))
+    elif ppe == "vest" and all(kps[i][2] >= c for i in SHOULDERS):
+        g0 = torso_box(kps, {"h": 1.5, "s": 1.0}, c)   # chỉ để lấy tâm khi ghép với hộp nhãn
+        out.append((g0[:2], lambda g: torso_box(kps, g, c)))
     return out
 
 
