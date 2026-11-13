@@ -160,6 +160,7 @@ def run_ablation_for_video(video_path, cfg, gt_events):
 
     # === CẤU HÌNH C: B + ByteTrack (Duy trì track_id qua thời gian, cảnh báo theo khung) ===
     tracker_c = PersonTracker(cfg)
+    comp_c = Compliance(cfg)   # mỗi cấu hình một bộ nhớ trạng thái riêng
     alerts_c = []
     for f in cached_frames:
         t = f["t"]
@@ -167,7 +168,7 @@ def run_ablation_for_video(video_path, cfg, gt_events):
         if pose_est and f["frame"] is not None:
             pose_est(f["frame"], tracks_c)
         assoc = associator_b(tracks_c, f["ppe"])
-        states = compliance_b(tracks_c, assoc, f["shape"], required_ppe)
+        states = comp_c(tracks_c, assoc, f["shape"], required_ppe, t)   # có track: bật giữ trạng thái Có
         for tr in tracks_c:
             if not tr.confident:
                 continue
@@ -180,6 +181,7 @@ def run_ablation_for_video(video_path, cfg, gt_events):
 
     # === CẤU HÌNH D: C + Cửa sổ thời gian T_on=5.0s, T_off=2.0s (Cảnh báo mỗi khung xác nhận) ===
     tracker_d = PersonTracker(cfg)
+    comp_d = Compliance(cfg)
     temporal_d = TemporalConfirmer(cfg)
     alerts_d = []
     for f in cached_frames:
@@ -188,7 +190,7 @@ def run_ablation_for_video(video_path, cfg, gt_events):
         if pose_est and f["frame"] is not None:
             pose_est(f["frame"], tracks_d)
         assoc = associator_b(tracks_d, f["ppe"])
-        states = compliance_b(tracks_d, assoc, f["shape"], required_ppe)
+        states = comp_d(tracks_d, assoc, f["shape"], required_ppe, t)   # có track: bật giữ trạng thái Có
         for tr in tracks_d:
             if not tr.confident:
                 continue
@@ -202,6 +204,7 @@ def run_ablation_for_video(video_path, cfg, gt_events):
 
     # === CẤU HÌNH E: D + Vòng đời sự kiện EventManager (Hệ thống hoàn chỉnh) ===
     tracker_e = PersonTracker(cfg)
+    comp_e = Compliance(cfg)
     temporal_e = TemporalConfirmer(cfg)
     events_created = []
     event_mgr = EventManager("video", video_name, required_ppe, on_change=lambda kind, ev: events_created.append(ev) if kind == "created" else None)
@@ -211,7 +214,7 @@ def run_ablation_for_video(video_path, cfg, gt_events):
         if pose_est and f["frame"] is not None:
             pose_est(f["frame"], tracks_e)
         assoc = associator_b(tracks_e, f["ppe"])
-        states = compliance_b(tracks_e, assoc, f["shape"], required_ppe)
+        states = comp_e(tracks_e, assoc, f["shape"], required_ppe, t)   # có track: bật giữ trạng thái Có
         for tr in tracks_e:
             st = states[tr.track_id]
             checks = {p: temporal_e.update(t, tr.track_id, p, st[p]["state"]) for p in required_ppe}

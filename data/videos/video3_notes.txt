@@ -11,3 +11,8 @@ Nguồn nhãn:
   - Track 6 (khung 1125-1388, phải): thiếu mũ, có áo, thiếu găng, thiếu kính, chân khuất (chua_xac_dinh).
   - Track 7 (khung 1632-1880): có mũ, có áo, thiếu găng, thiếu kính, giày thể thao xám (thiếu ủng).
 
+
+Sửa nhãn 13/11/2026 (Claude, chưa người duyệt; bản trước nằm trong lịch sử git, commit c10a6a7, và bản sao cục bộ video3_cvat_before_fix_20261113.zip):
+- Bản cũ đặt mọi thuộc tính Chưa xác định khi hộp người chạm mép dưới (y2 >= 1070), kể cả găng dù tay trần vẫn thấy rõ.
+  Track 2-7: glove_left, glove_right = thieu ở mọi khung trừ 20 khung cuối (người đi sát camera, nhòe, tay ra khỏi khung). Track 1 giữ Chưa xác định (tay trong ống tay áo dài).
+- Track 4, 5, 6: boots = thieu khi chân còn trong khung (y2 < 1070): xem ảnh cắt thấy giày thể thao, giày lười đế trắng. Bản cũ ghi Chưa xác định cho cả track.

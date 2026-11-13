@@ -10,7 +10,9 @@ detector:
   # (NMS IoU 0.5): person F1 0.873, helmet 0.881, vest 0.794, gloves 0.641. Với goggles và boots, val_new ít mẫu (29 và
   # 83 hộp) nên F1 đạt đỉnh ở conf rất thấp (0.07/0.05); chọn 0.15 trên đường cong F1 của val_new để vừa giữ Precision cao
   # (goggles P 0.808 / F1 0.764; boots P 0.688 / F1 0.599) vừa bắt được kính và ủng ở khoảng cách trung bình trên video.
-  conf: {person: 0.40, helmet: 0.34, vest: 0.28, gloves: 0.44, goggles: 0.15, boots: 0.15}
+  # gloves: chọn lại 13/11/2026 trên ppe4 val (C4): F1 gần như phẳng 0.630-0.640 ở conf 0.30-0.50; luật "conf thấp nhất có F1 không kém
+  # F1 lớn nhất quá 0.01" cho 0.30 (P 0.667, R 0.596; ở 0.44: P 0.756, R 0.552). Giám sát cần ít bỏ sót găng thật (bỏ sót -> báo Thiếu sai).
+  conf: {person: 0.40, helmet: 0.34, vest: 0.28, gloves: 0.30, goggles: 0.15, boots: 0.15}
   nms_iou: 0.5            # chọn trên val 04/11/2026 (05a): F1 trung bình 0.792 / 0.791 / 0.789 ở 0.5 / 0.6 / 0.7
   # Nguồn hộp PPE (nhóm quyết định 04/11/2026 thêm chế độ crop, xem docs/experiments/2026-11-04_video_smoke.md):
   #   full = PPE dò trên cả khung (như spec 5.1 ban đầu);
