@@ -28,9 +28,18 @@ def main():
     from ultralytics import YOLO
 
     cfg = yaml.safe_load((ROOT / "configs" / "ppe6.yaml").read_text(encoding="utf-8"))["parts"]["train"]
-    found = [p.parent for p in Path(args.data).rglob("train") if p.is_dir() and (p.parent / "val").is_dir()]
+    # Kaggle có thể đặt dataset ở đường dẫn khác tên đã đặt: tìm thư mục có train/glove và val/ dưới --data, rồi dưới /kaggle/input.
+    found = []
+    for base in (Path(args.data), Path("/kaggle/input")):
+        if base.exists():
+            found = sorted({q.parent.parent for q in base.rglob("glove") if q.is_dir() and q.parent.name == "train" and (q.parent.parent / "val").is_dir()})
+        if found:
+            break
     if len(found) != 1:
-        sys.exit(f"Tìm thấy {len(found)} thư mục có train/ và val/ trong {args.data}.")
+        for base in (Path(args.data), Path("/kaggle/input")):
+            if base.exists():
+                print("Nội dung", base, [str(x) for x in list(base.rglob("*"))[:20]])
+        sys.exit(f"Tìm thấy {len(found)} thư mục có train/glove và val/: {found}")
     data = found[0]
     model = YOLO(cfg["model"])
     model.train(data=str(data), project=args.out, name=cfg["run_name"], exist_ok=False, **cfg["args"])
