@@ -77,8 +77,8 @@ pose:
 # trái nhau -> Chưa xác định; đổi sau khi thấy kết quả bản 1 trên video 3-6, xem kế hoạch.)
 # Không có ảnh cắt (thiếu keypoint, quá nhỏ): dùng luật cũ nếu fallback_old_rule, ngược lại Chưa xác định.
 part_cls:
-  enabled: false            # 13/11/2026: thử bật trên video 3-6, không đạt tiêu chí (bỏ sót găng video5, ủng video3 tăng); xem kế hoạch
-  weights: outputs/train/yolo11n_cls_parts/weights/best.pt
+  enabled: true             # bản 2, 13/11/2026: chỉ kính đạt tiêu chí trên video 3-6 và A-E (kế hoạch); găng, ủng tắt
+  weights: outputs/train/yolo11n_cls_parts_v2/weights/best.pt   # bản 2 (13/11/2026); bản 1: yolo11n_cls_parts
   imgsz: 160                # như lúc train (configs/ppe6.yaml parts.train)
   min_px: 24                # cạnh ảnh cắt tối thiểu, như parts.min_px lúc tạo dữ liệu train
   kp_conf: 0.5              # Claude đặt, như keypoint_gate
@@ -87,21 +87,22 @@ part_cls:
   # Mục tiêu độ chính xác khi chọn ngưỡng trên val (Claude đặt 13/11/2026, trước khi chạy 05e):
   # pos = p >= t_pos là Có đúng; neg = 1 - p >= t_neg là không có PPE đúng.
   precision_target: {pos: 0.95, neg: 0.97}
-  # Chọn trên val 13/11/2026 bằng 05e (outputs/results/parts_cls/val_select.json), ảnh cắt theo keypoint như pipeline.
-  # Độ chính xác cân bằng ở ngưỡng 0,5: tay 0,899 (1.434 ảnh cắt, 189 găng), chân 0,804 (158, 35 ủng),
-  # mắt 0,920 (591, 26 kính BH). Ghép được keypoint: găng 189/320, tay trần 1.247/1.655, ủng 35/36, giày thường 123/155,
-  # kính BH 26/29, kính thường 68/115, không kính 497/715.
+  # Bản 2: chọn trên val 13/11/2026 bằng 05e (outputs/results/parts_cls/val_select.json; bản 1: val_select_v1.json),
+  # ảnh cắt theo keypoint như pipeline. Độ chính xác cân bằng ở ngưỡng 0,5: tay 0,890 (1.434 ảnh cắt, 189 găng),
+  # chân 0,843 (158, 35 ủng), mắt 0,885 (591, 26 kính BH).
   geometry:
-    hand: {k: 0.25, s: 1.6}
-    foot: {k: 0.2, s: 1.6}
-    eye: {s: 3.0}
-  # t_pos null: găng, ủng không có ngưỡng nào đạt độ chính xác 0,95 -> bộ phân loại không tự kết luận Có, cần detector.
-  # t_neg: găng 0,50 (độ chính xác 0,988, độ nhạy 0,866); ủng 0,98 (0,977; 0,691); kính 0,50 (0,993; 0,995).
-  # Kính t_pos 0,63 (0,957; 0,846, 23 ảnh cắt). Val ủng, kính BH rất ít: số dao động lớn.
+    hand: {k: 0.0, s: 1.6}
+    foot: {k: 0.0, s: 1.2}
+    eye: {s: 2.5}
+  # găng: t_neg 0,50 (độ chính xác 0,976, độ nhạy 0,928), không t_pos đạt 0,95.
+  # ủng: t_pos 0,92 (0,955; 0,600, 22 ảnh cắt), không t_neg đạt 0,97 -> bộ phân loại không báo Thiếu ủng.
+  # kính: t_pos 0,50 (1,0; 0,769, 20 ảnh cắt), t_neg 0,50 (0,990; 1,0). Val ủng, kính BH rất ít: số dao động lớn.
   thresholds:
-    gloves: {t_pos: null, t_neg: 0.50}
-    boots: {t_pos: null, t_neg: 0.98}
-    goggles: {t_pos: 0.63, t_neg: 0.50}
+    # Tắt theo tiêu chí bản 2 (13/11/2026). Găng: bỏ sót video5 tăng 1 khung (36 -> 37), còn lại tốt hơn; chờ người dùng.
+    # gloves: {t_pos: null, t_neg: 0.50}
+    # Ủng: không t_neg đạt 0,97 trên val -> bỏ sót video3 55 -> 465, video5 286 -> 438, mất sự kiện ủng video3.
+    # boots: {t_pos: 0.92, t_neg: null}
+    goggles: {t_pos: 0.50, t_neg: 0.50}
 
 association:
   # Vùng cơ thể theo tọa độ chuẩn hóa trong hộp người: x, y = 0 ở góc trên trái, 1 ở góc dưới phải;

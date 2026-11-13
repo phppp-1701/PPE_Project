@@ -1,0 +1,101 @@
+{
+  "run_name": "yolo11n_cls_parts_v2",
+  "data": "/kaggle/input/datasets/phpp1701/khoa-luan-ppe6-parts-v2/parts",
+  "top1": 0.8976,
+  "recall_per_class": {
+    "bare_hand": 0.9248,
+    "glove": 0.8134,
+    "goggles": 0.6727,
+    "no_eyewear": 0.9505,
+    "not_safety_foot": 0.6978,
+    "ordinary_glasses": 0.8197,
+    "safety_boot": 0.6479
+  },
+  "confusion": {
+    "names": [
+      "bare_hand",
+      "glove",
+      "goggles",
+      "no_eyewear",
+      "not_safety_foot",
+      "ordinary_glasses",
+      "safety_boot"
+    ],
+    "matrix": [
+      [
+        2680.0,
+        76.0,
+        0.0,
+        24.0,
+        42.0,
+        9.0,
+        0.0
+      ],
+      [
+        142.0,
+        414.0,
+        0.0,
+        16.0,
+        25.0,
+        2.0,
+        10.0
+      ],
+      [
+        1.0,
+        1.0,
+        37.0,
+        0.0,
+        0.0,
+        2.0,
+        0.0
+      ],
+      [
+        44.0,
+        3.0,
+        5.0,
+        1152.0,
+        4.0,
+        17.0,
+        0.0
+      ],
+      [
+        25.0,
+        14.0,
+        0.0,
+        2.0,
+        194.0,
+        3.0,
+        15.0
+      ],
+      [
+        5.0,
+        1.0,
+        13.0,
+        16.0,
+        0.0,
+        150.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0,
+        0.0,
+        2.0,
+        13.0,
+        0.0,
+        46.0
+      ]
+    ]
+  },
+  "args": {
+    "imgsz": 160,
+    "epochs": 60,
+    "patience": 15,
+    "batch": 128,
+    "seed": 0,
+    "deterministic": true,
+    "workers": 4,
+    "fliplr": 0.5,
+    "degrees": 0
+  }
+}
