@@ -174,3 +174,54 @@ def test_trench_buried_feet_marked_unknown_via_ankles(test_cfg):
     # Dù không chạm đáy ảnh nhưng cổ chân sát đáy hộp người -> chân bị vùi/khuất rãnh -> UNKNOWN
     assert s[1]["boots"]["state"] == UNKNOWN
 
+
+
+def _six(test_cfg):
+    from ppe import load_config
+    full = load_config()
+    test_cfg["ppe"] = full["ppe"]
+    test_cfg["required_ppe"] = full["required_ppe"]
+    test_cfg["compliance"]["keypoint_gate"] = full["compliance"]["keypoint_gate"]
+    test_cfg["compliance"]["have_hold_s"] = full["compliance"]["have_hold_s"]
+    return pose_cfg(test_cfg)
+
+
+def _kps(p, eyes=0.9, head=0.9, ankle_y=680.0, ankle=0.9):
+    k = [(200.0, 150.0, head)] + [(190.0, 140.0, eyes), (210.0, 140.0, eyes)] + [(180.0, 145.0, head), (220.0, 145.0, head)]
+    k += [(200.0, 400.0, 0.9)] * 10 + [(170.0, ankle_y, ankle), (230.0, ankle_y, ankle)]
+    p.extra["kps"] = k
+    p.extra["wrists"] = {"left": (120.0, 450.0, 0.9), "right": (280.0, 450.0, 0.9)}
+    return p
+
+
+def test_gate_back_turned_goggles_unknown_not_missing(test_cfg):
+    """Người quay lưng (không thấy hai mắt): không được báo Thiếu kính."""
+    cfg = _six(test_cfg)
+    _, s = run(cfg, [_kps(person(1, 100, 100, 300, 700), eyes=0.1)], [])
+    assert s[1]["goggles"]["state"] == UNKNOWN
+    _, s = run(cfg, [_kps(person(1, 100, 100, 300, 700), eyes=0.9)], [])
+    assert s[1]["goggles"]["state"] == MISSING
+
+
+def test_gate_head_out_of_frame_helmet_unknown(test_cfg):
+    """Đầu chạm mép trên khung: không được báo Thiếu mũ."""
+    cfg = _six(test_cfg)
+    _, s = run(cfg, [_kps(person(1, 100, 0, 300, 600))], [])
+    assert s[1]["helmet"]["state"] == UNKNOWN
+
+
+def test_gate_ankles_not_visible_boots_unknown(test_cfg):
+    cfg = _six(test_cfg)
+    _, s = run(cfg, [_kps(person(1, 100, 100, 300, 700), ankle=0.2)], [])
+    assert s[1]["boots"]["state"] == UNKNOWN
+
+
+def test_have_hold_short_dropout_not_missing(test_cfg):
+    """Vừa thấy Có kính, mất phát hiện 1 khung sau đó không thành Thiếu; quá thời gian giữ thì thành Thiếu."""
+    cfg = _six(test_cfg)
+    comp, assoc = Compliance(cfg), Associator(cfg)
+    p = _kps(person(1, 100, 100, 300, 700))
+    g = det(4, 170, 130, 230, 160)
+    assert comp([p], assoc([p], [g]), FRAME, None, 0.0)[1]["goggles"]["state"] == HAVE
+    assert comp([p], assoc([p], []), FRAME, None, 0.5)[1]["goggles"]["state"] == UNKNOWN
+    assert comp([p], assoc([p], []), FRAME, None, 5.0)[1]["goggles"]["state"] == MISSING

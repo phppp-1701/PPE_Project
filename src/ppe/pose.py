@@ -42,6 +42,8 @@ class PoseEstimator:
             pts = sorted(((float(kp[i][0]) + ox, float(kp[i][1]) + oy, float(kp[i][2]))
                           for i in (LEFT_WRIST, RIGHT_WRIST)), key=lambda q: q[0])
             t.extra["wrists"] = {"left": pts[0], "right": pts[1]}
+            # Toàn bộ 17 điểm COCO ở tọa độ khung: dùng để quyết định vùng mặt, đầu, mắt cá có nhìn thấy không.
+            t.extra["kps"] = [(float(x) + ox, float(y) + oy, float(c)) for x, y, c in kp[:17]]
             if len(kp) > 16:
                 a_conf = max(float(kp[LEFT_ANKLE][2]), float(kp[RIGHT_ANKLE][2]))
                 a_y = max(float(kp[LEFT_ANKLE][1]) + oy, float(kp[RIGHT_ANKLE][1]) + oy)

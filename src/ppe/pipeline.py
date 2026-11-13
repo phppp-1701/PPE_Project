@@ -54,7 +54,7 @@ class Pipeline:
         if self.stage >= 2:
             out["assoc"] = timed("association", self.associator, out["tracks"], out["ppe"])
         if self.stage >= 3:
-            out["states"] = timed("compliance", self.compliance, out["tracks"], out["assoc"], frame.shape, self.required)
+            out["states"] = timed("compliance", self.compliance, out["tracks"], out["assoc"], frame.shape, self.required, t)
         if self.stage >= 4:
             def temporal_and_events():
                 checks_all = {}

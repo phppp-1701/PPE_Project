@@ -38,6 +38,29 @@ class Compliance:
         self.tau_occ = require(cfg, "compliance", "tau_occ")
         self.area_min = require(cfg, "compliance", "area_min_px")
         self.pose = cfg["pose"] if cfg.get("pose", {}).get("enabled") else None
+        self.gate = cfg.get("compliance", {}).get("keypoint_gate") if self.pose else None
+        self.hold_s = cfg.get("compliance", {}).get("have_hold_s") or {}
+        self.last_have = {}     # (track_id, ppe, side) -> t lần cuối thấy Có
+
+    def keypoint_visible(self, name, track, frame_box):
+        """Cổng quan sát theo pose (khi bật `keypoint_gate`): trả về False nếu bộ phận cần cho PPE này không nhìn thấy rõ.
+        goggles: cần hai mắt (mặt hướng về camera); helmet: cần ít nhất một điểm đầu và đầu không chạm mép trên khung;
+        boots: cần mắt cá và mắt cá không sát mép dưới khung. Không có pose cho người này: không chặn (giữ luật vùng)."""
+        g = self.gate.get(name) if self.gate else None
+        kps = getattr(track, "extra", {}).get("kps")
+        if not g or not kps:
+            return True
+        c = g["kp_conf"]
+        if name == "goggles":
+            return kps[1][2] >= c and kps[2][2] >= c
+        if name == "helmet":
+            if not any(kps[i][2] >= c for i in range(5)):
+                return False
+            return track.xyxy[1] > frame_box[1] + g["edge_px"]
+        if name == "boots":
+            ok = [kps[i] for i in (15, 16) if kps[i][2] >= c]
+            return bool(ok) and max(q[1] for q in ok) < frame_box[3] - g["edge_px"]
+        return True
 
     def side_state(self, name, track, side, assoc, frame_box, others):
         p = self.ppe[name]
@@ -55,6 +78,8 @@ class Compliance:
         o = occluded_fraction(r, others)
         observable = (v >= self.tau_in[name] and o <= self.tau_occ[name] and visible >= self.area_min[name]
                       and track.confident)
+        if observable and not self.keypoint_visible(name, track, frame_box):
+            observable = False
         has = bool(assoc.owned.get(track.track_id, {}).get((name, side)))
         if name == "boots" and not has:
             ankles = getattr(track, "extra", {}).get("ankles")
@@ -64,17 +89,25 @@ class Compliance:
                 if dist_to_bottom < 0.065 * person_h:
                     observable = False
         contested = (name, side) in assoc.contested.get(track.track_id, set())
+        key = (track.track_id, name, side)
+        recently_have = self.now is not None and key in self.last_have and self.now - self.last_have[key] <= self.hold_s.get(name, 0)
         if track.confident and has:
             state = HAVE
-        elif observable and not contested:
+            if self.now is not None:
+                self.last_have[key] = self.now
+        elif observable and not contested and not recently_have:
             state = MISSING
         else:
             state = UNKNOWN
         return state, dict(v=round(v, 3), o=round(o, 3), area=round(visible), observable=observable,
                            has=has, contested=contested)
 
-    def __call__(self, tracks, assoc, frame_shape, names=None):
-        """{track_id: {ppe: {"state", "sides": {side: (state, chi tiết)}}}} cho các PPE trong `names`."""
+    now = None
+
+    def __call__(self, tracks, assoc, frame_shape, names=None, t=None):
+        """{track_id: {ppe: {"state", "sides": {side: (state, chi tiết)}}}} cho các PPE trong `names`.
+        t (giây): bật luật giữ trạng thái Có trong `have_hold_s` (vừa thấy Có thì không đổi ngay sang Thiếu khi PPE mất vài khung)."""
+        self.now = t
         h, w = frame_shape[:2]
         frame_box = np.array([0, 0, w, h], dtype=float)
         out = {}

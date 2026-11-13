@@ -96,6 +96,15 @@ compliance:
   tau_in:      {helmet: 0.7, vest: 0.7, gloves: 0.7, goggles: 0.7, boots: 0.95}
   tau_occ:     {helmet: 0.4, vest: 0.4, gloves: 0.4, goggles: 0.4, boots: 0.4}
   area_min_px: {helmet: 0, vest: 0, gloves: 0, goggles: 900, boots: 900}
+  # Cổng quan sát theo pose (13/11/2026, sau khi kiểm tra video gần 3-6): không kết luận Thiếu khi không thấy bộ phận.
+  # goggles: cần hai mắt (người quay lưng -> Chưa xác định); helmet: cần điểm đầu, đầu không chạm mép trên;
+  # boots: cần mắt cá, không sát mép dưới. kp_conf, edge_px Claude đặt, chọn lại trên video chỉnh tham số.
+  keypoint_gate:
+    goggles: {kp_conf: 0.5}
+    helmet: {kp_conf: 0.5, edge_px: 4}
+    boots: {kp_conf: 0.5, edge_px: 8}
+  # Vừa thấy Có trong khoảng này (giây) thì PPE mất vài khung không bị kết luận Thiếu (Chưa xác định). Claude đặt.
+  have_hold_s: {helmet: 1.0, vest: 1.0, gloves: 1.5, goggles: 2.0, boots: 1.5}
 
 temporal:
   # Cửa sổ theo giây (spec 5.4); chọn trên video chỉnh tham số (video2..video6).
