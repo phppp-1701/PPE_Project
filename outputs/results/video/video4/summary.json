@@ -1,6 +1,6 @@
 {
   "video": "data\\videos\\video4.mp4",
-  "session_id": "video4_20261111_203126",
+  "session_id": "video4_20261114_121403",
   "stage": "full",
   "not_run_reason": null,
   "frames": 349,
@@ -9,32 +9,36 @@
     1280,
     720
   ],
-  "elapsed_s": 23.7,
-  "pipeline_fps": 14.73,
+  "elapsed_s": 38.71,
+  "pipeline_fps": 9.02,
   "step_ms": {
     "association": {
       "p50": 0.17,
-      "p95": 0.3
+      "p95": 0.27
     },
     "compliance": {
-      "p50": 1.8,
-      "p95": 3.84
+      "p50": 1.71,
+      "p95": 2.44
     },
     "detector": {
-      "p50": 20.63,
-      "p95": 36.86
+      "p50": 23.63,
+      "p95": 29.12
+    },
+    "parts": {
+      "p50": 15.26,
+      "p95": 19.03
     },
     "pose": {
-      "p50": 19.63,
-      "p95": 38.71
+      "p50": 18.19,
+      "p95": 24.3
     },
     "temporal_events": {
-      "p50": 0.55,
-      "p95": 1.41
+      "p50": 0.65,
+      "p95": 506.33
     },
     "tracker": {
-      "p50": 0.83,
-      "p95": 1.56
+      "p50": 0.69,
+      "p95": 0.97
     }
   },
   "events": 3,

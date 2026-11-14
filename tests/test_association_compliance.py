@@ -342,3 +342,18 @@ def test_parts_min_person_px_uses_old_rule_for_small_people(test_cfg):
     cfg["part_cls"]["min_person_px"] = {"goggles": 700}
     _, s = run(cfg, [p], [])
     assert s[1]["goggles"]["state"] == MISSING
+
+
+def test_observe_from_crop_gloves(test_cfg):
+    """Cổ tay dưới pose.wrist_conf nhưng bộ phân loại đã cắt được ảnh tay và chắc là tay trần: Thiếu khi bật observe_from_crop."""
+    cfg = _parts(test_cfg)
+    cfg["part_cls"]["kp_conf"] = 0.5
+    cfg["pose"]["wrist_conf"] = 0.8
+    p = _kps(person(1, 100, 100, 300, 700))
+    p.extra["wrists"] = {"left": (120.0, 450.0, 0.6), "right": (280.0, 450.0, 0.6)}   # < wrist_conf
+    p.extra["parts"] = {("gloves", "left"): 0.01, ("gloves", "right"): 0.01}
+    _, s = run(cfg, [p], [])
+    assert s[1]["gloves"]["state"] == UNKNOWN
+    cfg["part_cls"]["observe_from_crop"] = ["gloves"]
+    _, s = run(cfg, [p], [])
+    assert s[1]["gloves"]["state"] == MISSING

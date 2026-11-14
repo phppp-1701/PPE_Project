@@ -70,3 +70,15 @@ def test_absent_person_pending_then_session_end(temporal_params):
     assert list(em.open.values())[0]["event_state"] == PENDING
     em.end_session(t)
     assert em.closed[0]["event_state"] == CLOSED and em.closed[0]["close_reason"] == "session_ended_unverified"
+
+
+def test_min_valid_frac_blocks_sparse_missing():
+    """Vài khung Thiếu lẻ giữa nhiều khung Chưa xác định: không xác nhận khi bật min_valid_frac_on."""
+    from ppe import MISSING, UNKNOWN
+    from ppe.temporal import TemporalConfirmer
+    base = dict(T_on=5.0, T_off=2.0, n_on=15, n_off=15, theta_on=0.7, theta_off=0.7)
+    seq = [(i * 0.04, MISSING if i % 6 == 0 else UNKNOWN) for i in range(120)]   # 20 Thiếu / 120 khung
+    for frac, expect in ((None, True), (0.3, False)):
+        tc = TemporalConfirmer(params=dict(base, min_valid_frac_on=frac))
+        got = any(tc.update(t, 1, "goggles", s).missing_confirmed for t, s in seq)
+        assert got == expect

@@ -42,15 +42,15 @@
     {
       "stage": "D",
       "name": "D: C + Cửa sổ thời gian (T_on=5s, T_off=2s)",
-      "total_alerts": 1984,
+      "total_alerts": 1923,
       "tp": 10,
       "fp_false": 293,
-      "fp_dup": 1681,
+      "fp_dup": 1620,
       "fn": 2,
-      "precision": 0.005,
+      "precision": 0.0052,
       "recall": 0.8333,
-      "f1": 0.01,
-      "mean_latency_s": 1.52
+      "f1": 0.0103,
+      "mean_latency_s": 1.859
     },
     {
       "stage": "E",
@@ -63,7 +63,7 @@
       "precision": 1.0,
       "recall": 0.9167,
       "f1": 0.9565,
-      "mean_latency_s": 1.179
+      "mean_latency_s": 1.405
     }
   ],
   "by_video": {
@@ -102,15 +102,15 @@
         "mean_latency_s": 3.089
       },
       "D": {
-        "total_alerts": 719,
+        "total_alerts": 658,
         "tp": 2,
         "fp_false": 293,
-        "fp_dup": 424,
+        "fp_dup": 363,
         "fn": 2,
-        "precision": 0.0028,
+        "precision": 0.003,
         "recall": 0.5,
-        "f1": 0.0055,
-        "mean_latency_s": 3.533
+        "f1": 0.006,
+        "mean_latency_s": 4.55
       },
       "E": {
         "total_alerts": 3,
@@ -121,7 +121,7 @@
         "precision": 1.0,
         "recall": 0.75,
         "f1": 0.8571,
-        "mean_latency_s": 2.511
+        "mean_latency_s": 3.189
       }
     },
     "video5": {

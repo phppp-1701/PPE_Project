@@ -101,6 +101,12 @@ class Compliance:
         if self.pose and p["sides"] and p["region"] == "hands":
             # Có pose: không thấy cổ tay đạt ngưỡng thì tay đó không quan sát được (G = 0), không suy ra Thiếu.
             q = valid_wrist(track, side, self.pose)
+            if q is None and name in ((self.part or {}).get("observe_from_crop") or []):
+                # Bộ phân loại đã cắt được ảnh tay này (cổ tay đạt part_cls.kp_conf): tay coi là nhìn thấy theo mức
+                # của bước cắt ảnh, kết luận Thiếu vẫn chỉ khi bộ phân loại chắc là tay trần.
+                w = getattr(track, "extra", {}).get("wrists", {}).get(side)
+                if w is not None and w[2] >= self.part["kp_conf"] and (name, side) in track.extra.get("parts", {}):
+                    q = w
             if q is None:
                 return UNKNOWN, dict(v=0.0, o=0.0, area=0, observable=False, has=False, contested=False)
             r = wrist_box(track.xyxy, q, self.pose)

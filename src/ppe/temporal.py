@@ -24,6 +24,9 @@ class TemporalConfirmer:
         self.n_on, self.n_off = int(p["n_on"]), int(p["n_off"])
         self.theta_on, self.theta_off = float(p["theta_on"]), float(p["theta_off"])
         self.keep = max(self.T_on, self.T_off)
+        # Tỉ lệ tối thiểu khung có kết luận (Có/Thiếu) trên mọi khung của người đó trong T_on; null = không xét.
+        # Chặn trường hợp vài khung Thiếu lẻ giữa nhiều khung Chưa xác định vẫn đủ n_on để mở sự kiện.
+        self.min_valid_frac_on = float(p.get("min_valid_frac_on") or 0.0)
         self.history = defaultdict(deque)       # (track_id, ppe) -> deque[(t, state)]
 
     @staticmethod
@@ -42,7 +45,9 @@ class TemporalConfirmer:
             hist.popleft()
         have, miss = self._counts(hist, t, self.T_on)
         valid = have + miss
-        missing = state == MISSING and valid >= self.n_on and valid > 0 and miss / valid >= self.theta_on
+        total = sum(1 for ts, _ in hist if ts > t - self.T_on)
+        missing = (state == MISSING and valid >= self.n_on and valid > 0 and miss / valid >= self.theta_on
+                   and valid / total >= self.min_valid_frac_on)
         have, miss = self._counts(hist, t, self.T_off)
         valid = have + miss
         recovered = state == HAVE and valid >= self.n_off and valid > 0 and have / valid >= self.theta_off

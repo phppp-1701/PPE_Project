@@ -47,6 +47,7 @@ PPE_COLOR = {
 }
 TAG = {"helmet": "Mu", "vest": "Ao", "gloves": "Gang", "goggles": "Kinh", "boots": "Ung"}
 SHORT = {"helmet": "M", "vest": "A", "gloves": "G", "goggles": "K", "boots": "U"}
+VETO_TAG = {"goggles": "Kinh thuong"}   # nhãn hộp bị bộ phân loại phủ quyết
 
 
 def build(stage, source_id, session_id, on_event):
@@ -91,11 +92,17 @@ def draw(frame, out, cfg, draw_regions):
 
     # Ai sở hữu PPE nào (để ghi "Gang>3" trên nhãn PPE).
     owner = {}
+    vetoed = set()       # hộp PPE bị bộ phân loại phủ quyết (part_cls.veto), vd kính thường: vẽ xám
+    veto = set((cfg.get("part_cls") or {}).get("veto") or []) if (cfg.get("part_cls") or {}).get("enabled") else set()
     if "assoc" in out:
         for tid, items in out["assoc"].owned.items():
-            for dets in items.values():
+            for (name, side), dets in items.items():
+                det = out.get("states", {}).get(tid, {}).get(name, {}).get("sides", {}).get(side)
+                rejected = name in veto and det is not None and det[1].get("vote") == "neg"
                 for d in dets:
                     owner[id(d)] = tid
+                    if rejected:
+                        vetoed.add(id(d))
 
     for tid, b in out.get("lost", []):                 # người mất tạm: ByteTrack vẫn giữ ID, khung này không có quan sát
         dashed_rect(img, b, LOST_COLOR, 1)
@@ -132,8 +139,12 @@ def draw(frame, out, cfg, draw_regions):
         c = PPE_COLOR.get(name, LOST_COLOR)
         x1, y1, x2, y2 = d.xyxy.astype(int)
         tid = owner.get(id(d))
+        if id(d) in vetoed:
+            c = LOST_COLOR
         cv2.rectangle(img, (x1, y1), (x2, y2), c, t_ppe if tid is not None or "assoc" not in out else 1)
         label = TAG.get(name, name) + (f">{tid}" if tid is not None else ("?" if "assoc" in out else ""))
+        if id(d) in vetoed:
+            label = VETO_TAG.get(name, TAG.get(name, name) + " (bac bo)")
         tag(img, label, x1, y2, c, scale=s * 0.75, above=False)
     return img
 
