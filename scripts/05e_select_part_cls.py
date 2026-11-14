@@ -2,6 +2,8 @@
 
 Cách chạy (từ thư mục gốc project, đã kích hoạt .venv, có outputs/train/yolo11n_cls_parts/weights/best.pt):
     python scripts/05e_select_part_cls.py
+    python scripts/05e_select_part_cls.py --weights outputs/train/yolo11n_cls_parts_v4/weights/best.pt --out val_select_v4.json
+    (--weights mặc định part_cls.weights; --out là tên file trong outputs/results/parts_cls/, mặc định val_select.json)
 
 1. Lấy các hộp bộ phận của val như 03y (collect_items, only val): găng/tay trần, ủng/giày thường, kính BH/kính thường/không kính.
 2. Tìm người bằng YOLO11n-pose trên cả ảnh, rồi chạy PoseEstimator của pipeline trên ảnh cắt từng người (như khi chạy thật).
@@ -14,6 +16,7 @@ Cách chạy (từ thư mục gốc project, đã kích hoạt .venv, có output
 Ghi outputs/results/parts_cls/val_select.json; in khối YAML gợi ý, người chép vào configs/pipeline.yaml mục part_cls.
 """
 
+import argparse
 import importlib.util
 import itertools
 import json
@@ -31,7 +34,7 @@ from ppe import load_config  # noqa: E402
 from ppe.parts import PART_CLASSES, cut, match_anchor, people_keypoints, ppe_prob  # noqa: E402
 from ppe.pose import PoseEstimator  # noqa: E402
 
-OUT = ROOT / "outputs" / "results" / "parts_cls" / "val_select.json"
+OUT_DIR = ROOT / "outputs" / "results" / "parts_cls"
 CLS2PPE = {c: ppe for ppe, (pos, negs) in PART_CLASSES.items() for c in (pos, *negs)}
 
 
@@ -57,6 +60,11 @@ def precision_at(p, y, t):
 
 def main():
     sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--weights", default=None, help="trọng số bộ phân loại; mặc định part_cls.weights")
+    ap.add_argument("--out", default="val_select.json", help="tên file kết quả trong outputs/results/parts_cls/")
+    args = ap.parse_args()
+    OUT = OUT_DIR / args.out
     from ultralytics import YOLO
 
     cfg = load_config()
@@ -71,7 +79,7 @@ def main():
 
     person_model = YOLO(ROOT / cfg["pose"]["weights"])
     pose = PoseEstimator(cfg, ROOT)
-    clf = YOLO(ROOT / pc["weights"])
+    clf = YOLO(ROOT / (args.weights or pc["weights"]))
     names = clf.names
     part_of = {"gloves": "hand", "boots": "foot", "goggles": "eye"}
     if "vest" in names.values():   # bản 3 có áo
@@ -109,7 +117,7 @@ def main():
         if (n + 1) % 200 == 0:
             print(f"  {n + 1}/{len(by_img)} ảnh")
 
-    res = dict(coverage={c: dict(matched=a, total=b) for c, (a, b) in sorted(cover.items())}, parts={})
+    res = dict(weights=args.weights or pc["weights"], coverage={c: dict(matched=a, total=b) for c, (a, b) in sorted(cover.items())}, parts={})
     tg = cal["part_thr_grid"]
     ts = np.round(np.arange(tg["start"], tg["stop"] + 1e-9, tg["step"]), 4)
     chosen_geom, chosen_thr = {}, {}
