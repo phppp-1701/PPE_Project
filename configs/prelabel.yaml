@@ -41,3 +41,8 @@ video_people:
   stitch_max_dist: 1.0      # khoảng cách hai tâm hộp, tính theo chiều cao hộp người
   jump_ratio: 1.5           # diện tích hộp đổi quá tỉ lệ này giữa hai khung thì đưa vào danh sách cần xem
   overlap_iou: 0.3          # hai track chồng nhau từ mức này thì đưa vào danh sách cần xem
+  # 05f (14/11/2026, Claude đặt): người sát camera, yolo11s gốc hay cho hai hộp chồng lên một người -> bỏ track trùng
+  # (IoU >= dup_iou với track dài hơn ở >= dup_frac số khung của nó) và track ngắn hơn min_track_frames. Người gán xem lại.
+  dup_iou: 0.5
+  dup_frac: 0.7
+  min_track_frames: 10
