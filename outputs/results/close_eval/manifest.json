@@ -1,0 +1,168 @@
+{
+  "created": "2026-11-14T18:31:38",
+  "note": "source_commit là commit chứa code và cấu hình đánh giá; manifest nằm ở commit sau, không tự ghi mã commit chứa chính nó. Kiểm tái lập: code ngoài outputs/results/close_eval/ phải trùng source_commit. sha256 file text (hash_mode lf_normalized) tính sau khi đổi CRLF thành LF; file khác (raw) tính nguyên byte.",
+  "source_commit": "0b756b849e3305080534ffc13d882a4c1711a9fd",
+  "source_commit_subject": "Đóng băng nguồn đánh giá: mũ bản 4 (ngoại lệ, không đạt tiêu chí bỏ sót), 3 test mũ, 06b đánh giá + manifest, 07 benchmark, kết quả giai đoạn 2-3",
+  "config": {
+    "path": "configs/pipeline.yaml",
+    "sha256": "d0854ddb071bb01729b61a712b66aed68e71cd80c752ae269ccd130a5b4242c8",
+    "hash_mode": "lf_normalized"
+  },
+  "weights": [
+    {
+      "path": "outputs/train/yolo11n_cls_parts_v2/weights/best.pt",
+      "sha256": "a46924d05dbc095a97057de9fd70d5222230e25adb0b050c1e917048b1172f2d",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "outputs/train/yolo11n_cls_parts_v3/weights/best.pt",
+      "sha256": "1317cb7d00919c789cb97a2784161cd14e9065d4ecb2c61958b31eaa4b62f48c",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "outputs/train/yolo11n_cls_parts_v4/weights/best.pt",
+      "sha256": "08d29990b43819b780ba89835ff5335186aca7e3ac804cb815caf9dee5017526",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "outputs/train/yolo11s_ppe6_c4/weights/best.pt",
+      "sha256": "98e3950d125401f3eca14ea9b15b57501d105153a0768fc1e6256d909783b8a3",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "yolo11n-pose.pt",
+      "sha256": "869e83fcdffdc7371fa4e34cd8e51c838cc729571d1635e5141e3075e9319dc0",
+      "hash_mode": "raw"
+    }
+  ],
+  "scripts": [
+    {
+      "path": "scripts/05_run_video.py",
+      "sha256": "9995d6777c23801cf6e69d2157f839ce7f360f4e9f463514cc7b39ebfd80a4ad",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "scripts/06b_evaluate_close_videos.py",
+      "sha256": "afd8ed85f4a95e5be4a5b3517ecbc6990a251a4a988f8f0c517e5dd2dee5d71c",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "scripts/07_benchmark_pipeline.py",
+      "sha256": "c9e20070e4488edcf6029ec0e8343b14c289a15f56eedd3e40acd5e3dffda159",
+      "hash_mode": "lf_normalized"
+    }
+  ],
+  "videos": [
+    {
+      "path": "data/videos/video9.mp4",
+      "sha256": "e9e8579119a7161d02423a848f8466eda5fa70eeba064fa686733151fe9100fb",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/video10.mp4",
+      "sha256": "793f5d68033394188b49d073e30d3552cdab14529fc7eeafe487a553bba1f06d",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/video11.mp4",
+      "sha256": "a7b051b2186cbd8e7f1578ceb5e40fd97347f4c5d5cd5efd427f188c30d4710e",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/video12.mp4",
+      "sha256": "2be57394577dc7d3e7802283d840fa9948b2c453be42f2121c957ab830c21ab2",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/video13.mp4",
+      "sha256": "e8ad452c188d3dc42edf155c287e8a6bc0b4c172aa4f44124cbd8496953f348e",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/video14.mp4",
+      "sha256": "ca1afda5263aa7ce31710e0635f57a39355cd96c89dea6930bc46a3c3bc80ff1",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/video15.mp4",
+      "sha256": "6022f0ea6699b2dbfa5d78c418b6652681f9d128e3d5a4a9fd30a1e4e733521b",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/video16.mp4",
+      "sha256": "16482e192d4ee9d17802418a2b08c20a60c4dcc0024bb051f43923cbb66353dc",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/video17.mp4",
+      "sha256": "58701d1ada612d7c2442bd21bf388238c73d920851feba8780f08da9c44ef252",
+      "hash_mode": "raw"
+    }
+  ],
+  "labels": [
+    {
+      "path": "data/videos/video9_machine_cvat.zip",
+      "sha256": "ab1d77acf7210e6001c0a5b8d835cfc0127201def5678f06884e392fcce1a5fc",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/video10_machine_cvat.zip",
+      "sha256": "2f681c46dbdd0454f7ff11e1768928a111c6b5d5896e68f4f6f1ab5f078e57b6",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/video11_machine_cvat.zip",
+      "sha256": "ee5420d22f26f50c90244cd3ca4d18b9d51989a33e1a71e03083962c7f9b6e9c",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/video12_machine_cvat.zip",
+      "sha256": "6bb1f09464b905047fc93683b42e7ea16ccb1f011678bdf44f8ab384a5d6f46f",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/video13_machine_cvat.zip",
+      "sha256": "e5d13bf288456f10b28388d0d1396bdfd82089d5fccf82409642d5e9dc100911",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/video14_machine_cvat.zip",
+      "sha256": "b413350771042672aeff81e9fad89d7942dea1f89c73a5d7b45b47ed9e298d46",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/video15_machine_cvat.zip",
+      "sha256": "726e10252746b85b9f0bec59b907b99606b3db0b1ab8a12f2fbccaa062987dbc",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/video16_machine_cvat.zip",
+      "sha256": "896dbebbb0fba8414d0b486113dec620b17f5286f95ca59bd919c3ffee25f84b",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/video17_machine_cvat.zip",
+      "sha256": "3df32b46c5f179159c08d59af42f0e3e7713f958e5dae7d53e466ed3a3b95263",
+      "hash_mode": "raw"
+    }
+  ],
+  "label_pattern": "data/videos/{v}_machine_cvat.zip",
+  "baseline": {
+    "commit": "0645f537fd13d16085e300e6519b0bb82a7d77ca",
+    "config": {
+      "path": "outputs/results/close_eval/pipeline_baseline_0645f53.yaml",
+      "sha256": "6f7e16a318882a90ae3187906d13363df7eeb9bcd4020076b0e7aa088cd5f47f",
+      "hash_mode": "lf_normalized"
+    },
+    "config_matches_commit": true
+  },
+  "environment": {
+    "python": "3.12.12",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "torch": "2.11.0+cu128",
+    "cuda": "12.8",
+    "ultralytics": "8.4.189",
+    "gpu": "NVIDIA GeForce RTX 3050 Laptop GPU",
+    "nvidia_smi": "NVIDIA GeForce RTX 3050 Laptop GPU, 576.28, 4096 MiB"
+  }
+}
