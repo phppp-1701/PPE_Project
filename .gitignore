@@ -84,3 +84,4 @@ preview_all.jpg
 !outputs/train/yolo11n_cls_parts_v2/run_info.json
 !outputs/train/yolo11n_cls_parts_v3/results.csv
 !outputs/train/yolo11n_cls_parts_v3/run_info.json
+!data/videos/kiem_thu_gan_machine_labels.json

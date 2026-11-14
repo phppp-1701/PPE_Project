@@ -1,0 +1,1714 @@
+{
+ "video9": {
+  "tracks": [
+   {
+    "src": [
+     [
+      0,
+      0,
+      314
+     ]
+    ],
+    "attrs": {
+     "helmet": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       160,
+       "chua_xac_dinh"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       160,
+       "chua_xac_dinh"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       85,
+       "chua_xac_dinh"
+      ],
+      [
+       90,
+       "co"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "attrs_A": {
+     "helmet": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       160,
+       "chua_xac_dinh"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       160,
+       "chua_xac_dinh"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       85,
+       "co"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "attrs_B": {
+     "helmet": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       160,
+       "chua_xac_dinh"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       160,
+       "chua_xac_dinh"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       90,
+       "co"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    }
+   }
+  ]
+ },
+ "video10": {
+  "tracks": [
+   {
+    "src": [
+     [
+      0,
+      0,
+      360
+     ]
+    ],
+    "union": [
+     0,
+     1,
+     2,
+     3
+    ],
+    "attrs": {
+     "helmet": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "attrs_A": {
+     "helmet": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "chua_xac_dinh"
+      ],
+      [
+       240,
+       "thieu"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "chua_xac_dinh"
+      ],
+      [
+       240,
+       "thieu"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "attrs_B": {
+     "helmet": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    }
+   }
+  ]
+ },
+ "video11": {
+  "tracks": [
+   {
+    "src": [
+     [
+      0,
+      0,
+      270
+     ]
+    ],
+    "union": [
+     0,
+     1
+    ],
+    "attrs": {
+     "helmet": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       78,
+       "chua_xac_dinh"
+      ],
+      [
+       80,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       76,
+       "chua_xac_dinh"
+      ],
+      [
+       156,
+       "thieu"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "extend_top": 0.28,
+    "attrs_A": {
+     "helmet": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       78,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       90,
+       "chua_xac_dinh"
+      ],
+      [
+       156,
+       "thieu"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "attrs_B": {
+     "helmet": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       80,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       76,
+       "chua_xac_dinh"
+      ],
+      [
+       156,
+       "thieu"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "to_bottom": true
+   }
+  ]
+ },
+ "video12": {
+  "tracks": [
+   {
+    "src": [
+     [
+      0,
+      0,
+      166
+     ]
+    ],
+    "attrs": {
+     "helmet": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "attrs_A": {
+     "helmet": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "attrs_B": {
+     "helmet": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    }
+   }
+  ]
+ },
+ "video13": {
+  "tracks": [
+   {
+    "src": [
+     [
+      0,
+      0,
+      246
+     ]
+    ],
+    "attrs": {
+     "helmet": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "chua_xac_dinh"
+      ],
+      [
+       70,
+       "co"
+      ],
+      [
+       158,
+       "chua_xac_dinh"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "chua_xac_dinh"
+      ],
+      [
+       70,
+       "co"
+      ],
+      [
+       158,
+       "chua_xac_dinh"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       110,
+       "chua_xac_dinh"
+      ],
+      [
+       115,
+       "co"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "attrs_A": {
+     "helmet": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "chua_xac_dinh"
+      ],
+      [
+       70,
+       "co"
+      ],
+      [
+       158,
+       "chua_xac_dinh"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "chua_xac_dinh"
+      ],
+      [
+       70,
+       "co"
+      ],
+      [
+       158,
+       "chua_xac_dinh"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       115,
+       "co"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "attrs_B": {
+     "helmet": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "chua_xac_dinh"
+      ],
+      [
+       65,
+       "co"
+      ],
+      [
+       170,
+       "chua_xac_dinh"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "chua_xac_dinh"
+      ],
+      [
+       65,
+       "co"
+      ],
+      [
+       170,
+       "chua_xac_dinh"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       110,
+       "co"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    }
+   }
+  ]
+ },
+ "video14": {
+  "tracks": [
+   {
+    "src": [
+     [
+      1,
+      0,
+      150
+     ],
+     [
+      0,
+      151,
+      378
+     ]
+    ],
+    "attrs": {
+     "helmet": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "chua_xac_dinh"
+      ],
+      [
+       96,
+       "thieu"
+      ],
+      [
+       209,
+       "chua_xac_dinh"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "chua_xac_dinh"
+      ],
+      [
+       96,
+       "thieu"
+      ],
+      [
+       209,
+       "chua_xac_dinh"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       138,
+       "chua_xac_dinh"
+      ],
+      [
+       140,
+       "co"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "attrs_A": {
+     "helmet": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "chua_xac_dinh"
+      ],
+      [
+       96,
+       "thieu"
+      ],
+      [
+       210,
+       "chua_xac_dinh"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "chua_xac_dinh"
+      ],
+      [
+       96,
+       "thieu"
+      ],
+      [
+       210,
+       "chua_xac_dinh"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       138,
+       "co"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "attrs_B": {
+     "helmet": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "chua_xac_dinh"
+      ],
+      [
+       90,
+       "thieu"
+      ],
+      [
+       209,
+       "chua_xac_dinh"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "chua_xac_dinh"
+      ],
+      [
+       90,
+       "thieu"
+      ],
+      [
+       209,
+       "chua_xac_dinh"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       140,
+       "co"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    }
+   }
+  ]
+ },
+ "video15": {
+  "tracks": [
+   {
+    "src": [
+     [
+      1,
+      0,
+      86
+     ],
+     [
+      4,
+      87,
+      121
+     ]
+    ],
+    "attrs": {
+     "helmet": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "attrs_A": {
+     "helmet": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "attrs_B": {
+     "helmet": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    }
+   },
+   {
+    "src": [
+     [
+      3,
+      44,
+      83
+     ]
+    ],
+    "attrs": {
+     "helmet": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "attrs_A": {
+     "helmet": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "attrs_B": {
+     "helmet": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    }
+   },
+   {
+    "src": [
+     [
+      2,
+      0,
+      75
+     ],
+     [
+      3,
+      84,
+      121
+     ]
+    ],
+    "attrs": {
+     "helmet": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "attrs_A": {
+     "helmet": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "attrs_B": {
+     "helmet": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    }
+   }
+  ]
+ },
+ "video16": {
+  "tracks": [
+   {
+    "src": [
+     [
+      0,
+      0,
+      498
+     ]
+    ],
+    "attrs": {
+     "helmet": [
+      [
+       0,
+       "co"
+      ],
+      [
+       298,
+       "chua_xac_dinh"
+      ],
+      [
+       356,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "chua_xac_dinh"
+      ],
+      [
+       300,
+       "thieu"
+      ],
+      [
+       346,
+       "chua_xac_dinh"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "chua_xac_dinh"
+      ],
+      [
+       300,
+       "thieu"
+      ],
+      [
+       346,
+       "chua_xac_dinh"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "attrs_A": {
+     "helmet": [
+      [
+       0,
+       "co"
+      ],
+      [
+       305,
+       "chua_xac_dinh"
+      ],
+      [
+       356,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "chua_xac_dinh"
+      ],
+      [
+       290,
+       "thieu"
+      ],
+      [
+       351,
+       "chua_xac_dinh"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "chua_xac_dinh"
+      ],
+      [
+       290,
+       "thieu"
+      ],
+      [
+       351,
+       "chua_xac_dinh"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "attrs_B": {
+     "helmet": [
+      [
+       0,
+       "co"
+      ],
+      [
+       298,
+       "chua_xac_dinh"
+      ],
+      [
+       346,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       131,
+       "chua_xac_dinh"
+      ],
+      [
+       300,
+       "thieu"
+      ],
+      [
+       346,
+       "chua_xac_dinh"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "thieu"
+      ],
+      [
+       131,
+       "chua_xac_dinh"
+      ],
+      [
+       300,
+       "thieu"
+      ],
+      [
+       346,
+       "chua_xac_dinh"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    }
+   }
+  ]
+ },
+ "video17": {
+  "tracks": [
+   {
+    "src": [
+     [
+      0,
+      0,
+      479
+     ]
+    ],
+    "attrs": {
+     "helmet": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "attrs_A": {
+     "helmet": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    },
+    "attrs_B": {
+     "helmet": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "vest": [
+      [
+       0,
+       "co"
+      ]
+     ],
+     "glove_left": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "glove_right": [
+      [
+       0,
+       "thieu"
+      ]
+     ],
+     "goggles": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ],
+     "boots": [
+      [
+       0,
+       "chua_xac_dinh"
+      ]
+     ]
+    }
+   }
+  ]
+ }
+}
