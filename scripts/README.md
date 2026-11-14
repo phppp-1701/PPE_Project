@@ -47,6 +47,7 @@
 | `05d_calibrate_video.py` | Chọn tham số trên video `chinh_tham_so` so với nhãn CVAT: `--tracker` thử ByteTrack (MOTA, IDF1, IDSW), `--state` thử `ambiguity_margin`, `tau_in`, `tau_occ`, `area_min_px` (ma trận 3×3, macro-F1, Coverage); `--rerun` chạy lại detector. Lưới ở `configs/pipeline.yaml` mục `calibration.video`; ghi đề xuất vào `outputs/results/pipeline_calib_video/<video>/`, người chép giá trị đã duyệt vào config | 3 |
 | `05e_select_part_cls.py` | Chọn hình học ảnh cắt (theo keypoint) và ngưỡng `t_pos`, `t_neg` của bộ phân loại bộ phận trên val (ảnh cắt kiểu pipeline); ghi `outputs/results/parts_cls/val_select.json`, in khối gợi ý, người chép vào `configs/pipeline.yaml` mục `part_cls` | thử nghiệm |
 | `05f_cvat_prefill_xml.py` | Vẽ sẵn track người (yolo11s.pt gốc, không dự đoán PPE) cho video, ghi `outputs/results/video/<video>/prefill/annotations.xml` (CVAT for video 1.1) để tải lên CVAT cục bộ bằng giao diện; kèm `review.csv`, `preview.mp4`. Dùng cho video `kiem_thu_gan` (người dùng duyệt 14/11/2026) | thử nghiệm |
+| `05g_cvat_local_tasks.py` | Tạo task video trên CVAT cục bộ (`fast_review.cvat_url`) và tải nhãn trong thư mục `prefill` lên (mặc định `annotations_claude.xml`, nhãn nháp machine_labeled); token chỉ đọc từ `CVAT_LOCAL_TOKEN`, người dùng tự đặt trong PowerShell; task trùng tên thì bỏ qua | thử nghiệm |
 | `06_evaluate.py` | Tính độ đo, so sánh cấu hình A-E | 5 |
 
 Các file sẽ được viết dần khi làm tới bước tương ứng.
