@@ -1,0 +1,6 @@
+video15 - NHÃN MÁY (Claude, nháp 14/11/2026), trạng thái machine_labeled, CHƯA người kiểm định.
+Claude đã xem kết quả hệ thống trên video này trước khi gán (khi tìm lỗi), nên nhãn không hoàn toàn độc lập.
+Người kiểm định: xem video gốc trước, rồi mới so với nhãn nháp; sửa xong ghi tên, ngày vào đây và đổi trạng thái thành human_audited.
+File nhãn nháp: outputs/results/video/video15/prefill/annotations_claude.xml (CVAT for video 1.1).
+
+Ba người: công nhân ngồi (T1 tới f86 rồi T4), người phía sau (T3), người mép trái (T2). T0, T5 là hộp gộp nhiều người, bỏ. Video nhiều người chồng nhau, cần kiểm hộp kỹ; 23 khung chưa ghép được hộp với hệ thống.

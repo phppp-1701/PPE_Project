@@ -1,0 +1,6 @@
+video10 - NHÃN MÁY (Claude, nháp 14/11/2026), trạng thái machine_labeled, CHƯA người kiểm định.
+Claude đã xem kết quả hệ thống trên video này trước khi gán (khi tìm lỗi), nên nhãn không hoàn toàn độc lập.
+Người kiểm định: xem video gốc trước, rồi mới so với nhãn nháp; sửa xong ghi tên, ngày vào đây và đổi trạng thái thành human_audited.
+File nhãn nháp: outputs/results/video/video10/prefill/annotations_claude.xml (CVAT for video 1.1).
+
+Bốn track máy vẽ chồng lên cùng một người: lấy hợp các hộp mỗi khung, cần chỉnh hộp nếu lệch. Găng thieu từ f240 (tay chống hông, thấy da tay) - CHƯA CHẮC, kiểm kỹ; nếu không thấy rõ thì chua_xac_dinh.

@@ -1,0 +1,6 @@
+video9 - NHÃN MÁY (Claude, nháp 14/11/2026), trạng thái machine_labeled, CHƯA người kiểm định.
+Claude đã xem kết quả hệ thống trên video này trước khi gán (khi tìm lỗi), nên nhãn không hoàn toàn độc lập.
+Người kiểm định: xem video gốc trước, rồi mới so với nhãn nháp; sửa xong ghi tên, ngày vào đây và đổi trạng thái thành human_audited.
+File nhãn nháp: outputs/results/video/video9/prefill/annotations_claude.xml (CVAT for video 1.1).
+
+T0 giữ, T1 (hộp nhỏ góc dưới trái) bỏ. Áo bị cắt ở ngực vẫn là co (quy tắc: thấy một phần áo phản quang là co). Găng thieu f0-159 (tay trần cầm kính), sau đó tay ra khỏi khung. Kính thieu tới f84, co từ f85 (mốc chuyển ước lượng).

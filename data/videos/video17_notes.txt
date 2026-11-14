@@ -1,0 +1,6 @@
+video17 - NHÃN MÁY (Claude, nháp 14/11/2026), trạng thái machine_labeled, CHƯA người kiểm định.
+Claude đã xem kết quả hệ thống trên video này trước khi gán (khi tìm lỗi), nên nhãn không hoàn toàn độc lập.
+Người kiểm định: xem video gốc trước, rồi mới so với nhãn nháp; sửa xong ghi tên, ngày vào đây và đổi trạng thái thành human_audited.
+File nhãn nháp: outputs/results/video/video17/prefill/annotations_claude.xml (CVAT for video 1.1).
+
+Quay lưng. T1 (vật đỏ trên tường) bỏ. Mũ đen nhìn rõ = co. Găng thieu hai tay (người dùng nhận xét tay nhìn rõ không găng) - kiểm từng khung tay có bị khuất không.
