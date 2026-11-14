@@ -1,0 +1,136 @@
+{
+ "sealed": "2026-11-14T20:28:18",
+ "note": "Tập đánh giá độc lập niêm phong. Chưa chạy hệ thống (bất kỳ phiên bản nào) trên các video này. Chỉ dùng một lần cho bản cuối, khi người dùng cho phép. Nhãn machine_consensus, chưa người kiểm định, gán trước mọi dự đoán. sha256 file text (.json/.py/.csv/.md) tính sau khi đổi CRLF thành LF; mp4, zip tính nguyên byte.",
+ "videos_used": [
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h7",
+  "h8",
+  "h9"
+ ],
+ "videos_excluded": {
+  "h6": "vi phạm tiêu chí 3 (5-6 người), loại khi gán nhãn, trước mọi dự đoán"
+ },
+ "label_pattern": "data/videos/holdout/labels/{v}_machine_cvat.zip",
+ "videos": [
+  {
+   "path": "data/videos/holdout/h1.mp4",
+   "sha256": "558c39a1534ea88bf6a63b89015db6b9e1cdd74880454e5698ad4175af100cc3"
+  },
+  {
+   "path": "data/videos/holdout/h2.mp4",
+   "sha256": "792bc2100150e2926ca7fdda36c4688c899d981fef7f6857249cfd5b7a3fcb4a"
+  },
+  {
+   "path": "data/videos/holdout/h3.mp4",
+   "sha256": "ebab6e096d5e08b93bfedda436279298fb60e7311c6625d2780345d81a4cb636"
+  },
+  {
+   "path": "data/videos/holdout/h4.mp4",
+   "sha256": "5a1b25e5490d785f36a2417b89522d2c379f8e099ee99459a59510fc98c29967"
+  },
+  {
+   "path": "data/videos/holdout/h5.mp4",
+   "sha256": "9ead87cf2c7ed2095b4fc98d3498f0643f5085bd810de01add9dfdf3117c402f"
+  },
+  {
+   "path": "data/videos/holdout/h7.mp4",
+   "sha256": "a9961ea9a1d420047b38d623de8faeffa5c14bf41e2a191529de0a0241fac388"
+  },
+  {
+   "path": "data/videos/holdout/h8.mp4",
+   "sha256": "44737ff983d84195c660c0569c74983b92652af36f95ac905e55e897068b2ffd"
+  },
+  {
+   "path": "data/videos/holdout/h9.mp4",
+   "sha256": "4e5038d3c671c675c961e0026d95a260ef959f6cc1bf2177c9234b59f6089e02"
+  }
+ ],
+ "labels": [
+  {
+   "path": "data/videos/holdout/labels/h1_machine_cvat.zip",
+   "sha256": "cd8d7bbf148ab714ce105b91de1481a4b84ab4f39cbb8c4063d2c28ef44df899"
+  },
+  {
+   "path": "data/videos/holdout/labels/h2_machine_cvat.zip",
+   "sha256": "1f7197aa3b02e4c6ba4577828b9a6800828a1beb52d9801bf81dd4dabc578864"
+  },
+  {
+   "path": "data/videos/holdout/labels/h3_machine_cvat.zip",
+   "sha256": "bea7dc32a6df4ebabddb1e315a920306933f2b09f1af445f6ceaa58e3fe69abb"
+  },
+  {
+   "path": "data/videos/holdout/labels/h4_machine_cvat.zip",
+   "sha256": "8f36cb07e9c1b5ba18c6645f7179b81aaee33795f66fd6ac64a36adaef02c3f9"
+  },
+  {
+   "path": "data/videos/holdout/labels/h5_machine_cvat.zip",
+   "sha256": "d231cae84faa70b456d064255384e4e6d341c8db7406c17a50db7856cc3b9e66"
+  },
+  {
+   "path": "data/videos/holdout/labels/h7_machine_cvat.zip",
+   "sha256": "310fc7a0570eccf6fac5544039097f7166d18e70490a8adbf176594003549b49"
+  },
+  {
+   "path": "data/videos/holdout/labels/h8_machine_cvat.zip",
+   "sha256": "1fb08c726abd620cf1f4afae2f56d77cc8db3390ce17104abf41cea799b5e52f"
+  },
+  {
+   "path": "data/videos/holdout/labels/h9_machine_cvat.zip",
+   "sha256": "023267419f3c74f33c6d64f84c76446b9ef83c9eb7789dcaacc73306f5bb2b53"
+  }
+ ],
+ "label_sources": [
+  {
+   "path": "data/videos/holdout/labels/agreement.json",
+   "sha256": "51321e3208d3b90b0f39d26d3fcceb348a3bb0d462ba8410f5b73b98825dc7c1"
+  },
+  {
+   "path": "data/videos/holdout/labels/label_counts.json",
+   "sha256": "7323ab8891dde9541f4fb618a557f9046ab8bd5120eaae8c585d644429c4ef0c"
+  },
+  {
+   "path": "data/videos/holdout/labels/spec_A.json",
+   "sha256": "c600ed000ddf3fe9c187613eba3eef213914cf5ee9cc683a09aed951ea46f8ca"
+  },
+  {
+   "path": "data/videos/holdout/labels/spec_B_attrs.json",
+   "sha256": "6d11e65500fad53ce65b234850bd6b85ec4b58f994209a0844c146a072b5178a"
+  },
+  {
+   "path": "data/videos/holdout/labels/spec_consensus.json",
+   "sha256": "58f85f08079c12591d87ebae7ba178ba1bb36bbde53b333913ff89a0ab048355"
+  }
+ ],
+ "tools": [
+  {
+   "path": "data/videos/holdout/tools/build_labels.py",
+   "sha256": "96a5a64a6013a8a74e31fd0b5ddac9119b92608a19dd6c239e8f0866271f3b02"
+  },
+  {
+   "path": "data/videos/holdout/tools/consensus.py",
+   "sha256": "8c26058dc89dc6e1209644e95adc90007cb2b5f77ba9e75daccb5dba79cd08ef"
+  },
+  {
+   "path": "data/videos/holdout/tools/label_sheets.py",
+   "sha256": "1efafb9e7029725b589686fea91a13f889c6f407eedbb46c85a2da22d13fa457"
+  }
+ ],
+ "records": [
+  {
+   "path": "data/videos/holdout/sources.csv",
+   "sha256": "cbacd1eadccedb96b6485ac4e71f20c2026c2a6562624e308544d6b32c718fc3"
+  },
+  {
+   "path": "data/videos/holdout/candidates.csv",
+   "sha256": "ad7b9f565b1e55c13544fae426a488451a6d42b7a4bdbe5ec2d2243b8cf203ae"
+  },
+  {
+   "path": "data/videos/holdout/README.md",
+   "sha256": "299bfe7971476d949536cabc3ce7f02acc9f83e73ae82956d7b1e655cb4bb0e0"
+  }
+ ]
+}

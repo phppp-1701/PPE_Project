@@ -1,0 +1,190 @@
+{
+ "per_video": {
+  "h1": {
+   "boxes": 398,
+   "helmet": {
+    "co": 398
+   },
+   "vest": {
+    "co": 398
+   },
+   "gloves": {
+    "thieu": 180,
+    "chua_xac_dinh": 218
+   },
+   "goggles": {
+    "thieu": 250,
+    "chua_xac_dinh": 148
+   },
+   "boots": {
+    "chua_xac_dinh": 398
+   }
+  },
+  "h2": {
+   "boxes": 282,
+   "helmet": {
+    "chua_xac_dinh": 41,
+    "thieu": 241
+   },
+   "vest": {
+    "chua_xac_dinh": 25,
+    "co": 257
+   },
+   "gloves": {
+    "chua_xac_dinh": 282
+   },
+   "goggles": {
+    "chua_xac_dinh": 282
+   },
+   "boots": {
+    "thieu": 141,
+    "chua_xac_dinh": 141
+   }
+  },
+  "h3": {
+   "boxes": 459,
+   "helmet": {
+    "co": 459
+   },
+   "vest": {
+    "thieu": 459
+   },
+   "gloves": {
+    "chua_xac_dinh": 459
+   },
+   "goggles": {
+    "chua_xac_dinh": 459
+   },
+   "boots": {
+    "chua_xac_dinh": 459
+   }
+  },
+  "h4": {
+   "boxes": 808,
+   "helmet": {
+    "co": 558,
+    "chua_xac_dinh": 250
+   },
+   "vest": {
+    "co": 404,
+    "chua_xac_dinh": 404
+   },
+   "gloves": {
+    "co": 220,
+    "chua_xac_dinh": 588
+   },
+   "goggles": {
+    "thieu": 157,
+    "chua_xac_dinh": 651
+   },
+   "boots": {
+    "chua_xac_dinh": 808
+   }
+  },
+  "h5": {
+   "boxes": 462,
+   "helmet": {
+    "chua_xac_dinh": 23,
+    "co": 439
+   },
+   "vest": {
+    "chua_xac_dinh": 462
+   },
+   "gloves": {
+    "chua_xac_dinh": 462
+   },
+   "goggles": {
+    "chua_xac_dinh": 462
+   },
+   "boots": {
+    "chua_xac_dinh": 462
+   }
+  },
+  "h7": {
+   "boxes": 506,
+   "helmet": {
+    "co": 250,
+    "chua_xac_dinh": 256
+   },
+   "vest": {
+    "co": 506
+   },
+   "gloves": {
+    "chua_xac_dinh": 506
+   },
+   "goggles": {
+    "chua_xac_dinh": 424,
+    "thieu": 82
+   },
+   "boots": {
+    "chua_xac_dinh": 506
+   }
+  },
+  "h8": {
+   "boxes": 350,
+   "helmet": {
+    "thieu": 22,
+    "chua_xac_dinh": 38,
+    "co": 290
+   },
+   "vest": {
+    "thieu": 350
+   },
+   "gloves": {
+    "chua_xac_dinh": 161,
+    "thieu": 189
+   },
+   "goggles": {
+    "thieu": 292,
+    "chua_xac_dinh": 58
+   },
+   "boots": {
+    "chua_xac_dinh": 350
+   }
+  },
+  "h9": {
+   "boxes": 590,
+   "helmet": {
+    "thieu": 590
+   },
+   "vest": {
+    "chua_xac_dinh": 590
+   },
+   "gloves": {
+    "chua_xac_dinh": 590
+   },
+   "goggles": {
+    "co": 590
+   },
+   "boots": {
+    "chua_xac_dinh": 590
+   }
+  }
+ },
+ "total": {
+  "helmet": {
+   "co": 2394,
+   "chua_xac_dinh": 608,
+   "thieu": 853
+  },
+  "vest": {
+   "co": 1565,
+   "chua_xac_dinh": 1481,
+   "thieu": 809
+  },
+  "gloves": {
+   "thieu": 369,
+   "chua_xac_dinh": 3266,
+   "co": 220
+  },
+  "goggles": {
+   "thieu": 781,
+   "chua_xac_dinh": 2484,
+   "co": 590
+  },
+  "boots": {
+   "chua_xac_dinh": 3714,
+   "thieu": 141
+  }
+ }
+}

@@ -7,3 +7,4 @@
 - Nhãn CVAT của từng video đặt cùng tên với video, ví dụ `video2_cvat.zip` (quy tắc gán: `docs/video_labeling.md`).
 - Video không bao giờ được dùng để huấn luyện YOLO.
 - File video không đưa lên git (chỉ `README.md` và `video_sources.csv`).
+- `holdout/`: tập video quay gần độc lập, niêm phong (14/11/2026), chỉ dùng một lần cho đánh giá cuối; quy tắc, tiêu chí chọn, nhãn, manifest: `holdout/README.md`.

@@ -1,0 +1,366 @@
+{
+ "summary": {
+  "helmet": {
+   "frames": 3855,
+   "agree_frac": 0.9665,
+   "kappa": 0.9362,
+   "confusion": {
+    "chua_xac_dinh|chua_xac_dinh": 479,
+    "chua_xac_dinh|co": 88,
+    "chua_xac_dinh|thieu": 1,
+    "co|chua_xac_dinh": 37,
+    "co|co": 2394,
+    "thieu|co": 3,
+    "thieu|thieu": 853
+   }
+  },
+  "vest": {
+   "frames": 3855,
+   "agree_frac": 0.9987,
+   "kappa": 0.998,
+   "confusion": {
+    "chua_xac_dinh|chua_xac_dinh": 1476,
+    "chua_xac_dinh|co": 5,
+    "co|co": 1565,
+    "thieu|thieu": 809
+   }
+  },
+  "glove_left": {
+   "frames": 3855,
+   "agree_frac": 0.8581,
+   "kappa": 0.6118,
+   "confusion": {
+    "chua_xac_dinh|chua_xac_dinh": 2731,
+    "chua_xac_dinh|co": 52,
+    "chua_xac_dinh|thieu": 301,
+    "co|chua_xac_dinh": 7,
+    "co|co": 238,
+    "thieu|chua_xac_dinh": 187,
+    "thieu|thieu": 339
+   }
+  },
+  "glove_right": {
+   "frames": 3855,
+   "agree_frac": 0.8955,
+   "kappa": 0.6957,
+   "confusion": {
+    "chua_xac_dinh|chua_xac_dinh": 2863,
+    "chua_xac_dinh|thieu": 221,
+    "co|chua_xac_dinh": 25,
+    "co|co": 220,
+    "thieu|chua_xac_dinh": 157,
+    "thieu|thieu": 369
+   }
+  },
+  "goggles": {
+   "frames": 3855,
+   "agree_frac": 0.9606,
+   "kappa": 0.9266,
+   "confusion": {
+    "chua_xac_dinh|chua_xac_dinh": 2332,
+    "chua_xac_dinh|thieu": 124,
+    "co|co": 590,
+    "thieu|chua_xac_dinh": 28,
+    "thieu|thieu": 781
+   }
+  },
+  "boots": {
+   "frames": 3855,
+   "agree_frac": 0.9977,
+   "kappa": 0.9679,
+   "confusion": {
+    "chua_xac_dinh|chua_xac_dinh": 3705,
+    "chua_xac_dinh|thieu": 9,
+    "thieu|thieu": 141
+   }
+  }
+ },
+ "by_video": {
+  "h1": {
+   "P0/helmet": {
+    "frames": 398,
+    "agree": 398,
+    "disagree": 0
+   },
+   "P0/vest": {
+    "frames": 398,
+    "agree": 398,
+    "disagree": 0
+   },
+   "P0/glove_left": {
+    "frames": 398,
+    "agree": 207,
+    "disagree": 191
+   },
+   "P0/glove_right": {
+    "frames": 398,
+    "agree": 237,
+    "disagree": 161
+   },
+   "P0/goggles": {
+    "frames": 398,
+    "agree": 390,
+    "disagree": 8
+   },
+   "P0/boots": {
+    "frames": 398,
+    "agree": 398,
+    "disagree": 0
+   }
+  },
+  "h2": {
+   "P0/helmet": {
+    "frames": 282,
+    "agree": 281,
+    "disagree": 1
+   },
+   "P0/vest": {
+    "frames": 282,
+    "agree": 277,
+    "disagree": 5
+   },
+   "P0/glove_left": {
+    "frames": 282,
+    "agree": 282,
+    "disagree": 0
+   },
+   "P0/glove_right": {
+    "frames": 282,
+    "agree": 282,
+    "disagree": 0
+   },
+   "P0/goggles": {
+    "frames": 282,
+    "agree": 282,
+    "disagree": 0
+   },
+   "P0/boots": {
+    "frames": 282,
+    "agree": 273,
+    "disagree": 9
+   }
+  },
+  "h3": {
+   "P0/helmet": {
+    "frames": 459,
+    "agree": 459,
+    "disagree": 0
+   },
+   "P0/vest": {
+    "frames": 459,
+    "agree": 459,
+    "disagree": 0
+   },
+   "P0/glove_left": {
+    "frames": 459,
+    "agree": 459,
+    "disagree": 0
+   },
+   "P0/glove_right": {
+    "frames": 459,
+    "agree": 459,
+    "disagree": 0
+   },
+   "P0/goggles": {
+    "frames": 459,
+    "agree": 459,
+    "disagree": 0
+   },
+   "P0/boots": {
+    "frames": 459,
+    "agree": 459,
+    "disagree": 0
+   }
+  },
+  "h4": {
+   "P0/helmet": {
+    "frames": 404,
+    "agree": 404,
+    "disagree": 0
+   },
+   "P0/vest": {
+    "frames": 404,
+    "agree": 404,
+    "disagree": 0
+   },
+   "P0/glove_left": {
+    "frames": 404,
+    "agree": 345,
+    "disagree": 59
+   },
+   "P0/glove_right": {
+    "frames": 404,
+    "agree": 379,
+    "disagree": 25
+   },
+   "P0/goggles": {
+    "frames": 404,
+    "agree": 366,
+    "disagree": 38
+   },
+   "P0/boots": {
+    "frames": 404,
+    "agree": 404,
+    "disagree": 0
+   },
+   "P1/helmet": {
+    "frames": 404,
+    "agree": 394,
+    "disagree": 10
+   },
+   "P1/vest": {
+    "frames": 404,
+    "agree": 404,
+    "disagree": 0
+   },
+   "P1/glove_left": {
+    "frames": 404,
+    "agree": 404,
+    "disagree": 0
+   },
+   "P1/glove_right": {
+    "frames": 404,
+    "agree": 404,
+    "disagree": 0
+   },
+   "P1/goggles": {
+    "frames": 404,
+    "agree": 404,
+    "disagree": 0
+   },
+   "P1/boots": {
+    "frames": 404,
+    "agree": 404,
+    "disagree": 0
+   }
+  },
+  "h5": {
+   "P0/helmet": {
+    "frames": 462,
+    "agree": 439,
+    "disagree": 23
+   },
+   "P0/vest": {
+    "frames": 462,
+    "agree": 462,
+    "disagree": 0
+   },
+   "P0/glove_left": {
+    "frames": 462,
+    "agree": 462,
+    "disagree": 0
+   },
+   "P0/glove_right": {
+    "frames": 462,
+    "agree": 462,
+    "disagree": 0
+   },
+   "P0/goggles": {
+    "frames": 462,
+    "agree": 462,
+    "disagree": 0
+   },
+   "P0/boots": {
+    "frames": 462,
+    "agree": 462,
+    "disagree": 0
+   }
+  },
+  "h7": {
+   "P0/helmet": {
+    "frames": 506,
+    "agree": 449,
+    "disagree": 57
+   },
+   "P0/vest": {
+    "frames": 506,
+    "agree": 506,
+    "disagree": 0
+   },
+   "P0/glove_left": {
+    "frames": 506,
+    "agree": 226,
+    "disagree": 280
+   },
+   "P0/glove_right": {
+    "frames": 506,
+    "agree": 306,
+    "disagree": 200
+   },
+   "P0/goggles": {
+    "frames": 506,
+    "agree": 448,
+    "disagree": 58
+   },
+   "P0/boots": {
+    "frames": 506,
+    "agree": 506,
+    "disagree": 0
+   }
+  },
+  "h8": {
+   "P0/helmet": {
+    "frames": 350,
+    "agree": 312,
+    "disagree": 38
+   },
+   "P0/vest": {
+    "frames": 350,
+    "agree": 350,
+    "disagree": 0
+   },
+   "P0/glove_left": {
+    "frames": 350,
+    "agree": 333,
+    "disagree": 17
+   },
+   "P0/glove_right": {
+    "frames": 350,
+    "agree": 333,
+    "disagree": 17
+   },
+   "P0/goggles": {
+    "frames": 350,
+    "agree": 302,
+    "disagree": 48
+   },
+   "P0/boots": {
+    "frames": 350,
+    "agree": 350,
+    "disagree": 0
+   }
+  },
+  "h9": {
+   "P0/helmet": {
+    "frames": 590,
+    "agree": 590,
+    "disagree": 0
+   },
+   "P0/vest": {
+    "frames": 590,
+    "agree": 590,
+    "disagree": 0
+   },
+   "P0/glove_left": {
+    "frames": 590,
+    "agree": 590,
+    "disagree": 0
+   },
+   "P0/glove_right": {
+    "frames": 590,
+    "agree": 590,
+    "disagree": 0
+   },
+   "P0/goggles": {
+    "frames": 590,
+    "agree": 590,
+    "disagree": 0
+   },
+   "P0/boots": {
+    "frames": 590,
+    "agree": 590,
+    "disagree": 0
+   }
+  }
+ }
+}

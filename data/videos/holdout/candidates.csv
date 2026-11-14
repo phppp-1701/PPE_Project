@@ -1,0 +1,21 @@
+pexels_id,decision,reason
+14185520,chon,h1
+27917643,chon,h2
+30172575,chon,h3
+32244801,chon,h4; một video cho loạt 322447xx
+40481916,chon,h5
+40773981,loai,"h6; ban đầu chọn theo 6 khung mẫu, khi xem ảnh tờ gán nhãn (trước mọi dự đoán) thấy 5-6 người đi qua lại, che nhau -> vi phạm tiêu chí 3 (1-3 người), loại; không thay video khác (còn 8, trong khoảng 6-9)"
+40774730,chon,h7
+5100046,chon,h8
+8469774,chon,h9
+9244491,loai,"đạt tiêu chí 1-5 nhưng đã đủ 10 video; loại vì ngoài bối cảnh công trường, nhà máy (phòng thí nghiệm, áo liền thân y tế)"
+32244795,loai,người ở xa (tiêu chí 3)
+32244797,loai,"cùng loạt 322447xx, đã chọn 32244801 (gần hơn)"
+32244802,loai,"cùng loạt 322447xx, đã chọn 32244801"
+16106454,loai,chỉ thấy tay (tiêu chí 3)
+19654640,loai,chỉ thấy chân (tiêu chí 3)
+39924241,loai,"chỉ thấy tay, chân (tiêu chí 3)"
+39924274,loai,chỉ thấy chân (tiêu chí 3)
+39933087,loai,chỉ thấy tay đeo găng (tiêu chí 3)
+40195931,loai,người rất nhỏ trong ống (tiêu chí 3)
+4888868,loai,không có người (kính đặt trên bàn)
