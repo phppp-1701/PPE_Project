@@ -161,9 +161,15 @@ def collect_items(cfg, only=("train", "val"), chv_torso=False):
             for fc in obj["face"]:
                 if not any(ioa(gl, fc) > 0.3 for gl in obj["glasses"]):
                     items.append((part, "no_eyewear", img, fc, "sh17"))
+            # Bản 4: mũ; đầu không chứa hộp mũ nào -> không mũ
+            for hm in obj["helmet"]:
+                items.append((part, "helmet", img, hm, "sh17"))
+            for hd in obj["head"]:
+                if not any(ioa(hm, hd) > 0.3 for hm in obj["helmet"]):
+                    items.append((part, "no_helmet", img, hd, "sh17"))
         else:
             lab = ROOT / img.replace("/images/", "/labels/").rsplit(".", 1)[0]
-            m = {1: "glove", 9: "bare_hand", 10: "not_safety_foot", 8: "no_eyewear"}
+            m = {1: "glove", 9: "bare_hand", 10: "not_safety_foot", 8: "no_eyewear", 0: "helmet", 7: "no_helmet"}
             for c, bx in yolo_boxes(str(lab) + ".txt", w, h):
                 if c in m:
                     items.append((part, m[c], img, bx, "cppe1"))
@@ -173,7 +179,8 @@ def collect_items(cfg, only=("train", "val"), chv_torso=False):
     raw2 = ROOT / "data" / "raw" / "construction_ppe_v2"
     names2 = yaml.safe_load((raw2 / "data.yaml").read_text(encoding="utf-8"))["names"]
     bad = set((ROOT / "data" / "ppe6" / "external" / "cppe2" / "eval_overlap.txt").read_text(encoding="utf-8").split())
-    m2 = {"gloves": "glove", "no_gloves": "bare_hand", "no_boots": "not_safety_foot", "no_goggle": "no_eyewear", "goggles": "goggles", "boots": "safety_boot"}
+    m2 = {"gloves": "glove", "no_gloves": "bare_hand", "no_boots": "not_safety_foot", "no_goggle": "no_eyewear", "goggles": "goggles", "boots": "safety_boot",
+          "helmet": "helmet", "no_helmet": "no_helmet"}
     for lab in sorted((raw2 / "labels").rglob("*.txt")):
         img = next((raw2 / "images" / lab.parent.name).glob(lab.stem + ".*"))
         if "cppe2__" + img.name in bad:
@@ -288,10 +295,14 @@ def main():
                     skipped["kp_unmatched"] += 1
                     continue
                 kg = pc["kp_geom"]
-                key = {"goggles": "eye", "gloves": "hand", "boots": "foot", "vest": "torso"}[ppe]
+                key = {"goggles": "eye", "gloves": "hand", "boots": "foot", "vest": "torso", "helmet": "head"}[ppe]
                 if part == "val":
-                    # Val: hình học của pipeline; vùng thân chưa có trong pipeline -> giữa khoảng của kp_geom
-                    g = val_geom.get(key) or dict(s=sum(kg["torso_s"]) / 2, h=sum(kg["torso_h"]) / 2)
+                    # Val: hình học của pipeline; vùng chưa có trong pipeline -> giữa khoảng của kp_geom
+                    mid = {"torso": dict(s=sum(kg["torso_s"]) / 2, h=sum(kg["torso_h"]) / 2),
+                           "head": dict(k=sum(kg["head_k"]) / 2, s=sum(kg["head_s"]) / 2)}
+                    g = val_geom.get(key) or mid[key]
+                elif ppe == "helmet":
+                    g = dict(k=rng.uniform(*kg["head_k"]), s=rng.uniform(*kg["head_s"]))
                 elif ppe == "goggles":
                     g = dict(s=rng.uniform(*kg["eye_s"]))
                 elif ppe == "vest":

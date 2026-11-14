@@ -357,3 +357,14 @@ def test_observe_from_crop_gloves(test_cfg):
     cfg["part_cls"]["observe_from_crop"] = ["gloves"]
     _, s = run(cfg, [p], [])
     assert s[1]["gloves"]["state"] == MISSING
+
+
+def test_part_boxes_head_back_view():
+    """Nhìn từ sau: chỉ thấy tai và hai vai vẫn cắt được vùng đầu."""
+    from ppe.parts import part_boxes
+    k = [(0.0, 0.0, 0.0)] * 17
+    k[3], k[4] = (90.0, 100.0, 0.9), (130.0, 100.0, 0.9)        # hai tai
+    k[5], k[6] = (60.0, 200.0, 0.9), (160.0, 200.0, 0.9)        # vai, rộng 100
+    out = {n: b for n, s, b in part_boxes(k, {"hand": {"k": 0, "s": 1}, "foot": {"k": 0, "s": 1}, "eye": {"s": 2},
+                                              "head": {"k": 0.3, "s": 1.0}}, 0.5)}
+    assert out["helmet"] == (110.0, 70.0, 100.0)

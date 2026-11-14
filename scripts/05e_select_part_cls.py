@@ -76,6 +76,8 @@ def main():
     part_of = {"gloves": "hand", "boots": "foot", "goggles": "eye"}
     if "vest" in names.values():   # bản 3 có áo
         part_of["vest"] = "torso"
+    if "helmet" in names.values():   # bản 4 có mũ
+        part_of["helmet"] = "head"
     items = [it for it in items if CLS2PPE[it[1]] in part_of]
     by_img = defaultdict(list)
     for _, cls, img, bx, src in items:

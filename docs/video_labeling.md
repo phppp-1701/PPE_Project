@@ -17,7 +17,9 @@
       {"name": "helmet", "input_type": "select", "mutable": true, "default_value": "chua_xac_dinh", "values": ["chua_xac_dinh", "co", "thieu"]},
       {"name": "vest", "input_type": "select", "mutable": true, "default_value": "chua_xac_dinh", "values": ["chua_xac_dinh", "co", "thieu"]},
       {"name": "glove_left", "input_type": "select", "mutable": true, "default_value": "chua_xac_dinh", "values": ["chua_xac_dinh", "co", "thieu"]},
-      {"name": "glove_right", "input_type": "select", "mutable": true, "default_value": "chua_xac_dinh", "values": ["chua_xac_dinh", "co", "thieu"]}
+      {"name": "glove_right", "input_type": "select", "mutable": true, "default_value": "chua_xac_dinh", "values": ["chua_xac_dinh", "co", "thieu"]},
+      {"name": "goggles", "input_type": "select", "mutable": true, "default_value": "chua_xac_dinh", "values": ["chua_xac_dinh", "co", "thieu"]},
+      {"name": "boots", "input_type": "select", "mutable": true, "default_value": "chua_xac_dinh", "values": ["chua_xac_dinh", "co", "thieu"]}
     ]
   }
 ]
@@ -46,7 +48,7 @@ Dùng chế độ **Track**, không dùng Shape: mỗi người là một track,
 
 ## 3. Gán trạng thái PPE
 
-Mỗi track có 4 thuộc tính ở bảng **Objects** bên phải. Thuộc tính giữ nguyên ở các khung sau cho tới khi bạn đổi, nên chỉ cần đổi **tại khung trạng thái thay đổi**.
+Mỗi track có 6 thuộc tính ở bảng **Objects** bên phải (4 thuộc tính đầu từ bản 4 lớp; `goggles`, `boots` thêm cho bản 6 lớp, nhãn video 3-6 đã có). Thuộc tính giữ nguyên ở các khung sau cho tới khi bạn đổi, nên chỉ cần đổi **tại khung trạng thái thay đổi**.
 
 Chỉ dựa vào **những gì nhìn thấy trong khung đang xét**. Không suy từ khung trước, khung sau hay từ người bên cạnh.
 
@@ -63,6 +65,9 @@ Khi phân vân giữa `thieu` và `chua_xac_dinh`, chọn `chua_xac_dinh`.
 - **`helmet`:** chỉ mũ bảo hộ cứng mới là `co`. Mũ lưỡi trai, mũ vải, mũ len, khăn hoặc đầu trần nhìn rõ là `thieu`. Mũ đang cầm tay, treo hoặc để trên bàn không tính.
 - **`vest`:** áo phản quang hoặc áo gile bảo hộ mặc trên người là `co`, nhìn từ trước, sau hay bên đều được. Chỉ thấy một phần áo nhưng chắc chắn là áo phản quang vẫn là `co`. Áo màu cam hoặc vàng không có dải phản quang và không phải gile bảo hộ là `thieu`. Áo cầm tay hoặc treo trên giá không tính.
 - **`glove_left`, `glove_right`:** xét từng tay. `left` là tay nằm **bên trái ảnh** so với giữa thân người, `right` là bên phải ảnh, không phải tay trái hay phải của người đó. Thấy rõ da bàn tay là `thieu`. Bàn tay khuất sau thân, bàn, thùng hoặc chỉ còn vài điểm ảnh mờ là `chua_xac_dinh`. Cầm vật màu trắng không tự động là găng; không chắc thì `chua_xac_dinh`.
+
+- **`goggles`:** kính bảo hộ **đang đeo trên mắt** là `co` (tròng ôm mặt hoặc có tấm chắn bên, gọng dày kiểu kính an toàn, kính kín kiểu goggle; định nghĩa ở `docs/annotation_rules.md`). Mắt nhìn rõ mà không đeo kính, hoặc đeo **kính cận, kính râm thời trang** là `thieu`. Kính cầm tay, đẩy lên đầu, treo áo cũng là `thieu` nếu mắt nhìn rõ. Người quay lưng, mặt khuất, quá nhỏ là `chua_xac_dinh`. Mặt nghiêng mà vẫn thấy rõ kính thì vẫn là `co`.
+- **`boots`:** theo định nghĩa ủng bản 3 ở `docs/annotation_rules.md`, chỉ nhìn chính chiếc giày: ủng cao su, nhựa, giày công trình cổ cao đế dày là `co`; giày thể thao, giày tây, dép, giày vải là `thieu`; chân ra ngoài khung, bị che, quá tối, giày da thấp cổ không rõ là `chua_xac_dinh`. Hai chân khác nhau: một chân nhìn rõ không có ủng là `thieu`.
 
 ## 4. Lưu và xuất
 

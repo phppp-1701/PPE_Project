@@ -18,6 +18,7 @@ PART_CLASSES = {
     "boots": ("safety_boot", ("not_safety_foot",)),
     "goggles": ("goggles", ("ordinary_glasses", "no_eyewear")),
     "vest": ("vest", ("no_vest",)),
+    "helmet": ("helmet", ("no_helmet",)),
 }
 HAND = ((9, 7), (10, 8))       # (cổ tay, khuỷu)
 FOOT = ((15, 13), (16, 14))    # (mắt cá, gối)
@@ -45,6 +46,19 @@ def eye_profile_box(kps, i, g):
     """Mặt nghiêng (chỉ thấy mắt i và mũi): tâm ở mắt, khoảng cách hai mắt ước lượng bằng 2 |mắt - mũi|."""
     (x, y), (nx, ny) = kps[i][:2], kps[NOSE][:2]
     return (x, y, g["s"] * 2 * math.hypot(x - nx, y - ny))
+
+
+HEAD = (0, 1, 2, 3, 4)          # mũi, hai mắt, hai tai
+
+
+def head_box(kps, g, c):
+    """Vùng đầu: tâm = trung bình các điểm đầu đạt c (nhìn từ sau thường chỉ còn tai), dịch lên k * độ rộng vai
+    (mũ nằm trên mắt, tai); cạnh = s * độ rộng vai. Cần hai vai và ít nhất một điểm đầu."""
+    pts = [kps[i][:2] for i in HEAD if kps[i][2] >= c]
+    (ax, ay), (bx, by) = kps[SHOULDERS[0]][:2], kps[SHOULDERS[1]][:2]
+    sw = math.hypot(ax - bx, ay - by)
+    cx, cy = sum(x for x, _ in pts) / len(pts), sum(y for _, y in pts) / len(pts)
+    return (cx, cy - g["k"] * sw, g["s"] * sw)
 
 
 def torso_box(kps, g, c):
@@ -81,6 +95,8 @@ def part_boxes(kps, geom, kp_conf):
         out.append(("goggles", None, eye_profile_box(kps, i, geom["eye"])))
     if "torso" in geom and all(_ok(kps, i, kp_conf) for i in SHOULDERS):
         out.append(("vest", None, torso_box(kps, geom["torso"], kp_conf)))
+    if "head" in geom and all(_ok(kps, i, kp_conf) for i in SHOULDERS) and any(_ok(kps, i, kp_conf) for i in HEAD):
+        out.append(("helmet", None, head_box(kps, geom["head"], kp_conf)))
     return out
 
 
@@ -162,6 +178,9 @@ def anchors(kps, ppe, c):
         for i in EYES:
             if kps[i][2] >= c:
                 out.append((kps[i][:2], lambda g, i=i: eye_profile_box(kps, i, g)))
+    elif ppe == "helmet" and all(kps[i][2] >= c for i in SHOULDERS) and any(kps[i][2] >= c for i in HEAD):
+        g0 = head_box(kps, {"k": 0.3, "s": 1.0}, c)   # chỉ để lấy tâm khi ghép với hộp nhãn
+        out.append((g0[:2], lambda g: head_box(kps, g, c)))
     elif ppe == "vest" and all(kps[i][2] >= c for i in SHOULDERS):
         g0 = torso_box(kps, {"h": 1.5, "s": 1.0}, c)   # chỉ để lấy tâm khi ghép với hộp nhãn
         out.append((g0[:2], lambda g: torso_box(kps, g, c)))
