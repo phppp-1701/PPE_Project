@@ -1,0 +1,749 @@
+D:\KhoaLuan\PPE_PROJECT\scripts\05_run_video.py D:\KhoaLuan\PPE_PROJECT\data\videos\video9.mp4 | outputs/results/close_eval/pipeline_baseline_0645f53.yaml
+Video video9.mp4: 1920x1080, 30.00 FPS, 315 khung. Chạy tới bước: full
+  100/315 khung, 16.7 FPS toàn luồng
+  200/315 khung, 18.7 FPS toàn luồng
+  300/315 khung, 20.4 FPS toàn luồng
+{
+ "stage": "full",
+ "frames": 315,
+ "pipeline_fps": 20.61,
+ "step_ms": {
+  "association": {
+   "p50": 0.05,
+   "p95": 0.08
+  },
+  "compliance": {
+   "p50": 0.15,
+   "p95": 0.22
+  },
+  "detector": {
+   "p50": 17.14,
+   "p95": 19.98
+  },
+  "parts": {
+   "p50": 7.76,
+   "p95": 17.92
+  },
+  "pose": {
+   "p50": 10.96,
+   "p95": 15.22
+  },
+  "temporal_events": {
+   "p50": 0.2,
+   "p95": 0.28
+  },
+  "tracker": {
+   "p50": 0.44,
+   "p95": 0.64
+  }
+ },
+ "events": 1
+}
+Đã ghi D:\KhoaLuan\PPE_PROJECT\outputs\results\close_eval\kiem_thu_gan\baseline\video9
+D:\KhoaLuan\PPE_PROJECT\scripts\05_run_video.py D:\KhoaLuan\PPE_PROJECT\data\videos\video9.mp4 | configs/pipeline.yaml
+Video video9.mp4: 1920x1080, 30.00 FPS, 315 khung. Chạy tới bước: full
+  100/315 khung, 14.2 FPS toàn luồng
+  200/315 khung, 15.7 FPS toàn luồng
+  300/315 khung, 16.7 FPS toàn luồng
+{
+ "stage": "full",
+ "frames": 315,
+ "pipeline_fps": 16.8,
+ "step_ms": {
+  "association": {
+   "p50": 0.05,
+   "p95": 0.08
+  },
+  "compliance": {
+   "p50": 0.17,
+   "p95": 0.26
+  },
+  "detector": {
+   "p50": 18.66,
+   "p95": 20.31
+  },
+  "parts": {
+   "p50": 18.79,
+   "p95": 24.53
+  },
+  "pose": {
+   "p50": 11.03,
+   "p95": 14.32
+  },
+  "temporal_events": {
+   "p50": 0.2,
+   "p95": 0.28
+  },
+  "tracker": {
+   "p50": 0.44,
+   "p95": 0.63
+  }
+ },
+ "events": 1
+}
+Đã ghi D:\KhoaLuan\PPE_PROJECT\outputs\results\close_eval\kiem_thu_gan\v4\video9
+D:\KhoaLuan\PPE_PROJECT\scripts\05_run_video.py D:\KhoaLuan\PPE_PROJECT\data\videos\video10.mp4 | outputs/results/close_eval/pipeline_baseline_0645f53.yaml
+Video video10.mp4: 1920x1080, 30.00 FPS, 361 khung. Chạy tới bước: full
+  100/361 khung, 19.1 FPS toàn luồng
+  200/361 khung, 21.6 FPS toàn luồng
+  300/361 khung, 21.9 FPS toàn luồng
+{
+ "stage": "full",
+ "frames": 361,
+ "pipeline_fps": 21.93,
+ "step_ms": {
+  "association": {
+   "p50": 0.06,
+   "p95": 0.08
+  },
+  "compliance": {
+   "p50": 0.15,
+   "p95": 0.2
+  },
+  "detector": {
+   "p50": 16.98,
+   "p95": 19.62
+  },
+  "parts": {
+   "p50": 6.82,
+   "p95": 13.14
+  },
+  "pose": {
+   "p50": 11.2,
+   "p95": 14.64
+  },
+  "temporal_events": {
+   "p50": 0.22,
+   "p95": 0.28
+  },
+  "tracker": {
+   "p50": 0.45,
+   "p95": 0.64
+  }
+ },
+ "events": 1
+}
+Đã ghi D:\KhoaLuan\PPE_PROJECT\outputs\results\close_eval\kiem_thu_gan\baseline\video10
+D:\KhoaLuan\PPE_PROJECT\scripts\05_run_video.py D:\KhoaLuan\PPE_PROJECT\data\videos\video10.mp4 | configs/pipeline.yaml
+Video video10.mp4: 1920x1080, 30.00 FPS, 361 khung. Chạy tới bước: full
+  100/361 khung, 15.2 FPS toàn luồng
+  200/361 khung, 17.1 FPS toàn luồng
+  300/361 khung, 17.6 FPS toàn luồng
+{
+ "stage": "full",
+ "frames": 361,
+ "pipeline_fps": 17.73,
+ "step_ms": {
+  "association": {
+   "p50": 0.06,
+   "p95": 0.09
+  },
+  "compliance": {
+   "p50": 0.16,
+   "p95": 0.23
+  },
+  "detector": {
+   "p50": 18.24,
+   "p95": 20.29
+  },
+  "parts": {
+   "p50": 18.14,
+   "p95": 22.41
+  },
+  "pose": {
+   "p50": 11.0,
+   "p95": 14.52
+  },
+  "temporal_events": {
+   "p50": 0.22,
+   "p95": 0.32
+  },
+  "tracker": {
+   "p50": 0.44,
+   "p95": 0.65
+  }
+ },
+ "events": 1
+}
+Đã ghi D:\KhoaLuan\PPE_PROJECT\outputs\results\close_eval\kiem_thu_gan\v4\video10
+D:\KhoaLuan\PPE_PROJECT\scripts\05_run_video.py D:\KhoaLuan\PPE_PROJECT\data\videos\video11.mp4 | outputs/results/close_eval/pipeline_baseline_0645f53.yaml
+Video video11.mp4: 1080x1920, 25.00 FPS, 271 khung. Chạy tới bước: full
+  100/271 khung, 17.2 FPS toàn luồng
+  200/271 khung, 19.0 FPS toàn luồng
+{
+ "stage": "full",
+ "frames": 271,
+ "pipeline_fps": 19.51,
+ "step_ms": {
+  "association": {
+   "p50": 0.04,
+   "p95": 0.07
+  },
+  "compliance": {
+   "p50": 0.21,
+   "p95": 0.29
+  },
+  "detector": {
+   "p50": 17.75,
+   "p95": 20.02
+  },
+  "parts": {
+   "p50": 13.36,
+   "p95": 16.47
+  },
+  "pose": {
+   "p50": 10.81,
+   "p95": 13.9
+  },
+  "temporal_events": {
+   "p50": 0.17,
+   "p95": 0.2
+  },
+  "tracker": {
+   "p50": 0.44,
+   "p95": 0.6
+  }
+ },
+ "events": 1
+}
+Đã ghi D:\KhoaLuan\PPE_PROJECT\outputs\results\close_eval\kiem_thu_gan\baseline\video11
+D:\KhoaLuan\PPE_PROJECT\scripts\05_run_video.py D:\KhoaLuan\PPE_PROJECT\data\videos\video11.mp4 | configs/pipeline.yaml
+Video video11.mp4: 1080x1920, 25.00 FPS, 271 khung. Chạy tới bước: full
+  100/271 khung, 14.9 FPS toàn luồng
+  200/271 khung, 16.1 FPS toàn luồng
+{
+ "stage": "full",
+ "frames": 271,
+ "pipeline_fps": 16.6,
+ "step_ms": {
+  "association": {
+   "p50": 0.04,
+   "p95": 0.06
+  },
+  "compliance": {
+   "p50": 0.21,
+   "p95": 0.29
+  },
+  "detector": {
+   "p50": 18.89,
+   "p95": 21.9
+  },
+  "parts": {
+   "p50": 20.28,
+   "p95": 24.7
+  },
+  "pose": {
+   "p50": 10.8,
+   "p95": 14.16
+  },
+  "temporal_events": {
+   "p50": 0.17,
+   "p95": 0.21
+  },
+  "tracker": {
+   "p50": 0.44,
+   "p95": 0.66
+  }
+ },
+ "events": 1
+}
+Đã ghi D:\KhoaLuan\PPE_PROJECT\outputs\results\close_eval\kiem_thu_gan\v4\video11
+D:\KhoaLuan\PPE_PROJECT\scripts\05_run_video.py D:\KhoaLuan\PPE_PROJECT\data\videos\video12.mp4 | outputs/results/close_eval/pipeline_baseline_0645f53.yaml
+Video video12.mp4: 1920x1080, 25.00 FPS, 167 khung. Chạy tới bước: full
+  100/167 khung, 17.7 FPS toàn luồng
+{
+ "stage": "full",
+ "frames": 167,
+ "pipeline_fps": 19.16,
+ "step_ms": {
+  "association": {
+   "p50": 0.06,
+   "p95": 0.09
+  },
+  "compliance": {
+   "p50": 0.2,
+   "p95": 0.26
+  },
+  "detector": {
+   "p50": 17.13,
+   "p95": 19.57
+  },
+  "parts": {
+   "p50": 11.25,
+   "p95": 14.08
+  },
+  "pose": {
+   "p50": 10.77,
+   "p95": 14.32
+  },
+  "temporal_events": {
+   "p50": 0.14,
+   "p95": 0.2
+  },
+  "tracker": {
+   "p50": 0.45,
+   "p95": 0.69
+  }
+ },
+ "events": 1
+}
+Đã ghi D:\KhoaLuan\PPE_PROJECT\outputs\results\close_eval\kiem_thu_gan\baseline\video12
+D:\KhoaLuan\PPE_PROJECT\scripts\05_run_video.py D:\KhoaLuan\PPE_PROJECT\data\videos\video12.mp4 | configs/pipeline.yaml
+Video video12.mp4: 1920x1080, 25.00 FPS, 167 khung. Chạy tới bước: full
+  100/167 khung, 15.8 FPS toàn luồng
+{
+ "stage": "full",
+ "frames": 167,
+ "pipeline_fps": 16.81,
+ "step_ms": {
+  "association": {
+   "p50": 0.06,
+   "p95": 0.09
+  },
+  "compliance": {
+   "p50": 0.22,
+   "p95": 0.26
+  },
+  "detector": {
+   "p50": 17.92,
+   "p95": 21.89
+  },
+  "parts": {
+   "p50": 17.27,
+   "p95": 20.83
+  },
+  "pose": {
+   "p50": 11.03,
+   "p95": 14.85
+  },
+  "temporal_events": {
+   "p50": 0.14,
+   "p95": 0.2
+  },
+  "tracker": {
+   "p50": 0.44,
+   "p95": 0.66
+  }
+ },
+ "events": 1
+}
+Đã ghi D:\KhoaLuan\PPE_PROJECT\outputs\results\close_eval\kiem_thu_gan\v4\video12
+D:\KhoaLuan\PPE_PROJECT\scripts\05_run_video.py D:\KhoaLuan\PPE_PROJECT\data\videos\video13.mp4 | outputs/results/close_eval/pipeline_baseline_0645f53.yaml
+Video video13.mp4: 1920x1080, 30.00 FPS, 247 khung. Chạy tới bước: full
+  100/247 khung, 19.2 FPS toàn luồng
+  200/247 khung, 21.9 FPS toàn luồng
+{
+ "stage": "full",
+ "frames": 247,
+ "pipeline_fps": 22.45,
+ "step_ms": {
+  "association": {
+   "p50": 0.01,
+   "p95": 0.05
+  },
+  "compliance": {
+   "p50": 0.16,
+   "p95": 0.22
+  },
+  "detector": {
+   "p50": 16.84,
+   "p95": 19.73
+  },
+  "parts": {
+   "p50": 6.01,
+   "p95": 11.9
+  },
+  "pose": {
+   "p50": 10.86,
+   "p95": 13.93
+  },
+  "temporal_events": {
+   "p50": 0.19,
+   "p95": 0.27
+  },
+  "tracker": {
+   "p50": 0.44,
+   "p95": 0.68
+  }
+ },
+ "events": 1
+}
+Đã ghi D:\KhoaLuan\PPE_PROJECT\outputs\results\close_eval\kiem_thu_gan\baseline\video13
+D:\KhoaLuan\PPE_PROJECT\scripts\05_run_video.py D:\KhoaLuan\PPE_PROJECT\data\videos\video13.mp4 | configs/pipeline.yaml
+Video video13.mp4: 1920x1080, 30.00 FPS, 247 khung. Chạy tới bước: full
+  100/247 khung, 16.0 FPS toàn luồng
+  200/247 khung, 17.5 FPS toàn luồng
+{
+ "stage": "full",
+ "frames": 247,
+ "pipeline_fps": 18.04,
+ "step_ms": {
+  "association": {
+   "p50": 0.01,
+   "p95": 0.06
+  },
+  "compliance": {
+   "p50": 0.18,
+   "p95": 0.23
+  },
+  "detector": {
+   "p50": 18.34,
+   "p95": 20.77
+  },
+  "parts": {
+   "p50": 16.18,
+   "p95": 21.19
+  },
+  "pose": {
+   "p50": 10.86,
+   "p95": 14.46
+  },
+  "temporal_events": {
+   "p50": 0.2,
+   "p95": 0.25
+  },
+  "tracker": {
+   "p50": 0.44,
+   "p95": 0.68
+  }
+ },
+ "events": 1
+}
+Đã ghi D:\KhoaLuan\PPE_PROJECT\outputs\results\close_eval\kiem_thu_gan\v4\video13
+D:\KhoaLuan\PPE_PROJECT\scripts\05_run_video.py D:\KhoaLuan\PPE_PROJECT\data\videos\video14.mp4 | outputs/results/close_eval/pipeline_baseline_0645f53.yaml
+Video video14.mp4: 1920x1080, 25.00 FPS, 379 khung. Chạy tới bước: full
+  100/379 khung, 19.9 FPS toàn luồng
+  200/379 khung, 19.6 FPS toàn luồng
+  300/379 khung, 21.2 FPS toàn luồng
+{
+ "stage": "full",
+ "frames": 379,
+ "pipeline_fps": 21.86,
+ "step_ms": {
+  "association": {
+   "p50": 0.04,
+   "p95": 0.06
+  },
+  "compliance": {
+   "p50": 0.17,
+   "p95": 0.23
+  },
+  "detector": {
+   "p50": 16.88,
+   "p95": 19.81
+  },
+  "parts": {
+   "p50": 6.39,
+   "p95": 20.19
+  },
+  "pose": {
+   "p50": 11.1,
+   "p95": 14.57
+  },
+  "temporal_events": {
+   "p50": 0.19,
+   "p95": 0.28
+  },
+  "tracker": {
+   "p50": 0.45,
+   "p95": 0.64
+  }
+ },
+ "events": 1
+}
+Đã ghi D:\KhoaLuan\PPE_PROJECT\outputs\results\close_eval\kiem_thu_gan\baseline\video14
+D:\KhoaLuan\PPE_PROJECT\scripts\05_run_video.py D:\KhoaLuan\PPE_PROJECT\data\videos\video14.mp4 | configs/pipeline.yaml
+Video video14.mp4: 1920x1080, 25.00 FPS, 379 khung. Chạy tới bước: full
+  100/379 khung, 16.3 FPS toàn luồng
+  200/379 khung, 16.0 FPS toàn luồng
+  300/379 khung, 17.2 FPS toàn luồng
+{
+ "stage": "full",
+ "frames": 379,
+ "pipeline_fps": 17.65,
+ "step_ms": {
+  "association": {
+   "p50": 0.04,
+   "p95": 0.06
+  },
+  "compliance": {
+   "p50": 0.17,
+   "p95": 0.27
+  },
+  "detector": {
+   "p50": 18.46,
+   "p95": 22.0
+  },
+  "parts": {
+   "p50": 15.25,
+   "p95": 30.49
+  },
+  "pose": {
+   "p50": 11.04,
+   "p95": 14.81
+  },
+  "temporal_events": {
+   "p50": 0.18,
+   "p95": 0.3
+  },
+  "tracker": {
+   "p50": 0.45,
+   "p95": 0.66
+  }
+ },
+ "events": 1
+}
+Đã ghi D:\KhoaLuan\PPE_PROJECT\outputs\results\close_eval\kiem_thu_gan\v4\video14
+D:\KhoaLuan\PPE_PROJECT\scripts\05_run_video.py D:\KhoaLuan\PPE_PROJECT\data\videos\video15.mp4 | outputs/results/close_eval/pipeline_baseline_0645f53.yaml
+Video video15.mp4: 1920x1080, 25.00 FPS, 122 khung. Chạy tới bước: full
+  100/122 khung, 14.9 FPS toàn luồng
+{
+ "stage": "full",
+ "frames": 122,
+ "pipeline_fps": 15.47,
+ "step_ms": {
+  "association": {
+   "p50": 0.1,
+   "p95": 0.15
+  },
+  "compliance": {
+   "p50": 1.16,
+   "p95": 1.84
+  },
+  "detector": {
+   "p50": 17.67,
+   "p95": 18.95
+  },
+  "parts": {
+   "p50": 15.22,
+   "p95": 19.14
+  },
+  "pose": {
+   "p50": 14.14,
+   "p95": 20.07
+  },
+  "temporal_events": {
+   "p50": 0.27,
+   "p95": 0.51
+  },
+  "tracker": {
+   "p50": 0.59,
+   "p95": 0.81
+  }
+ },
+ "events": 1
+}
+Đã ghi D:\KhoaLuan\PPE_PROJECT\outputs\results\close_eval\kiem_thu_gan\baseline\video15
+D:\KhoaLuan\PPE_PROJECT\scripts\05_run_video.py D:\KhoaLuan\PPE_PROJECT\data\videos\video15.mp4 | configs/pipeline.yaml
+Video video15.mp4: 1920x1080, 25.00 FPS, 122 khung. Chạy tới bước: full
+  100/122 khung, 13.7 FPS toàn luồng
+{
+ "stage": "full",
+ "frames": 122,
+ "pipeline_fps": 14.3,
+ "step_ms": {
+  "association": {
+   "p50": 0.11,
+   "p95": 0.15
+  },
+  "compliance": {
+   "p50": 1.17,
+   "p95": 1.71
+  },
+  "detector": {
+   "p50": 17.73,
+   "p95": 20.26
+  },
+  "parts": {
+   "p50": 20.66,
+   "p95": 25.81
+  },
+  "pose": {
+   "p50": 14.18,
+   "p95": 18.63
+  },
+  "temporal_events": {
+   "p50": 0.26,
+   "p95": 0.49
+  },
+  "tracker": {
+   "p50": 0.6,
+   "p95": 0.75
+  }
+ },
+ "events": 1
+}
+Đã ghi D:\KhoaLuan\PPE_PROJECT\outputs\results\close_eval\kiem_thu_gan\v4\video15
+D:\KhoaLuan\PPE_PROJECT\scripts\05_run_video.py D:\KhoaLuan\PPE_PROJECT\data\videos\video16.mp4 | outputs/results/close_eval/pipeline_baseline_0645f53.yaml
+Video video16.mp4: 1920x1080, 23.98 FPS, 499 khung. Chạy tới bước: full
+  100/499 khung, 19.9 FPS toàn luồng
+  200/499 khung, 22.4 FPS toàn luồng
+  300/499 khung, 24.2 FPS toàn luồng
+  400/499 khung, 24.7 FPS toàn luồng
+{
+ "stage": "full",
+ "frames": 499,
+ "pipeline_fps": 25.45,
+ "step_ms": {
+  "association": {
+   "p50": 0.05,
+   "p95": 0.07
+  },
+  "compliance": {
+   "p50": 0.13,
+   "p95": 0.2
+  },
+  "detector": {
+   "p50": 16.85,
+   "p95": 19.69
+  },
+  "parts": {
+   "p50": 5.28,
+   "p95": 8.29
+  },
+  "pose": {
+   "p50": 11.27,
+   "p95": 14.21
+  },
+  "temporal_events": {
+   "p50": 0.18,
+   "p95": 0.23
+  },
+  "tracker": {
+   "p50": 0.45,
+   "p95": 0.61
+  }
+ },
+ "events": 0
+}
+Đã ghi D:\KhoaLuan\PPE_PROJECT\outputs\results\close_eval\kiem_thu_gan\baseline\video16
+D:\KhoaLuan\PPE_PROJECT\scripts\05_run_video.py D:\KhoaLuan\PPE_PROJECT\data\videos\video16.mp4 | configs/pipeline.yaml
+Video video16.mp4: 1920x1080, 23.98 FPS, 499 khung. Chạy tới bước: full
+  100/499 khung, 18.1 FPS toàn luồng
+  200/499 khung, 19.8 FPS toàn luồng
+  300/499 khung, 20.9 FPS toàn luồng
+  400/499 khung, 21.5 FPS toàn luồng
+{
+ "stage": "full",
+ "frames": 499,
+ "pipeline_fps": 21.92,
+ "step_ms": {
+  "association": {
+   "p50": 0.05,
+   "p95": 0.08
+  },
+  "compliance": {
+   "p50": 0.15,
+   "p95": 0.2
+  },
+  "detector": {
+   "p50": 17.0,
+   "p95": 19.72
+  },
+  "parts": {
+   "p50": 9.84,
+   "p95": 13.7
+  },
+  "pose": {
+   "p50": 10.97,
+   "p95": 14.2
+  },
+  "temporal_events": {
+   "p50": 0.18,
+   "p95": 0.24
+  },
+  "tracker": {
+   "p50": 0.44,
+   "p95": 0.62
+  }
+ },
+ "events": 0
+}
+Đã ghi D:\KhoaLuan\PPE_PROJECT\outputs\results\close_eval\kiem_thu_gan\v4\video16
+D:\KhoaLuan\PPE_PROJECT\scripts\05_run_video.py D:\KhoaLuan\PPE_PROJECT\data\videos\video17.mp4 | outputs/results/close_eval/pipeline_baseline_0645f53.yaml
+Video video17.mp4: 1920x1080, 29.97 FPS, 480 khung. Chạy tới bước: full
+  100/480 khung, 19.4 FPS toàn luồng
+  200/480 khung, 22.1 FPS toàn luồng
+  300/480 khung, 22.5 FPS toàn luồng
+  400/480 khung, 23.0 FPS toàn luồng
+{
+ "stage": "full",
+ "frames": 480,
+ "pipeline_fps": 23.16,
+ "step_ms": {
+  "association": {
+   "p50": 0.05,
+   "p95": 0.07
+  },
+  "compliance": {
+   "p50": 0.14,
+   "p95": 0.2
+  },
+  "detector": {
+   "p50": 16.95,
+   "p95": 19.96
+  },
+  "parts": {
+   "p50": 6.67,
+   "p95": 8.78
+  },
+  "pose": {
+   "p50": 10.95,
+   "p95": 14.41
+  },
+  "temporal_events": {
+   "p50": 0.22,
+   "p95": 0.35
+  },
+  "tracker": {
+   "p50": 0.44,
+   "p95": 0.66
+  }
+ },
+ "events": 1
+}
+Đã ghi D:\KhoaLuan\PPE_PROJECT\outputs\results\close_eval\kiem_thu_gan\baseline\video17
+D:\KhoaLuan\PPE_PROJECT\scripts\05_run_video.py D:\KhoaLuan\PPE_PROJECT\data\videos\video17.mp4 | configs/pipeline.yaml
+Video video17.mp4: 1920x1080, 29.97 FPS, 480 khung. Chạy tới bước: full
+  100/480 khung, 17.5 FPS toàn luồng
+  200/480 khung, 19.4 FPS toàn luồng
+  300/480 khung, 20.3 FPS toàn luồng
+  400/480 khung, 20.6 FPS toàn luồng
+{
+ "stage": "full",
+ "frames": 480,
+ "pipeline_fps": 20.71,
+ "step_ms": {
+  "association": {
+   "p50": 0.05,
+   "p95": 0.07
+  },
+  "compliance": {
+   "p50": 0.16,
+   "p95": 0.2
+  },
+  "detector": {
+   "p50": 17.03,
+   "p95": 20.0
+  },
+  "parts": {
+   "p50": 11.92,
+   "p95": 15.23
+  },
+  "pose": {
+   "p50": 10.7,
+   "p95": 13.89
+  },
+  "temporal_events": {
+   "p50": 0.22,
+   "p95": 0.34
+  },
+  "tracker": {
+   "p50": 0.44,
+   "p95": 0.62
+  }
+ },
+ "events": 1
+}
+Đã ghi D:\KhoaLuan\PPE_PROJECT\outputs\results\close_eval\kiem_thu_gan\v4\video17
+Ghi outputs\results\close_eval\kiem_thu_gan/results.json, results.md, transitions.csv

@@ -1,0 +1,3 @@
+﻿compare,video,frame,label_track,ppe,label,base_pred,other_pred
+baseline_vs_v4,video16,300,0,helmet,chua_xac_dinh,chua_xac_dinh,co
+baseline_vs_v4,video16,301,0,helmet,chua_xac_dinh,chua_xac_dinh,co
