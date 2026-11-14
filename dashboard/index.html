@@ -838,7 +838,11 @@
         else if (ev.event_state === 'pending_observation') stateBadge = `<span class="badge badge-state-pending">Chờ quan sát</span>`;
         else stateBadge = `<span class="badge badge-state-closed">Đã đóng</span>`;
 
-        const ppeBadges = ev.missing_items.map(it => `<span class="badge badge-ppe-${it}">${PPE_LABELS[it] || it}</span>`).join(' ');
+        // missing_items rỗng nhưng sự kiện chưa đóng (spec: đóng "khắc phục" khi mọi PPE bắt buộc được xác nhận Có;
+        // PPE chưa nhìn thấy thì chưa xác minh): ghi rõ thay vì để trống.
+        const ppeBadges = ev.missing_items.length
+          ? ev.missing_items.map(it => `<span class="badge badge-ppe-${it}">${PPE_LABELS[it] || it}</span>`).join(' ')
+          : `<span class="badge badge-state-pending">Đã khắc phục mục thiếu, chờ xác minh trang bị còn lại</span>`;
 
         const closeText = ev.close_reason === 'recovered' ? 'Khắc phục hoàn toàn'
                         : ev.close_reason === 'session_ended_unverified' ? 'Hết video (chưa xác minh)'
@@ -927,7 +931,7 @@
         // Render Timeline
         const timeline = document.getElementById('modal-timeline');
         timeline.innerHTML = data.history.map(h => {
-          const itemsText = h.missing_items.map(i => PPE_LABELS[i] || i).join(', ') || 'Không thiếu trang bị nào';
+          const itemsText = h.missing_items.map(i => PPE_LABELS[i] || i).join(', ') || 'Không còn mục thiếu (chờ xác minh trang bị chưa nhìn thấy)';
           return `
             <div class="timeline-item">
               <div class="timeline-time">Mốc t = ${h.t.toFixed(2)}s (${h.change_type})</div>
