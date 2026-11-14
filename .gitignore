@@ -85,3 +85,14 @@ preview_all.jpg
 !outputs/train/yolo11n_cls_parts_v3/results.csv
 !outputs/train/yolo11n_cls_parts_v3/run_info.json
 !data/videos/kiem_thu_gan_machine_labels.json
+!outputs/train/yolo11n_cls_parts_v4/results.csv
+!outputs/train/yolo11n_cls_parts_v4/run_info.json
+# close_eval: cấu hình mốc, manifest, kết quả đánh giá đóng băng (ảnh minh chứng không đưa lên)
+!outputs/results/close_eval/*.yaml
+!outputs/results/close_eval/*.json
+!outputs/results/close_eval/*/*.md
+!outputs/results/close_eval/*/*.json
+!outputs/results/close_eval/*/*.csv
+!outputs/results/close_eval/*/*/*/frames.csv
+!outputs/results/close_eval/*/*/*/events.jsonl
+!outputs/results/close_eval/*/*/*/summary.json

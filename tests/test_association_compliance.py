@@ -368,3 +368,62 @@ def test_part_boxes_head_back_view():
     out = {n: b for n, s, b in part_boxes(k, {"hand": {"k": 0, "s": 1}, "foot": {"k": 0, "s": 1}, "eye": {"s": 2},
                                               "head": {"k": 0.3, "s": 1.0}}, 0.5)}
     assert out["helmet"] == (110.0, 70.0, 100.0)
+
+
+def _helmet_v4(test_cfg):
+    """Mục part_cls thật trong configs/pipeline.yaml (mũ bản 4: ngưỡng, phủ quyết như khi chạy), không phải ngưỡng giả."""
+    import copy
+
+    from ppe import load_config
+    cfg = _six(test_cfg)
+    cfg["part_cls"] = copy.deepcopy(load_config()["part_cls"])
+    assert "helmet" in cfg["part_cls"]["thresholds"]
+    return cfg
+
+
+def _helmet_p(p_have):
+    """Người nhìn rõ đầu (keypoint đầu 0,9; đầu không chạm mép trên) với xác suất có mũ của bộ phân loại.
+    Khóa ("helmet", None) như PartClassifier ghi (part_boxes trả side None cho vùng đầu)."""
+    p = _kps(person(1, 100, 100, 300, 700))
+    p.extra["parts"] = {("helmet", None): p_have}
+    return p
+
+
+def test_helmet_v4_unsure_no_box_is_unknown(test_cfg):
+    """(a) Không có hộp mũ, bộ phân loại không chắc (t_neg < p < t_pos) -> Chưa xác định, không báo Thiếu.
+    Cùng đầu vào, luật cũ (mũ không dùng bộ phân loại) báo Thiếu: đây là trường hợp video3 f1129, f1131."""
+    cfg = _helmet_v4(test_cfg)
+    thr = cfg["part_cls"]["thresholds"]["helmet"]
+    p_unsure = (1 - thr["t_neg"] + thr["t_pos"]) / 2       # giữa hai ngưỡng
+    assert 1 - p_unsure < thr["t_neg"] and p_unsure < thr["t_pos"]
+    _, s = run(cfg, [_helmet_p(p_unsure)], [])
+    assert s[1]["helmet"]["state"] == UNKNOWN
+    assert s[1]["helmet"]["sides"][None][1]["vote"] == "unsure"
+    old = _helmet_v4(test_cfg)
+    del old["part_cls"]["thresholds"]["helmet"]
+    _, s = run(old, [_helmet_p(p_unsure)], [])
+    assert s[1]["helmet"]["state"] == MISSING
+    _, s = run(cfg, [_helmet_p(0.05)], [])                 # bộ phân loại chắc không mũ -> vẫn báo Thiếu được
+    assert s[1]["helmet"]["state"] == MISSING
+
+
+def test_helmet_v4_sure_no_box_is_have(test_cfg):
+    """(b) Không có hộp mũ, bộ phân loại chắc có mũ (p >= t_pos) -> Có."""
+    cfg = _helmet_v4(test_cfg)
+    p = cfg["part_cls"]["thresholds"]["helmet"]["t_pos"]
+    _, s = run(cfg, [_helmet_p(min(1.0, p + 0.01))], [])
+    assert s[1]["helmet"]["state"] == HAVE
+    assert s[1]["helmet"]["sides"][None][1]["has"] is False
+
+
+def test_helmet_v4_detector_box_not_vetoed(test_cfg):
+    """(c) Có hộp mũ của detector, bộ phân loại chắc không mũ -> vẫn Có: mũ không nằm trong part_cls.veto."""
+    cfg = _helmet_v4(test_cfg)
+    assert "helmet" not in (cfg["part_cls"].get("veto") or [])
+    _, s = run(cfg, [_helmet_p(0.02)], [det(1, 170, 100, 230, 160)])
+    assert s[1]["helmet"]["sides"][None][1]["vote"] == "neg"
+    assert s[1]["helmet"]["sides"][None][1]["has"] is True     # hộp mũ đã gán cho người này
+    assert s[1]["helmet"]["state"] == HAVE
+    cfg["part_cls"]["veto"] = list(cfg["part_cls"]["veto"]) + ["helmet"]   # đối chứng: nếu mũ bị phủ quyết thì không còn Có
+    _, s = run(cfg, [_helmet_p(0.02)], [det(1, 170, 100, 230, 160)])
+    assert s[1]["helmet"]["state"] != HAVE

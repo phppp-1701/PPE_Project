@@ -4,6 +4,7 @@ Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
     python scripts/05_run_video.py data/videos/v01.mp4                  # chạy tới bước xa nhất đã đủ tham số
     python scripts/05_run_video.py data/videos/v01.mp4 --stage track    # chỉ phát hiện + theo dõi
     python scripts/05_run_video.py data/videos/v01.mp4 --max-frames 300 --draw-regions
+    python scripts/05_run_video.py data/videos/v01.mp4 --config path/to/pipeline.yaml   # cấu hình khác (vd bản cũ)
 
 Tham số trong configs/pipeline.yaml; bước nào còn tham số null thì không chạy được (script báo tên tham số).
 Ghi vào outputs/results/video/<tên video>/:
@@ -50,13 +51,13 @@ SHORT = {"helmet": "M", "vest": "A", "gloves": "G", "goggles": "K", "boots": "U"
 VETO_TAG = {"goggles": "Kinh thuong"}   # nhãn hộp bị bộ phân loại phủ quyết
 
 
-def build(stage, source_id, session_id, on_event):
+def build(stage, source_id, session_id, on_event, cfg=None):
     """Tạo Pipeline; stage "auto" = bước xa nhất đủ tham số. Trả về (pipeline, bước, thông báo tham số thiếu)."""
     order = STAGES[::-1] if stage == "auto" else [stage]
     missing = None
     for s in order:
         try:
-            return Pipeline(source_id, session_id, stage=s, on_event=on_event), s, missing
+            return Pipeline(source_id, session_id, stage=s, cfg=cfg, on_event=on_event), s, missing
         except MissingParameter as e:
             missing = missing or str(e)
     raise SystemExit(f"Không chạy được bước '{stage}': {missing}")
@@ -159,7 +160,9 @@ def main():
     ap.add_argument("--no-video", action="store_true", help="không ghi annotated.mp4")
     ap.add_argument("--draw-regions", action="store_true", help="vẽ vùng cơ thể của từng người")
     ap.add_argument("--api-url", default="http://127.0.0.1:8000/api", help="địa chỉ Backend API để đẩy sự kiện trực tiếp")
+    ap.add_argument("--config", help="file cấu hình (mặc định configs/pipeline.yaml)")
     args = ap.parse_args()
+    cfg_in = load_config(args.config) if args.config else None
 
     video = Path(args.video)
     cap = cv2.VideoCapture(str(video))
@@ -200,7 +203,7 @@ def main():
             except Exception:
                 pass
 
-    pipe, stage, missing = build(args.stage, args.source_id, session_id, on_event)
+    pipe, stage, missing = build(args.stage, args.source_id, session_id, on_event, cfg_in)
     cfg = pipe.cfg
     print(f"Video {video.name}: {w}x{h}, {fps:.2f} FPS, {n_frames} khung. Chạy tới bước: {stage}")
     if missing:
@@ -248,7 +251,7 @@ def main():
     summary = dict(video=str(video), session_id=session_id, stage=stage, not_run_reason=missing, frames=i,
                    video_fps=fps, resolution=[w, h], elapsed_s=round(elapsed, 2),
                    pipeline_fps=round(i / elapsed, 2) if elapsed else None, step_ms=timing, events=n_events,
-                   weights=cfg["detector"]["weights"], imgsz=cfg["detector"]["imgsz"],
+                   weights=cfg["detector"]["weights"], imgsz=cfg["detector"]["imgsz"], config=args.config or "configs/pipeline.yaml",
                    note="FPS toàn luồng gồm đọc khung, xử lý và vẽ/ghi video (nếu bật)")
     (out_dir / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({k: summary[k] for k in ("stage", "frames", "pipeline_fps", "step_ms", "events")},

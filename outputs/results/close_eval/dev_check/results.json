@@ -1,0 +1,3272 @@
+{
+ "created": "2026-11-14T18:30:58",
+ "label_note": "Nhãn video chỉnh tham số video3-6 (data/videos/video<3-6>_notes.txt; một phần do Claude sửa 13/11/2026, chưa người duyệt). Video phát triển, không phải tập đánh giá.",
+ "match_iou": 0.5,
+ "manifest": null,
+ "configs": {
+  "baseline": "outputs/results/close_eval/pipeline_baseline_0645f53.yaml",
+  "v4": "configs/pipeline.yaml"
+ },
+ "videos": {
+  "video3": {
+   "baseline": {
+    "frames": 1950,
+    "stage": "full",
+    "rows": 1741,
+    "label_boxes": 1776,
+    "label_boxes_unmatched": 46,
+    "summary": {
+     "helmet": {
+      "nhan_co": 1268,
+      "nhan_thieu": 508,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 1187,
+      "thieu_dung": 443,
+      "bao_thieu_oan": 31,
+      "bao_co_sai": 22,
+      "co_thanh_chua_xd": 11,
+      "thieu_thanh_chua_xd": 36,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 46
+     },
+     "vest": {
+      "nhan_co": 1288,
+      "nhan_thieu": 488,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 1194,
+      "thieu_dung": 471,
+      "bao_thieu_oan": 49,
+      "bao_co_sai": 1,
+      "co_thanh_chua_xd": 5,
+      "thieu_thanh_chua_xd": 10,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 46
+     },
+     "gloves": {
+      "nhan_co": 0,
+      "nhan_thieu": 1428,
+      "nhan_chua_xac_dinh": 348,
+      "co_dung": 0,
+      "thieu_dung": 1073,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 0,
+      "thieu_thanh_chua_xd": 326,
+      "thieu_tren_nhan_chua_xd": 155,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 46
+     },
+     "goggles": {
+      "nhan_co": 0,
+      "nhan_thieu": 1776,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 0,
+      "thieu_dung": 1632,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 0,
+      "thieu_thanh_chua_xd": 98,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 46
+     },
+     "boots": {
+      "nhan_co": 134,
+      "nhan_thieu": 487,
+      "nhan_chua_xac_dinh": 1155,
+      "co_dung": 0,
+      "thieu_dung": 410,
+      "bao_thieu_oan": 114,
+      "bao_co_sai": 1,
+      "co_thanh_chua_xd": 9,
+      "thieu_thanh_chua_xd": 54,
+      "thieu_tren_nhan_chua_xd": 9,
+      "co_tren_nhan_chua_xd": 3,
+      "khong_ghep": 46
+     }
+    },
+    "confusion": {
+     "helmet": {
+      "co->co": 1187,
+      "co->thieu": 31,
+      "co->chua_xac_dinh": 11,
+      "co->khong_ghep": 39,
+      "thieu->co": 22,
+      "thieu->thieu": 443,
+      "thieu->chua_xac_dinh": 36,
+      "thieu->khong_ghep": 7,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "vest": {
+      "co->co": 1194,
+      "co->thieu": 49,
+      "co->chua_xac_dinh": 5,
+      "co->khong_ghep": 40,
+      "thieu->co": 1,
+      "thieu->thieu": 471,
+      "thieu->chua_xac_dinh": 10,
+      "thieu->khong_ghep": 6,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "gloves": {
+      "co->co": 0,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 0,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 1073,
+      "thieu->chua_xac_dinh": 326,
+      "thieu->khong_ghep": 29,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 155,
+      "chua_xac_dinh->chua_xac_dinh": 176,
+      "chua_xac_dinh->khong_ghep": 17
+     },
+     "goggles": {
+      "co->co": 0,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 0,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 1632,
+      "thieu->chua_xac_dinh": 98,
+      "thieu->khong_ghep": 46,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "boots": {
+      "co->co": 0,
+      "co->thieu": 114,
+      "co->chua_xac_dinh": 9,
+      "co->khong_ghep": 11,
+      "thieu->co": 1,
+      "thieu->thieu": 410,
+      "thieu->chua_xac_dinh": 54,
+      "thieu->khong_ghep": 22,
+      "chua_xac_dinh->co": 3,
+      "chua_xac_dinh->thieu": 9,
+      "chua_xac_dinh->chua_xac_dinh": 1130,
+      "chua_xac_dinh->khong_ghep": 13
+     }
+    },
+    "events": [
+     {
+      "track_id": 1,
+      "start_time": 2.97,
+      "confirmed_at": 3.437,
+      "end_time": 65.065,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "boots",
+       "gloves",
+       "goggles"
+      ],
+      "missing_history": [
+       [
+        3.437,
+        [
+         "boots",
+         "goggles"
+        ]
+       ],
+       [
+        4.738,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ],
+       [
+        11.311,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ],
+       [
+        65.065,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ]
+      ],
+      "index": 1
+     },
+     {
+      "track_id": 2,
+      "start_time": 17.518,
+      "confirmed_at": 17.985,
+      "end_time": 65.065,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "boots",
+       "gloves",
+       "goggles",
+       "helmet",
+       "vest"
+      ],
+      "missing_history": [
+       [
+        17.985,
+        [
+         "boots",
+         "goggles",
+         "helmet",
+         "vest"
+        ]
+       ],
+       [
+        18.352,
+        [
+         "boots",
+         "gloves",
+         "goggles",
+         "helmet",
+         "vest"
+        ]
+       ],
+       [
+        25.592,
+        [
+         "boots",
+         "gloves",
+         "goggles",
+         "helmet",
+         "vest"
+        ]
+       ],
+       [
+        65.065,
+        [
+         "boots",
+         "gloves",
+         "goggles",
+         "helmet",
+         "vest"
+        ]
+       ]
+      ],
+      "index": 2
+     },
+     {
+      "track_id": 3,
+      "start_time": 19.052,
+      "confirmed_at": 19.653,
+      "end_time": 65.065,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "boots",
+       "gloves",
+       "goggles"
+      ],
+      "missing_history": [
+       [
+        19.653,
+        [
+         "boots"
+        ]
+       ],
+       [
+        19.753,
+        [
+         "boots",
+         "goggles"
+        ]
+       ],
+       [
+        20.32,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ],
+       [
+        25.225,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ],
+       [
+        65.065,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ]
+      ],
+      "index": 3
+     },
+     {
+      "track_id": 4,
+      "start_time": 35.402,
+      "confirmed_at": 35.869,
+      "end_time": 65.065,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "boots",
+       "gloves",
+       "goggles"
+      ],
+      "missing_history": [
+       [
+        35.869,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        36.27,
+        [
+         "boots",
+         "goggles"
+        ]
+       ],
+       [
+        37.437,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ],
+       [
+        45.979,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ],
+       [
+        65.065,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ]
+      ],
+      "index": 4
+     },
+     {
+      "track_id": 5,
+      "start_time": 37.571,
+      "confirmed_at": 38.038,
+      "end_time": 65.065,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "boots",
+       "gloves",
+       "goggles",
+       "helmet"
+      ],
+      "missing_history": [
+       [
+        38.038,
+        [
+         "vest"
+        ]
+       ],
+       [
+        38.171,
+        [
+         "boots",
+         "goggles",
+         "vest"
+        ]
+       ],
+       [
+        39.84,
+        [
+         "boots",
+         "goggles"
+        ]
+       ],
+       [
+        41.108,
+        [
+         "boots",
+         "goggles",
+         "helmet"
+        ]
+       ],
+       [
+        42.943,
+        [
+         "boots",
+         "gloves",
+         "goggles",
+         "helmet"
+        ]
+       ],
+       [
+        46.28,
+        [
+         "boots",
+         "gloves",
+         "goggles",
+         "helmet"
+        ]
+       ],
+       [
+        65.065,
+        [
+         "boots",
+         "gloves",
+         "goggles",
+         "helmet"
+        ]
+       ]
+      ],
+      "index": 5
+     },
+     {
+      "track_id": 6,
+      "start_time": 38.906,
+      "confirmed_at": 39.373,
+      "end_time": 65.065,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "boots",
+       "gloves",
+       "goggles",
+       "vest"
+      ],
+      "missing_history": [
+       [
+        39.373,
+        [
+         "boots",
+         "vest"
+        ]
+       ],
+       [
+        39.406,
+        [
+         "boots",
+         "goggles",
+         "vest"
+        ]
+       ],
+       [
+        39.74,
+        [
+         "boots",
+         "gloves",
+         "goggles",
+         "vest"
+        ]
+       ],
+       [
+        46.613,
+        [
+         "boots",
+         "gloves",
+         "goggles",
+         "vest"
+        ]
+       ],
+       [
+        65.065,
+        [
+         "boots",
+         "gloves",
+         "goggles",
+         "vest"
+        ]
+       ]
+      ],
+      "index": 6
+     },
+     {
+      "track_id": 7,
+      "start_time": 54.721,
+      "confirmed_at": 55.188,
+      "end_time": 65.065,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "boots",
+       "gloves",
+       "goggles"
+      ],
+      "missing_history": [
+       [
+        55.188,
+        [
+         "boots",
+         "vest"
+        ]
+       ],
+       [
+        55.255,
+        [
+         "boots",
+         "helmet",
+         "vest"
+        ]
+       ],
+       [
+        55.589,
+        [
+         "boots",
+         "goggles",
+         "helmet",
+         "vest"
+        ]
+       ],
+       [
+        55.622,
+        [
+         "boots",
+         "gloves",
+         "goggles",
+         "helmet",
+         "vest"
+        ]
+       ],
+       [
+        56.423,
+        [
+         "boots",
+         "gloves",
+         "goggles",
+         "vest"
+        ]
+       ],
+       [
+        56.723,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ],
+       [
+        62.796,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ],
+       [
+        65.065,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ]
+      ],
+      "index": 7
+     }
+    ]
+   },
+   "v4": {
+    "frames": 1950,
+    "stage": "full",
+    "rows": 1741,
+    "label_boxes": 1776,
+    "label_boxes_unmatched": 46,
+    "summary": {
+     "helmet": {
+      "nhan_co": 1268,
+      "nhan_thieu": 508,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 1197,
+      "thieu_dung": 441,
+      "bao_thieu_oan": 21,
+      "bao_co_sai": 22,
+      "co_thanh_chua_xd": 11,
+      "thieu_thanh_chua_xd": 38,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 46
+     },
+     "vest": {
+      "nhan_co": 1288,
+      "nhan_thieu": 488,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 1194,
+      "thieu_dung": 471,
+      "bao_thieu_oan": 49,
+      "bao_co_sai": 1,
+      "co_thanh_chua_xd": 5,
+      "thieu_thanh_chua_xd": 10,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 46
+     },
+     "gloves": {
+      "nhan_co": 0,
+      "nhan_thieu": 1428,
+      "nhan_chua_xac_dinh": 348,
+      "co_dung": 0,
+      "thieu_dung": 1073,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 0,
+      "thieu_thanh_chua_xd": 326,
+      "thieu_tren_nhan_chua_xd": 155,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 46
+     },
+     "goggles": {
+      "nhan_co": 0,
+      "nhan_thieu": 1776,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 0,
+      "thieu_dung": 1632,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 0,
+      "thieu_thanh_chua_xd": 98,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 46
+     },
+     "boots": {
+      "nhan_co": 134,
+      "nhan_thieu": 487,
+      "nhan_chua_xac_dinh": 1155,
+      "co_dung": 0,
+      "thieu_dung": 410,
+      "bao_thieu_oan": 114,
+      "bao_co_sai": 1,
+      "co_thanh_chua_xd": 9,
+      "thieu_thanh_chua_xd": 54,
+      "thieu_tren_nhan_chua_xd": 9,
+      "co_tren_nhan_chua_xd": 3,
+      "khong_ghep": 46
+     }
+    },
+    "confusion": {
+     "helmet": {
+      "co->co": 1197,
+      "co->thieu": 21,
+      "co->chua_xac_dinh": 11,
+      "co->khong_ghep": 39,
+      "thieu->co": 22,
+      "thieu->thieu": 441,
+      "thieu->chua_xac_dinh": 38,
+      "thieu->khong_ghep": 7,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "vest": {
+      "co->co": 1194,
+      "co->thieu": 49,
+      "co->chua_xac_dinh": 5,
+      "co->khong_ghep": 40,
+      "thieu->co": 1,
+      "thieu->thieu": 471,
+      "thieu->chua_xac_dinh": 10,
+      "thieu->khong_ghep": 6,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "gloves": {
+      "co->co": 0,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 0,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 1073,
+      "thieu->chua_xac_dinh": 326,
+      "thieu->khong_ghep": 29,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 155,
+      "chua_xac_dinh->chua_xac_dinh": 176,
+      "chua_xac_dinh->khong_ghep": 17
+     },
+     "goggles": {
+      "co->co": 0,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 0,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 1632,
+      "thieu->chua_xac_dinh": 98,
+      "thieu->khong_ghep": 46,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "boots": {
+      "co->co": 0,
+      "co->thieu": 114,
+      "co->chua_xac_dinh": 9,
+      "co->khong_ghep": 11,
+      "thieu->co": 1,
+      "thieu->thieu": 410,
+      "thieu->chua_xac_dinh": 54,
+      "thieu->khong_ghep": 22,
+      "chua_xac_dinh->co": 3,
+      "chua_xac_dinh->thieu": 9,
+      "chua_xac_dinh->chua_xac_dinh": 1130,
+      "chua_xac_dinh->khong_ghep": 13
+     }
+    },
+    "events": [
+     {
+      "track_id": 1,
+      "start_time": 2.97,
+      "confirmed_at": 3.437,
+      "end_time": 65.065,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "boots",
+       "gloves",
+       "goggles"
+      ],
+      "missing_history": [
+       [
+        3.437,
+        [
+         "boots",
+         "goggles"
+        ]
+       ],
+       [
+        4.738,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ],
+       [
+        11.311,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ],
+       [
+        65.065,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ]
+      ],
+      "index": 1
+     },
+     {
+      "track_id": 2,
+      "start_time": 17.518,
+      "confirmed_at": 17.985,
+      "end_time": 65.065,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "boots",
+       "gloves",
+       "goggles",
+       "helmet",
+       "vest"
+      ],
+      "missing_history": [
+       [
+        17.985,
+        [
+         "boots",
+         "goggles",
+         "helmet",
+         "vest"
+        ]
+       ],
+       [
+        18.352,
+        [
+         "boots",
+         "gloves",
+         "goggles",
+         "helmet",
+         "vest"
+        ]
+       ],
+       [
+        25.592,
+        [
+         "boots",
+         "gloves",
+         "goggles",
+         "helmet",
+         "vest"
+        ]
+       ],
+       [
+        65.065,
+        [
+         "boots",
+         "gloves",
+         "goggles",
+         "helmet",
+         "vest"
+        ]
+       ]
+      ],
+      "index": 2
+     },
+     {
+      "track_id": 3,
+      "start_time": 19.052,
+      "confirmed_at": 19.653,
+      "end_time": 65.065,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "boots",
+       "gloves",
+       "goggles"
+      ],
+      "missing_history": [
+       [
+        19.653,
+        [
+         "boots"
+        ]
+       ],
+       [
+        19.753,
+        [
+         "boots",
+         "goggles"
+        ]
+       ],
+       [
+        20.32,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ],
+       [
+        25.225,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ],
+       [
+        65.065,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ]
+      ],
+      "index": 3
+     },
+     {
+      "track_id": 4,
+      "start_time": 35.402,
+      "confirmed_at": 35.869,
+      "end_time": 65.065,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "boots",
+       "gloves",
+       "goggles"
+      ],
+      "missing_history": [
+       [
+        35.869,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        36.27,
+        [
+         "boots",
+         "goggles"
+        ]
+       ],
+       [
+        37.437,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ],
+       [
+        45.979,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ],
+       [
+        65.065,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ]
+      ],
+      "index": 4
+     },
+     {
+      "track_id": 5,
+      "start_time": 37.571,
+      "confirmed_at": 38.038,
+      "end_time": 65.065,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "boots",
+       "gloves",
+       "goggles",
+       "helmet"
+      ],
+      "missing_history": [
+       [
+        38.038,
+        [
+         "vest"
+        ]
+       ],
+       [
+        38.171,
+        [
+         "boots",
+         "goggles",
+         "vest"
+        ]
+       ],
+       [
+        39.84,
+        [
+         "boots",
+         "goggles"
+        ]
+       ],
+       [
+        41.174,
+        [
+         "boots",
+         "goggles",
+         "helmet"
+        ]
+       ],
+       [
+        42.943,
+        [
+         "boots",
+         "gloves",
+         "goggles",
+         "helmet"
+        ]
+       ],
+       [
+        46.28,
+        [
+         "boots",
+         "gloves",
+         "goggles",
+         "helmet"
+        ]
+       ],
+       [
+        65.065,
+        [
+         "boots",
+         "gloves",
+         "goggles",
+         "helmet"
+        ]
+       ]
+      ],
+      "index": 5
+     },
+     {
+      "track_id": 6,
+      "start_time": 38.906,
+      "confirmed_at": 39.373,
+      "end_time": 65.065,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "boots",
+       "gloves",
+       "goggles",
+       "vest"
+      ],
+      "missing_history": [
+       [
+        39.373,
+        [
+         "boots",
+         "vest"
+        ]
+       ],
+       [
+        39.406,
+        [
+         "boots",
+         "goggles",
+         "vest"
+        ]
+       ],
+       [
+        39.74,
+        [
+         "boots",
+         "gloves",
+         "goggles",
+         "vest"
+        ]
+       ],
+       [
+        46.613,
+        [
+         "boots",
+         "gloves",
+         "goggles",
+         "vest"
+        ]
+       ],
+       [
+        65.065,
+        [
+         "boots",
+         "gloves",
+         "goggles",
+         "vest"
+        ]
+       ]
+      ],
+      "index": 6
+     },
+     {
+      "track_id": 7,
+      "start_time": 54.721,
+      "confirmed_at": 55.188,
+      "end_time": 65.065,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "boots",
+       "gloves",
+       "goggles"
+      ],
+      "missing_history": [
+       [
+        55.188,
+        [
+         "boots",
+         "vest"
+        ]
+       ],
+       [
+        55.589,
+        [
+         "boots",
+         "goggles",
+         "vest"
+        ]
+       ],
+       [
+        55.622,
+        [
+         "boots",
+         "gloves",
+         "goggles",
+         "vest"
+        ]
+       ],
+       [
+        56.723,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ],
+       [
+        62.796,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ],
+       [
+        65.065,
+        [
+         "boots",
+         "gloves",
+         "goggles"
+        ]
+       ]
+      ],
+      "index": 7
+     }
+    ]
+   }
+  },
+  "video4": {
+   "baseline": {
+    "frames": 349,
+    "stage": "full",
+    "rows": 1047,
+    "label_boxes": 1047,
+    "label_boxes_unmatched": 0,
+    "summary": {
+     "helmet": {
+      "nhan_co": 1047,
+      "nhan_thieu": 0,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 869,
+      "thieu_dung": 0,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 178,
+      "thieu_thanh_chua_xd": 0,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "vest": {
+      "nhan_co": 698,
+      "nhan_thieu": 349,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 604,
+      "thieu_dung": 307,
+      "bao_thieu_oan": 1,
+      "bao_co_sai": 2,
+      "co_thanh_chua_xd": 93,
+      "thieu_thanh_chua_xd": 40,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "gloves": {
+      "nhan_co": 698,
+      "nhan_thieu": 0,
+      "nhan_chua_xac_dinh": 349,
+      "co_dung": 496,
+      "thieu_dung": 0,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 202,
+      "thieu_thanh_chua_xd": 0,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "goggles": {
+      "nhan_co": 0,
+      "nhan_thieu": 698,
+      "nhan_chua_xac_dinh": 349,
+      "co_dung": 0,
+      "thieu_dung": 468,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 0,
+      "thieu_thanh_chua_xd": 230,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "boots": {
+      "nhan_co": 698,
+      "nhan_thieu": 0,
+      "nhan_chua_xac_dinh": 349,
+      "co_dung": 402,
+      "thieu_dung": 0,
+      "bao_thieu_oan": 20,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 276,
+      "thieu_thanh_chua_xd": 0,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     }
+    },
+    "confusion": {
+     "helmet": {
+      "co->co": 869,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 178,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 0,
+      "thieu->chua_xac_dinh": 0,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "vest": {
+      "co->co": 604,
+      "co->thieu": 1,
+      "co->chua_xac_dinh": 93,
+      "co->khong_ghep": 0,
+      "thieu->co": 2,
+      "thieu->thieu": 307,
+      "thieu->chua_xac_dinh": 40,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "gloves": {
+      "co->co": 496,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 202,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 0,
+      "thieu->chua_xac_dinh": 0,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 349,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "goggles": {
+      "co->co": 0,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 0,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 468,
+      "thieu->chua_xac_dinh": 230,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 349,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "boots": {
+      "co->co": 402,
+      "co->thieu": 20,
+      "co->chua_xac_dinh": 276,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 0,
+      "thieu->chua_xac_dinh": 0,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 349,
+      "chua_xac_dinh->khong_ghep": 0
+     }
+    },
+    "events": [
+     {
+      "track_id": 1,
+      "start_time": 0.0,
+      "confirmed_at": 0.467,
+      "end_time": 11.633,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "goggles"
+      ],
+      "missing_history": [
+       [
+        0.467,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        9.133,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        9.167,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        9.267,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        9.3,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        9.567,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        9.967,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        10.567,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        10.6,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        10.633,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        10.667,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        11.633,
+        [
+         "goggles"
+        ]
+       ]
+      ],
+      "index": 1
+     },
+     {
+      "track_id": 2,
+      "start_time": 0.0,
+      "confirmed_at": 0.467,
+      "end_time": 11.633,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "vest"
+      ],
+      "missing_history": [
+       [
+        0.467,
+        [
+         "vest"
+        ]
+       ],
+       [
+        6.333,
+        [
+         "vest"
+        ]
+       ],
+       [
+        6.367,
+        [
+         "vest"
+        ]
+       ],
+       [
+        6.467,
+        [
+         "vest"
+        ]
+       ],
+       [
+        7.333,
+        [
+         "vest"
+        ]
+       ],
+       [
+        8.567,
+        [
+         "vest"
+        ]
+       ],
+       [
+        8.767,
+        [
+         "vest"
+        ]
+       ],
+       [
+        8.833,
+        [
+         "vest"
+        ]
+       ],
+       [
+        8.867,
+        [
+         "vest"
+        ]
+       ],
+       [
+        8.967,
+        [
+         "vest"
+        ]
+       ],
+       [
+        9.033,
+        [
+         "vest"
+        ]
+       ],
+       [
+        11.333,
+        [
+         "vest"
+        ]
+       ],
+       [
+        11.367,
+        [
+         "vest"
+        ]
+       ],
+       [
+        11.633,
+        [
+         "vest"
+        ]
+       ]
+      ],
+      "index": 2
+     },
+     {
+      "track_id": 3,
+      "start_time": 6.133,
+      "confirmed_at": 8.633,
+      "end_time": 11.633,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "goggles"
+      ],
+      "missing_history": [
+       [
+        8.633,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        11.633,
+        [
+         "goggles"
+        ]
+       ]
+      ],
+      "index": 3
+     }
+    ]
+   },
+   "v4": {
+    "frames": 349,
+    "stage": "full",
+    "rows": 1047,
+    "label_boxes": 1047,
+    "label_boxes_unmatched": 0,
+    "summary": {
+     "helmet": {
+      "nhan_co": 1047,
+      "nhan_thieu": 0,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 870,
+      "thieu_dung": 0,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 177,
+      "thieu_thanh_chua_xd": 0,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "vest": {
+      "nhan_co": 698,
+      "nhan_thieu": 349,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 604,
+      "thieu_dung": 307,
+      "bao_thieu_oan": 1,
+      "bao_co_sai": 2,
+      "co_thanh_chua_xd": 93,
+      "thieu_thanh_chua_xd": 40,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "gloves": {
+      "nhan_co": 698,
+      "nhan_thieu": 0,
+      "nhan_chua_xac_dinh": 349,
+      "co_dung": 496,
+      "thieu_dung": 0,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 202,
+      "thieu_thanh_chua_xd": 0,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "goggles": {
+      "nhan_co": 0,
+      "nhan_thieu": 698,
+      "nhan_chua_xac_dinh": 349,
+      "co_dung": 0,
+      "thieu_dung": 468,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 0,
+      "thieu_thanh_chua_xd": 230,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "boots": {
+      "nhan_co": 698,
+      "nhan_thieu": 0,
+      "nhan_chua_xac_dinh": 349,
+      "co_dung": 402,
+      "thieu_dung": 0,
+      "bao_thieu_oan": 20,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 276,
+      "thieu_thanh_chua_xd": 0,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     }
+    },
+    "confusion": {
+     "helmet": {
+      "co->co": 870,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 177,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 0,
+      "thieu->chua_xac_dinh": 0,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "vest": {
+      "co->co": 604,
+      "co->thieu": 1,
+      "co->chua_xac_dinh": 93,
+      "co->khong_ghep": 0,
+      "thieu->co": 2,
+      "thieu->thieu": 307,
+      "thieu->chua_xac_dinh": 40,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "gloves": {
+      "co->co": 496,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 202,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 0,
+      "thieu->chua_xac_dinh": 0,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 349,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "goggles": {
+      "co->co": 0,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 0,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 468,
+      "thieu->chua_xac_dinh": 230,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 349,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "boots": {
+      "co->co": 402,
+      "co->thieu": 20,
+      "co->chua_xac_dinh": 276,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 0,
+      "thieu->chua_xac_dinh": 0,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 349,
+      "chua_xac_dinh->khong_ghep": 0
+     }
+    },
+    "events": [
+     {
+      "track_id": 1,
+      "start_time": 0.0,
+      "confirmed_at": 0.467,
+      "end_time": 11.633,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "goggles"
+      ],
+      "missing_history": [
+       [
+        0.467,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        9.133,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        9.167,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        9.267,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        9.3,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        9.567,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        9.967,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        10.567,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        10.6,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        10.633,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        10.667,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        11.633,
+        [
+         "goggles"
+        ]
+       ]
+      ],
+      "index": 1
+     },
+     {
+      "track_id": 2,
+      "start_time": 0.0,
+      "confirmed_at": 0.467,
+      "end_time": 11.633,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "vest"
+      ],
+      "missing_history": [
+       [
+        0.467,
+        [
+         "vest"
+        ]
+       ],
+       [
+        6.333,
+        [
+         "vest"
+        ]
+       ],
+       [
+        6.367,
+        [
+         "vest"
+        ]
+       ],
+       [
+        6.467,
+        [
+         "vest"
+        ]
+       ],
+       [
+        7.333,
+        [
+         "vest"
+        ]
+       ],
+       [
+        8.567,
+        [
+         "vest"
+        ]
+       ],
+       [
+        8.767,
+        [
+         "vest"
+        ]
+       ],
+       [
+        8.833,
+        [
+         "vest"
+        ]
+       ],
+       [
+        8.867,
+        [
+         "vest"
+        ]
+       ],
+       [
+        8.967,
+        [
+         "vest"
+        ]
+       ],
+       [
+        9.033,
+        [
+         "vest"
+        ]
+       ],
+       [
+        11.333,
+        [
+         "vest"
+        ]
+       ],
+       [
+        11.367,
+        [
+         "vest"
+        ]
+       ],
+       [
+        11.633,
+        [
+         "vest"
+        ]
+       ]
+      ],
+      "index": 2
+     },
+     {
+      "track_id": 3,
+      "start_time": 6.133,
+      "confirmed_at": 8.633,
+      "end_time": 11.633,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "goggles"
+      ],
+      "missing_history": [
+       [
+        8.633,
+        [
+         "goggles"
+        ]
+       ],
+       [
+        11.633,
+        [
+         "goggles"
+        ]
+       ]
+      ],
+      "index": 3
+     }
+    ]
+   }
+  },
+  "video5": {
+   "baseline": {
+    "frames": 219,
+    "stage": "full",
+    "rows": 438,
+    "label_boxes": 438,
+    "label_boxes_unmatched": 0,
+    "summary": {
+     "helmet": {
+      "nhan_co": 438,
+      "nhan_thieu": 0,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 436,
+      "thieu_dung": 0,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 2,
+      "thieu_thanh_chua_xd": 0,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "vest": {
+      "nhan_co": 438,
+      "nhan_thieu": 0,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 390,
+      "thieu_dung": 0,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 48,
+      "thieu_thanh_chua_xd": 0,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "gloves": {
+      "nhan_co": 0,
+      "nhan_thieu": 438,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 0,
+      "thieu_dung": 401,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 0,
+      "thieu_thanh_chua_xd": 37,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "goggles": {
+      "nhan_co": 438,
+      "nhan_thieu": 0,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 334,
+      "thieu_dung": 0,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 104,
+      "thieu_thanh_chua_xd": 0,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "boots": {
+      "nhan_co": 0,
+      "nhan_thieu": 438,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 0,
+      "thieu_dung": 152,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 0,
+      "thieu_thanh_chua_xd": 286,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     }
+    },
+    "confusion": {
+     "helmet": {
+      "co->co": 436,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 2,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 0,
+      "thieu->chua_xac_dinh": 0,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "vest": {
+      "co->co": 390,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 48,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 0,
+      "thieu->chua_xac_dinh": 0,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "gloves": {
+      "co->co": 0,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 0,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 401,
+      "thieu->chua_xac_dinh": 37,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "goggles": {
+      "co->co": 334,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 104,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 0,
+      "thieu->chua_xac_dinh": 0,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "boots": {
+      "co->co": 0,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 0,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 152,
+      "thieu->chua_xac_dinh": 286,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     }
+    },
+    "events": [
+     {
+      "track_id": 1,
+      "start_time": 0.0,
+      "confirmed_at": 0.467,
+      "end_time": 7.3,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "boots",
+       "gloves"
+      ],
+      "missing_history": [
+       [
+        0.467,
+        [
+         "boots",
+         "gloves"
+        ]
+       ],
+       [
+        7.3,
+        [
+         "boots",
+         "gloves"
+        ]
+       ]
+      ],
+      "index": 1
+     },
+     {
+      "track_id": 2,
+      "start_time": 0.0,
+      "confirmed_at": 0.467,
+      "end_time": 7.3,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "boots",
+       "gloves"
+      ],
+      "missing_history": [
+       [
+        0.467,
+        [
+         "boots",
+         "gloves"
+        ]
+       ],
+       [
+        5.233,
+        [
+         "boots",
+         "gloves"
+        ]
+       ],
+       [
+        5.3,
+        [
+         "boots",
+         "gloves"
+        ]
+       ],
+       [
+        7.3,
+        [
+         "boots",
+         "gloves"
+        ]
+       ]
+      ],
+      "index": 2
+     }
+    ]
+   },
+   "v4": {
+    "frames": 219,
+    "stage": "full",
+    "rows": 438,
+    "label_boxes": 438,
+    "label_boxes_unmatched": 0,
+    "summary": {
+     "helmet": {
+      "nhan_co": 438,
+      "nhan_thieu": 0,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 436,
+      "thieu_dung": 0,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 2,
+      "thieu_thanh_chua_xd": 0,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "vest": {
+      "nhan_co": 438,
+      "nhan_thieu": 0,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 390,
+      "thieu_dung": 0,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 48,
+      "thieu_thanh_chua_xd": 0,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "gloves": {
+      "nhan_co": 0,
+      "nhan_thieu": 438,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 0,
+      "thieu_dung": 401,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 0,
+      "thieu_thanh_chua_xd": 37,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "goggles": {
+      "nhan_co": 438,
+      "nhan_thieu": 0,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 334,
+      "thieu_dung": 0,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 104,
+      "thieu_thanh_chua_xd": 0,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "boots": {
+      "nhan_co": 0,
+      "nhan_thieu": 438,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 0,
+      "thieu_dung": 152,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 0,
+      "thieu_thanh_chua_xd": 286,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     }
+    },
+    "confusion": {
+     "helmet": {
+      "co->co": 436,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 2,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 0,
+      "thieu->chua_xac_dinh": 0,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "vest": {
+      "co->co": 390,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 48,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 0,
+      "thieu->chua_xac_dinh": 0,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "gloves": {
+      "co->co": 0,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 0,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 401,
+      "thieu->chua_xac_dinh": 37,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "goggles": {
+      "co->co": 334,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 104,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 0,
+      "thieu->chua_xac_dinh": 0,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "boots": {
+      "co->co": 0,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 0,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 152,
+      "thieu->chua_xac_dinh": 286,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     }
+    },
+    "events": [
+     {
+      "track_id": 1,
+      "start_time": 0.0,
+      "confirmed_at": 0.467,
+      "end_time": 7.3,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "boots",
+       "gloves"
+      ],
+      "missing_history": [
+       [
+        0.467,
+        [
+         "boots",
+         "gloves"
+        ]
+       ],
+       [
+        7.3,
+        [
+         "boots",
+         "gloves"
+        ]
+       ]
+      ],
+      "index": 1
+     },
+     {
+      "track_id": 2,
+      "start_time": 0.0,
+      "confirmed_at": 0.467,
+      "end_time": 7.3,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "boots",
+       "gloves"
+      ],
+      "missing_history": [
+       [
+        0.467,
+        [
+         "boots",
+         "gloves"
+        ]
+       ],
+       [
+        5.233,
+        [
+         "boots",
+         "gloves"
+        ]
+       ],
+       [
+        5.3,
+        [
+         "boots",
+         "gloves"
+        ]
+       ],
+       [
+        7.3,
+        [
+         "boots",
+         "gloves"
+        ]
+       ]
+      ],
+      "index": 2
+     }
+    ]
+   }
+  },
+  "video6": {
+   "baseline": {
+    "frames": 206,
+    "stage": "full",
+    "rows": 412,
+    "label_boxes": 412,
+    "label_boxes_unmatched": 0,
+    "summary": {
+     "helmet": {
+      "nhan_co": 412,
+      "nhan_thieu": 0,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 412,
+      "thieu_dung": 0,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 0,
+      "thieu_thanh_chua_xd": 0,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "vest": {
+      "nhan_co": 206,
+      "nhan_thieu": 206,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 206,
+      "thieu_dung": 206,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 0,
+      "thieu_thanh_chua_xd": 0,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "gloves": {
+      "nhan_co": 206,
+      "nhan_thieu": 206,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 197,
+      "thieu_dung": 206,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 9,
+      "thieu_thanh_chua_xd": 0,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "goggles": {
+      "nhan_co": 0,
+      "nhan_thieu": 412,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 0,
+      "thieu_dung": 412,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 0,
+      "thieu_thanh_chua_xd": 0,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "boots": {
+      "nhan_co": 0,
+      "nhan_thieu": 0,
+      "nhan_chua_xac_dinh": 412,
+      "co_dung": 0,
+      "thieu_dung": 0,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 0,
+      "thieu_thanh_chua_xd": 0,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     }
+    },
+    "confusion": {
+     "helmet": {
+      "co->co": 412,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 0,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 0,
+      "thieu->chua_xac_dinh": 0,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "vest": {
+      "co->co": 206,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 0,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 206,
+      "thieu->chua_xac_dinh": 0,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "gloves": {
+      "co->co": 197,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 9,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 206,
+      "thieu->chua_xac_dinh": 0,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "goggles": {
+      "co->co": 0,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 0,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 412,
+      "thieu->chua_xac_dinh": 0,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "boots": {
+      "co->co": 0,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 0,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 0,
+      "thieu->chua_xac_dinh": 0,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 412,
+      "chua_xac_dinh->khong_ghep": 0
+     }
+    },
+    "events": [
+     {
+      "track_id": 1,
+      "start_time": 0.0,
+      "confirmed_at": 0.56,
+      "end_time": 8.24,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "gloves",
+       "goggles"
+      ],
+      "missing_history": [
+       [
+        0.56,
+        [
+         "gloves",
+         "goggles"
+        ]
+       ],
+       [
+        8.24,
+        [
+         "gloves",
+         "goggles"
+        ]
+       ]
+      ],
+      "index": 1
+     },
+     {
+      "track_id": 2,
+      "start_time": 0.0,
+      "confirmed_at": 0.56,
+      "end_time": 8.24,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "goggles",
+       "vest"
+      ],
+      "missing_history": [
+       [
+        0.56,
+        [
+         "goggles",
+         "vest"
+        ]
+       ],
+       [
+        8.24,
+        [
+         "goggles",
+         "vest"
+        ]
+       ]
+      ],
+      "index": 2
+     }
+    ]
+   },
+   "v4": {
+    "frames": 206,
+    "stage": "full",
+    "rows": 412,
+    "label_boxes": 412,
+    "label_boxes_unmatched": 0,
+    "summary": {
+     "helmet": {
+      "nhan_co": 412,
+      "nhan_thieu": 0,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 412,
+      "thieu_dung": 0,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 0,
+      "thieu_thanh_chua_xd": 0,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "vest": {
+      "nhan_co": 206,
+      "nhan_thieu": 206,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 206,
+      "thieu_dung": 206,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 0,
+      "thieu_thanh_chua_xd": 0,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "gloves": {
+      "nhan_co": 206,
+      "nhan_thieu": 206,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 197,
+      "thieu_dung": 206,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 9,
+      "thieu_thanh_chua_xd": 0,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "goggles": {
+      "nhan_co": 0,
+      "nhan_thieu": 412,
+      "nhan_chua_xac_dinh": 0,
+      "co_dung": 0,
+      "thieu_dung": 412,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 0,
+      "thieu_thanh_chua_xd": 0,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     },
+     "boots": {
+      "nhan_co": 0,
+      "nhan_thieu": 0,
+      "nhan_chua_xac_dinh": 412,
+      "co_dung": 0,
+      "thieu_dung": 0,
+      "bao_thieu_oan": 0,
+      "bao_co_sai": 0,
+      "co_thanh_chua_xd": 0,
+      "thieu_thanh_chua_xd": 0,
+      "thieu_tren_nhan_chua_xd": 0,
+      "co_tren_nhan_chua_xd": 0,
+      "khong_ghep": 0
+     }
+    },
+    "confusion": {
+     "helmet": {
+      "co->co": 412,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 0,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 0,
+      "thieu->chua_xac_dinh": 0,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "vest": {
+      "co->co": 206,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 0,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 206,
+      "thieu->chua_xac_dinh": 0,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "gloves": {
+      "co->co": 197,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 9,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 206,
+      "thieu->chua_xac_dinh": 0,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "goggles": {
+      "co->co": 0,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 0,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 412,
+      "thieu->chua_xac_dinh": 0,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 0,
+      "chua_xac_dinh->khong_ghep": 0
+     },
+     "boots": {
+      "co->co": 0,
+      "co->thieu": 0,
+      "co->chua_xac_dinh": 0,
+      "co->khong_ghep": 0,
+      "thieu->co": 0,
+      "thieu->thieu": 0,
+      "thieu->chua_xac_dinh": 0,
+      "thieu->khong_ghep": 0,
+      "chua_xac_dinh->co": 0,
+      "chua_xac_dinh->thieu": 0,
+      "chua_xac_dinh->chua_xac_dinh": 412,
+      "chua_xac_dinh->khong_ghep": 0
+     }
+    },
+    "events": [
+     {
+      "track_id": 1,
+      "start_time": 0.0,
+      "confirmed_at": 0.56,
+      "end_time": 8.24,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "gloves",
+       "goggles"
+      ],
+      "missing_history": [
+       [
+        0.56,
+        [
+         "gloves",
+         "goggles"
+        ]
+       ],
+       [
+        8.24,
+        [
+         "gloves",
+         "goggles"
+        ]
+       ]
+      ],
+      "index": 1
+     },
+     {
+      "track_id": 2,
+      "start_time": 0.0,
+      "confirmed_at": 0.56,
+      "end_time": 8.24,
+      "close_reason": "session_ended_unverified",
+      "event_state": "closed",
+      "missing_items": [
+       "goggles",
+       "vest"
+      ],
+      "missing_history": [
+       [
+        0.56,
+        [
+         "goggles",
+         "vest"
+        ]
+       ],
+       [
+        8.24,
+        [
+         "goggles",
+         "vest"
+        ]
+       ]
+      ],
+      "index": 2
+     }
+    ]
+   }
+  }
+ },
+ "totals": {
+  "baseline": {
+   "helmet": {
+    "nhan_co": 3165,
+    "nhan_thieu": 508,
+    "nhan_chua_xac_dinh": 0,
+    "co_dung": 2904,
+    "thieu_dung": 443,
+    "bao_thieu_oan": 31,
+    "bao_co_sai": 22,
+    "co_thanh_chua_xd": 191,
+    "thieu_thanh_chua_xd": 36,
+    "thieu_tren_nhan_chua_xd": 0,
+    "co_tren_nhan_chua_xd": 0,
+    "khong_ghep": 46
+   },
+   "vest": {
+    "nhan_co": 2630,
+    "nhan_thieu": 1043,
+    "nhan_chua_xac_dinh": 0,
+    "co_dung": 2394,
+    "thieu_dung": 984,
+    "bao_thieu_oan": 50,
+    "bao_co_sai": 3,
+    "co_thanh_chua_xd": 146,
+    "thieu_thanh_chua_xd": 50,
+    "thieu_tren_nhan_chua_xd": 0,
+    "co_tren_nhan_chua_xd": 0,
+    "khong_ghep": 46
+   },
+   "gloves": {
+    "nhan_co": 904,
+    "nhan_thieu": 2072,
+    "nhan_chua_xac_dinh": 697,
+    "co_dung": 693,
+    "thieu_dung": 1680,
+    "bao_thieu_oan": 0,
+    "bao_co_sai": 0,
+    "co_thanh_chua_xd": 211,
+    "thieu_thanh_chua_xd": 363,
+    "thieu_tren_nhan_chua_xd": 155,
+    "co_tren_nhan_chua_xd": 0,
+    "khong_ghep": 46
+   },
+   "goggles": {
+    "nhan_co": 438,
+    "nhan_thieu": 2886,
+    "nhan_chua_xac_dinh": 349,
+    "co_dung": 334,
+    "thieu_dung": 2512,
+    "bao_thieu_oan": 0,
+    "bao_co_sai": 0,
+    "co_thanh_chua_xd": 104,
+    "thieu_thanh_chua_xd": 328,
+    "thieu_tren_nhan_chua_xd": 0,
+    "co_tren_nhan_chua_xd": 0,
+    "khong_ghep": 46
+   },
+   "boots": {
+    "nhan_co": 832,
+    "nhan_thieu": 925,
+    "nhan_chua_xac_dinh": 1916,
+    "co_dung": 402,
+    "thieu_dung": 562,
+    "bao_thieu_oan": 134,
+    "bao_co_sai": 1,
+    "co_thanh_chua_xd": 285,
+    "thieu_thanh_chua_xd": 340,
+    "thieu_tren_nhan_chua_xd": 9,
+    "co_tren_nhan_chua_xd": 3,
+    "khong_ghep": 46
+   }
+  },
+  "v4": {
+   "helmet": {
+    "nhan_co": 3165,
+    "nhan_thieu": 508,
+    "nhan_chua_xac_dinh": 0,
+    "co_dung": 2915,
+    "thieu_dung": 441,
+    "bao_thieu_oan": 21,
+    "bao_co_sai": 22,
+    "co_thanh_chua_xd": 190,
+    "thieu_thanh_chua_xd": 38,
+    "thieu_tren_nhan_chua_xd": 0,
+    "co_tren_nhan_chua_xd": 0,
+    "khong_ghep": 46
+   },
+   "vest": {
+    "nhan_co": 2630,
+    "nhan_thieu": 1043,
+    "nhan_chua_xac_dinh": 0,
+    "co_dung": 2394,
+    "thieu_dung": 984,
+    "bao_thieu_oan": 50,
+    "bao_co_sai": 3,
+    "co_thanh_chua_xd": 146,
+    "thieu_thanh_chua_xd": 50,
+    "thieu_tren_nhan_chua_xd": 0,
+    "co_tren_nhan_chua_xd": 0,
+    "khong_ghep": 46
+   },
+   "gloves": {
+    "nhan_co": 904,
+    "nhan_thieu": 2072,
+    "nhan_chua_xac_dinh": 697,
+    "co_dung": 693,
+    "thieu_dung": 1680,
+    "bao_thieu_oan": 0,
+    "bao_co_sai": 0,
+    "co_thanh_chua_xd": 211,
+    "thieu_thanh_chua_xd": 363,
+    "thieu_tren_nhan_chua_xd": 155,
+    "co_tren_nhan_chua_xd": 0,
+    "khong_ghep": 46
+   },
+   "goggles": {
+    "nhan_co": 438,
+    "nhan_thieu": 2886,
+    "nhan_chua_xac_dinh": 349,
+    "co_dung": 334,
+    "thieu_dung": 2512,
+    "bao_thieu_oan": 0,
+    "bao_co_sai": 0,
+    "co_thanh_chua_xd": 104,
+    "thieu_thanh_chua_xd": 328,
+    "thieu_tren_nhan_chua_xd": 0,
+    "co_tren_nhan_chua_xd": 0,
+    "khong_ghep": 46
+   },
+   "boots": {
+    "nhan_co": 832,
+    "nhan_thieu": 925,
+    "nhan_chua_xac_dinh": 1916,
+    "co_dung": 402,
+    "thieu_dung": 562,
+    "bao_thieu_oan": 134,
+    "bao_co_sai": 1,
+    "co_thanh_chua_xd": 285,
+    "thieu_thanh_chua_xd": 340,
+    "thieu_tren_nhan_chua_xd": 9,
+    "co_tren_nhan_chua_xd": 3,
+    "khong_ghep": 46
+   }
+  }
+ },
+ "compare": {
+  "baseline_vs_v4": {
+   "video3": {
+    "events": {
+     "n_a": 7,
+     "n_b": 7,
+     "same": false,
+     "diffs": [
+      {
+       "index": 5,
+       "field": "missing_history",
+       "a": [
+        [
+         38.038,
+         [
+          "vest"
+         ]
+        ],
+        [
+         38.171,
+         [
+          "boots",
+          "goggles",
+          "vest"
+         ]
+        ],
+        [
+         39.84,
+         [
+          "boots",
+          "goggles"
+         ]
+        ],
+        [
+         41.108,
+         [
+          "boots",
+          "goggles",
+          "helmet"
+         ]
+        ],
+        [
+         42.943,
+         [
+          "boots",
+          "gloves",
+          "goggles",
+          "helmet"
+         ]
+        ],
+        [
+         46.28,
+         [
+          "boots",
+          "gloves",
+          "goggles",
+          "helmet"
+         ]
+        ],
+        [
+         65.065,
+         [
+          "boots",
+          "gloves",
+          "goggles",
+          "helmet"
+         ]
+        ]
+       ],
+       "b": [
+        [
+         38.038,
+         [
+          "vest"
+         ]
+        ],
+        [
+         38.171,
+         [
+          "boots",
+          "goggles",
+          "vest"
+         ]
+        ],
+        [
+         39.84,
+         [
+          "boots",
+          "goggles"
+         ]
+        ],
+        [
+         41.174,
+         [
+          "boots",
+          "goggles",
+          "helmet"
+         ]
+        ],
+        [
+         42.943,
+         [
+          "boots",
+          "gloves",
+          "goggles",
+          "helmet"
+         ]
+        ],
+        [
+         46.28,
+         [
+          "boots",
+          "gloves",
+          "goggles",
+          "helmet"
+         ]
+        ],
+        [
+         65.065,
+         [
+          "boots",
+          "gloves",
+          "goggles",
+          "helmet"
+         ]
+        ]
+       ]
+      },
+      {
+       "index": 7,
+       "field": "missing_history",
+       "a": [
+        [
+         55.188,
+         [
+          "boots",
+          "vest"
+         ]
+        ],
+        [
+         55.255,
+         [
+          "boots",
+          "helmet",
+          "vest"
+         ]
+        ],
+        [
+         55.589,
+         [
+          "boots",
+          "goggles",
+          "helmet",
+          "vest"
+         ]
+        ],
+        [
+         55.622,
+         [
+          "boots",
+          "gloves",
+          "goggles",
+          "helmet",
+          "vest"
+         ]
+        ],
+        [
+         56.423,
+         [
+          "boots",
+          "gloves",
+          "goggles",
+          "vest"
+         ]
+        ],
+        [
+         56.723,
+         [
+          "boots",
+          "gloves",
+          "goggles"
+         ]
+        ],
+        [
+         62.796,
+         [
+          "boots",
+          "gloves",
+          "goggles"
+         ]
+        ],
+        [
+         65.065,
+         [
+          "boots",
+          "gloves",
+          "goggles"
+         ]
+        ]
+       ],
+       "b": [
+        [
+         55.188,
+         [
+          "boots",
+          "vest"
+         ]
+        ],
+        [
+         55.589,
+         [
+          "boots",
+          "goggles",
+          "vest"
+         ]
+        ],
+        [
+         55.622,
+         [
+          "boots",
+          "gloves",
+          "goggles",
+          "vest"
+         ]
+        ],
+        [
+         56.723,
+         [
+          "boots",
+          "gloves",
+          "goggles"
+         ]
+        ],
+        [
+         62.796,
+         [
+          "boots",
+          "gloves",
+          "goggles"
+         ]
+        ],
+        [
+         65.065,
+         [
+          "boots",
+          "gloves",
+          "goggles"
+         ]
+        ]
+       ]
+      }
+     ]
+    },
+    "label_transitions": {
+     "helmet": {
+      "co|chua_xac_dinh->co": 2,
+      "co|thieu->chua_xac_dinh": 2,
+      "co|thieu->co": 8,
+      "thieu|thieu->chua_xac_dinh": 2
+     },
+     "vest": {},
+     "gloves": {},
+     "goggles": {},
+     "boots": {}
+    },
+    "rows": {
+     "rows_base": 1741,
+     "rows_other": 1741,
+     "only_base": 0,
+     "only_other": 0,
+     "same_box": 1741,
+     "new_co_on_unlabeled_rows": {
+      "helmet": 0,
+      "vest": 0,
+      "gloves": 0,
+      "goggles": 0,
+      "boots": 0
+     }
+    }
+   },
+   "video4": {
+    "events": {
+     "n_a": 3,
+     "n_b": 3,
+     "same": true,
+     "diffs": []
+    },
+    "label_transitions": {
+     "helmet": {
+      "co|chua_xac_dinh->co": 1
+     },
+     "vest": {},
+     "gloves": {},
+     "goggles": {},
+     "boots": {}
+    },
+    "rows": {
+     "rows_base": 1047,
+     "rows_other": 1047,
+     "only_base": 0,
+     "only_other": 0,
+     "same_box": 1047,
+     "new_co_on_unlabeled_rows": {
+      "helmet": 0,
+      "vest": 0,
+      "gloves": 0,
+      "goggles": 0,
+      "boots": 0
+     }
+    }
+   },
+   "video5": {
+    "events": {
+     "n_a": 2,
+     "n_b": 2,
+     "same": true,
+     "diffs": []
+    },
+    "label_transitions": {
+     "helmet": {},
+     "vest": {},
+     "gloves": {},
+     "goggles": {},
+     "boots": {}
+    },
+    "rows": {
+     "rows_base": 438,
+     "rows_other": 438,
+     "only_base": 0,
+     "only_other": 0,
+     "same_box": 438,
+     "new_co_on_unlabeled_rows": {
+      "helmet": 0,
+      "vest": 0,
+      "gloves": 0,
+      "goggles": 0,
+      "boots": 0
+     }
+    }
+   },
+   "video6": {
+    "events": {
+     "n_a": 2,
+     "n_b": 2,
+     "same": true,
+     "diffs": []
+    },
+    "label_transitions": {
+     "helmet": {},
+     "vest": {},
+     "gloves": {},
+     "goggles": {},
+     "boots": {}
+    },
+    "rows": {
+     "rows_base": 412,
+     "rows_other": 412,
+     "only_base": 0,
+     "only_other": 0,
+     "same_box": 412,
+     "new_co_on_unlabeled_rows": {
+      "helmet": 0,
+      "vest": 0,
+      "gloves": 0,
+      "goggles": 0,
+      "boots": 0
+     }
+    }
+   }
+  }
+ }
+}

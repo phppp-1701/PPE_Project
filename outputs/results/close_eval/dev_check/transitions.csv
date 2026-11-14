@@ -1,0 +1,16 @@
+﻿compare,video,frame,label_track,ppe,label,base_pred,other_pred
+baseline_vs_v4,video3,89,1,helmet,co,thieu,co
+baseline_vs_v4,video3,90,1,helmet,co,thieu,co
+baseline_vs_v4,video3,91,1,helmet,co,thieu,co
+baseline_vs_v4,video3,92,1,helmet,co,thieu,co
+baseline_vs_v4,video3,93,1,helmet,co,thieu,co
+baseline_vs_v4,video3,1129,6,helmet,thieu,thieu,chua_xac_dinh
+baseline_vs_v4,video3,1131,6,helmet,thieu,thieu,chua_xac_dinh
+baseline_vs_v4,video3,1191,5,helmet,co,chua_xac_dinh,co
+baseline_vs_v4,video3,1192,5,helmet,co,chua_xac_dinh,co
+baseline_vs_v4,video3,1652,7,helmet,co,thieu,co
+baseline_vs_v4,video3,1653,7,helmet,co,thieu,co
+baseline_vs_v4,video3,1654,7,helmet,co,thieu,co
+baseline_vs_v4,video3,1655,7,helmet,co,thieu,chua_xac_dinh
+baseline_vs_v4,video3,1656,7,helmet,co,thieu,chua_xac_dinh
+baseline_vs_v4,video4,186,3,helmet,co,chua_xac_dinh,co

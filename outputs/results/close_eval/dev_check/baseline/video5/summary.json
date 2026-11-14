@@ -1,0 +1,49 @@
+{
+  "video": "D:\\KhoaLuan\\PPE_PROJECT\\data\\videos\\video5.mp4",
+  "session_id": "video5_20261114_180756",
+  "stage": "full",
+  "not_run_reason": null,
+  "frames": 219,
+  "video_fps": 30.0,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "elapsed_s": 11.71,
+  "pipeline_fps": 18.7,
+  "step_ms": {
+    "association": {
+      "p50": 0.09,
+      "p95": 0.12
+    },
+    "compliance": {
+      "p50": 1.01,
+      "p95": 1.37
+    },
+    "detector": {
+      "p50": 16.77,
+      "p95": 20.42
+    },
+    "parts": {
+      "p50": 11.83,
+      "p95": 16.27
+    },
+    "pose": {
+      "p50": 12.54,
+      "p95": 16.83
+    },
+    "temporal_events": {
+      "p50": 0.34,
+      "p95": 0.63
+    },
+    "tracker": {
+      "p50": 0.52,
+      "p95": 0.79
+    }
+  },
+  "events": 2,
+  "weights": "outputs/train/yolo11s_ppe6_c4/weights/best.pt",
+  "imgsz": 960,
+  "config": "D:\\KhoaLuan\\PPE_PROJECT\\outputs\\results\\close_eval\\pipeline_baseline_0645f53.yaml",
+  "note": "FPS toàn luồng gồm đọc khung, xử lý và vẽ/ghi video (nếu bật)"
+}
