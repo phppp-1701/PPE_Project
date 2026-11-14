@@ -1,0 +1,9 @@
+Ghi chú lỗi (xem bằng mắt), cấu hình commit 0b756b849e, 8 mục:
+- video5 t=1.34s (khung 40) | Kính | Khác | Có kính nhưng không vẽ box của kính
+- video9 t=3.23s (khung 96) | Áo | Báo Thiếu nhưng thật ra Có | Box áo có, nhưng lại báo áo bị thiếu
+- video10 t=0.00s (khung 0) | Áo | Báo Thiếu nhưng thật ra Có | Box áo có nhưng lại báo thiếu áo
+- video13 t=3.62s (khung 108) | Mũ | Báo Có nhưng thật ra Thiếu | nhầm lẫn đầu trọc thành mũ (nghiêm trọng)
+- video13 t=6.47s (khung 194) | Kính | Báo Thiếu nhưng thật ra Có | có kính nhưng không vẽ box và báo thiếu
+- video13 t=8.01s (khung 240) | Mũ | Báo Có nhưng thật ra Thiếu | nhầm lẫn đầu trọc thành mũ (nghiêm trọng)
+- video16 t=18.99s (khung 455) | Kính | Khác | không thấy được kính do quay lưng thì chưa xác định nhưng lại cảnh báo thiếu
+- video17 t=11.54s (khung 345) | Mũ | Báo Thiếu nhưng thật ra Có | Có mũ nhưng báo thiếu

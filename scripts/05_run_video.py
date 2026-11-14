@@ -32,6 +32,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 from ppe import HAVE, MISSING, MissingParameter, load_config  # noqa: E402
 from ppe.association import SIDES, region_box  # noqa: E402
+from ppe.parts import part_boxes  # noqa: E402
 from ppe.pipeline import STAGES, Pipeline  # noqa: E402
 
 # Màu (BGR). Người: khung dày, màu theo trạng thái; PPE: khung mảnh hơn, mỗi loại một màu, có nhãn chữ.
@@ -49,6 +50,7 @@ PPE_COLOR = {
 TAG = {"helmet": "Mu", "vest": "Ao", "gloves": "Gang", "goggles": "Kinh", "boots": "Ung"}
 SHORT = {"helmet": "M", "vest": "A", "gloves": "G", "goggles": "K", "boots": "U"}
 VETO_TAG = {"goggles": "Kinh thuong"}   # nhãn hộp bị bộ phân loại phủ quyết
+PL_TAG = " (PL)"   # vùng ảnh cắt bộ phân loại đã xét (không phải hộp detector), vẽ nét đứt
 
 
 def build(stage, source_id, session_id, on_event, cfg=None):
@@ -147,6 +149,29 @@ def draw(frame, out, cfg, draw_regions):
         if id(d) in vetoed:
             label = VETO_TAG.get(name, TAG.get(name, name) + " (bac bo)")
         tag(img, label, x1, y2, c, scale=s * 0.75, above=False)
+
+    # Bằng chứng của bộ phân loại (bước A, 14/11/2026): PPE là Có vì bộ phân loại chắc có (phiếu pos) mà không có hộp
+    # detector gán cho người đó -> vẽ nét đứt vùng ảnh cắt đã xét (hình học part_cls.geometry như parts.py), nhãn "(PL)".
+    # Đây là vùng đã xét, không phải vị trí vật thể. Chỉ vẽ, không đổi dữ liệu kết quả.
+    pc = cfg.get("part_cls") or {}
+    if pc.get("enabled") and pc.get("geometry"):
+        hh, ww = img.shape[:2]
+        for tr in out.get("tracks", []):
+            kps = getattr(tr, "extra", {}).get("kps")
+            if not kps:
+                continue
+            crops = part_boxes(kps, pc["geometry"], pc["kp_conf"])
+            for name, v in states.get(tr.track_id, {}).items():
+                for side, (state, d) in v["sides"].items():
+                    if state != HAVE or d.get("vote") != "pos" or d.get("has"):
+                        continue
+                    c = PPE_COLOR.get(name, LOST_COLOR)
+                    for n2, s2, (cx, cy, sz) in crops:
+                        if n2 != name or (side is not None and s2 != side):
+                            continue
+                        b = (max(0, cx - sz / 2), max(0, cy - sz / 2), min(ww - 1, cx + sz / 2), min(hh - 1, cy + sz / 2))
+                        dashed_rect(img, b, c, t_ppe, dash=6)
+                        tag(img, TAG.get(name, name) + PL_TAG, int(b[0]), int(b[3]), c, scale=s * 0.75, above=False)
     return img
 
 

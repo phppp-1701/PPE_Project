@@ -1,0 +1,1720 @@
+{
+ "video5:40": {
+  "t": 1.333,
+  "detections": [
+   {
+    "ppe": "vest",
+    "conf": 0.833,
+    "box": [
+     1081.7,
+     378.3,
+     1254.7,
+     650.5
+    ]
+   },
+   {
+    "ppe": "helmet",
+    "conf": 0.82,
+    "box": [
+     1113.7,
+     243.5,
+     1236.5,
+     324.5
+    ]
+   },
+   {
+    "ppe": "helmet",
+    "conf": 0.812,
+    "box": [
+     692.8,
+     248.2,
+     813.0,
+     318.6
+    ]
+   },
+   {
+    "ppe": "vest",
+    "conf": 0.793,
+    "box": [
+     666.1,
+     376.8,
+     845.3,
+     630.6
+    ]
+   }
+  ],
+  "rejected": [],
+  "tracks": [
+   {
+    "id": 1,
+    "box": [
+     1080.3,
+     239.2,
+     1260.6,
+     1045.4
+    ],
+    "det_conf": 0.852,
+    "confident": true,
+    "kps_conf": {
+     "mui": 0.77,
+     "mat_T": 0.88,
+     "mat_P": 0.15,
+     "tai_T": 0.96,
+     "tai_P": 0.06,
+     "vai_T": 1.0,
+     "vai_P": 0.86,
+     "co_tay_T": 0.98,
+     "co_tay_P": 0.41,
+     "hong_T": 1.0,
+     "hong_P": 0.98,
+     "mat_ca_T": 0.97,
+     "mat_ca_P": 0.87
+    },
+    "shoulders_reversed": false,
+    "parts": {
+     "gloves/right": 0.0,
+     "goggles/None": 0.9952
+    },
+    "owned": {
+     "vest/None": [
+      0.833
+     ],
+     "helmet/None": [
+      0.82
+     ]
+    },
+    "states": {
+     "helmet": {
+      "state": "co",
+      "sides": {
+       "None": {
+        "state": "co",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 26727,
+        "observable": true,
+        "has": true,
+        "contested": false,
+        "vote": null
+       }
+      }
+     },
+     "vest": {
+      "state": "co",
+      "sides": {
+       "None": {
+        "state": "co",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 25408,
+        "observable": true,
+        "has": true,
+        "contested": false,
+        "vote": null
+       }
+      }
+     },
+     "gloves": {
+      "state": "thieu",
+      "sides": {
+       "left": {
+        "state": "chua_xac_dinh",
+        "v": 0.0,
+        "o": 0.0,
+        "area": 0,
+        "observable": false,
+        "has": false,
+        "contested": false
+       },
+       "right": {
+        "state": "thieu",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 52328,
+        "observable": true,
+        "has": false,
+        "contested": false,
+        "vote": "neg"
+       }
+      }
+     },
+     "goggles": {
+      "state": "co",
+      "sides": {
+       "None": {
+        "state": "co",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 26727,
+        "observable": false,
+        "has": false,
+        "contested": false,
+        "vote": "pos"
+       }
+      }
+     },
+     "boots": {
+      "state": "thieu",
+      "sides": {
+       "None": {
+        "state": "thieu",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 22828,
+        "observable": true,
+        "has": false,
+        "contested": false,
+        "vote": null
+       }
+      }
+     }
+    },
+    "temporal": {
+     "helmet": "Check(missing_confirmed=False, recovered=True, valid_now=True, since=None)",
+     "vest": "Check(missing_confirmed=False, recovered=True, valid_now=True, since=None)",
+     "gloves": "Check(missing_confirmed=True, recovered=False, valid_now=True, since=0.0)",
+     "goggles": "Check(missing_confirmed=False, recovered=True, valid_now=True, since=None)",
+     "boots": "Check(missing_confirmed=True, recovered=False, valid_now=True, since=0.0)"
+    }
+   },
+   {
+    "id": 2,
+    "box": [
+     661.3,
+     242.7,
+     861.4,
+     1009.7
+    ],
+    "det_conf": 0.839,
+    "confident": true,
+    "kps_conf": {
+     "mui": 0.93,
+     "mat_T": 0.43,
+     "mat_P": 0.95,
+     "tai_T": 0.08,
+     "tai_P": 0.96,
+     "vai_T": 0.95,
+     "vai_P": 1.0,
+     "co_tay_T": 0.67,
+     "co_tay_P": 0.97,
+     "hong_T": 0.99,
+     "hong_P": 1.0,
+     "mat_ca_T": 0.96,
+     "mat_ca_P": 0.98
+    },
+    "shoulders_reversed": false,
+    "parts": {
+     "gloves/right": 0.9876,
+     "gloves/left": 0.0027,
+     "goggles/None": 0.9917,
+     "helmet/None": 0.9991
+    },
+    "owned": {
+     "helmet/None": [
+      0.812
+     ],
+     "vest/None": [
+      0.793
+     ]
+    },
+    "states": {
+     "helmet": {
+      "state": "co",
+      "sides": {
+       "None": {
+        "state": "co",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 28226,
+        "observable": true,
+        "has": true,
+        "contested": false,
+        "vote": "pos"
+       }
+      }
+     },
+     "vest": {
+      "state": "co",
+      "sides": {
+       "None": {
+        "state": "co",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 26833,
+        "observable": true,
+        "has": true,
+        "contested": false,
+        "vote": null
+       }
+      }
+     },
+     "gloves": {
+      "state": "thieu",
+      "sides": {
+       "left": {
+        "state": "thieu",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 55263,
+        "observable": true,
+        "has": false,
+        "contested": false,
+        "vote": "neg"
+       },
+       "right": {
+        "state": "chua_xac_dinh",
+        "v": 0.0,
+        "o": 0.0,
+        "area": 0,
+        "observable": false,
+        "has": false,
+        "contested": false
+       }
+      }
+     },
+     "goggles": {
+      "state": "co",
+      "sides": {
+       "None": {
+        "state": "co",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 28226,
+        "observable": false,
+        "has": false,
+        "contested": false,
+        "vote": "pos"
+       }
+      }
+     },
+     "boots": {
+      "state": "thieu",
+      "sides": {
+       "None": {
+        "state": "thieu",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 24108,
+        "observable": true,
+        "has": false,
+        "contested": false,
+        "vote": null
+       }
+      }
+     }
+    },
+    "temporal": {
+     "helmet": "Check(missing_confirmed=False, recovered=True, valid_now=True, since=None)",
+     "vest": "Check(missing_confirmed=False, recovered=True, valid_now=True, since=None)",
+     "gloves": "Check(missing_confirmed=True, recovered=False, valid_now=True, since=0.0)",
+     "goggles": "Check(missing_confirmed=False, recovered=True, valid_now=True, since=None)",
+     "boots": "Check(missing_confirmed=True, recovered=False, valid_now=True, since=0.0)"
+    }
+   }
+  ],
+  "low_conf_candidates": [
+   {
+    "ppe": "vest",
+    "conf": 0.833,
+    "box": [
+     1081.7,
+     378.3,
+     1254.7,
+     650.5
+    ]
+   },
+   {
+    "ppe": "helmet",
+    "conf": 0.82,
+    "box": [
+     1113.7,
+     243.5,
+     1236.5,
+     324.5
+    ]
+   },
+   {
+    "ppe": "helmet",
+    "conf": 0.812,
+    "box": [
+     692.8,
+     248.2,
+     813.0,
+     318.6
+    ]
+   },
+   {
+    "ppe": "vest",
+    "conf": 0.793,
+    "box": [
+     666.1,
+     376.8,
+     845.3,
+     630.6
+    ]
+   },
+   {
+    "ppe": "goggles",
+    "conf": 0.043,
+    "box": [
+     736.7,
+     311.0,
+     806.7,
+     340.9
+    ]
+   }
+  ]
+ },
+ "video9:96": {
+  "t": 3.2,
+  "detections": [
+   {
+    "ppe": "helmet",
+    "conf": 0.915,
+    "box": [
+     834.6,
+     128.0,
+     1214.5,
+     484.2
+    ]
+   },
+   {
+    "ppe": "vest",
+    "conf": 0.808,
+    "box": [
+     693.5,
+     592.7,
+     1467.9,
+     1080.0
+    ]
+   },
+   {
+    "ppe": "goggles",
+    "conf": 0.721,
+    "box": [
+     873.8,
+     469.8,
+     1154.1,
+     590.3
+    ]
+   }
+  ],
+  "rejected": [
+   {
+    "ppe": "vest",
+    "conf": 0.808,
+    "box": [
+     693.5,
+     592.7,
+     1467.9,
+     1080.0
+    ],
+    "reason": "outside",
+    "cand": "[]"
+   },
+   {
+    "ppe": "goggles",
+    "conf": 0.721,
+    "box": [
+     873.8,
+     469.8,
+     1154.1,
+     590.3
+    ],
+    "reason": "outside",
+    "cand": "[]"
+   }
+  ],
+  "tracks": [
+   {
+    "id": 1,
+    "box": [
+     570.4,
+     118.8,
+     1518.7,
+     1079.6
+    ],
+    "det_conf": 0.881,
+    "confident": true,
+    "kps_conf": {
+     "mui": 0.99,
+     "mat_T": 0.98,
+     "mat_P": 0.97,
+     "tai_T": 0.79,
+     "tai_P": 0.61,
+     "vai_T": 0.96,
+     "vai_P": 0.96,
+     "co_tay_T": 0.85,
+     "co_tay_P": 0.83,
+     "hong_T": 0.1,
+     "hong_P": 0.11,
+     "mat_ca_T": 0.0,
+     "mat_ca_P": 0.0
+    },
+    "shoulders_reversed": false,
+    "parts": {
+     "gloves/right": 0.0208,
+     "gloves/left": 0.6308,
+     "goggles/None": 1.0,
+     "helmet/None": 0.9992
+    },
+    "owned": {
+     "helmet/None": [
+      0.915
+     ]
+    },
+    "states": {
+     "helmet": {
+      "state": "co",
+      "sides": {
+       "None": {
+        "state": "co",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 167529,
+        "observable": true,
+        "has": true,
+        "contested": false,
+        "vote": "pos"
+       }
+      }
+     },
+     "vest": {
+      "state": "thieu",
+      "sides": {
+       "None": {
+        "state": "thieu",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 159259,
+        "observable": true,
+        "has": false,
+        "contested": false,
+        "vote": null
+       }
+      }
+     },
+     "gloves": {
+      "state": "thieu",
+      "sides": {
+       "left": {
+        "state": "thieu",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 328002,
+        "observable": true,
+        "has": false,
+        "contested": false,
+        "vote": "neg"
+       },
+       "right": {
+        "state": "thieu",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 328002,
+        "observable": true,
+        "has": false,
+        "contested": false,
+        "vote": "neg"
+       }
+      }
+     },
+     "goggles": {
+      "state": "thieu",
+      "sides": {
+       "None": {
+        "state": "thieu",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 167529,
+        "observable": true,
+        "has": false,
+        "contested": false,
+        "vote": "neg"
+       }
+      }
+     },
+     "boots": {
+      "state": "chua_xac_dinh",
+      "sides": {
+       "None": {
+        "state": "chua_xac_dinh",
+        "v": 0.913,
+        "o": 0.0,
+        "area": 130651,
+        "observable": "False",
+        "has": false,
+        "contested": false,
+        "vote": null
+       }
+      }
+     }
+    },
+    "temporal": {
+     "helmet": "Check(missing_confirmed=False, recovered=True, valid_now=True, since=None)",
+     "vest": "Check(missing_confirmed=False, recovered=False, valid_now=True, since=2.7666666666666666)",
+     "gloves": "Check(missing_confirmed=True, recovered=False, valid_now=True, since=1.4)",
+     "goggles": "Check(missing_confirmed=True, recovered=False, valid_now=True, since=0.0)",
+     "boots": "Check(missing_confirmed=False, recovered=False, valid_now=False, since=None)"
+    }
+   }
+  ],
+  "low_conf_candidates": [
+   {
+    "ppe": "helmet",
+    "conf": 0.915,
+    "box": [
+     834.6,
+     128.0,
+     1214.5,
+     484.2
+    ]
+   },
+   {
+    "ppe": "vest",
+    "conf": 0.808,
+    "box": [
+     693.5,
+     592.7,
+     1467.9,
+     1080.0
+    ]
+   },
+   {
+    "ppe": "goggles",
+    "conf": 0.721,
+    "box": [
+     873.8,
+     469.8,
+     1154.1,
+     590.3
+    ]
+   }
+  ]
+ },
+ "video10:0": {
+  "t": 0.0,
+  "detections": [
+   {
+    "ppe": "helmet",
+    "conf": 0.865,
+    "box": [
+     682.8,
+     0.0,
+     1558.7,
+     295.7
+    ]
+   },
+   {
+    "ppe": "goggles",
+    "conf": 0.691,
+    "box": [
+     762.2,
+     297.0,
+     1365.5,
+     506.3
+    ]
+   },
+   {
+    "ppe": "vest",
+    "conf": 0.414,
+    "box": [
+     333.7,
+     670.6,
+     1906.5,
+     1080.0
+    ]
+   }
+  ],
+  "rejected": [
+   {
+    "ppe": "goggles",
+    "conf": 0.691,
+    "box": [
+     762.2,
+     297.0,
+     1365.5,
+     506.3
+    ],
+    "reason": "outside",
+    "cand": "[]"
+   },
+   {
+    "ppe": "vest",
+    "conf": 0.414,
+    "box": [
+     333.7,
+     670.6,
+     1906.5,
+     1080.0
+    ],
+    "reason": "outside",
+    "cand": "[]"
+   }
+  ],
+  "tracks": [
+   {
+    "id": 1,
+    "box": [
+     174.6,
+     0.0,
+     1920.0,
+     1074.2
+    ],
+    "det_conf": 0.83,
+    "confident": true,
+    "kps_conf": {
+     "mui": 0.98,
+     "mat_T": 0.99,
+     "mat_P": 0.98,
+     "tai_T": 0.93,
+     "tai_P": 0.74,
+     "vai_T": 0.68,
+     "vai_P": 0.84,
+     "co_tay_T": 0.02,
+     "co_tay_P": 0.04,
+     "hong_T": 0.01,
+     "hong_P": 0.01,
+     "mat_ca_T": 0.01,
+     "mat_ca_P": 0.01
+    },
+    "shoulders_reversed": false,
+    "parts": {
+     "goggles/None": 1.0,
+     "helmet/None": 0.9756
+    },
+    "owned": {
+     "helmet/None": [
+      0.865
+     ]
+    },
+    "states": {
+     "helmet": {
+      "state": "co",
+      "sides": {
+       "None": {
+        "state": "co",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 344761,
+        "observable": false,
+        "has": true,
+        "contested": false,
+        "vote": "pos"
+       }
+      }
+     },
+     "vest": {
+      "state": "thieu",
+      "sides": {
+       "None": {
+        "state": "thieu",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 327744,
+        "observable": true,
+        "has": false,
+        "contested": false,
+        "vote": null
+       }
+      }
+     },
+     "gloves": {
+      "state": "chua_xac_dinh",
+      "sides": {
+       "left": {
+        "state": "chua_xac_dinh",
+        "v": 0.0,
+        "o": 0.0,
+        "area": 0,
+        "observable": false,
+        "has": false,
+        "contested": false
+       },
+       "right": {
+        "state": "chua_xac_dinh",
+        "v": 0.0,
+        "o": 0.0,
+        "area": 0,
+        "observable": false,
+        "has": false,
+        "contested": false
+       }
+      }
+     },
+     "goggles": {
+      "state": "co",
+      "sides": {
+       "None": {
+        "state": "co",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 344761,
+        "observable": true,
+        "has": false,
+        "contested": false,
+        "vote": "pos"
+       }
+      }
+     },
+     "boots": {
+      "state": "chua_xac_dinh",
+      "sides": {
+       "None": {
+        "state": "chua_xac_dinh",
+        "v": 0.935,
+        "o": 0.0,
+        "area": 275317,
+        "observable": "False",
+        "has": false,
+        "contested": false,
+        "vote": null
+       }
+      }
+     }
+    },
+    "temporal": {
+     "helmet": "Check(missing_confirmed=False, recovered=False, valid_now=True, since=None)",
+     "vest": "Check(missing_confirmed=False, recovered=False, valid_now=True, since=0.0)",
+     "gloves": "Check(missing_confirmed=False, recovered=False, valid_now=False, since=None)",
+     "goggles": "Check(missing_confirmed=False, recovered=False, valid_now=True, since=None)",
+     "boots": "Check(missing_confirmed=False, recovered=False, valid_now=False, since=None)"
+    }
+   }
+  ],
+  "low_conf_candidates": [
+   {
+    "ppe": "helmet",
+    "conf": 0.865,
+    "box": [
+     682.8,
+     0.0,
+     1558.7,
+     295.7
+    ]
+   },
+   {
+    "ppe": "goggles",
+    "conf": 0.691,
+    "box": [
+     762.2,
+     297.0,
+     1365.5,
+     506.3
+    ]
+   },
+   {
+    "ppe": "vest",
+    "conf": 0.414,
+    "box": [
+     333.7,
+     670.6,
+     1906.5,
+     1080.0
+    ]
+   },
+   {
+    "ppe": "helmet",
+    "conf": 0.032,
+    "box": [
+     652.5,
+     0.0,
+     1841.9,
+     520.3
+    ]
+   }
+  ]
+ },
+ "video13:108": {
+  "t": 3.6,
+  "detections": [
+   {
+    "ppe": "gloves",
+    "conf": 0.882,
+    "box": [
+     453.1,
+     525.9,
+     719.9,
+     969.6
+    ]
+   },
+   {
+    "ppe": "gloves",
+    "conf": 0.792,
+    "box": [
+     956.3,
+     505.1,
+     1227.2,
+     926.5
+    ]
+   },
+   {
+    "ppe": "helmet",
+    "conf": 0.6,
+    "box": [
+     655.3,
+     257.8,
+     1054.5,
+     606.5
+    ]
+   }
+  ],
+  "rejected": [
+   {
+    "ppe": "gloves",
+    "conf": 0.882,
+    "box": [
+     453.1,
+     525.9,
+     719.9,
+     969.6
+    ],
+    "reason": "outside",
+    "cand": "[]"
+   },
+   {
+    "ppe": "gloves",
+    "conf": 0.792,
+    "box": [
+     956.3,
+     505.1,
+     1227.2,
+     926.5
+    ],
+    "reason": "outside",
+    "cand": "[]"
+   }
+  ],
+  "tracks": [
+   {
+    "id": 1,
+    "box": [
+     391.9,
+     265.2,
+     1565.5,
+     1075.7
+    ],
+    "det_conf": 0.836,
+    "confident": true,
+    "kps_conf": {
+     "mui": 0.99,
+     "mat_T": 0.98,
+     "mat_P": 0.98,
+     "tai_T": 0.86,
+     "tai_P": 0.73,
+     "vai_T": 0.87,
+     "vai_P": 0.94,
+     "co_tay_T": 0.16,
+     "co_tay_P": 0.36,
+     "hong_T": 0.04,
+     "hong_P": 0.07,
+     "mat_ca_T": 0.01,
+     "mat_ca_P": 0.01
+    },
+    "shoulders_reversed": false,
+    "parts": {
+     "goggles/None": 0.9903,
+     "helmet/None": 0.1196
+    },
+    "owned": {
+     "helmet/None": [
+      0.6
+     ]
+    },
+    "states": {
+     "helmet": {
+      "state": "co",
+      "sides": {
+       "None": {
+        "state": "co",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 174909,
+        "observable": true,
+        "has": true,
+        "contested": false,
+        "vote": "neg"
+       }
+      }
+     },
+     "vest": {
+      "state": "thieu",
+      "sides": {
+       "None": {
+        "state": "thieu",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 166275,
+        "observable": true,
+        "has": false,
+        "contested": false,
+        "vote": null
+       }
+      }
+     },
+     "gloves": {
+      "state": "chua_xac_dinh",
+      "sides": {
+       "left": {
+        "state": "chua_xac_dinh",
+        "v": 0.0,
+        "o": 0.0,
+        "area": 0,
+        "observable": false,
+        "has": false,
+        "contested": false
+       },
+       "right": {
+        "state": "chua_xac_dinh",
+        "v": 0.0,
+        "o": 0.0,
+        "area": 0,
+        "observable": false,
+        "has": false,
+        "contested": false
+       }
+      }
+     },
+     "goggles": {
+      "state": "thieu",
+      "sides": {
+       "None": {
+        "state": "thieu",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 174909,
+        "observable": true,
+        "has": false,
+        "contested": false,
+        "vote": "neg"
+       }
+      }
+     },
+     "boots": {
+      "state": "chua_xac_dinh",
+      "sides": {
+       "None": {
+        "state": "chua_xac_dinh",
+        "v": 0.935,
+        "o": 0.0,
+        "area": 139616,
+        "observable": "False",
+        "has": false,
+        "contested": false,
+        "vote": null
+       }
+      }
+     }
+    },
+    "temporal": {
+     "helmet": "Check(missing_confirmed=False, recovered=False, valid_now=True, since=0.0)",
+     "vest": "Check(missing_confirmed=True, recovered=False, valid_now=True, since=0.0)",
+     "gloves": "Check(missing_confirmed=False, recovered=False, valid_now=False, since=None)",
+     "goggles": "Check(missing_confirmed=True, recovered=False, valid_now=True, since=0.0)",
+     "boots": "Check(missing_confirmed=False, recovered=False, valid_now=False, since=None)"
+    }
+   }
+  ],
+  "low_conf_candidates": [
+   {
+    "ppe": "gloves",
+    "conf": 0.882,
+    "box": [
+     453.1,
+     525.9,
+     719.9,
+     969.6
+    ]
+   },
+   {
+    "ppe": "gloves",
+    "conf": 0.792,
+    "box": [
+     956.3,
+     505.1,
+     1227.2,
+     926.5
+    ]
+   },
+   {
+    "ppe": "helmet",
+    "conf": 0.6,
+    "box": [
+     655.3,
+     257.8,
+     1054.5,
+     606.5
+    ]
+   },
+   {
+    "ppe": "goggles",
+    "conf": 0.085,
+    "box": [
+     687.5,
+     594.3,
+     1022.5,
+     718.8
+    ]
+   },
+   {
+    "ppe": "gloves",
+    "conf": 0.076,
+    "box": [
+     1156.9,
+     866.0,
+     1388.5,
+     1078.1
+    ]
+   }
+  ]
+ },
+ "video13:194": {
+  "t": 6.467,
+  "detections": [],
+  "rejected": [],
+  "tracks": [
+   {
+    "id": 1,
+    "box": [
+     357.4,
+     232.5,
+     1521.0,
+     1076.9
+    ],
+    "det_conf": 0.865,
+    "confident": true,
+    "kps_conf": {
+     "mui": 0.97,
+     "mat_T": 0.98,
+     "mat_P": 0.94,
+     "tai_T": 0.93,
+     "tai_P": 0.41,
+     "vai_T": 0.8,
+     "vai_P": 0.8,
+     "co_tay_T": 0.04,
+     "co_tay_P": 0.03,
+     "hong_T": 0.02,
+     "hong_P": 0.02,
+     "mat_ca_T": 0.01,
+     "mat_ca_P": 0.01
+    },
+    "shoulders_reversed": false,
+    "parts": {
+     "goggles/None": 0.1968,
+     "helmet/None": 0.0311
+    },
+    "owned": {},
+    "states": {
+     "helmet": {
+      "state": "thieu",
+      "sides": {
+       "None": {
+        "state": "thieu",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 180646,
+        "observable": true,
+        "has": false,
+        "contested": false,
+        "vote": "neg"
+       }
+      }
+     },
+     "vest": {
+      "state": "thieu",
+      "sides": {
+       "None": {
+        "state": "thieu",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 171729,
+        "observable": true,
+        "has": false,
+        "contested": false,
+        "vote": null
+       }
+      }
+     },
+     "gloves": {
+      "state": "chua_xac_dinh",
+      "sides": {
+       "left": {
+        "state": "chua_xac_dinh",
+        "v": 0.0,
+        "o": 0.0,
+        "area": 0,
+        "observable": false,
+        "has": false,
+        "contested": false
+       },
+       "right": {
+        "state": "chua_xac_dinh",
+        "v": 0.0,
+        "o": 0.0,
+        "area": 0,
+        "observable": false,
+        "has": false,
+        "contested": false
+       }
+      }
+     },
+     "goggles": {
+      "state": "thieu",
+      "sides": {
+       "None": {
+        "state": "thieu",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 180646,
+        "observable": true,
+        "has": false,
+        "contested": false,
+        "vote": "neg"
+       }
+      }
+     },
+     "boots": {
+      "state": "chua_xac_dinh",
+      "sides": {
+       "None": {
+        "state": "chua_xac_dinh",
+        "v": 0.928,
+        "o": 0.0,
+        "area": 143125,
+        "observable": "False",
+        "has": false,
+        "contested": false,
+        "vote": null
+       }
+      }
+     }
+    },
+    "temporal": {
+     "helmet": "Check(missing_confirmed=True, recovered=False, valid_now=True, since=1.5)",
+     "vest": "Check(missing_confirmed=True, recovered=False, valid_now=True, since=1.5)",
+     "gloves": "Check(missing_confirmed=False, recovered=False, valid_now=False, since=None)",
+     "goggles": "Check(missing_confirmed=True, recovered=False, valid_now=True, since=1.5)",
+     "boots": "Check(missing_confirmed=False, recovered=False, valid_now=False, since=None)"
+    }
+   }
+  ],
+  "low_conf_candidates": []
+ },
+ "video13:240": {
+  "t": 8.0,
+  "detections": [
+   {
+    "ppe": "helmet",
+    "conf": 0.576,
+    "box": [
+     705.0,
+     209.0,
+     1166.9,
+     528.9
+    ]
+   }
+  ],
+  "rejected": [],
+  "tracks": [
+   {
+    "id": 1,
+    "box": [
+     394.4,
+     205.3,
+     1571.0,
+     1076.5
+    ],
+    "det_conf": 0.872,
+    "confident": true,
+    "kps_conf": {
+     "mui": 0.98,
+     "mat_T": 0.98,
+     "mat_P": 0.96,
+     "tai_T": 0.95,
+     "tai_P": 0.56,
+     "vai_T": 0.8,
+     "vai_P": 0.86,
+     "co_tay_T": 0.03,
+     "co_tay_P": 0.04,
+     "hong_T": 0.01,
+     "hong_P": 0.01,
+     "mat_ca_T": 0.01,
+     "mat_ca_P": 0.01
+    },
+    "shoulders_reversed": false,
+    "parts": {
+     "goggles/None": 0.9771,
+     "helmet/None": 0.0416
+    },
+    "owned": {
+     "helmet/None": [
+      0.576
+     ]
+    },
+    "states": {
+     "helmet": {
+      "state": "co",
+      "sides": {
+       "None": {
+        "state": "co",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 188478,
+        "observable": true,
+        "has": true,
+        "contested": false,
+        "vote": "neg"
+       }
+      }
+     },
+     "vest": {
+      "state": "thieu",
+      "sides": {
+       "None": {
+        "state": "thieu",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 179174,
+        "observable": true,
+        "has": false,
+        "contested": false,
+        "vote": null
+       }
+      }
+     },
+     "gloves": {
+      "state": "chua_xac_dinh",
+      "sides": {
+       "left": {
+        "state": "chua_xac_dinh",
+        "v": 0.0,
+        "o": 0.0,
+        "area": 0,
+        "observable": false,
+        "has": false,
+        "contested": false
+       },
+       "right": {
+        "state": "chua_xac_dinh",
+        "v": 0.0,
+        "o": 0.0,
+        "area": 0,
+        "observable": false,
+        "has": false,
+        "contested": false
+       }
+      }
+     },
+     "goggles": {
+      "state": "chua_xac_dinh",
+      "sides": {
+       "None": {
+        "state": "chua_xac_dinh",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 188478,
+        "observable": true,
+        "has": false,
+        "contested": false,
+        "vote": "unsure"
+       }
+      }
+     },
+     "boots": {
+      "state": "chua_xac_dinh",
+      "sides": {
+       "None": {
+        "state": "chua_xac_dinh",
+        "v": 0.929,
+        "o": 0.0,
+        "area": 149509,
+        "observable": "False",
+        "has": false,
+        "contested": false,
+        "vote": null
+       }
+      }
+     }
+    },
+    "temporal": {
+     "helmet": "Check(missing_confirmed=False, recovered=False, valid_now=True, since=3.033333333333333)",
+     "vest": "Check(missing_confirmed=True, recovered=False, valid_now=True, since=3.033333333333333)",
+     "gloves": "Check(missing_confirmed=False, recovered=False, valid_now=False, since=None)",
+     "goggles": "Check(missing_confirmed=False, recovered=False, valid_now=False, since=3.033333333333333)",
+     "boots": "Check(missing_confirmed=False, recovered=False, valid_now=False, since=None)"
+    }
+   }
+  ],
+  "low_conf_candidates": [
+   {
+    "ppe": "helmet",
+    "conf": 0.576,
+    "box": [
+     705.0,
+     209.0,
+     1166.9,
+     528.9
+    ]
+   }
+  ]
+ },
+ "video16:455": {
+  "t": 18.977,
+  "detections": [
+   {
+    "ppe": "helmet",
+    "conf": 0.796,
+    "box": [
+     1192.7,
+     119.9,
+     1559.9,
+     378.0
+    ]
+   },
+   {
+    "ppe": "vest",
+    "conf": 0.763,
+    "box": [
+     1077.2,
+     586.4,
+     1747.0,
+     1080.0
+    ]
+   }
+  ],
+  "rejected": [
+   {
+    "ppe": "vest",
+    "conf": 0.763,
+    "box": [
+     1077.2,
+     586.4,
+     1747.0,
+     1080.0
+    ],
+    "reason": "outside",
+    "cand": "[]"
+   }
+  ],
+  "tracks": [
+   {
+    "id": 1,
+    "box": [
+     978.2,
+     133.5,
+     1872.1,
+     1079.0
+    ],
+    "det_conf": 0.821,
+    "confident": true,
+    "kps_conf": {
+     "mui": 0.89,
+     "mat_T": 0.85,
+     "mat_P": 0.58,
+     "tai_T": 0.74,
+     "tai_P": 0.23,
+     "vai_T": 0.49,
+     "vai_P": 0.45,
+     "co_tay_T": 0.04,
+     "co_tay_P": 0.05,
+     "hong_T": 0.0,
+     "hong_P": 0.0,
+     "mat_ca_T": 0.01,
+     "mat_ca_P": 0.02
+    },
+    "shoulders_reversed": true,
+    "parts": {
+     "goggles/None": 0.0448
+    },
+    "owned": {
+     "helmet/None": [
+      0.796
+     ]
+    },
+    "states": {
+     "helmet": {
+      "state": "co",
+      "sides": {
+       "None": {
+        "state": "co",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 155416,
+        "observable": true,
+        "has": true,
+        "contested": false,
+        "vote": null
+       }
+      }
+     },
+     "vest": {
+      "state": "chua_xac_dinh",
+      "sides": {
+       "None": {
+        "state": "chua_xac_dinh",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 147744,
+        "observable": true,
+        "has": false,
+        "contested": false,
+        "vote": null
+       }
+      }
+     },
+     "gloves": {
+      "state": "chua_xac_dinh",
+      "sides": {
+       "left": {
+        "state": "chua_xac_dinh",
+        "v": 0.0,
+        "o": 0.0,
+        "area": 0,
+        "observable": false,
+        "has": false,
+        "contested": false
+       },
+       "right": {
+        "state": "chua_xac_dinh",
+        "v": 0.0,
+        "o": 0.0,
+        "area": 0,
+        "observable": false,
+        "has": false,
+        "contested": false
+       }
+      }
+     },
+     "goggles": {
+      "state": "thieu",
+      "sides": {
+       "None": {
+        "state": "thieu",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 155416,
+        "observable": true,
+        "has": false,
+        "contested": false,
+        "vote": "neg"
+       }
+      }
+     },
+     "boots": {
+      "state": "chua_xac_dinh",
+      "sides": {
+       "None": {
+        "state": "chua_xac_dinh",
+        "v": 0.916,
+        "o": 0.0,
+        "area": 121560,
+        "observable": "False",
+        "has": false,
+        "contested": false,
+        "vote": null
+       }
+      }
+     }
+    },
+    "temporal": {
+     "helmet": "Check(missing_confirmed=False, recovered=True, valid_now=True, since=None)",
+     "vest": "Check(missing_confirmed=False, recovered=False, valid_now=False, since=None)",
+     "gloves": "Check(missing_confirmed=False, recovered=False, valid_now=False, since=None)",
+     "goggles": "Check(missing_confirmed=False, recovered=False, valid_now=True, since=17.22555889222556)",
+     "boots": "Check(missing_confirmed=False, recovered=False, valid_now=False, since=None)"
+    }
+   }
+  ],
+  "low_conf_candidates": [
+   {
+    "ppe": "helmet",
+    "conf": 0.796,
+    "box": [
+     1192.7,
+     119.9,
+     1559.9,
+     378.0
+    ]
+   },
+   {
+    "ppe": "vest",
+    "conf": 0.763,
+    "box": [
+     1077.2,
+     586.4,
+     1747.0,
+     1080.0
+    ]
+   }
+  ]
+ },
+ "video17:345": {
+  "t": 11.512,
+  "detections": [
+   {
+    "ppe": "vest",
+    "conf": 0.813,
+    "box": [
+     692.4,
+     341.4,
+     1110.9,
+     815.5
+    ]
+   }
+  ],
+  "rejected": [],
+  "tracks": [
+   {
+    "id": 1,
+    "box": [
+     663.0,
+     134.2,
+     1154.1,
+     1078.6
+    ],
+    "det_conf": 0.932,
+    "confident": true,
+    "kps_conf": {
+     "mui": 0.04,
+     "mat_T": 0.01,
+     "mat_P": 0.01,
+     "tai_T": 0.84,
+     "tai_P": 0.87,
+     "vai_T": 0.99,
+     "vai_P": 1.0,
+     "co_tay_T": 0.59,
+     "co_tay_P": 0.75,
+     "hong_T": 0.93,
+     "hong_P": 0.96,
+     "mat_ca_T": 0.01,
+     "mat_ca_P": 0.02
+    },
+    "shoulders_reversed": true,
+    "parts": {
+     "gloves/left": 0.5918,
+     "gloves/right": 0.0003,
+     "helmet/None": 0.0024
+    },
+    "owned": {
+     "vest/None": [
+      0.813
+     ]
+    },
+    "states": {
+     "helmet": {
+      "state": "thieu",
+      "sides": {
+       "None": {
+        "state": "thieu",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 85271,
+        "observable": true,
+        "has": false,
+        "contested": false,
+        "vote": "neg"
+       }
+      }
+     },
+     "vest": {
+      "state": "co",
+      "sides": {
+       "None": {
+        "state": "co",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 81062,
+        "observable": true,
+        "has": true,
+        "contested": false,
+        "vote": null
+       }
+      }
+     },
+     "gloves": {
+      "state": "chua_xac_dinh",
+      "sides": {
+       "left": {
+        "state": "chua_xac_dinh",
+        "v": 0.0,
+        "o": 0.0,
+        "area": 0,
+        "observable": false,
+        "has": false,
+        "contested": false
+       },
+       "right": {
+        "state": "chua_xac_dinh",
+        "v": 0.0,
+        "o": 0.0,
+        "area": 0,
+        "observable": false,
+        "has": false,
+        "contested": false
+       }
+      }
+     },
+     "goggles": {
+      "state": "chua_xac_dinh",
+      "sides": {
+       "None": {
+        "state": "chua_xac_dinh",
+        "v": 1.0,
+        "o": 0.0,
+        "area": 85271,
+        "observable": false,
+        "has": false,
+        "contested": false,
+        "vote": null
+       }
+      }
+     },
+     "boots": {
+      "state": "chua_xac_dinh",
+      "sides": {
+       "None": {
+        "state": "chua_xac_dinh",
+        "v": 0.918,
+        "o": 0.0,
+        "area": 66836,
+        "observable": "False",
+        "has": false,
+        "contested": false,
+        "vote": null
+       }
+      }
+     }
+    },
+    "temporal": {
+     "helmet": "Check(missing_confirmed=False, recovered=False, valid_now=True, since=10.944277610944278)",
+     "vest": "Check(missing_confirmed=False, recovered=True, valid_now=True, since=None)",
+     "gloves": "Check(missing_confirmed=False, recovered=False, valid_now=False, since=None)",
+     "goggles": "Check(missing_confirmed=False, recovered=False, valid_now=False, since=None)",
+     "boots": "Check(missing_confirmed=False, recovered=False, valid_now=False, since=None)"
+    }
+   }
+  ],
+  "low_conf_candidates": [
+   {
+    "ppe": "vest",
+    "conf": 0.813,
+    "box": [
+     692.4,
+     341.4,
+     1110.9,
+     815.5
+    ]
+   },
+   {
+    "ppe": "helmet",
+    "conf": 0.047,
+    "box": [
+     835.7,
+     141.1,
+     1008.3,
+     263.7
+    ]
+   }
+  ]
+ }
+}
