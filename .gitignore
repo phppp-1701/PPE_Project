@@ -119,3 +119,10 @@ preview_all.jpg
 !outputs/results/pipeline_calib_val/assoc_pose.json
 !outputs/results/pipeline_calib_val/assoc_pose_run.log
 !outputs/results/close_eval/annotated_main/outside_diag.json
+# Đóng băng bản cuối (16/11/2026): manifest, cấu hình mốc bản 4, benchmark, bảng FR, kết quả holdout (khi được phép)
+!outputs/results/close_eval/final/*.yaml
+!outputs/results/close_eval/final/*.json
+!outputs/results/close_eval/final/*.md
+!outputs/results/close_eval/final/*/*.json
+!outputs/results/close_eval/final/*/*.md
+!outputs/results/close_eval/final/*/*.csv

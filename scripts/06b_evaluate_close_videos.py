@@ -228,7 +228,7 @@ def cmd_manifest(args):
     if dirty:
         sys.exit("Có thay đổi chưa commit trong file đã theo dõi; commit đóng băng trước rồi mới ghi manifest:\n" + dirty)
     videos = [file_entry(f"data/videos/{v}.mp4") for v in args.videos]
-    labels = [file_entry(args.labels.format(v=v)) for v in args.videos]
+    labels = [file_entry(label_path(args.labels, v)) for v in args.videos]
     m = dict(
         created=datetime.now().isoformat(timespec="seconds"),
         note="source_commit là commit chứa code và cấu hình đánh giá; manifest nằm ở commit sau, không tự ghi mã commit"
@@ -248,6 +248,12 @@ def cmd_manifest(args):
     Path(args.out).write_text(json.dumps(m, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"Ghi {args.out}: source_commit {m['source_commit'][:10]}, {len(m['weights'])} trọng số, "
           f"{len(videos)} video, baseline khớp commit: {m['baseline']['config_matches_commit']}")
+
+
+def label_path(pattern, v):
+    """Đường dẫn nhãn từ mẫu: {v} = mã video như --videos (có thể có thư mục, vd holdout/h1), {b} = tên không thư mục
+    (vd h1). Thêm {b} 16/11/2026 cho tập holdout (video data/videos/holdout/h1.mp4, nhãn .../holdout/labels/h1_...zip)."""
+    return pattern.format(v=v, b=Path(v).name)
 
 
 def verify_manifest(path, configs, videos, label_pattern):
@@ -272,7 +278,7 @@ def verify_manifest(path, configs, videos, label_pattern):
             if w not in want:
                 errs.append(f"trọng số {w} của {name} không có trong manifest")
     for v in videos:
-        for rel in (f"data/videos/{v}.mp4", label_pattern.format(v=v)):
+        for rel in (f"data/videos/{v}.mp4", label_path(label_pattern, v)):
             if rel not in want:
                 errs.append(f"{rel} không có trong manifest")
     if errs:
@@ -307,7 +313,7 @@ def cmd_evaluate(args):
     total_cm = {n: {p: collections.Counter() for p in PPE} for n, _ in configs}
     base = configs[0][0]
     for v in args.videos:
-        labels = load_labels(ROOT / args.labels.format(v=v))
+        labels = load_labels(ROOT / label_path(args.labels, v))
         per, matched, frames, events = {}, {}, {}, {}
         for name, _ in configs:
             d = out / name / v
