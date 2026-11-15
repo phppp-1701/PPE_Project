@@ -21,7 +21,9 @@ hiển thị nhất quán) và `docs/experiments/2026-11-15_completion_plan.md`.
 | `benchmark/` | Hiệu năng bản 4 và bản cuối trên video 3-6 (`07_benchmark_pipeline.py`), lần 1: máy đang chạy Minecraft, **số tuyệt đối không dùng**, chỉ giữ để đối chiếu |
 | `benchmark_clean/`, `benchmark_clean_run.log` | Đo lại cùng lệnh sau khi tắt game (GPU nghỉ P8 trước khi đo): **số dùng cho báo cáo** |
 | `fr_table.md` | Bảng FR-01…10 (Đạt / Không đạt / Chưa kiểm thử) kèm bằng chứng |
-| `holdout/` | (chưa có) kết quả đánh giá cuối, chỉ khi người dùng cho phép |
+| `holdout/`, `holdout_run.log` | Đánh giá cuối, **đã chạy một lần** 16/11/2026 theo cho phép của người dùng. Trên Git chỉ có `results.md`, `results.json` (số đếm); `transitions.csv` (nhãn từng khung) và `frames.csv` của từng video chỉ giữ ở máy |
+| `holdout_summary.md` | Tóm tắt holdout: mũ giảm (0,630 → 0,542, D chặn báo thiếu ở h2), kính tăng (0,528 → 0,743), áo, găng, ủng không đổi |
+| `pictor/pictor_eval.py`, `pictor/pictor_eval.md`, `pictor/pictor_eval.json` | Kiểm thử ngoài detector trên Pictor-PPE (RQ1), C4 và r2; chép tập sang thư mục tạm để không ghi `.cache` vào `data/ppe4/`. Chạy: `python outputs/results/close_eval/final/pictor/pictor_eval.py --work <thư mục tạm>` |
 
 ## Tái lập
 

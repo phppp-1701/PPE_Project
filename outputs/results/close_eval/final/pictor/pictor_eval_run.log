@@ -1,0 +1,389 @@
+﻿Đánh giá C4 (6 lớp, bản chính) outputs/train/yolo11s_ppe6_c4/weights/best.pt
+Ultralytics 8.4.189  Python-3.12.12 torch-2.11.0+cu128 CUDA:0 (NVIDIA GeForce RTX 3050 Laptop GPU, 4096MiB)
+YOLO11s summary (fused): 100 layers, 9,415,122 parameters, 0 gradients, 21.4 GFLOPs
+[34m[1mval: [0mFast image access  (ping: 0.1±0.0 ms, read: 75.7±6.0 MB/s, size: 390.6 KB)
+
+[K[34m[1mval: [0mScanning C:\Users\HP\AppData\Local\Temp\claude\3dd4557d93c0bbc8\f633cdda-13c9-47ff-bc95-e4769bbce543\scratchpad\pictor_work\pictor_test\labels\test... 96 images, 0 backgrounds, 0 corrupt: 12% ━─────────── 96/774 286.1it/s 0.1s<2.4s
+[K[34m[1mval: [0mScanning C:\Users\HP\AppData\Local\Temp\claude\3dd4557d93c0bbc8\f633cdda-13c9-47ff-bc95-e4769bbce543\scratchpad\pictor_work\pictor_test\labels\test... 203 images, 0 backgrounds, 0 corrupt: 26% ━━━───────── 203/774 516.3it/s 0.2s<1.1s
+[K[34m[1mval: [0mScanning C:\Users\HP\AppData\Local\Temp\claude\3dd4557d93c0bbc8\f633cdda-13c9-47ff-bc95-e4769bbce543\scratchpad\pictor_work\pictor_test\labels\test... 315 images, 0 backgrounds, 0 corrupt: 40% ━━━━╸─────── 315/774 693.6it/s 0.3s<0.7s
+[K[34m[1mval: [0mScanning C:\Users\HP\AppData\Local\Temp\claude\3dd4557d93c0bbc8\f633cdda-13c9-47ff-bc95-e4769bbce543\scratchpad\pictor_work\pictor_test\labels\test... 426 images, 0 backgrounds, 0 corrupt: 55% ━━━━━━╸───── 426/774 816.5it/s 0.4s<0.4s
+[K[34m[1mval: [0mScanning C:\Users\HP\AppData\Local\Temp\claude\3dd4557d93c0bbc8\f633cdda-13c9-47ff-bc95-e4769bbce543\scratchpad\pictor_work\pictor_test\labels\test... 537 images, 0 backgrounds, 0 corrupt: 69% ━━━━━━━━──── 537/774 900.2it/s 0.5s<0.3s
+[K[34m[1mval: [0mScanning C:\Users\HP\AppData\Local\Temp\claude\3dd4557d93c0bbc8\f633cdda-13c9-47ff-bc95-e4769bbce543\scratchpad\pictor_work\pictor_test\labels\test... 648 images, 0 backgrounds, 0 corrupt: 83% ━━━━━━━━━━── 648/774 960.2it/s 0.6s<0.1s
+[K[34m[1mval: [0mScanning C:\Users\HP\AppData\Local\Temp\claude\3dd4557d93c0bbc8\f633cdda-13c9-47ff-bc95-e4769bbce543\scratchpad\pictor_work\pictor_test\labels\test... 757 images, 0 backgrounds, 0 corrupt: 97% ━━━━━━━━━━━╸ 757/774 991.5it/s 0.7s<0.0s
+[K[34m[1mval: [0mScanning C:\Users\HP\AppData\Local\Temp\claude\3dd4557d93c0bbc8\f633cdda-13c9-47ff-bc95-e4769bbce543\scratchpad\pictor_work\pictor_test\labels\test... 774 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 774/774 1.1Kit/s 0.7s
+[34m[1mval: [0mNew cache created: C:\Users\HP\AppData\Local\Temp\claude\3dd4557d93c0bbc8\f633cdda-13c9-47ff-bc95-e4769bbce543\scratchpad\pictor_work\pictor_test\labels\test.cache
+
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 0% ──────────── 1/194 58.7s/it 17.6s<3:08:57
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 1% ──────────── 3/194 3.5it/s 17.8s<54.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 2% ──────────── 5/194 6.6it/s 17.9s<28.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 3% ──────────── 7/194 8.8it/s 18.1s<21.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 4% ╸─────────── 9/194 9.6it/s 18.3s<19.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 5% ╸─────────── 11/194 10.0it/s 18.4s<18.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 6% ╸─────────── 13/194 10.5it/s 18.6s<17.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 7% ╸─────────── 15/194 10.7it/s 18.8s<16.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 8% ━─────────── 17/194 10.9it/s 19.0s<16.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 9% ━─────────── 19/194 11.1it/s 19.1s<15.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 10% ━─────────── 21/194 11.2it/s 19.3s<15.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 11% ━─────────── 23/194 11.3it/s 19.5s<15.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 12% ━╸────────── 25/194 11.2it/s 19.7s<15.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 13% ━╸────────── 27/194 11.4it/s 19.8s<14.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 14% ━╸────────── 29/194 11.4it/s 20.0s<14.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 15% ━╸────────── 31/194 11.3it/s 20.2s<14.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 17% ━━────────── 33/194 11.3it/s 20.4s<14.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 18% ━━────────── 35/194 11.2it/s 20.6s<14.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 19% ━━────────── 37/194 11.2it/s 20.7s<14.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 20% ━━────────── 39/194 11.1it/s 20.9s<14.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 21% ━━╸───────── 41/194 10.8it/s 21.1s<14.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 22% ━━╸───────── 43/194 10.9it/s 21.3s<13.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 23% ━━╸───────── 45/194 10.8it/s 21.5s<13.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 24% ━━╸───────── 47/194 10.7it/s 21.7s<13.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 25% ━━━───────── 49/194 10.9it/s 21.9s<13.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 26% ━━━───────── 51/194 10.8it/s 22.0s<13.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 27% ━━━───────── 53/194 10.8it/s 22.2s<13.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 28% ━━━───────── 55/194 10.8it/s 22.4s<12.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 29% ━━━╸──────── 57/194 10.5it/s 22.6s<13.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 29% ━━━╸──────── 58/194 10.1it/s 22.7s<13.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 30% ━━━╸──────── 59/194 9.8it/s 22.8s<13.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 31% ━━━╸──────── 61/194 9.8it/s 23.0s<13.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 31% ━━━╸──────── 62/194 9.5it/s 23.2s<13.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 32% ━━━╸──────── 63/194 9.4it/s 23.3s<13.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 32% ━━━╸──────── 64/194 9.3it/s 23.4s<13.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 33% ━━━━──────── 65/194 9.3it/s 23.5s<13.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 34% ━━━━──────── 67/194 9.5it/s 23.7s<13.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 35% ━━━━──────── 68/194 9.3it/s 23.8s<13.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 35% ━━━━──────── 69/194 9.2it/s 23.9s<13.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 36% ━━━━──────── 70/194 9.2it/s 24.0s<13.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 36% ━━━━──────── 71/194 9.2it/s 24.1s<13.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 37% ━━━━──────── 72/194 9.2it/s 24.2s<13.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 37% ━━━━╸─────── 73/194 9.3it/s 24.3s<13.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 38% ━━━━╸─────── 74/194 9.3it/s 24.4s<12.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 38% ━━━━╸─────── 75/194 9.3it/s 24.5s<12.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 39% ━━━━╸─────── 76/194 9.4it/s 24.7s<12.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 40% ━━━━╸─────── 78/194 9.5it/s 24.9s<12.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 40% ━━━━╸─────── 79/194 9.2it/s 25.0s<12.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 41% ━━━━╸─────── 80/194 9.0it/s 25.1s<12.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 41% ━━━━━─────── 81/194 9.0it/s 25.2s<12.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 42% ━━━━━─────── 82/194 9.1it/s 25.3s<12.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 42% ━━━━━─────── 83/194 9.2it/s 25.4s<12.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 43% ━━━━━─────── 84/194 9.2it/s 25.5s<11.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 43% ━━━━━─────── 85/194 9.1it/s 25.6s<11.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 44% ━━━━━─────── 86/194 9.1it/s 25.7s<11.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 44% ━━━━━─────── 87/194 9.1it/s 25.9s<11.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 45% ━━━━━─────── 88/194 9.0it/s 26.0s<11.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 45% ━━━━━╸────── 89/194 8.9it/s 26.1s<11.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 46% ━━━━━╸────── 90/194 9.0it/s 26.2s<11.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 46% ━━━━━╸────── 91/194 9.0it/s 26.3s<11.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 47% ━━━━━╸────── 92/194 9.0it/s 26.4s<11.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 47% ━━━━━╸────── 93/194 9.1it/s 26.5s<11.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 48% ━━━━━╸────── 94/194 9.1it/s 26.6s<11.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 48% ━━━━━╸────── 95/194 9.1it/s 26.7s<10.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 49% ━━━━━╸────── 96/194 9.1it/s 26.9s<10.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 50% ━━━━━━────── 97/194 9.0it/s 27.0s<10.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 50% ━━━━━━────── 98/194 9.0it/s 27.1s<10.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 51% ━━━━━━────── 99/194 9.0it/s 27.2s<10.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 51% ━━━━━━────── 100/194 8.5it/s 27.3s<11.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 52% ━━━━━━────── 102/194 8.8it/s 27.5s<10.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 53% ━━━━━━────── 103/194 8.9it/s 27.6s<10.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 53% ━━━━━━────── 104/194 9.0it/s 27.8s<10.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 54% ━━━━━━────── 105/194 9.0it/s 27.9s<9.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 54% ━━━━━━╸───── 106/194 9.0it/s 28.0s<9.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 55% ━━━━━━╸───── 107/194 9.1it/s 28.1s<9.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 55% ━━━━━━╸───── 108/194 9.2it/s 28.2s<9.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 56% ━━━━━━╸───── 110/194 9.3it/s 28.4s<9.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 57% ━━━━━━╸───── 111/194 9.2it/s 28.5s<9.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 57% ━━━━━━╸───── 112/194 9.2it/s 28.6s<8.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 58% ━━━━━━╸───── 113/194 9.1it/s 28.7s<8.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 58% ━━━━━━━───── 114/194 9.2it/s 28.8s<8.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 59% ━━━━━━━───── 115/194 9.1it/s 29.0s<8.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 59% ━━━━━━━───── 116/194 9.2it/s 29.1s<8.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 60% ━━━━━━━───── 117/194 9.1it/s 29.2s<8.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 60% ━━━━━━━───── 118/194 9.1it/s 29.3s<8.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 61% ━━━━━━━───── 119/194 9.1it/s 29.4s<8.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 61% ━━━━━━━───── 120/194 9.1it/s 29.5s<8.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 62% ━━━━━━━───── 121/194 8.9it/s 29.6s<8.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 62% ━━━━━━━╸──── 122/194 8.9it/s 29.7s<8.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 63% ━━━━━━━╸──── 123/194 8.9it/s 29.8s<7.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 63% ━━━━━━━╸──── 124/194 8.9it/s 30.0s<7.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 64% ━━━━━━━╸──── 125/194 9.0it/s 30.1s<7.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 64% ━━━━━━━╸──── 126/194 9.0it/s 30.2s<7.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 65% ━━━━━━━╸──── 127/194 9.0it/s 30.3s<7.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 65% ━━━━━━━╸──── 128/194 9.0it/s 30.4s<7.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 66% ━━━━━━━╸──── 129/194 8.9it/s 30.5s<7.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 67% ━━━━━━━━──── 130/194 8.9it/s 30.6s<7.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 67% ━━━━━━━━──── 131/194 9.0it/s 30.7s<7.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 68% ━━━━━━━━──── 132/194 9.1it/s 30.8s<6.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 68% ━━━━━━━━──── 133/194 9.1it/s 31.0s<6.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 69% ━━━━━━━━──── 134/194 9.1it/s 31.1s<6.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 69% ━━━━━━━━──── 135/194 9.1it/s 31.2s<6.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 70% ━━━━━━━━──── 136/194 9.2it/s 31.3s<6.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 70% ━━━━━━━━──── 137/194 9.0it/s 31.4s<6.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 71% ━━━━━━━━╸─── 138/194 9.0it/s 31.5s<6.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 71% ━━━━━━━━╸─── 139/194 9.0it/s 31.6s<6.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 72% ━━━━━━━━╸─── 140/194 9.0it/s 31.7s<6.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 72% ━━━━━━━━╸─── 141/194 9.1it/s 31.8s<5.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 73% ━━━━━━━━╸─── 142/194 9.1it/s 31.9s<5.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 73% ━━━━━━━━╸─── 143/194 9.1it/s 32.1s<5.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 74% ━━━━━━━━╸─── 144/194 9.1it/s 32.2s<5.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 74% ━━━━━━━━╸─── 145/194 8.9it/s 32.3s<5.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 75% ━━━━━━━━━─── 146/194 8.9it/s 32.4s<5.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 75% ━━━━━━━━━─── 147/194 8.9it/s 32.5s<5.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 76% ━━━━━━━━━─── 148/194 8.9it/s 32.6s<5.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 76% ━━━━━━━━━─── 149/194 9.0it/s 32.7s<5.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 77% ━━━━━━━━━─── 150/194 9.0it/s 32.8s<4.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 77% ━━━━━━━━━─── 151/194 9.0it/s 33.0s<4.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 78% ━━━━━━━━━─── 152/194 9.0it/s 33.1s<4.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 78% ━━━━━━━━━─── 153/194 8.9it/s 33.2s<4.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 79% ━━━━━━━━━╸── 154/194 9.0it/s 33.3s<4.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 79% ━━━━━━━━━╸── 155/194 9.1it/s 33.4s<4.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 80% ━━━━━━━━━╸── 156/194 9.0it/s 33.5s<4.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 80% ━━━━━━━━━╸── 157/194 9.1it/s 33.6s<4.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 81% ━━━━━━━━━╸── 158/194 9.1it/s 33.7s<4.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 82% ━━━━━━━━━╸── 160/194 9.2it/s 33.9s<3.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 82% ━━━━━━━━━╸── 161/194 9.0it/s 34.1s<3.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 83% ━━━━━━━━━━── 162/194 9.0it/s 34.2s<3.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 84% ━━━━━━━━━━── 163/194 9.0it/s 34.3s<3.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 84% ━━━━━━━━━━── 164/194 9.0it/s 34.4s<3.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 85% ━━━━━━━━━━── 165/194 9.1it/s 34.5s<3.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 85% ━━━━━━━━━━── 166/194 9.1it/s 34.6s<3.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 86% ━━━━━━━━━━── 167/194 9.1it/s 34.7s<3.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 86% ━━━━━━━━━━── 168/194 9.1it/s 34.8s<2.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 87% ━━━━━━━━━━── 169/194 9.3it/s 34.9s<2.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 87% ━━━━━━━━━━╸─ 170/194 9.4it/s 35.0s<2.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 88% ━━━━━━━━━━╸─ 171/194 9.3it/s 35.1s<2.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 88% ━━━━━━━━━━╸─ 172/194 9.2it/s 35.3s<2.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 89% ━━━━━━━━━━╸─ 173/194 9.1it/s 35.4s<2.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 89% ━━━━━━━━━━╸─ 174/194 9.2it/s 35.5s<2.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 90% ━━━━━━━━━━╸─ 175/194 9.1it/s 35.6s<2.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 90% ━━━━━━━━━━╸─ 176/194 9.0it/s 35.7s<2.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 91% ━━━━━━━━━━╸─ 177/194 8.8it/s 35.8s<1.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 91% ━━━━━━━━━━━─ 178/194 8.9it/s 35.9s<1.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 92% ━━━━━━━━━━━─ 179/194 9.0it/s 36.0s<1.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 92% ━━━━━━━━━━━─ 180/194 9.0it/s 36.1s<1.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 93% ━━━━━━━━━━━─ 181/194 9.0it/s 36.3s<1.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 93% ━━━━━━━━━━━─ 182/194 9.0it/s 36.4s<1.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 94% ━━━━━━━━━━━─ 183/194 9.0it/s 36.5s<1.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 94% ━━━━━━━━━━━─ 184/194 9.0it/s 36.6s<1.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 95% ━━━━━━━━━━━─ 185/194 8.8it/s 36.7s<1.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 95% ━━━━━━━━━━━╸ 186/194 8.8it/s 36.8s<0.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 96% ━━━━━━━━━━━╸ 187/194 8.7it/s 36.9s<0.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 96% ━━━━━━━━━━━╸ 188/194 8.7it/s 37.1s<0.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 97% ━━━━━━━━━━━╸ 189/194 8.6it/s 37.2s<0.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 97% ━━━━━━━━━━━╸ 190/194 8.7it/s 37.3s<0.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 98% ━━━━━━━━━━━╸ 191/194 8.7it/s 37.4s<0.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 98% ━━━━━━━━━━━╸ 192/194 8.8it/s 37.5s<0.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 99% ━━━━━━━━━━━╸ 193/194 8.8it/s 37.6s<0.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 194/194 5.1it/s 37.7s
+                   all        774       4184      0.809      0.564      0.652      0.409
+Speed: 1.6ms preprocess, 20.4ms inference, 0.0ms loss, 1.4ms postprocess per image
+Đánh giá r2 (4 lớp, đối chứng) outputs/train/yolo11s_ppe4_r2/weights/best.pt
+Ultralytics 8.4.189  Python-3.12.12 torch-2.11.0+cu128 CUDA:0 (NVIDIA GeForce RTX 3050 Laptop GPU, 4096MiB)
+YOLO11s summary (fused): 100 layers, 9,414,348 parameters, 0 gradients, 21.4 GFLOPs
+[34m[1mval: [0mFast image access  (ping: 0.0±0.0 ms, read: 1869.5±959.3 MB/s, size: 492.9 KB)
+
+[K[34m[1mval: [0mScanning C:\Users\HP\AppData\Local\Temp\claude\3dd4557d93c0bbc8\f633cdda-13c9-47ff-bc95-e4769bbce543\scratchpad\pictor_work\pictor_test\labels\test... 214 images, 0 backgrounds, 0 corrupt: 27% ━━━───────── 214/774 641.9it/s 0.1s<0.9s
+[K[34m[1mval: [0mScanning C:\Users\HP\AppData\Local\Temp\claude\3dd4557d93c0bbc8\f633cdda-13c9-47ff-bc95-e4769bbce543\scratchpad\pictor_work\pictor_test\labels\test... 453 images, 0 backgrounds, 0 corrupt: 58% ━━━━━━━───── 453/774 1.2Kit/s 0.2s<0.3s
+[K[34m[1mval: [0mScanning C:\Users\HP\AppData\Local\Temp\claude\3dd4557d93c0bbc8\f633cdda-13c9-47ff-bc95-e4769bbce543\scratchpad\pictor_work\pictor_test\labels\test... 684 images, 0 backgrounds, 0 corrupt: 88% ━━━━━━━━━━╸─ 684/774 1.5Kit/s 0.3s<0.1s
+[K[34m[1mval: [0mScanning C:\Users\HP\AppData\Local\Temp\claude\3dd4557d93c0bbc8\f633cdda-13c9-47ff-bc95-e4769bbce543\scratchpad\pictor_work\pictor_test\labels\test... 774 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 774/774 2.3Kit/s 0.3s
+[34m[1mval: [0mNew cache created: C:\Users\HP\AppData\Local\Temp\claude\3dd4557d93c0bbc8\f633cdda-13c9-47ff-bc95-e4769bbce543\scratchpad\pictor_work\pictor_test\labels\test.cache
+
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 0% ──────────── 1/194 63.7s/it 19.1s<3:24:52
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 1% ──────────── 3/194 3.4it/s 19.3s<56.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 2% ──────────── 5/194 6.4it/s 19.4s<29.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 3% ──────────── 7/194 8.6it/s 19.6s<21.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 4% ╸─────────── 9/194 9.9it/s 19.7s<18.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 5% ╸─────────── 11/194 10.3it/s 19.9s<17.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 6% ╸─────────── 13/194 10.4it/s 20.1s<17.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 7% ╸─────────── 15/194 10.7it/s 20.3s<16.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 8% ━─────────── 17/194 10.8it/s 20.5s<16.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 9% ━─────────── 19/194 11.0it/s 20.6s<15.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 10% ━─────────── 21/194 11.1it/s 20.8s<15.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 11% ━─────────── 23/194 11.1it/s 21.0s<15.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 12% ━╸────────── 25/194 11.2it/s 21.2s<15.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 13% ━╸────────── 27/194 11.0it/s 21.4s<15.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 14% ━╸────────── 29/194 10.9it/s 21.5s<15.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 15% ━╸────────── 31/194 11.0it/s 21.7s<14.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 17% ━━────────── 33/194 10.7it/s 21.9s<15.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 18% ━━────────── 35/194 10.6it/s 22.1s<15.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 18% ━━────────── 36/194 10.0it/s 22.2s<15.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 19% ━━────────── 37/194 9.3it/s 22.4s<16.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 19% ━━────────── 38/194 9.4it/s 22.5s<16.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 20% ━━────────── 40/194 9.8it/s 22.6s<15.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 21% ━━╸───────── 42/194 9.8it/s 22.8s<15.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 22% ━━╸───────── 43/194 9.6it/s 23.0s<15.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 22% ━━╸───────── 44/194 9.2it/s 23.1s<16.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 23% ━━╸───────── 45/194 9.0it/s 23.2s<16.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 23% ━━╸───────── 46/194 9.0it/s 23.3s<16.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 24% ━━╸───────── 48/194 9.3it/s 23.5s<15.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 25% ━━━───────── 49/194 9.3it/s 23.6s<15.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 25% ━━━───────── 50/194 9.0it/s 23.7s<16.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 26% ━━━───────── 51/194 9.1it/s 23.8s<15.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 27% ━━━───────── 53/194 9.5it/s 24.0s<14.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 27% ━━━───────── 54/194 9.5it/s 24.1s<14.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 28% ━━━───────── 55/194 9.5it/s 24.2s<14.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 28% ━━━───────── 56/194 9.4it/s 24.4s<14.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 29% ━━━╸──────── 57/194 9.6it/s 24.5s<14.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 29% ━━━╸──────── 58/194 9.3it/s 24.6s<14.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 30% ━━━╸──────── 59/194 9.5it/s 24.7s<14.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 30% ━━━╸──────── 60/194 9.4it/s 24.8s<14.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 31% ━━━╸──────── 61/194 9.3it/s 24.9s<14.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 31% ━━━╸──────── 62/194 9.3it/s 25.0s<14.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 32% ━━━╸──────── 64/194 9.5it/s 25.2s<13.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 34% ━━━━──────── 66/194 9.2it/s 25.4s<13.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 34% ━━━━──────── 67/194 9.2it/s 25.5s<13.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 35% ━━━━──────── 68/194 9.3it/s 25.6s<13.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 35% ━━━━──────── 69/194 9.4it/s 25.8s<13.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 36% ━━━━──────── 70/194 9.4it/s 25.9s<13.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 36% ━━━━──────── 71/194 9.4it/s 26.0s<13.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 37% ━━━━──────── 72/194 9.4it/s 26.1s<13.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 37% ━━━━╸─────── 73/194 9.3it/s 26.2s<13.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 38% ━━━━╸─────── 74/194 9.3it/s 26.3s<12.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 38% ━━━━╸─────── 75/194 9.3it/s 26.4s<12.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 39% ━━━━╸─────── 76/194 9.3it/s 26.5s<12.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 39% ━━━━╸─────── 77/194 9.2it/s 26.6s<12.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 40% ━━━━╸─────── 78/194 9.0it/s 26.7s<12.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 40% ━━━━╸─────── 79/194 9.1it/s 26.8s<12.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 41% ━━━━╸─────── 80/194 9.1it/s 26.9s<12.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 41% ━━━━━─────── 81/194 9.1it/s 27.1s<12.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 42% ━━━━━─────── 82/194 8.7it/s 27.2s<12.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 42% ━━━━━─────── 83/194 8.9it/s 27.3s<12.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 43% ━━━━━─────── 84/194 8.8it/s 27.4s<12.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 43% ━━━━━─────── 85/194 9.0it/s 27.5s<12.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 44% ━━━━━─────── 86/194 9.1it/s 27.6s<11.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 44% ━━━━━─────── 87/194 9.2it/s 27.7s<11.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 45% ━━━━━─────── 88/194 9.0it/s 27.8s<11.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 45% ━━━━━╸────── 89/194 9.2it/s 27.9s<11.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 46% ━━━━━╸────── 90/194 9.2it/s 28.1s<11.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 46% ━━━━━╸────── 91/194 9.3it/s 28.2s<11.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 47% ━━━━━╸────── 92/194 9.3it/s 28.3s<11.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 47% ━━━━━╸────── 93/194 9.2it/s 28.4s<10.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 48% ━━━━━╸────── 94/194 9.3it/s 28.5s<10.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 48% ━━━━━╸────── 95/194 9.3it/s 28.6s<10.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 49% ━━━━━╸────── 96/194 9.2it/s 28.7s<10.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 50% ━━━━━━────── 97/194 8.9it/s 28.8s<10.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 50% ━━━━━━────── 98/194 8.9it/s 28.9s<10.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 51% ━━━━━━────── 99/194 9.0it/s 29.0s<10.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 51% ━━━━━━────── 100/194 8.5it/s 29.2s<11.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 52% ━━━━━━────── 101/194 8.6it/s 29.3s<10.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 52% ━━━━━━────── 102/194 8.8it/s 29.4s<10.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 53% ━━━━━━────── 103/194 8.9it/s 29.5s<10.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 53% ━━━━━━────── 104/194 8.9it/s 29.6s<10.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 54% ━━━━━━────── 105/194 8.7it/s 29.7s<10.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 54% ━━━━━━╸───── 106/194 8.8it/s 29.9s<10.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 55% ━━━━━━╸───── 107/194 8.9it/s 30.0s<9.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 55% ━━━━━━╸───── 108/194 9.0it/s 30.1s<9.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 56% ━━━━━━╸───── 109/194 8.9it/s 30.2s<9.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 56% ━━━━━━╸───── 110/194 9.0it/s 30.3s<9.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 57% ━━━━━━╸───── 111/194 8.9it/s 30.4s<9.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 57% ━━━━━━╸───── 112/194 8.9it/s 30.5s<9.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 58% ━━━━━━╸───── 113/194 9.0it/s 30.6s<9.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 58% ━━━━━━━───── 114/194 9.0it/s 30.7s<8.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 59% ━━━━━━━───── 115/194 9.1it/s 30.9s<8.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 59% ━━━━━━━───── 116/194 8.8it/s 31.0s<8.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 60% ━━━━━━━───── 117/194 8.9it/s 31.1s<8.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 60% ━━━━━━━───── 118/194 9.0it/s 31.2s<8.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 61% ━━━━━━━───── 119/194 9.1it/s 31.3s<8.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 61% ━━━━━━━───── 120/194 9.0it/s 31.4s<8.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 62% ━━━━━━━───── 121/194 9.2it/s 31.5s<8.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 62% ━━━━━━━╸──── 122/194 8.9it/s 31.6s<8.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 63% ━━━━━━━╸──── 123/194 9.0it/s 31.7s<7.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 63% ━━━━━━━╸──── 124/194 9.2it/s 31.9s<7.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 64% ━━━━━━━╸──── 125/194 9.2it/s 32.0s<7.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 64% ━━━━━━━╸──── 126/194 9.3it/s 32.1s<7.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 65% ━━━━━━━╸──── 127/194 9.2it/s 32.2s<7.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 65% ━━━━━━━╸──── 128/194 9.2it/s 32.3s<7.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 66% ━━━━━━━╸──── 129/194 9.2it/s 32.4s<7.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 67% ━━━━━━━━──── 130/194 9.0it/s 32.5s<7.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 67% ━━━━━━━━──── 131/194 9.0it/s 32.6s<7.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 68% ━━━━━━━━──── 132/194 9.1it/s 32.7s<6.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 68% ━━━━━━━━──── 133/194 9.2it/s 32.8s<6.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 69% ━━━━━━━━──── 134/194 9.2it/s 32.9s<6.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 69% ━━━━━━━━──── 135/194 9.3it/s 33.1s<6.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 70% ━━━━━━━━──── 136/194 9.2it/s 33.2s<6.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 70% ━━━━━━━━──── 137/194 9.3it/s 33.3s<6.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 71% ━━━━━━━━╸─── 138/194 9.2it/s 33.4s<6.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 71% ━━━━━━━━╸─── 139/194 9.0it/s 33.5s<6.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 72% ━━━━━━━━╸─── 140/194 9.1it/s 33.6s<6.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 72% ━━━━━━━━╸─── 141/194 9.0it/s 33.7s<5.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 73% ━━━━━━━━╸─── 142/194 9.0it/s 33.8s<5.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 73% ━━━━━━━━╸─── 143/194 9.0it/s 33.9s<5.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 74% ━━━━━━━━╸─── 144/194 9.1it/s 34.0s<5.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 74% ━━━━━━━━╸─── 145/194 9.1it/s 34.2s<5.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 75% ━━━━━━━━━─── 146/194 8.9it/s 34.3s<5.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 75% ━━━━━━━━━─── 147/194 8.9it/s 34.4s<5.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 76% ━━━━━━━━━─── 148/194 9.0it/s 34.5s<5.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 76% ━━━━━━━━━─── 149/194 8.9it/s 34.6s<5.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 77% ━━━━━━━━━─── 150/194 9.0it/s 34.7s<4.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 77% ━━━━━━━━━─── 151/194 9.1it/s 34.8s<4.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 78% ━━━━━━━━━─── 152/194 9.1it/s 34.9s<4.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 78% ━━━━━━━━━─── 153/194 9.1it/s 35.0s<4.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 79% ━━━━━━━━━╸── 154/194 9.0it/s 35.2s<4.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 79% ━━━━━━━━━╸── 155/194 9.1it/s 35.3s<4.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 80% ━━━━━━━━━╸── 156/194 9.2it/s 35.4s<4.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 80% ━━━━━━━━━╸── 157/194 9.1it/s 35.5s<4.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 81% ━━━━━━━━━╸── 158/194 8.9it/s 35.6s<4.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 81% ━━━━━━━━━╸── 159/194 9.1it/s 35.7s<3.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 82% ━━━━━━━━━╸── 160/194 9.1it/s 35.8s<3.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 82% ━━━━━━━━━╸── 161/194 9.0it/s 35.9s<3.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 83% ━━━━━━━━━━── 162/194 9.0it/s 36.0s<3.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 84% ━━━━━━━━━━── 163/194 8.9it/s 36.2s<3.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 84% ━━━━━━━━━━── 164/194 9.0it/s 36.3s<3.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 85% ━━━━━━━━━━── 165/194 9.0it/s 36.4s<3.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 85% ━━━━━━━━━━── 166/194 9.1it/s 36.5s<3.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 86% ━━━━━━━━━━── 167/194 9.1it/s 36.6s<3.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 86% ━━━━━━━━━━── 168/194 8.9it/s 36.7s<2.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 87% ━━━━━━━━━━── 169/194 9.0it/s 36.8s<2.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 87% ━━━━━━━━━━╸─ 170/194 8.9it/s 36.9s<2.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 88% ━━━━━━━━━━╸─ 171/194 9.0it/s 37.0s<2.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 88% ━━━━━━━━━━╸─ 172/194 9.0it/s 37.2s<2.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 89% ━━━━━━━━━━╸─ 173/194 9.1it/s 37.3s<2.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 89% ━━━━━━━━━━╸─ 174/194 9.2it/s 37.4s<2.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 90% ━━━━━━━━━━╸─ 175/194 8.9it/s 37.5s<2.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 90% ━━━━━━━━━━╸─ 176/194 9.0it/s 37.6s<2.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 91% ━━━━━━━━━━╸─ 177/194 9.1it/s 37.7s<1.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 91% ━━━━━━━━━━━─ 178/194 9.3it/s 37.8s<1.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 92% ━━━━━━━━━━━─ 179/194 9.2it/s 37.9s<1.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 92% ━━━━━━━━━━━─ 180/194 9.2it/s 38.0s<1.5s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 93% ━━━━━━━━━━━─ 181/194 9.2it/s 38.1s<1.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 93% ━━━━━━━━━━━─ 182/194 9.1it/s 38.3s<1.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 94% ━━━━━━━━━━━─ 183/194 9.0it/s 38.4s<1.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 94% ━━━━━━━━━━━─ 184/194 9.0it/s 38.5s<1.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 95% ━━━━━━━━━━━─ 185/194 9.0it/s 38.6s<1.0s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 95% ━━━━━━━━━━━╸ 186/194 8.9it/s 38.7s<0.9s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 96% ━━━━━━━━━━━╸ 187/194 9.0it/s 38.8s<0.8s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 96% ━━━━━━━━━━━╸ 188/194 9.1it/s 38.9s<0.7s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 97% ━━━━━━━━━━━╸ 189/194 9.0it/s 39.0s<0.6s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 97% ━━━━━━━━━━━╸ 190/194 9.0it/s 39.1s<0.4s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 98% ━━━━━━━━━━━╸ 191/194 9.0it/s 39.3s<0.3s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 98% ━━━━━━━━━━━╸ 192/194 9.0it/s 39.4s<0.2s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 99% ━━━━━━━━━━━╸ 193/194 8.8it/s 39.5s<0.1s
+[K                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 194/194 4.9it/s 39.6s
+                   all        774       4184       0.72      0.619      0.652       0.39
+Speed: 1.8ms preprocess, 20.1ms inference, 0.0ms loss, 1.6ms postprocess per image
+# Pictor-PPE: kiểm thử ngoài detector (RQ1)
+
+774 ảnh (`data/ppe4/pictor_test`, đã loại ảnh trùng với dữ liệu huấn luyện). imgsz 960, conf/iou mặc định `model.val`. Chỉ kiểm thử, không dùng để chọn ngưỡng. Pictor không có nhãn găng, kính, ủng. P, R ở conf cho F1 lớn nhất của từng mô hình (số mô tả, không phải ngưỡng hệ thống). KTC 95% của AP50: bootstrap theo ảnh, 2000 lần.
+
+## C4 (6 lớp, bản chính)
+
+`outputs/train/yolo11s_ppe6_c4/weights/best.pt`
+
+| Lớp | Số hộp | P | R | F1 | AP50 [KTC 95%] | AP50-95 |
+|---|---|---|---|---|---|---|
+| person | 2497 | 0,923 | 0,722 | 0,810 | 0,851 [0,830; 0,869] | 0,580 |
+| helmet | 1645 | 0,969 | 0,469 | 0,632 | 0,685 [0,649; 0,719] | 0,407 |
+| vest | 42 | 0,536 | 0,500 | 0,517 | 0,419 [0,198; 0,646] | 0,241 |
+
+TB 3 lớp: AP50 0,652, AP50-95 0,409. Thời gian (ms/ảnh, batch 4, trong model.val): tiền xử lý 1.6, suy luận 20.4, hậu xử lý 1.4.
+
+## r2 (4 lớp, đối chứng)
+
+`outputs/train/yolo11s_ppe4_r2/weights/best.pt`
+
+| Lớp | Số hộp | P | R | F1 | AP50 [KTC 95%] | AP50-95 |
+|---|---|---|---|---|---|---|
+| person | 2497 | 0,862 | 0,773 | 0,815 | 0,842 [0,818; 0,863] | 0,565 |
+| helmet | 1645 | 0,923 | 0,559 | 0,697 | 0,669 [0,632; 0,706] | 0,390 |
+| vest | 42 | 0,374 | 0,524 | 0,437 | 0,447 [0,240; 0,653] | 0,215 |
+
+TB 3 lớp: AP50 0,652, AP50-95 0,390. Thời gian (ms/ảnh, batch 4, trong model.val): tiền xử lý 1.8, suy luận 20.1, hậu xử lý 1.6.
+
