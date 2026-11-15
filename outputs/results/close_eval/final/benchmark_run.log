@@ -1,0 +1,56 @@
+lặp 0 v4         video3: 1950 khung, latency TB 59.7 ms, p95 93.7 ms, 16.75 FPS xử lý (130 s)
+lặp 0 v4         video4: 349 khung, latency TB 87.5 ms, p95 96.1 ms, 11.43 FPS xử lý (38 s)
+lặp 0 v4         video5: 219 khung, latency TB 78.6 ms, p95 86.5 ms, 12.72 FPS xử lý (25 s)
+lặp 0 v4         video6: 206 khung, latency TB 81.8 ms, p95 90.3 ms, 12.23 FPS xử lý (25 s)
+lặp 0 final      video3: 1950 khung, latency TB 57.3 ms, p95 86.0 ms, 17.45 FPS xử lý (125 s)
+lặp 0 final      video4: 349 khung, latency TB 82.8 ms, p95 89.1 ms, 12.08 FPS xử lý (37 s)
+lặp 0 final      video5: 219 khung, latency TB 75.4 ms, p95 82.9 ms, 13.27 FPS xử lý (24 s)
+lặp 0 final      video6: 206 khung, latency TB 78.7 ms, p95 85.2 ms, 12.70 FPS xử lý (24 s)
+lặp 1 final      video3: 1950 khung, latency TB 58.6 ms, p95 88.2 ms, 17.08 FPS xử lý (128 s)
+lặp 1 final      video4: 349 khung, latency TB 84.3 ms, p95 92.9 ms, 11.86 FPS xử lý (37 s)
+lặp 1 final      video5: 219 khung, latency TB 78.2 ms, p95 88.2 ms, 12.79 FPS xử lý (25 s)
+lặp 1 final      video6: 206 khung, latency TB 79.3 ms, p95 86.6 ms, 12.61 FPS xử lý (24 s)
+lặp 1 v4         video3: 1950 khung, latency TB 57.9 ms, p95 87.3 ms, 17.27 FPS xử lý (127 s)
+lặp 1 v4         video4: 349 khung, latency TB 85.4 ms, p95 94.7 ms, 11.72 FPS xử lý (37 s)
+lặp 1 v4         video5: 219 khung, latency TB 79.8 ms, p95 85.8 ms, 12.53 FPS xử lý (26 s)
+lặp 1 v4         video6: 206 khung, latency TB 77.2 ms, p95 83.6 ms, 12.95 FPS xử lý (23 s)
+lặp 2 v4         video3: 1950 khung, latency TB 57.5 ms, p95 86.9 ms, 17.39 FPS xử lý (126 s)
+lặp 2 v4         video4: 349 khung, latency TB 84.8 ms, p95 92.2 ms, 11.80 FPS xử lý (37 s)
+lặp 2 v4         video5: 219 khung, latency TB 73.7 ms, p95 81.0 ms, 13.57 FPS xử lý (24 s)
+lặp 2 v4         video6: 206 khung, latency TB 75.1 ms, p95 83.6 ms, 13.32 FPS xử lý (23 s)
+lặp 2 final      video3: 1950 khung, latency TB 58.4 ms, p95 89.2 ms, 17.13 FPS xử lý (128 s)
+lặp 2 final      video4: 349 khung, latency TB 85.6 ms, p95 94.7 ms, 11.69 FPS xử lý (38 s)
+lặp 2 final      video5: 219 khung, latency TB 76.1 ms, p95 81.7 ms, 13.14 FPS xử lý (25 s)
+lặp 2 final      video6: 206 khung, latency TB 77.9 ms, p95 84.8 ms, 12.84 FPS xử lý (24 s)
+# Benchmark (2026-11-15T16:48:06)
+
+Phạm vi: Pipeline stage full (detector, tracker, pose, parts, association, compliance, temporal, events, ảnh minh chứng); không vẽ, không ghi video, không frames.csv, không backend; latency không gồm giải mã khung; GPU từ nvidia-smi lấy mẫu.
+
+Video video3, video4, video5, video6; 3 lượt lặp; bỏ 30 khung đầu mỗi video khỏi thống kê; nvidia-smi mỗi 500 ms. Môi trường: NVIDIA GeForce RTX 3050 Laptop GPU, torch 2.11.0+cu128, ultralytics 8.4.189.
+
+Giá trị: trung bình ± độ lệch chuẩn giữa các lượt lặp.
+
+| Chỉ số | v4 | final | Chênh (sau − đầu) |
+|---|---|---|---|
+| Latency TB (ms) | 64.5 ± 1.4 | 64.0 ± 0.7 | -0.4 (-0.7%) |
+| P95 latency, video cao nhất (ms) | 94.4 ± 2.0 | 92.2 ± 2.9 | -2.1 (-2.2%) |
+| FPS xử lý | 15.52 ± 0.34 | 15.62 ± 0.18 | +0.10 (+0.7%) |
+| FPS gồm giải mã | 14.26 ± 0.30 | 14.34 ± 0.22 | +0.09 (+0.6%) |
+| GPU util TB (%) | 71.3 ± 1.1 | 71.5 ± 0.1 | +0.2 (+0.3%) |
+| VRAM GPU tăng so với nền, đỉnh (MiB) | 274 ± 1 | 272 ± 1 | -1 (-0.5%) |
+| PyTorch reserved đỉnh (MiB) | 184 ± 0 | 184 ± 0 | +0 (+0.0%) |
+| PyTorch allocated đỉnh (MiB) | 151 ± 0 | 151 ± 0 | +0 (+0.0%) |
+
+Thời gian trung bình từng bước (ms, gộp mọi lượt và video, có trọng số số khung):
+
+| Bước | v4 | final |
+|---|---|---|
+| association | 0.07 | 0.07 |
+| compliance | 0.74 | 0.73 |
+| detector | 34.77 | 34.85 |
+| parts | 15.56 | 15.26 |
+| pose | 12.46 | 12.26 |
+| temporal_events | 0.32 | 0.31 |
+| tracker | 0.49 | 0.48 |
+
+Kiểm tra: video3: cùng số khung True ([1950]), số sự kiện {'v4': [7], 'final': [7]}; video4: cùng số khung True ([349]), số sự kiện {'v4': [3], 'final': [3]}; video5: cùng số khung True ([219]), số sự kiện {'v4': [2], 'final': [2]}; video6: cùng số khung True ([206]), số sự kiện {'v4': [2], 'final': [2]}

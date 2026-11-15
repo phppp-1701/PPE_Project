@@ -1,0 +1,92 @@
+{
+ "db_tam": "C:\\Users\\HP\\AppData\\Local\\Temp\\tmpsmb5qx8p\\fr_check.db",
+ "su_kien_trong_file": 7,
+ "thay_doi": 36,
+ "post_ok": 7,
+ "patch_ok": 29,
+ "loi": [],
+ "danh_sach_tra_ve": 7,
+ "chi_tiet_status": 200,
+ "chi_tiet_co_lich_su": true,
+ "anh_minh_chung_status": 200,
+ "anh_minh_chung_bytes": 279655,
+ "anh_minh_chung_loai": "image/jpeg",
+ "thong_ke": {
+  "total_events": 7,
+  "active_events": 0,
+  "pending_events": 0,
+  "closed_events": 7,
+  "ppe_violations": {
+   "helmet": 2,
+   "vest": 2,
+   "gloves": 7,
+   "goggles": 7,
+   "boots": 7
+  }
+ },
+ "nguon": [
+  {
+   "source_id": "video",
+   "name": "Luồng Video Trực tiếp / Mặc định",
+   "source_type": "video",
+   "rtsp_url": null,
+   "is_active": 1,
+   "created_at": "2026-11-15T16:48:46.506212"
+  },
+  {
+   "source_id": "video4",
+   "name": "Video 4 (Công trường 3 công nhân)",
+   "source_type": "video",
+   "rtsp_url": null,
+   "is_active": 1,
+   "created_at": "2026-11-15T16:48:46.506212"
+  },
+  {
+   "source_id": "video5",
+   "name": "Video 5 (Công trường bắt tay)",
+   "source_type": "video",
+   "rtsp_url": null,
+   "is_active": 1,
+   "created_at": "2026-11-15T16:48:46.506212"
+  },
+  {
+   "source_id": "video6",
+   "name": "Video 6 (Công trường cắt biên chân)",
+   "source_type": "video",
+   "rtsp_url": null,
+   "is_active": 1,
+   "created_at": "2026-11-15T16:48:46.506212"
+  }
+ ],
+ "chinh_sach_truoc": {
+  "source_id": "video",
+  "version": 1,
+  "required_ppe": [
+   "helmet",
+   "vest",
+   "gloves",
+   "goggles",
+   "boots"
+  ]
+ },
+ "chinh_sach_sau_put": {
+  "source_id": "video",
+  "version": 2,
+  "required_ppe": [
+   "helmet",
+   "vest"
+  ]
+ },
+ "chinh_sach_doc_lai": {
+  "source_id": "video",
+  "version": 2,
+  "required_ppe": [
+   "helmet",
+   "vest"
+  ]
+ },
+ "phan_hoi_status": 200,
+ "loc_theo_nguon_status": 200,
+ "trang_chu_status": 307,
+ "trang_chu_location": "/dashboard/index.html"
+}
