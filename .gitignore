@@ -112,3 +112,10 @@ preview_all.jpg
 !outputs/results/parts_cls/helmet_veto2_val.json
 !outputs/results/parts_cls/helmet_veto2_val_records.json
 !outputs/results/close_eval/annotated_main/display_audit.json
+!outputs/results/close_eval/stepF/*.yaml
+!outputs/results/close_eval/stepF/*/results.json
+!outputs/results/close_eval/stepF/*/results.md
+!outputs/results/close_eval/stepF/*/transitions.csv
+!outputs/results/pipeline_calib_val/assoc_pose.json
+!outputs/results/pipeline_calib_val/assoc_pose_run.log
+!outputs/results/close_eval/annotated_main/outside_diag.json

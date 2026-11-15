@@ -195,6 +195,9 @@ def test_current_config_d_and_c2_on():
     cfg = load_config()
     assert cfg["part_cls"]["veto_frontal"] == {"helmet": {"face_conf": 0.7, "t_veto": 0.7}}
     assert cfg["compliance"]["back_view"] == BV
+    # Bước F (16/11/2026): F1 bật; F2, F3 tắt (không đạt V3b trên val)
+    assert cfg["association"]["eye_anchor"] == {"kp_conf": 0.5, "k_eye": 1.776}
+    assert "gloves_region_fallback" not in cfg["association"] and "torso_strict" not in cfg["association"]
 
 
 def test_pose_disabled_turns_d_off(test_cfg):

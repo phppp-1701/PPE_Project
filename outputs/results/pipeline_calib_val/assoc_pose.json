@@ -1,0 +1,320 @@
+{
+  "ho_so": {
+    "thoi_diem": "2026-11-15T15:04:34",
+    "commit_nen": "f1a88843a67c71f54a95436d9dfdcee12ebb1d52",
+    "file_dang_sua": [
+      "M docs/experiments/2026-11-06_ppe6_plan.md",
+      " M scripts/05a_calibrate_val.py",
+      " M scripts/README.md",
+      " M src/ppe/association.py",
+      " M src/ppe/compliance.py",
+      " M tests/README.md",
+      "?? outputs/results/close_eval/annotated_main/outside_diag.json",
+      "?? tests/test_pose_regions.py"
+    ],
+    "sha256": {
+      "preds_cache": "30e0f6790b29a7a1323100c6a75605e84e967fcf328624cbbdd31959e39461cc",
+      "pose_weights": "869e83fcdffdc7371fa4e34cd8e51c838cc729571d1635e5141e3075e9319dc0",
+      "torso_strict_json": "d58f4cfeb6a4217c8050706d8b336916f6222a49842273ab49af4a7b6b2643e0"
+    },
+    "ghi_chu": "Val: ppe4 val (áo, găng), val_new (kính). Không dùng test, holdout, video."
+  },
+  "thiet_lap": {
+    "coverage": 0.95,
+    "fracs": [
+      0.55,
+      0.65,
+      0.75
+    ],
+    "kp_conf": 0.5,
+    "inside_margin": 0.1
+  },
+  "mau": {
+    "anh": 521,
+    "cat": {
+      "0.55": 672,
+      "0.65": 751,
+      "0.75": 785
+    },
+    "kinh_co_mat": 26,
+    "nguoi_cham_day": 576
+  },
+  "tham_so": {
+    "F1": {
+      "kp_conf": 0.5,
+      "k_eye": 1.776
+    },
+    "F2": {
+      "kp_conf": 0.5,
+      "kx": 1.259,
+      "ky0": -0.297,
+      "kh": 0.123,
+      "slope_max_deg": 48.3,
+      "s_min": 1.116,
+      "edge_frac": 0.112
+    },
+    "F3": true
+  },
+  "ket_qua": {
+    "F1": {
+      "ban_chinh": {
+        "du": {
+          "n": 28,
+          "dung": 25,
+          "sai_nguoi": 0,
+          "khong_ghep": 3,
+          "V3b_n": 13,
+          "V3b_gan_nham": 1,
+          "ti_le_dung": 0.8929
+        },
+        "0.55": {
+          "n": 28,
+          "dung": 6,
+          "sai_nguoi": 0,
+          "khong_ghep": 22,
+          "V3b_n": 13,
+          "V3b_gan_nham": 1,
+          "ti_le_dung": 0.2143
+        },
+        "0.65": {
+          "n": 28,
+          "dung": 10,
+          "sai_nguoi": 0,
+          "khong_ghep": 18,
+          "V3b_n": 13,
+          "V3b_gan_nham": 1,
+          "ti_le_dung": 0.3571
+        },
+        "0.75": {
+          "n": 28,
+          "dung": 17,
+          "sai_nguoi": 0,
+          "khong_ghep": 11,
+          "V3b_n": 13,
+          "V3b_gan_nham": 1,
+          "ti_le_dung": 0.6071
+        }
+      },
+      "F1": {
+        "du": {
+          "n": 28,
+          "dung": 28,
+          "sai_nguoi": 0,
+          "khong_ghep": 0,
+          "V3b_n": 13,
+          "V3b_gan_nham": 1,
+          "ti_le_dung": 1.0
+        },
+        "0.55": {
+          "n": 28,
+          "dung": 26,
+          "sai_nguoi": 0,
+          "khong_ghep": 2,
+          "V3b_n": 13,
+          "V3b_gan_nham": 1,
+          "ti_le_dung": 0.9286
+        },
+        "0.65": {
+          "n": 28,
+          "dung": 27,
+          "sai_nguoi": 0,
+          "khong_ghep": 1,
+          "V3b_n": 13,
+          "V3b_gan_nham": 1,
+          "ti_le_dung": 0.9643
+        },
+        "0.75": {
+          "n": 28,
+          "dung": 28,
+          "sai_nguoi": 0,
+          "khong_ghep": 0,
+          "V3b_n": 13,
+          "V3b_gan_nham": 1,
+          "ti_le_dung": 1.0
+        }
+      },
+      "tieu_chi": {
+        "du_khong_giam": true,
+        "cat_tang_it_nhat_mot_muc": true,
+        "sai_nguoi_khong_tang": true,
+        "V3b_khong_tang": true
+      },
+      "dat": true
+    },
+    "F2": {
+      "ban_chinh": {
+        "du": {
+          "n": 528,
+          "dung": 471,
+          "sai_nguoi": 0,
+          "khong_ghep": 57,
+          "V3b_n": 377,
+          "V3b_gan_nham": 24,
+          "ti_le_dung": 0.892
+        },
+        "0.55": {
+          "n": 485,
+          "dung": 375,
+          "sai_nguoi": 0,
+          "khong_ghep": 110,
+          "V3b_n": 345,
+          "V3b_gan_nham": 18,
+          "ti_le_dung": 0.7732
+        },
+        "0.65": {
+          "n": 519,
+          "dung": 422,
+          "sai_nguoi": 0,
+          "khong_ghep": 97,
+          "V3b_n": 366,
+          "V3b_gan_nham": 20,
+          "ti_le_dung": 0.8131
+        },
+        "0.75": {
+          "n": 523,
+          "dung": 457,
+          "sai_nguoi": 0,
+          "khong_ghep": 66,
+          "V3b_n": 369,
+          "V3b_gan_nham": 22,
+          "ti_le_dung": 0.8738
+        }
+      },
+      "F2": {
+        "du": {
+          "n": 528,
+          "dung": 474,
+          "sai_nguoi": 0,
+          "khong_ghep": 54,
+          "V3b_n": 377,
+          "V3b_gan_nham": 24,
+          "ti_le_dung": 0.8977
+        },
+        "0.55": {
+          "n": 485,
+          "dung": 396,
+          "sai_nguoi": 0,
+          "khong_ghep": 89,
+          "V3b_n": 345,
+          "V3b_gan_nham": 19,
+          "ti_le_dung": 0.8165
+        },
+        "0.65": {
+          "n": 519,
+          "dung": 437,
+          "sai_nguoi": 0,
+          "khong_ghep": 82,
+          "V3b_n": 366,
+          "V3b_gan_nham": 21,
+          "ti_le_dung": 0.842
+        },
+        "0.75": {
+          "n": 523,
+          "dung": 466,
+          "sai_nguoi": 0,
+          "khong_ghep": 57,
+          "V3b_n": 369,
+          "V3b_gan_nham": 22,
+          "ti_le_dung": 0.891
+        }
+      },
+      "tieu_chi": {
+        "du_khong_giam": true,
+        "cat_tang_it_nhat_mot_muc": true,
+        "sai_nguoi_khong_tang": true,
+        "V3b_khong_tang": false
+      },
+      "dat": false
+    },
+    "F3": {
+      "ban_chinh": {
+        "du": {
+          "n": 706,
+          "dung": 567,
+          "sai_nguoi": 3,
+          "khong_ghep": 136,
+          "V3b_n": 312,
+          "V3b_gan_nham": 15,
+          "ti_le_dung": 0.8031
+        },
+        "0.55": {
+          "n": 433,
+          "dung": 151,
+          "sai_nguoi": 2,
+          "khong_ghep": 280,
+          "V3b_n": 172,
+          "V3b_gan_nham": 5,
+          "ti_le_dung": 0.3487
+        },
+        "0.65": {
+          "n": 562,
+          "dung": 283,
+          "sai_nguoi": 2,
+          "khong_ghep": 277,
+          "V3b_n": 230,
+          "V3b_gan_nham": 9,
+          "ti_le_dung": 0.5036
+        },
+        "0.75": {
+          "n": 620,
+          "dung": 402,
+          "sai_nguoi": 2,
+          "khong_ghep": 216,
+          "V3b_n": 259,
+          "V3b_gan_nham": 11,
+          "ti_le_dung": 0.6484
+        }
+      },
+      "F3": {
+        "du": {
+          "n": 706,
+          "dung": 666,
+          "sai_nguoi": 2,
+          "khong_ghep": 38,
+          "V3b_n": 312,
+          "V3b_gan_nham": 123,
+          "ti_le_dung": 0.9433
+        },
+        "0.55": {
+          "n": 433,
+          "dung": 307,
+          "sai_nguoi": 2,
+          "khong_ghep": 124,
+          "V3b_n": 172,
+          "V3b_gan_nham": 74,
+          "ti_le_dung": 0.709
+        },
+        "0.65": {
+          "n": 562,
+          "dung": 512,
+          "sai_nguoi": 1,
+          "khong_ghep": 49,
+          "V3b_n": 230,
+          "V3b_gan_nham": 108,
+          "ti_le_dung": 0.911
+        },
+        "0.75": {
+          "n": 620,
+          "dung": 570,
+          "sai_nguoi": 1,
+          "khong_ghep": 49,
+          "V3b_n": 259,
+          "V3b_gan_nham": 123,
+          "ti_le_dung": 0.9194
+        }
+      },
+      "tieu_chi": {
+        "du_khong_giam": true,
+        "cat_tang_it_nhat_mot_muc": true,
+        "sai_nguoi_khong_tang": true,
+        "V3b_khong_tang": false
+      },
+      "dat": false
+    }
+  },
+  "dat": {
+    "F1": true,
+    "F2": false,
+    "F3": false
+  }
+}

@@ -162,6 +162,12 @@ association:
   # dùng vùng thân theo khung xương khi có khóa association.torso_pose, nay không có => ghép áo như bản 4.
   # Tham số B lần 1 lưu dưới tên torso_pose_b1 để giữ lịch sử và cho tests/test_torso_pose.py; chuỗi xử lý không đọc khóa này.
   torso_pose_b1: {kp_conf: 0.5, kx: 1.586, ky0: -0.247, ky1: 6.361, kh: 0.124}
+  # Bước F1 (người dùng duyệt áp dụng 16/11/2026; kế hoạch ppe6 mục F): kính là ứng viên của người khi thấy hai mắt
+  # (>= kp_conf) và tâm kính cách trung điểm hai mắt <= k_eye x khoảng cách hai mắt; hợp với vùng đầu cũ. Chọn trên val
+  # (05a --assoc-pose: k_eye = phân vị cao trên 26 kính val_new; mẫu nhỏ). Val: ghép đúng 25 -> 28/28, người cắt 55%
+  # 6 -> 26/28, V3b 1 -> 1. Hồi quy 13 video (stepF): kính báo thiếu oan 114 -> 54, độ chính xác 0,906 -> 0,924.
+  # F2 (áo theo vai, edge_frac) và F3 (găng dự phòng theo vùng) không đạt V3b: tắt, ghi vào Giới hạn.
+  eye_anchor: {kp_conf: 0.5, k_eye: 1.776}
 
 compliance:
   # Vùng đủ quan sát (công thức 3.7): v >= tau_in, o <= tau_occ, diện tích vùng trong ảnh >= area_min_px.

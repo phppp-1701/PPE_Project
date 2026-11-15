@@ -7,6 +7,7 @@ Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
     python scripts/05a_calibrate_val.py --pose        # tâm găng nhãn thật trong elip cổ tay, so với vùng tay
     python scripts/05a_calibrate_val.py --torso       # vùng thân theo khung xương cho áo (bước B), ghép đúng người
     python scripts/05a_calibrate_val.py --torso-strict  # bước B2: tham số torso_strict, V1-V4, chẩn đoán G5
+    python scripts/05a_calibrate_val.py --assoc-pose  # bước F: kính theo mắt, áo theo vai, găng dự phòng (assoc_pose.json)
     (dự đoán được lưu cache; --rerun để dự đoán lại)
 
 Tham số đầu vào: configs/pipeline.yaml (detector, ppe, calibration). Chỉ in và ghi đề xuất vào
@@ -1039,6 +1040,217 @@ def torso_strict_eval(cfg):
     print("Ghi", (OUT / "torso_strict.json").relative_to(ROOT), "(chưa ghi cấu hình; người dùng duyệt trước)")
 
 
+def assoc_pose_eval(cfg):
+    """Bước F (kế hoạch ppe6 mục F, 16/11/2026): vùng theo khung xương, chọn và kiểm trên val. Không đụng test, holdout, video.
+
+    Áo, găng: ppe4 val; kính: val_new (nhãn 6 lớp). Người, PPE nhãn thật làm phát hiện; pose như pipeline. So bản chính
+    (configs/pipeline.yaml hiện tại) với F1 (eye_anchor, kính), F2 (torso_strict + edge_frac, áo), F3
+    (gloves_region_fallback, găng). Ảnh đủ, cắt 55/65/75% chiều cao người chủ (pose chạy lại trên ảnh cắt), V3b chồng hộp
+    (bỏ người chủ, nới hộp người gần nhất cho bao hộp PPE). Tham số: k_eye = phân vị cao (region_coverage) của khoảng cách
+    tâm kính - trung điểm mắt / khoảng cách hai mắt; edge_frac = phân vị cao của (H - y2) / H (người nhãn chạm đáy ghép
+    người phát hiện, cache preds.npz chỉ đọc); F2 dùng lại tham số B2 đã chọn trên val (torso_strict.json) trừ edge_px.
+    Ghi outputs/results/pipeline_calib_val/assoc_pose.json; không sửa cấu hình."""
+    import copy
+    import datetime
+    import hashlib
+    import math
+    import subprocess
+
+    import cv2
+    import torch
+    from torchvision.ops import nms
+
+    from ppe import Det, Track
+    from ppe.association import Associator
+    from ppe.pose import PoseEstimator
+
+    sys.stdout.reconfigure(encoding="utf-8")
+    cal = cfg["calibration"]
+    cov, margin = cal["region_coverage"], cal["inside_margin"]
+    hi = (1 + cov) / 2 * 100
+    kc = cfg["part_cls"]["kp_conf"]
+    fracs = (0.55, 0.65, 0.75)
+    P = cfg["person_cls"]
+    CLS = {n: cfg["ppe"][n]["cls"] for n in ("vest", "gloves", "goggles")}
+    NAME = {v: k for k, v in CLS.items()}
+    pose = PoseEstimator(cfg, ROOT)
+
+    def owner(c, persons):
+        own = [i for i, q in enumerate(persons)
+               if q[0] - margin * (q[2] - q[0]) <= c[0] <= q[2] + margin * (q[2] - q[0])
+               and q[1] - margin * (q[3] - q[1]) <= c[1] <= q[3] + margin * (q[3] - q[1])]
+        return own[0] if len(own) == 1 else None
+
+    def make(stem, im, persons, boxes, only_owner=None):
+        """boxes: [(tên, hộp)]. Chấm (own != None) mọi PPE có chủ; only_owner: chỉ PPE của người đó (ảnh cắt)."""
+        tracks = [Track(i, q.copy(), 1.0, True) for i, q in enumerate(persons)]
+        if tracks:
+            pose(im, tracks)
+        dets = [Det(CLS[n], b.copy(), 1.0) for n, b in boxes]
+        own = [owner(((b[0] + b[2]) / 2, (b[1] + b[3]) / 2), persons) for _, b in boxes]
+        if only_owner is not None:
+            own = [o if o == only_owner else None for o in own]
+        return dict(stem=stem, tracks=tracks, dets=dets, names=[n for n, _ in boxes], own=own, shape=im.shape)
+
+    # 1. Cảnh
+    srcs = []
+    for f in sorted((DATASET / "labels" / "val").glob("*.txt")):
+        lab = read_labels(f)
+        if any(r[0] in (CLS["vest"], CLS["gloves"]) for r in lab):
+            srcs.append((f.stem, next(iter((DATASET / "images" / "val").glob(f.stem + ".*"))), lab, ("vest", "gloves")))
+    for img, labp in val_new_items():
+        lab = read_labels(labp)
+        if any(r[0] == CLS["goggles"] for r in lab):
+            srcs.append((img.stem, img, lab, ("goggles",)))
+    full, cut = [], {f: [] for f in fracs}
+    for n_img, (stem, img, lab, names) in enumerate(srcs, 1):
+        im = cv2.imread(str(img))
+        h, w = im.shape[:2]
+        sc = np.array([w, h, w, h])
+        persons = [to_xyxy(*r[1:]) * sc for r in lab if r[0] == P]
+        boxes = [(NAME[r[0]], to_xyxy(*r[1:]) * sc) for r in lab if r[0] in NAME and NAME[r[0]] in names]
+        if not persons or not boxes:
+            continue
+        sc0 = make(stem, im, persons, boxes)
+        full.append(sc0)
+        for o in sorted({x for x in sc0["own"] if x is not None}):
+            q = persons[o]
+            for frac in fracs:
+                yc = int(q[1] + frac * (q[3] - q[1]))
+                if yc >= h - 2:
+                    continue
+                keep = [(n, b) for (n, b), ow in zip(boxes, sc0["own"]) if ow == o and yc > b[1] + 0.3 * (b[3] - b[1])]
+                if not keep:
+                    continue
+                ps = [np.array([p[0], p[1], p[2], min(p[3], yc)]) for p in persons if p[1] < yc - 2]
+                bs = [(n, np.array([b[0], b[1], b[2], min(b[3], yc)])) for n, b in boxes if b[1] < yc - 2]
+                oi = [i for i, p in enumerate(ps) if abs(p[0] - q[0]) < 1e-6 and abs(p[1] - q[1]) < 1e-6]
+                if not oi:
+                    continue
+                cut[frac].append(make(stem, im[:yc].copy(), ps, bs, only_owner=oi[0]))
+        if n_img % 100 == 0 or n_img == len(srcs):
+            print(f"  cảnh {n_img}/{len(srcs)}", flush=True)
+    print(f"val: {len(full)} ảnh; ca cắt:", {f: len(v) for f, v in cut.items()}, flush=True)
+
+    # 2. Tham số: k_eye (kính val_new), edge_frac (người chạm đáy ppe4 val, cache), F2 = B2 (torso_strict.json)
+    ratios = []
+    for s in full:
+        for n, d, o in zip(s["names"], s["dets"], s["own"]):
+            if n != "goggles" or o is None:
+                continue
+            k = s["tracks"][o].extra.get("kps")
+            if not k or k[1][2] < kc or k[2][2] < kc:
+                continue
+            ed = math.hypot(k[1][0] - k[2][0], k[1][1] - k[2][1])
+            if ed >= 1:
+                cx, cy = d.center
+                ratios.append(math.hypot(cx - (k[1][0] + k[2][0]) / 2, cy - (k[1][1] + k[2][1]) / 2) / ed)
+    k_eye = round(float(np.percentile(ratios, hi)), 3)
+    cache = OUT / "preds.npz"
+    preds = dict(np.load(cache, allow_pickle=True))["data"].item()
+    dcfg = cfg["detector"]
+    fr = []
+    for f in sorted((DATASET / "labels" / "val").glob("*.txt")):
+        pr = preds.get(f.stem)
+        if pr is None:
+            continue
+        H, W = pr["shape"]
+        touch = [to_xyxy(*r[1:]) * np.array([W, H, W, H]) for r in read_labels(f) if r[0] == P]
+        touch = [q for q in touch if q[3] >= H - 1]
+        m = (pr["cls"] == P) & (pr["conf"] >= dcfg["conf"]["person"])
+        b, c = pr["xyxy"][m], pr["conf"][m]
+        if not touch or not len(b):
+            continue
+        b = b[nms(torch.tensor(b, dtype=torch.float32), torch.tensor(c, dtype=torch.float32), dcfg["nms_iou"]).numpy()]
+        iou = iou_matrix(np.array(touch), b)
+        for i in range(len(touch)):
+            j = int(np.argmax(iou[i]))
+            if iou[i, j] >= cal["video"]["match_iou"]:
+                fr.append(max(0.0, float(H - b[j][3])) / H)
+    edge_frac = math.ceil(float(np.percentile(fr, hi)) * 1000) / 1000
+    b2 = json.loads((OUT / "torso_strict.json").read_text(encoding="utf-8"))["tham_so_de_xuat"]
+    f2 = {k: v for k, v in b2.items() if k != "edge_px"}
+    f2["edge_frac"] = edge_frac
+    params = dict(F1=dict(kp_conf=kc, k_eye=k_eye), F2=f2, F3=True)
+    print("tham số:", params, f"(kính {len(ratios)}, người chạm đáy {len(fr)})", flush=True)
+
+    base = copy.deepcopy(cfg)
+    for k in ("eye_anchor", "gloves_region_fallback", "torso_strict", "torso_pose"):
+        base["association"].pop(k, None)
+    var = {}
+    for key, ppe_name, setter in (("F1", "goggles", lambda c: c["association"].__setitem__("eye_anchor", params["F1"])),
+                                  ("F2", "vest", lambda c: c["association"].__setitem__("torso_strict", params["F2"])),
+                                  ("F3", "gloves", lambda c: c["association"].__setitem__("gloves_region_fallback", True))):
+        c = copy.deepcopy(base)
+        setter(c)
+        var[key] = (ppe_name, Associator(c))
+    A0 = Associator(base)
+
+    def where(a, sc, tracks):
+        res = a(tracks, sc["dets"], sc["shape"])
+        return {id(x): tid for tid, items in res.owned.items() for ds in items.values() for x in ds}
+
+    def score(a, scenes, ppe_name):
+        x = dict(n=0, dung=0, sai_nguoi=0, khong_ghep=0, V3b_n=0, V3b_gan_nham=0)
+        for sc in scenes:
+            idx = [i for i, (n, o) in enumerate(zip(sc["names"], sc["own"])) if n == ppe_name and o is not None]
+            if not idx:
+                continue
+            wh = where(a, sc, sc["tracks"])
+            for i in idx:
+                t = wh.get(id(sc["dets"][i]))
+                o = sc["own"][i]
+                x["n"] += 1
+                x["dung" if t == o else ("khong_ghep" if t is None else "sai_nguoi")] += 1
+                others = [tr for tr in sc["tracks"] if tr.track_id != o]
+                if not others:
+                    continue
+                cx, cy = sc["dets"][i].center
+                near = min(others, key=lambda tr: math.hypot((tr.xyxy[0] + tr.xyxy[2]) / 2 - cx, (tr.xyxy[1] + tr.xyxy[3]) / 2 - cy))
+                b = sc["dets"][i].xyxy
+                big = Track(near.track_id, np.array([min(near.xyxy[0], b[0]), min(near.xyxy[1], b[1]),
+                                                     max(near.xyxy[2], b[2]), max(near.xyxy[3], b[3])]),
+                            1.0, True, dict(near.extra))
+                rest = [big if tr is near else tr for tr in others]
+                x["V3b_n"] += 1
+                x["V3b_gan_nham"] += int(where(a, sc, rest).get(id(sc["dets"][i])) == near.track_id)
+        x["ti_le_dung"] = round(x["dung"] / max(x["n"], 1), 4)
+        return x
+
+    result, verdict = {}, {}
+    for key, (ppe_name, a) in var.items():
+        r = {"ban_chinh": {}, key: {}}
+        for lvl, scenes in [("du", full)] + [(str(f), cut[f]) for f in fracs]:
+            r["ban_chinh"][lvl] = score(A0, scenes, ppe_name)
+            r[key][lvl] = score(a, scenes, ppe_name)
+        b0, b1 = r["ban_chinh"], r[key]
+        ck = dict(
+            du_khong_giam=b1["du"]["dung"] >= b0["du"]["dung"],
+            cat_tang_it_nhat_mot_muc=any(b1[str(f)]["dung"] > b0[str(f)]["dung"] for f in fracs),
+            sai_nguoi_khong_tang=all(b1[l]["sai_nguoi"] <= b0[l]["sai_nguoi"] for l in b0),
+            V3b_khong_tang=all(b1[l]["V3b_gan_nham"] <= b0[l]["V3b_gan_nham"] for l in b0))
+        r["tieu_chi"], r["dat"] = ck, all(ck.values())
+        result[key] = r
+        verdict[key] = r["dat"]
+        print(key, ppe_name, json.dumps({l: (b0[l]["dung"], b1[l]["dung"], b0[l]["n"], b0[l]["sai_nguoi"], b1[l]["sai_nguoi"],
+                                             b0[l]["V3b_gan_nham"], b1[l]["V3b_gan_nham"]) for l in b0}), ck, flush=True)
+
+    git = lambda *a: subprocess.run(["git", *a], cwd=ROOT, capture_output=True, text=True).stdout.strip()
+    sha = lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+    res = dict(ho_so=dict(thoi_diem=datetime.datetime.now().isoformat(timespec="seconds"), commit_nen=git("rev-parse", "HEAD"),
+                          file_dang_sua=git("status", "--porcelain").splitlines(),
+                          sha256=dict(preds_cache=sha(cache), pose_weights=sha(ROOT / cfg["pose"]["weights"]),
+                                      torso_strict_json=sha(OUT / "torso_strict.json")),
+                          ghi_chu="Val: ppe4 val (áo, găng), val_new (kính). Không dùng test, holdout, video."),
+               thiet_lap=dict(coverage=cov, fracs=list(fracs), kp_conf=kc, inside_margin=margin),
+               mau=dict(anh=len(full), cat={str(f): len(v) for f, v in cut.items()}, kinh_co_mat=len(ratios),
+                        nguoi_cham_day=len(fr)),
+               tham_so=params, ket_qua=result, dat=verdict)
+    (OUT / "assoc_pose.json").write_text(json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8")
+    print("kết luận:", verdict)
+    print("Ghi", (OUT / "assoc_pose.json").relative_to(ROOT), "(chưa ghi cấu hình)")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--regions", action="store_true")
@@ -1047,10 +1259,11 @@ def main():
     ap.add_argument("--pose", action="store_true", help="tâm găng nhãn thật có nằm trong elip cổ tay không, so với vùng tay")
     ap.add_argument("--torso", action="store_true", help="vùng thân theo khung xương cho áo (bước B)")
     ap.add_argument("--torso-strict", action="store_true", help="vùng thân theo khung xương bản chặt cho áo (bước B2)")
+    ap.add_argument("--assoc-pose", action="store_true", help="bước F: vùng theo khung xương cho kính, áo, găng")
     ap.add_argument("--rerun", action="store_true", help="dự đoán lại thay vì dùng cache")
     args = ap.parse_args()
-    if not (args.regions or args.conf or args.crop or args.pose or args.torso or args.torso_strict):
-        ap.error("chọn --regions, --conf, --crop, --pose, --torso và/hoặc --torso-strict")
+    if not (args.regions or args.conf or args.crop or args.pose or args.torso or args.torso_strict or args.assoc_pose):
+        ap.error("chọn --regions, --conf, --crop, --pose, --torso, --torso-strict và/hoặc --assoc-pose")
     cfg = load_config()
     if args.regions:
         regions(cfg)
@@ -1065,6 +1278,8 @@ def main():
         torso_eval(cfg)
     if args.torso_strict:
         torso_strict_eval(cfg)
+    if args.assoc_pose:
+        assoc_pose_eval(cfg)
 
 
 if __name__ == "__main__":

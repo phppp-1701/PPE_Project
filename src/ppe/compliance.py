@@ -81,6 +81,8 @@ class Compliance:
         # Bước D: {kp_conf, min_sep, face_strong, hold_s}; vắng -> không nhận quay lưng (như bản 4).
         self.back_cfg = (cfg.get("compliance") or {}).get("back_view") if self.pose else None
         self.back_last = {}     # track_id -> t lần cuối quay lưng
+        # Bước F3: găng ghép dự phòng theo vùng tay khi cổ tay không hợp lệ -> có hộp gán thì Có (không bao giờ suy Thiếu)
+        self.gloves_fallback = bool(self.pose and (cfg.get("association") or {}).get("gloves_region_fallback"))
         self._back = {}         # track_id -> quay lưng ở khung đang xét (tính một lần mỗi khung)
 
     def back_view(self, track):
@@ -161,6 +163,12 @@ class Compliance:
                 if w is not None and w[2] >= self.part["kp_conf"] and (name, side) in track.extra.get("parts", {}):
                     q = w
             if q is None:
+                if (self.gloves_fallback and track.confident
+                        and assoc.owned.get(track.track_id, {}).get((name, side))):
+                    if self.now is not None:
+                        self.last_have[(track.track_id, name, side)] = self.now
+                    return HAVE, dict(v=0.0, o=0.0, area=0, observable=False, has=True, contested=False, vote=None,
+                                      c2=None, fallback=True)
                 return UNKNOWN, dict(v=0.0, o=0.0, area=0, observable=False, has=False, contested=False)
             r = wrist_box(track.xyxy, q, self.pose)
         else:

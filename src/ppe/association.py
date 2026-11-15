@@ -93,7 +93,8 @@ def torso_strict_box(track, ts, old_box, frame_shape):
     if g is None or g["angle"] > ts["slope_max_deg"]:                            # G3b
         return None
     x1, y1, x2, y2 = track.xyxy
-    if y2 < frame_shape[0] - ts["edge_px"]:                                      # G4
+    edge = frame_shape[0] * ts["edge_frac"] if "edge_frac" in ts else ts["edge_px"]   # bước F2: theo tỉ lệ khung
+    if y2 < frame_shape[0] - edge:                                               # G4
         return None
     sw, mx, my, hy = g["sw"], g["mx"], g["my"], g["hy"]
     r = [max(old_box[0], mx - ts["kx"] * sw, x1), max(my - ts["ky0"] * sw, y1),
@@ -131,6 +132,19 @@ def shoulder_geometry(track, kp_conf):
     return dict(sw=sw, mx=mx, my=my, angle=math.degrees(math.atan2(dy, dx)), hy=hy)
 
 
+def eye_anchor_distance(track, c, ea):
+    """Bước F1: (khoảng cách từ c tới trung điểm hai mắt / khoảng cách hai mắt) / k_eye nếu <= 1, ngược lại None.
+    Cần hai mắt (COCO 1, 2) >= ea["kp_conf"] và khoảng cách hai mắt >= 1 px."""
+    kps = getattr(track, "extra", {}).get("kps")
+    if not kps or kps[1][2] < ea["kp_conf"] or kps[2][2] < ea["kp_conf"]:
+        return None
+    ed = math.hypot(kps[1][0] - kps[2][0], kps[1][1] - kps[2][1])
+    if ed < 1.0:
+        return None
+    r = math.hypot(c[0] - (kps[1][0] + kps[2][0]) / 2, c[1] - (kps[1][1] + kps[2][1]) / 2) / ed / ea["k_eye"]
+    return r if r <= 1 else None
+
+
 def norm_distance(c, track_xyxy, rbox):
     """Khoảng cách chuẩn hóa (3.4) từ tâm PPE c tới tâm vùng rbox."""
     w, h = track_xyxy[2] - track_xyxy[0], track_xyxy[3] - track_xyxy[1]
@@ -162,6 +176,10 @@ class Associator:
                              "không được bật đồng thời")
         self.torso_strict = (require(cfg, "association", "torso_strict")
                              if self.pose and cfg["association"].get("torso_strict") is not None else None)
+        # Bước F1: kính theo mắt; F3: găng dự phòng theo vùng tay khi cổ tay không hợp lệ. Vắng khóa -> như bản chính.
+        self.eye_anchor = (require(cfg, "association", "eye_anchor")
+                           if self.pose and cfg["association"].get("eye_anchor") is not None else None)
+        self.gloves_fallback = bool(self.pose and cfg["association"].get("gloves_region_fallback"))
 
     def limit(self, name):
         """Khoảng cách tối đa: 1 (biên elip) khi dùng cổ tay, còn lại `max_distance` (3.4)."""
@@ -179,8 +197,16 @@ class Associator:
             for side in (SIDES if p["sides"] else (None,)):
                 if self.pose and p["sides"] and p["region"] == "hands":
                     q = valid_wrist(t, side, self.pose)
-                    if q is not None and (v := ellipse_value(c, t.xyxy, q, self.pose)) <= 1:
-                        out.append((v, t.track_id, side))
+                    if q is not None:
+                        if (v := ellipse_value(c, t.xyxy, q, self.pose)) <= 1:
+                            out.append((v, t.track_id, side))
+                        continue
+                    if not self.gloves_fallback:
+                        continue
+                    # Bước F3: cổ tay bên này không hợp lệ -> nửa vùng tay cũ; khoảng cách quy về thang elip (1 = giới hạn)
+                    r = region_box(t.xyxy, reg, side)
+                    if r[0] <= c[0] <= r[2] and r[1] <= c[1] <= r[3]:
+                        out.append((norm_distance(c, t.xyxy, r) / self.max_distance[name], t.track_id, side))
                     continue
                 r = region_box(t.xyxy, reg, side)
                 d = norm_distance(c, t.xyxy, r) if r[0] <= c[0] <= r[2] and r[1] <= c[1] <= r[3] else None
@@ -199,6 +225,11 @@ class Associator:
                         if size_ok and rs[0] <= c[0] <= rs[2] and rs[1] <= c[1] <= rs[3]:
                             ds = norm_distance(c, t.xyxy, rs)
                             d = ds if d is None else min(d, ds)
+                if self.eye_anchor and name == "goggles" and side is None:                         # bước F1
+                    de = eye_anchor_distance(t, c, self.eye_anchor)
+                    if de is not None:
+                        de *= self.max_distance[name]
+                        d = de if d is None else min(d, de)
                 if d is not None:
                     out.append((d, t.track_id, side))
         return sorted(out, key=lambda x: x[0])
