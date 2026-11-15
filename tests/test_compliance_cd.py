@@ -190,10 +190,10 @@ def test_no_keys_same_as_v4(test_cfg):
     assert comp.veto_frontal == {} and comp.back_cfg is None
 
 
-def test_current_config_d_on_c_off():
-    """Cấu hình đang dùng (16/11/2026): D bật đúng quy ước người dùng duyệt; C, C2 tắt (chưa duyệt áp dụng)."""
+def test_current_config_d_and_c2_on():
+    """Cấu hình đang dùng (16/11/2026, người dùng duyệt): D bật đúng quy ước; C2 bật với tham số chọn trên val."""
     cfg = load_config()
-    assert "veto_frontal" not in cfg["part_cls"]
+    assert cfg["part_cls"]["veto_frontal"] == {"helmet": {"face_conf": 0.7, "t_veto": 0.7}}
     assert cfg["compliance"]["back_view"] == BV
 
 

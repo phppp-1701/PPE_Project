@@ -93,6 +93,13 @@ part_cls:
   # Phủ quyết: với PPE trong danh sách, bộ phân loại chắc không có PPE (1 - p >= t_neg) thì bỏ hộp của detector.
   # Kính: phân biệt kính thường là điểm mạnh của bộ phân loại (người dùng duyệt 13/11/2026 sau video11 kiem_thu_gan).
   veto: [goggles]
+  # Bước C2 (người dùng duyệt áp dụng 16/11/2026; kế hoạch ppe6 mục C2): mũ, khi nhìn thẳng chắc (mũi, hai mắt >= face_conf;
+  # hai vai >= kp_conf, không ngược), không quay lưng (D) và detector có hộp mũ: 1 - p >= t_veto -> bỏ hộp (Thiếu);
+  # t_neg <= 1 - p < t_veto -> Chưa xác định. Chọn trên val (05e --helmet-veto2: 03y val + mũ CHV val, bộ phân loại chưa
+  # thấy CHV): t_veto x face_conf lưới 0,7/0,8/0,9, tổ hợp đầu tiên đạt V-C1 <= 2% (n >= 100) và V-C3 <= 5%:
+  # V-C1 3/280 (1,07%), V-C3 2/280 (0,71%). Hồi quy 13 video (stepCD/c2_*): mũ báo Có sai 49 -> 2, độ chính xác 0,880 -> 0,900.
+  veto_frontal:
+    helmet: {face_conf: 0.7, t_veto: 0.7}
   # Cổng cỡ người (px chiều cao hộp người trên khung gốc): PPE có giá trị ở đây chỉ dùng bộ phân loại khi người cao từ mức
   # này, người nhỏ hơn dùng luật cũ. Chọn trên video chỉnh tham số 3-6 (calibration.part_min_person_grid), xem kế hoạch.
   min_person_px: {}
