@@ -1,0 +1,102 @@
+{
+ "config": "configs/pipeline.yaml",
+ "tong": {
+  "hop_xam_ngoai": 1799,
+  "hop_xam_chua_ket_luan": 54,
+  "hop_xam_bac_bo": 101,
+  "hop_mau_khong_co": 0,
+  "co_khong_bang_chung": 0,
+  "hop_xam_tranh_chap": 4,
+  "hop_xam_phan_van": 13
+ },
+ "video": {
+  "video3": {
+   "khung": 1950,
+   "hop_xam_ngoai": 50,
+   "hop_xam_chua_ket_luan": 5,
+   "hop_xam_bac_bo": 6,
+   "hop_mau_khong_co": 0,
+   "co_khong_bang_chung": 0
+  },
+  "video4": {
+   "khung": 349,
+   "hop_xam_ngoai": 192,
+   "hop_xam_chua_ket_luan": 27,
+   "hop_xam_tranh_chap": 1,
+   "hop_mau_khong_co": 0,
+   "co_khong_bang_chung": 0
+  },
+  "video5": {
+   "khung": 219,
+   "hop_xam_ngoai": 54,
+   "hop_xam_chua_ket_luan": 6,
+   "hop_mau_khong_co": 0,
+   "co_khong_bang_chung": 0
+  },
+  "video6": {
+   "khung": 206,
+   "hop_xam_ngoai": 9,
+   "hop_mau_khong_co": 0,
+   "co_khong_bang_chung": 0
+  },
+  "video9": {
+   "khung": 315,
+   "hop_xam_ngoai": 506,
+   "hop_mau_khong_co": 0,
+   "co_khong_bang_chung": 0
+  },
+  "video10": {
+   "khung": 361,
+   "hop_xam_ngoai": 439,
+   "hop_mau_khong_co": 0,
+   "co_khong_bang_chung": 0
+  },
+  "video11": {
+   "khung": 271,
+   "hop_xam_bac_bo": 61,
+   "hop_xam_phan_van": 9,
+   "hop_mau_khong_co": 0,
+   "co_khong_bang_chung": 0
+  },
+  "video12": {
+   "khung": 167,
+   "hop_mau_khong_co": 0,
+   "co_khong_bang_chung": 0
+  },
+  "video13": {
+   "khung": 247,
+   "hop_xam_ngoai": 238,
+   "hop_xam_bac_bo": 34,
+   "hop_xam_phan_van": 4,
+   "hop_mau_khong_co": 0,
+   "co_khong_bang_chung": 0
+  },
+  "video14": {
+   "khung": 379,
+   "hop_xam_ngoai": 39,
+   "hop_mau_khong_co": 0,
+   "co_khong_bang_chung": 0
+  },
+  "video15": {
+   "khung": 122,
+   "hop_xam_ngoai": 138,
+   "hop_xam_chua_ket_luan": 16,
+   "hop_xam_tranh_chap": 3,
+   "hop_mau_khong_co": 0,
+   "co_khong_bang_chung": 0
+  },
+  "video16": {
+   "khung": 499,
+   "hop_xam_ngoai": 66,
+   "hop_mau_khong_co": 0,
+   "co_khong_bang_chung": 0
+  },
+  "video17": {
+   "khung": 480,
+   "hop_xam_ngoai": 68,
+   "hop_mau_khong_co": 0,
+   "co_khong_bang_chung": 0
+  }
+ },
+ "dat": true
+}

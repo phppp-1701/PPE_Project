@@ -196,6 +196,7 @@ class Compliance:
             # Bộ phân loại chắc không có PPE (vd kính thường) thì phủ quyết hộp PPE của detector.
             has = False
         conflict = False
+        c2 = None               # bước C, C2 đã làm gì với hộp detector (chỉ để vẽ, không đổi trạng thái): veto / conflict
         vf = self.veto_frontal.get(name)
         if (covered and vote == "neg" and vf and not back and has
                 and frontal_strict(getattr(track, "extra", {}).get("kps"), vf["face_conf"], self.part["kp_conf"])):
@@ -205,8 +206,10 @@ class Compliance:
             t_veto = vf.get("t_veto")
             if t_veto is None or any(1 - p >= t_veto for p in self.last_ps):
                 has = False
+                c2 = "veto"
             else:
                 conflict = True
+                c2 = "conflict"
         no_missing = back and name == "helmet" and not has   # bước D: không tin phiếu neg từ phía sau
         if not covered or (vote is None and self.part.get("fallback_old_rule", True)):
             # Luật cũ: có hộp PPE gán hợp lệ là Có; vùng nhìn rõ mà không có hộp là Thiếu.
@@ -229,7 +232,7 @@ class Compliance:
         else:
             state = UNKNOWN
         return state, dict(v=round(v, 3), o=round(o, 3), area=round(visible), observable=observable,
-                           has=has, contested=contested, vote=vote)
+                           has=has, contested=contested, vote=vote, c2=c2)
 
     now = None
 

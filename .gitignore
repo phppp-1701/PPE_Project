@@ -111,3 +111,4 @@ preview_all.jpg
 !outputs/results/close_eval/stepCD/*/transitions.csv
 !outputs/results/parts_cls/helmet_veto2_val.json
 !outputs/results/parts_cls/helmet_veto2_val_records.json
+!outputs/results/close_eval/annotated_main/display_audit.json

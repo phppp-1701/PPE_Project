@@ -13,6 +13,7 @@ tiêu chí "bỏ sót không tăng" trên video 3-6. Người dùng chọn bật
 | `manifest.json` | Giai đoạn 4: commit nguồn, sha256 cấu hình, trọng số, video, nhãn, môi trường |
 | `kiem_thu_gan/` | Giai đoạn 5 (chỉ chạy khi người dùng cho phép): hai cấu hình trên 9 video `kiem_thu_gan` |
 | `stepB/` | Bước B lần 1 (đã tắt): `dev36/`, `old9/` hồi quy bản 4 với B1; `off13/` cấu hình tắt B (trùng bản 4); `pipeline_v4_0b756b8.yaml` cấu hình bản 4 lấy từ `git show 0b756b8:configs/pipeline.yaml` |
+| `annotated_main/` | Video đã vẽ của bản chính hiện tại (bản 4 + D + C2, `configs/pipeline.yaml` @ `06260b8`) cho 13 video phát triển, trang xem `index.html` (dựng bằng `annotated/build_viewer.py`); `frames.csv` kiểm trùng lượt chấm `stepCD/c2_*/DC2`. Video, ảnh không đưa lên Git |
 | `stepCD/` | Bước C, D (kế hoạch ppe6 mục C, D): cấu hình thử `pipeline_C.yaml`, `pipeline_D.yaml`, `pipeline_CD.yaml` (bản 4 + khóa C, D), hồi quy `dev36/`, `old9/`; video phát triển, chỉ kiểm hồi quy |
 
 ## Tái lập (từ thư mục gốc, đã kích hoạt `.venv`)
