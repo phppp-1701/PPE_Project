@@ -1,0 +1,158 @@
+{
+  "created": "2026-11-15T16:26:20",
+  "note": "source_commit là commit chứa code và cấu hình đánh giá; manifest nằm ở commit sau, không tự ghi mã commit chứa chính nó. Kiểm tái lập: code ngoài outputs/results/close_eval/ phải trùng source_commit. sha256 file text (hash_mode lf_normalized) tính sau khi đổi CRLF thành LF; file khác (raw) tính nguyên byte.",
+  "source_commit": "0a47b91cb681c2e008df53379ebbff0ca0f1013b",
+  "source_commit_subject": "Đóng băng nguồn bản cuối (bản 4 + D + C2 + F1): 06b nhận {b} trong mẫu nhãn (holdout), thư mục close_eval/final",
+  "config": {
+    "path": "configs/pipeline.yaml",
+    "sha256": "e515d33789411b7597db918c7ac4d26734c2ee31b5a8261d59d302fcef1843e0",
+    "hash_mode": "lf_normalized"
+  },
+  "weights": [
+    {
+      "path": "outputs/train/yolo11n_cls_parts_v2/weights/best.pt",
+      "sha256": "a46924d05dbc095a97057de9fd70d5222230e25adb0b050c1e917048b1172f2d",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "outputs/train/yolo11n_cls_parts_v3/weights/best.pt",
+      "sha256": "1317cb7d00919c789cb97a2784161cd14e9065d4ecb2c61958b31eaa4b62f48c",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "outputs/train/yolo11n_cls_parts_v4/weights/best.pt",
+      "sha256": "08d29990b43819b780ba89835ff5335186aca7e3ac804cb815caf9dee5017526",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "outputs/train/yolo11s_ppe6_c4/weights/best.pt",
+      "sha256": "98e3950d125401f3eca14ea9b15b57501d105153a0768fc1e6256d909783b8a3",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "yolo11n-pose.pt",
+      "sha256": "869e83fcdffdc7371fa4e34cd8e51c838cc729571d1635e5141e3075e9319dc0",
+      "hash_mode": "raw"
+    }
+  ],
+  "scripts": [
+    {
+      "path": "scripts/05_run_video.py",
+      "sha256": "330bc9d0d4c3f9713f8135ed9590033dd90e3997788d7b631bff02ea8fb381f0",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "scripts/06b_evaluate_close_videos.py",
+      "sha256": "d353095438a650cc5abe238081969a395cf99404b16274737d3efd9b5366cfc8",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "scripts/07_benchmark_pipeline.py",
+      "sha256": "c9e20070e4488edcf6029ec0e8343b14c289a15f56eedd3e40acd5e3dffda159",
+      "hash_mode": "lf_normalized"
+    }
+  ],
+  "videos": [
+    {
+      "path": "data/videos/holdout/h1.mp4",
+      "sha256": "558c39a1534ea88bf6a63b89015db6b9e1cdd74880454e5698ad4175af100cc3",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/holdout/h2.mp4",
+      "sha256": "792bc2100150e2926ca7fdda36c4688c899d981fef7f6857249cfd5b7a3fcb4a",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/holdout/h3.mp4",
+      "sha256": "ebab6e096d5e08b93bfedda436279298fb60e7311c6625d2780345d81a4cb636",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/holdout/h4.mp4",
+      "sha256": "5a1b25e5490d785f36a2417b89522d2c379f8e099ee99459a59510fc98c29967",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/holdout/h5.mp4",
+      "sha256": "9ead87cf2c7ed2095b4fc98d3498f0643f5085bd810de01add9dfdf3117c402f",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/holdout/h7.mp4",
+      "sha256": "a9961ea9a1d420047b38d623de8faeffa5c14bf41e2a191529de0a0241fac388",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/holdout/h8.mp4",
+      "sha256": "44737ff983d84195c660c0569c74983b92652af36f95ac905e55e897068b2ffd",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/holdout/h9.mp4",
+      "sha256": "4e5038d3c671c675c961e0026d95a260ef959f6cc1bf2177c9234b59f6089e02",
+      "hash_mode": "raw"
+    }
+  ],
+  "labels": [
+    {
+      "path": "data/videos/holdout/labels/h1_machine_cvat.zip",
+      "sha256": "cd8d7bbf148ab714ce105b91de1481a4b84ab4f39cbb8c4063d2c28ef44df899",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/holdout/labels/h2_machine_cvat.zip",
+      "sha256": "1f7197aa3b02e4c6ba4577828b9a6800828a1beb52d9801bf81dd4dabc578864",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/holdout/labels/h3_machine_cvat.zip",
+      "sha256": "bea7dc32a6df4ebabddb1e315a920306933f2b09f1af445f6ceaa58e3fe69abb",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/holdout/labels/h4_machine_cvat.zip",
+      "sha256": "8f36cb07e9c1b5ba18c6645f7179b81aaee33795f66fd6ac64a36adaef02c3f9",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/holdout/labels/h5_machine_cvat.zip",
+      "sha256": "d231cae84faa70b456d064255384e4e6d341c8db7406c17a50db7856cc3b9e66",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/holdout/labels/h7_machine_cvat.zip",
+      "sha256": "310fc7a0570eccf6fac5544039097f7166d18e70490a8adbf176594003549b49",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/holdout/labels/h8_machine_cvat.zip",
+      "sha256": "1fb08c726abd620cf1f4afae2f56d77cc8db3390ce17104abf41cea799b5e52f",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "data/videos/holdout/labels/h9_machine_cvat.zip",
+      "sha256": "023267419f3c74f33c6d64f84c76446b9ef83c9eb7789dcaacc73306f5bb2b53",
+      "hash_mode": "raw"
+    }
+  ],
+  "label_pattern": "data/videos/holdout/labels/{b}_machine_cvat.zip",
+  "baseline": {
+    "commit": "0b756b849e3305080534ffc13d882a4c1711a9fd",
+    "config": {
+      "path": "outputs/results/close_eval/final/pipeline_v4_0b756b8.yaml",
+      "sha256": "d0854ddb071bb01729b61a712b66aed68e71cd80c752ae269ccd130a5b4242c8",
+      "hash_mode": "lf_normalized"
+    },
+    "config_matches_commit": true
+  },
+  "environment": {
+    "python": "3.12.12",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "torch": "2.11.0+cu128",
+    "cuda": "12.8",
+    "ultralytics": "8.4.189",
+    "gpu": "NVIDIA GeForce RTX 3050 Laptop GPU",
+    "nvidia_smi": "NVIDIA GeForce RTX 3050 Laptop GPU, 576.28, 4096 MiB"
+  }
+}
