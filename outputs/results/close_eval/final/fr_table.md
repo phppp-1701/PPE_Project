@@ -21,13 +21,13 @@ video phát triển (3-6, 9-17), không phải đánh giá khách quan; đánh g
 
 | Mã | Trạng thái | Bằng chứng |
 |---|---|---|
-| NFR-01 (đo FPS, thời gian bước, độ trễ cảnh báo) | **Cần đo lại** | `benchmark/benchmark.md` (16/11): bản cuối 15,62 FPS xử lý so với bản 4 15,52 (cùng điều kiện, xen kẽ, chênh +0,7%). **Số tuyệt đối không dùng cho báo cáo**: lúc đo máy chạy Minecraft (javaw), Steam, Discord, Edge; GPU bận 39% khi "rảnh". Lần đo 14/11 (`../benchmark/`): bản 4 23,07 FPS xử lý, 20,51 FPS gồm giải mã. Cần đo lại khi đã tắt ứng dụng dùng GPU |
+| NFR-01 (đo FPS, thời gian bước, độ trễ cảnh báo) | **Đã đo (lần sạch)** | **Số dùng cho báo cáo: `benchmark_clean/benchmark.md`** (đo sau khi người dùng tắt game; GPU nghỉ P8 trước khi đo). Bản cuối: **26,55 ± 1,80 FPS xử lý, 23,62 ± 1,53 FPS gồm giải mã**, latency TB 37,8 ms; bản 4: 25,75 / 22,92 FPS, 38,9 ms. Hai bản ngang nhau (chênh trong độ lệch chuẩn, không phải cải thiện). Theo video (bản cuối, FPS xử lý): video3 29,8; video4 19,6; video5 21,1; video6 21,0, tức cảnh đông người chậm hơn, **không đạt 25 FPS ổn định trên mọi video**. Độ trễ cảnh báo chưa đo riêng (theo thiết kế ≥ thời gian xác nhận vi phạm). Lần đo bẩn `benchmark/` (15,62 FPS, máy chạy Minecraft) giữ lại để đối chiếu, không dùng |
 | NFR-02 (đổi PPE bắt buộc, tham số không sửa module) | Đạt | Tham số trong `configs/pipeline.yaml`; khóa C2, D, F1 bật / tắt không sửa code (test "vắng khóa như bản chính") |
 | NFR-05 (tách module, kiểm thử riêng) | Đạt | `src/ppe/` (detector, tracker, pose, parts, association, compliance, temporal, events), `backend/`, `dashboard/`; 196 test |
 
 ## Việc còn thiếu để hoàn thiện RQ1-RQ4
 
 1. Đánh giá cuối một lần trên holdout (`README.md` mục Tái lập, bước 3) — chờ người dùng cho phép.
-2. Đo lại hiệu năng khi máy không chạy ứng dụng khác dùng GPU.
+2. ~~Đo lại hiệu năng~~: đã đo lại 16/11 (`benchmark_clean/`).
 3. Pictor-PPE (đánh giá ngoài của detector, RQ1) — chưa làm; chỉ là kiểm thử, không chọn ngưỡng.
 4. Kiểm giao diện dashboard bằng trình duyệt; camera trực tiếp (FR-01) nếu cần.

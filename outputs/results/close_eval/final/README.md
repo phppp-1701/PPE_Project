@@ -18,7 +18,8 @@ hiển thị nhất quán) và `docs/experiments/2026-11-15_completion_plan.md`.
 |---|---|
 | `pipeline_v4_0b756b8.yaml` | Cấu hình bản 4 (mốc) |
 | `manifest.json` | Commit nguồn, sha256 cấu hình, trọng số, script, video và nhãn holdout (so khớp `data/videos/holdout/manifest.json`), môi trường |
-| `benchmark/` | Hiệu năng bản 4 và bản cuối trên video 3-6 (`07_benchmark_pipeline.py`) |
+| `benchmark/` | Hiệu năng bản 4 và bản cuối trên video 3-6 (`07_benchmark_pipeline.py`), lần 1: máy đang chạy Minecraft, **số tuyệt đối không dùng**, chỉ giữ để đối chiếu |
+| `benchmark_clean/`, `benchmark_clean_run.log` | Đo lại cùng lệnh sau khi tắt game (GPU nghỉ P8 trước khi đo): **số dùng cho báo cáo** |
 | `fr_table.md` | Bảng FR-01…10 (Đạt / Không đạt / Chưa kiểm thử) kèm bằng chứng |
 | `holdout/` | (chưa có) kết quả đánh giá cuối, chỉ khi người dùng cho phép |
 
