@@ -1,0 +1,86 @@
+{
+  "params": {
+    "kp_conf": 0.5,
+    "kx": 1.586,
+    "ky0": -0.247,
+    "ky1": 6.361,
+    "kh": 0.124
+  },
+  "n_shoulders": 499,
+  "n_hips": 457,
+  "coverage": 0.95,
+  "full": {
+    "ban_cu": {
+      "dung": 471,
+      "sai_nguoi": 0,
+      "khong_ghep": 57,
+      "n": 528,
+      "ti_le_dung": 0.892,
+      "ti_le_sai_nguoi": 0.0
+    },
+    "torso_pose": {
+      "dung": 503,
+      "sai_nguoi": 0,
+      "khong_ghep": 25,
+      "n": 528,
+      "ti_le_dung": 0.9527,
+      "ti_le_sai_nguoi": 0.0
+    }
+  },
+  "cut": {
+    "0.55": {
+      "ban_cu": {
+        "dung": 375,
+        "sai_nguoi": 0,
+        "khong_ghep": 106,
+        "n": 481,
+        "ti_le_dung": 0.7796,
+        "ti_le_sai_nguoi": 0.0
+      },
+      "torso_pose": {
+        "dung": 412,
+        "sai_nguoi": 0,
+        "khong_ghep": 69,
+        "n": 481,
+        "ti_le_dung": 0.8565,
+        "ti_le_sai_nguoi": 0.0
+      }
+    },
+    "0.65": {
+      "ban_cu": {
+        "dung": 422,
+        "sai_nguoi": 0,
+        "khong_ghep": 96,
+        "n": 518,
+        "ti_le_dung": 0.8147,
+        "ti_le_sai_nguoi": 0.0
+      },
+      "torso_pose": {
+        "dung": 459,
+        "sai_nguoi": 0,
+        "khong_ghep": 59,
+        "n": 518,
+        "ti_le_dung": 0.8861,
+        "ti_le_sai_nguoi": 0.0
+      }
+    },
+    "0.75": {
+      "ban_cu": {
+        "dung": 457,
+        "sai_nguoi": 0,
+        "khong_ghep": 66,
+        "n": 523,
+        "ti_le_dung": 0.8738,
+        "ti_le_sai_nguoi": 0.0
+      },
+      "torso_pose": {
+        "dung": 484,
+        "sai_nguoi": 0,
+        "khong_ghep": 39,
+        "n": 523,
+        "ti_le_dung": 0.9254,
+        "ti_le_sai_nguoi": 0.0
+      }
+    }
+  }
+}

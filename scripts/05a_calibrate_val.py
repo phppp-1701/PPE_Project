@@ -5,6 +5,8 @@ Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
     python scripts/05a_calibrate_val.py --conf        # conf từng lớp + NMS IoU từ dự đoán của detector trên val
     python scripts/05a_calibrate_val.py --crop        # so sánh PPE dò cả khung / trên ảnh cắt từng người (cần conf, nms)
     python scripts/05a_calibrate_val.py --pose        # tâm găng nhãn thật trong elip cổ tay, so với vùng tay
+    python scripts/05a_calibrate_val.py --torso       # vùng thân theo khung xương cho áo (bước B), ghép đúng người
+    python scripts/05a_calibrate_val.py --torso-strict  # bước B2: tham số torso_strict, V1-V4, chẩn đoán G5
     (dự đoán được lưu cache; --rerun để dự đoán lại)
 
 Tham số đầu vào: configs/pipeline.yaml (detector, ppe, calibration). Chỉ in và ghi đề xuất vào
@@ -16,6 +18,9 @@ outputs/results/pipeline_calib_val/; người chép giá trị đã duyệt vào
     crop_preds.npz cache dự đoán PPE trên ảnh cắt từng người, mỗi cỡ ảnh cắt
     crop.json      F1 từng lớp, conf cho F1 lớn nhất, thời gian/người của từng chế độ (full, crop<cỡ>)
     pose.json      tỉ lệ găng nằm trong elip cổ tay theo wrist_conf, rho, cỡ người; thời gian pose/người
+    torso.json     tham số association.torso_pose và tỉ lệ áo ghép đúng / sai người, người đủ thân và bị cắt giả lập
+    torso_strict.json  bước B2: tham số đề xuất association.torso_strict, V1-V3 (bản 4, B1, B2, B2 không G5),
+                   V4 hai phần theo nhóm, chẩn đoán G5, kết luận tiêu chí
 """
 
 import argparse
@@ -524,16 +529,528 @@ def pose_eval(cfg):
         print(k, "(găng trong elip, găng có cổ tay đạt ngưỡng):", v)
 
 
+def torso_eval(cfg):
+    """Bước B: vùng thân theo khung xương cho áo, chọn và kiểm trên ppe4 val (nhãn áo, người thật; pose như pipeline).
+
+    1. Áo có đúng một người chứa (inside_margin). Pose (PoseEstimator) chạy trên mọi hộp người của ảnh.
+    2. Tham số: với áo có hai vai đạt kp_conf (part_cls.kp_conf): u = (cx - mx) / sw, v = (cy - my) / sw,
+       w = (cy - hông) / sw. kx = phân vị cao của |u|; ky0 = -phân vị thấp của v; ky1 = phân vị cao của v;
+       kh = phân vị cao của w (khi thấy hông). Phân vị theo calibration.region_coverage như --regions.
+    3. Kiểm: Associator với cấu hình hiện tại (không torso_pose) và có torso_pose, hộp áo nhãn thật làm phát hiện;
+       đếm áo ghép đúng người chứa, ghép sang người khác, không ghép. Trên ảnh đủ và ảnh cắt ngang ở 55/65/75% chiều
+       cao hộp người tính từ đỉnh (giả lập người sát camera bị cắt ở ngực; pose chạy lại trên ảnh đã cắt).
+    """
+    import copy
+
+    import cv2
+
+    from ppe import Det, Track
+    from ppe.association import Associator
+    from ppe.pose import PoseEstimator
+
+    cal = cfg["calibration"]
+    cov, margin = cal["region_coverage"], cal["inside_margin"]
+    lo, hi = (1 - cov) / 2 * 100, (1 + cov) / 2 * 100
+    kc = cfg["part_cls"]["kp_conf"]
+    v_cls, p_cls = cfg["ppe"]["vest"]["cls"], cfg["person_cls"]
+    pose = PoseEstimator(cfg, ROOT)
+
+    def owner(c, persons):
+        own = [i for i, q in enumerate(persons)
+               if q[0] - margin * (q[2] - q[0]) <= c[0] <= q[2] + margin * (q[2] - q[0])
+               and q[1] - margin * (q[3] - q[1]) <= c[1] <= q[3] + margin * (q[3] - q[1])]
+        return own[0] if len(own) == 1 else None
+
+    def scene(im, persons, vests):
+        """Track (pose đã chạy) cho mọi người, Det cho mọi áo, chủ của từng áo."""
+        tracks = [Track(i, q.copy(), 1.0, True) for i, q in enumerate(persons)]
+        if tracks:
+            pose(im, tracks)
+        dets = [Det(v_cls, b.copy(), 1.0) for b in vests]
+        own = [owner(((b[0] + b[2]) / 2, (b[1] + b[3]) / 2), persons) for b in vests]
+        return tracks, dets, own
+
+    images = []
+    for f in sorted((DATASET / "labels" / "val").glob("*.txt")):
+        lab = read_labels(f)
+        if not any(r[0] == v_cls for r in lab):
+            continue
+        img = next(iter((DATASET / "images" / "val").glob(f.stem + ".*")))
+        im = cv2.imread(str(img))
+        h, w = im.shape[:2]
+        sc = np.array([w, h, w, h])
+        persons = [to_xyxy(*r[1:]) * sc for r in lab if r[0] == p_cls]
+        vests = [to_xyxy(*r[1:]) * sc for r in lab if r[0] == v_cls]
+        if persons:
+            images.append((img.name, im, persons, vests))
+    print(f"ppe4 val: {len(images)} ảnh có áo và người", flush=True)
+
+    U, V, W = [], [], []
+    full = []
+    for name, im, persons, vests in images:
+        tracks, dets, own = scene(im, persons, vests)
+        full.append((tracks, dets, own))
+        for d, o in zip(dets, own):
+            if o is None:
+                continue
+            k = tracks[o].extra.get("kps")
+            if not k or k[5][2] < kc or k[6][2] < kc:
+                continue
+            sw = float(np.hypot(k[5][0] - k[6][0], k[5][1] - k[6][1]))
+            if sw < 1:
+                continue
+            mx, my = (k[5][0] + k[6][0]) / 2, (k[5][1] + k[6][1]) / 2
+            cx, cy = d.center
+            U.append((cx - mx) / sw)
+            V.append((cy - my) / sw)
+            if k[11][2] >= kc and k[12][2] >= kc:
+                W.append((cy - (k[11][1] + k[12][1]) / 2) / sw)
+    U, V, W = np.array(U), np.array(V), np.array(W)
+    tp = dict(kp_conf=kc, kx=round(float(max(-np.percentile(U, lo), np.percentile(U, hi))), 3),
+              ky0=round(float(-np.percentile(V, lo)), 3), ky1=round(float(np.percentile(V, hi)), 3),
+              kh=round(float(np.percentile(W, hi)), 3))
+    print(f"áo có hai vai: {len(U)}, có hông: {len(W)}; torso_pose đề xuất: {tp}", flush=True)
+
+    cfg_old = copy.deepcopy(cfg)
+    cfg_old["association"].pop("torso_pose", None)
+    cfg_new = copy.deepcopy(cfg)
+    cfg_new["association"]["torso_pose"] = tp
+    assoc = {"ban_cu": Associator(cfg_old), "torso_pose": Associator(cfg_new)}
+
+    def score(scenes):
+        out = {k: dict(dung=0, sai_nguoi=0, khong_ghep=0, n=0) for k in assoc}
+        for tracks, dets, own in scenes:
+            for k, a in assoc.items():
+                res = a(tracks, dets)
+                where = {id(d): tid for tid, items in res.owned.items() for ds in items.values() for d in ds}
+                for d, o in zip(dets, own):
+                    if o is None:
+                        continue
+                    out[k]["n"] += 1
+                    t = where.get(id(d))
+                    out[k]["dung" if t == o else ("khong_ghep" if t is None else "sai_nguoi")] += 1
+        for k, x in out.items():
+            n = max(x["n"], 1)
+            x.update(ti_le_dung=round(x["dung"] / n, 4), ti_le_sai_nguoi=round(x["sai_nguoi"] / n, 4))
+        return out
+
+    res = dict(params=tp, n_shoulders=len(U), n_hips=len(W), coverage=cov, full=score(full), cut={})
+    for frac in (0.55, 0.65, 0.75):
+        scenes = []
+        for name, im, persons, vests in images:
+            for vb in vests:
+                o = owner(((vb[0] + vb[2]) / 2, (vb[1] + vb[3]) / 2), persons)
+                if o is None:
+                    continue
+                q = persons[o]
+                yc = int(q[1] + frac * (q[3] - q[1]))
+                if yc >= im.shape[0] - 2 or yc <= vb[1] + 0.3 * (vb[3] - vb[1]):
+                    continue        # không bị cắt, hoặc áo còn quá ít (dưới 30% chiều cao)
+                ps = [np.array([p[0], p[1], p[2], min(p[3], yc)]) for p in persons if p[1] < yc - 2]
+                vs = [np.array([b[0], b[1], b[2], min(b[3], yc)]) for b in vests if b[1] < yc - 2]
+                tracks, dets, own = scene(im[:yc].copy(), ps, vs)
+                # chỉ chấm áo đang xét; áo khác trong ảnh vẫn là phát hiện để kiểm ghép nhầm
+                tgt = [i for i, b in enumerate(vs) if abs(b[0] - vb[0]) < 1e-6 and abs(b[1] - vb[1]) < 1e-6]
+                own = [own[i] if i in tgt else None for i in range(len(own))]
+                scenes.append((tracks, dets, own))
+        res["cut"][str(frac)] = score(scenes)
+        print(f"cắt {frac}: {res['cut'][str(frac)]}", flush=True)
+    OUT.mkdir(parents=True, exist_ok=True)
+    (OUT / "torso.json").write_text(json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(json.dumps({k: v for k, v in res.items() if k != "cut"}, ensure_ascii=False, indent=1))
+    print("Ghi", (OUT / "torso.json").relative_to(ROOT))
+
+
+def unit_folds(rows, block):
+    """Bước B2, V4: chia val hai phần theo đơn vị nhóm (kế hoạch ppe6 mục B2).
+
+    rows: dict có file, image (đường dẫn ảnh gốc), group_id, source, n_vest (như data/ppe4/stats.csv).
+    Đơn vị = hợp (union-find) các ảnh cùng group_id và các ảnh cùng nguồn có số thứ tự cuối tên file gốc trong cùng
+    khối floor(số / block); ảnh không có số chỉ theo group_id. Mã đơn vị = group_id nhỏ nhất của đơn vị.
+    Đơn vị gồm ảnh của nhiều nguồn: tính vào nguồn có nhiều ảnh nhất (bằng nhau: theo thứ tự chữ cái) [chi tiết thiết
+    kế chưa ghi, chờ người dùng duyệt]. Trong từng nguồn: sắp đơn vị theo sha1(mã đơn vị), lần lượt đưa vào phần đang
+    ít áo hơn trong nguồn đó (bằng nhau: phần 1). Trả về ({file: 1 | 2}, danh sách đơn vị)."""
+    import hashlib
+    import re
+    from collections import Counter, defaultdict
+
+    parent = {}
+
+    def find(x):
+        parent.setdefault(x, x)
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    def union(a, b):
+        ra, rb = find(a), find(b)
+        if ra != rb:
+            parent[ra] = rb
+
+    for r in rows:
+        f = ("f", r["file"])
+        union(f, ("g", r["group_id"]))
+        nums = re.findall(r"\d+", Path(r["image"]).stem)
+        if nums:
+            union(f, ("b", r["source"], int(nums[-1]) // block))
+    members = defaultdict(list)
+    for r in rows:
+        members[find(("f", r["file"]))].append(r)
+    units, by_src = [], defaultdict(list)
+    for ms in members.values():
+        cnt = Counter(r["source"] for r in ms)
+        u = dict(code=min(r["group_id"] for r in ms), source=min(cnt, key=lambda s: (-cnt[s], s)), sources=dict(cnt),
+                 files=sorted(r["file"] for r in ms), groups=sorted({r["group_id"] for r in ms}),
+                 n_vest=sum(int(r["n_vest"]) for r in ms))
+        units.append(u)
+        by_src[u["source"]].append(u)
+    fold = {}
+    for src in sorted(by_src):
+        load = {1: 0, 2: 0}
+        for u in sorted(by_src[src], key=lambda u: (hashlib.sha1(u["code"].encode()).hexdigest(), u["code"])):
+            k = 1 if load[1] <= load[2] else 2
+            load[k] += u["n_vest"]
+            u["fold"] = k
+            for f in u["files"]:
+                fold[f] = k
+    units.sort(key=lambda u: u["code"])
+    return fold, units
+
+
+def provenance(cache):
+    """Hồ sơ tái lập cho 05a --torso-strict: commit nền, file đang sửa, sha256 dữ liệu val, cache, cấu hình, trọng số, code."""
+    import datetime
+    import hashlib
+    import platform
+    import subprocess
+
+    def sha(path, text=False):
+        b = Path(path).read_bytes()
+        return hashlib.sha256(b.replace(b"\r\n", b"\n") if text else b).hexdigest()
+
+    def sha_dir(paths, text=False):
+        h = hashlib.sha256()
+        for q in sorted(paths, key=lambda x: x.name):
+            h.update(q.name.encode() + b"\0" + bytes.fromhex(sha(q, text)))
+        return h.hexdigest()
+
+    git = lambda *a: subprocess.run(["git", *a], cwd=ROOT, capture_output=True, text=True).stdout.strip()
+    cfg = load_config()
+    env = dict(python=platform.python_version())
+    try:
+        import torch
+        import ultralytics
+        env.update(torch=torch.__version__, ultralytics=ultralytics.__version__)
+    except Exception as e:   # noqa: BLE001
+        env["import_error"] = str(e)
+    code = ["scripts/05a_calibrate_val.py", "src/ppe/association.py", "src/ppe/pose.py", "src/ppe/__init__.py"]
+    return dict(
+        thoi_diem=datetime.datetime.now().isoformat(timespec="seconds"), commit_nen=git("rev-parse", "HEAD"),
+        file_dang_sua=git("status", "--porcelain").splitlines(), moi_truong=env,
+        sha256=dict(
+            stats_csv=sha(ROOT / "data" / "ppe4" / "stats.csv", True),
+            val_labels=sha_dir(list((DATASET / "labels" / "val").glob("*.txt")), True),
+            val_images=sha_dir([q for q in (DATASET / "images" / "val").iterdir() if q.is_file()]),
+            preds_cache=sha(cache), pipeline_yaml=sha(ROOT / "configs" / "pipeline.yaml", True),
+            pose_weights=sha(ROOT / cfg["pose"]["weights"]), detector_weights_cache=sha(ROOT / cfg["detector"]["weights"]),
+            **{c: sha(ROOT / c, True) for c in code}),
+        ghi_chu=("Code B2 chưa commit: commit_nen + file_dang_sua; sha256 code ở trên là bản đã chạy. File text tính sau "
+                 "khi đổi CRLF thành LF. Cache preds.npz tạo 11/11/2026 bằng 05a --conf (C4), chỉ đọc."))
+
+
+def torso_strict_eval(cfg):
+    """Bước B2 (kế hoạch ppe6 mục B2): chọn association.torso_strict trên ppe4 val, đo V1-V4 và chẩn đoán G5.
+
+    So bản 4 (không torso_pose, torso_strict), B1 (torso_pose = association.torso_pose_b1), B2, B2 không G5 (s_min = 0,
+    chỉ để chẩn đoán G5, không phải phương án chọn). Hộp áo nhãn thật làm phát hiện, pose chạy trên hộp người nhãn như
+    pipeline. Chỉ ghi outputs/results/pipeline_calib_val/torso_strict.json; không sửa cấu hình.
+    1. Tham số (ảnh đủ, áo có đúng một người chứa; phân vị theo region_coverage): mẫu qua G2, G3(a)(c)(d) ->
+       slope_max_deg = phân vị cao của góc vai; mẫu qua thêm G3(b) -> kx, ky0, kh, s_min. edge_px: hộp người phát hiện
+       (cache preds.npz, lọc conf person và NMS như cấu hình) ghép IoU lớn nhất >= calibration.video.match_iou với hộp
+       người nhãn chạm đáy ảnh (y2 >= H - 1); phân vị cao của H - y2, làm tròn lên.
+    2. V1 ảnh đủ; V2 cắt ở 55/65/75% chiều cao người chủ áo (như --torso); V3 bỏ hộp người chủ áo (ảnh có từ 2 người),
+       áo bị gán cho người còn lại = gán nhầm; ở ảnh đủ và 3 mức cắt.
+    3. V4: unit_folds; chọn trên phần này, đo trên phần kia, hai chiều. Tham số đề xuất = chọn trên toàn val.
+    """
+    import copy
+    import math
+    from collections import Counter
+
+    import cv2
+    import torch
+    from torchvision.ops import nms
+
+    from ppe import Det, Track
+    from ppe.association import Associator, shoulder_geometry
+    from ppe.pose import PoseEstimator
+
+    sys.stdout.reconfigure(encoding="utf-8")
+    cal = cfg["calibration"]
+    cov, margin = cal["region_coverage"], cal["inside_margin"]
+    lo, hi = (1 - cov) / 2 * 100, (1 + cov) / 2 * 100
+    kc = cfg["part_cls"]["kp_conf"]
+    v_cls, p_cls = cfg["ppe"]["vest"]["cls"], cfg["person_cls"]
+    fracs = (0.55, 0.65, 0.75)
+    assert cfg["pose"]["enabled"], "B2 cần pose.enabled"
+    pose = PoseEstimator(cfg, ROOT)
+
+    stats = [r for r in csv.DictReader((ROOT / "data" / "ppe4" / "stats.csv").open(encoding="utf-8"))
+             if r["split"] == "val"]
+    fold_file, units = unit_folds(stats, cal["torso_strict_fold_block"])
+    fold_of = {Path(f).stem: k for f, k in fold_file.items()}
+    src_of = {Path(r["file"]).stem: r["source"] for r in stats}
+    grp_of = {Path(r["file"]).stem: r["group_id"] for r in stats}
+
+    def owner(c, persons):
+        own = [i for i, q in enumerate(persons)
+               if q[0] - margin * (q[2] - q[0]) <= c[0] <= q[2] + margin * (q[2] - q[0])
+               and q[1] - margin * (q[3] - q[1]) <= c[1] <= q[3] + margin * (q[3] - q[1])]
+        return own[0] if len(own) == 1 else None
+
+    def make_scene(stem, im, persons, vests, target=None):
+        tracks = [Track(i, q.copy(), 1.0, True) for i, q in enumerate(persons)]
+        if tracks:
+            pose(im, tracks)
+        dets = [Det(v_cls, b.copy(), 1.0) for b in vests]
+        own = [owner(((b[0] + b[2]) / 2, (b[1] + b[3]) / 2), persons) for b in vests]
+        if target is not None:          # ảnh cắt: chỉ chấm áo đang xét, áo khác vẫn là phát hiện
+            own = [o if i == target else None for i, o in enumerate(own)]
+        return dict(stem=stem, tracks=tracks, dets=dets, own=own, shape=im.shape)
+
+    # 1. Cảnh: ảnh đủ và ảnh cắt (pose chạy lại trên ảnh cắt)
+    full, cut = [], {f: [] for f in fracs}
+    files = [f for f in sorted((DATASET / "labels" / "val").glob("*.txt"))
+             if any(r[0] == v_cls for r in read_labels(f))]
+    for n_img, f in enumerate(files, 1):
+        lab = read_labels(f)
+        img = next(iter((DATASET / "images" / "val").glob(f.stem + ".*")))
+        im = cv2.imread(str(img))
+        h, w = im.shape[:2]
+        sc = np.array([w, h, w, h])
+        persons = [to_xyxy(*r[1:]) * sc for r in lab if r[0] == p_cls]
+        vests = [to_xyxy(*r[1:]) * sc for r in lab if r[0] == v_cls]
+        if not persons:
+            continue
+        full.append(make_scene(f.stem, im, persons, vests))
+        for frac in fracs:
+            for vb in vests:
+                o = owner(((vb[0] + vb[2]) / 2, (vb[1] + vb[3]) / 2), persons)
+                if o is None:
+                    continue
+                q = persons[o]
+                yc = int(q[1] + frac * (q[3] - q[1]))
+                if yc >= h - 2 or yc <= vb[1] + 0.3 * (vb[3] - vb[1]):
+                    continue        # không bị cắt, hoặc áo còn dưới 30% chiều cao (như --torso)
+                ps = [np.array([p[0], p[1], p[2], min(p[3], yc)]) for p in persons if p[1] < yc - 2]
+                vs = [np.array([b[0], b[1], b[2], min(b[3], yc)]) for b in vests if b[1] < yc - 2]
+                tgt = [i for i, b in enumerate(vs) if abs(b[0] - vb[0]) < 1e-6 and abs(b[1] - vb[1]) < 1e-6]
+                cut[frac].append(make_scene(f.stem, im[:yc].copy(), ps, vs, tgt[0] if tgt else -1))
+        if n_img % 50 == 0 or n_img == len(files):
+            print(f"  cảnh {n_img}/{len(files)}", flush=True)
+    print(f"ppe4 val: {len(full)} ảnh có áo và người; ca cắt: { {f: len(v) for f, v in cut.items()} }", flush=True)
+
+    # 2. Khoảng cách đáy hộp người phát hiện tới đáy ảnh, cho người nhãn chạm đáy (mọi ảnh val)
+    # Cache dự đoán của detector (05a --conf, C4) chỉ đọc: không gọi predict() để không thể chạy lại hay ghi đè.
+    cache = OUT / "preds.npz"
+    preds = dict(np.load(cache, allow_pickle=True))["data"].item()
+    d = cfg["detector"]
+    edge_vals, miss = {}, 0
+    for f in sorted((DATASET / "labels" / "val").glob("*.txt")):
+        p = preds.get(f.stem)
+        if p is None:
+            miss += 1
+            continue
+        H, W = p["shape"]
+        touch = [to_xyxy(*r[1:]) * np.array([W, H, W, H]) for r in read_labels(f) if r[0] == p_cls]
+        touch = [q for q in touch if q[3] >= H - 1]
+        m = (p["cls"] == p_cls) & (p["conf"] >= d["conf"]["person"])
+        boxes, confs = p["xyxy"][m], p["conf"][m]
+        if not touch or not len(boxes):
+            continue
+        keep = nms(torch.tensor(boxes, dtype=torch.float32), torch.tensor(confs, dtype=torch.float32),
+                   d["nms_iou"]).numpy()
+        boxes = boxes[keep]
+        iou = iou_matrix(np.array(touch), boxes)
+        for i in range(len(touch)):
+            j = int(np.argmax(iou[i]))
+            if iou[i, j] >= cal["video"]["match_iou"]:
+                edge_vals.setdefault(f.stem, []).append(max(0.0, float(H - boxes[j][3])))
+    assert miss == 0, f"preds.npz thiếu {miss} ảnh val: chạy lại --conf --rerun trước"
+
+    def pct(x, q):
+        assert len(x), "không đủ mẫu để chọn tham số"
+        return float(np.percentile(np.array(x, dtype=float), q))
+
+    def choose(stems):
+        rec = []
+        for s in full:
+            if s["stem"] not in stems:
+                continue
+            for dd, o in zip(s["dets"], s["own"]):
+                if o is None:
+                    continue
+                g = shoulder_geometry(s["tracks"][o], kc)
+                if g is not None:
+                    rec.append((g, *dd.center, dd.xyxy[2] - dd.xyxy[0]))
+        slope = pct([g["angle"] for g, *_ in rec], hi)
+        sel = [x for x in rec if x[0]["angle"] <= slope]
+        U = [(cx - g["mx"]) / g["sw"] for g, cx, cy, wd in sel]
+        V = [(cy - g["my"]) / g["sw"] for g, cx, cy, wd in sel]
+        Wh = [(cy - g["hy"]) / g["sw"] for g, cx, cy, wd in sel if g["hy"] is not None]
+        R = [wd / g["sw"] for g, cx, cy, wd in sel]
+        E = [e for st in stems for e in edge_vals.get(st, [])]
+        params = dict(kp_conf=kc, kx=round(max(-pct(U, lo), pct(U, hi)), 3), ky0=round(-pct(V, lo), 3),
+                      kh=round(pct(Wh, hi), 3), slope_max_deg=round(slope, 2), s_min=round(pct(R, lo), 3),
+                      edge_px=int(math.ceil(pct(E, hi))))
+        counts = dict(ao_qua_G2_G3acd=len(rec), ao_qua_G2_G3=len(sel), ao_co_hong=len(Wh), nguoi_nhan_cham_day=len(E))
+        return params, counts
+
+    def make_assoc(params):
+        base = copy.deepcopy(cfg)
+        base["association"].pop("torso_pose", None)
+        base["association"].pop("torso_strict", None)
+        b1, b2, b2n = copy.deepcopy(base), copy.deepcopy(base), copy.deepcopy(base)
+        b1["association"]["torso_pose"] = dict(cfg["association"]["torso_pose_b1"])
+        b2["association"]["torso_strict"] = dict(params)
+        b2n["association"]["torso_strict"] = {**params, "s_min": 0.0}
+        return {"ban_4": Associator(base), "B1": Associator(b1), "B2": Associator(b2),
+                "B2_khong_G5": Associator(b2n)}
+
+    def where(a, sc, tracks):
+        res = a(tracks, sc["dets"], sc["shape"])
+        return {id(x): tid for tid, items in res.owned.items() for ds in items.values() for x in ds}
+
+    def outcomes(a, scenes):
+        """(V1/V2) kết quả từng áo có chủ: dung / sai_nguoi / khong_ghep; (V3) áo bị gán sau khi bỏ chủ: True/False."""
+        o12, o3 = {}, {}
+        for si, sc in scenes:
+            wh = where(a, sc, sc["tracks"])
+            for vi, (dd, o) in enumerate(zip(sc["dets"], sc["own"])):
+                if o is None:
+                    continue
+                t = wh.get(id(dd))
+                o12[(si, vi)] = "dung" if t == o else ("khong_ghep" if t is None else "sai_nguoi")
+                if len(sc["tracks"]) >= 2:
+                    rest = [tr for tr in sc["tracks"] if tr.track_id != o]
+                    o3[(si, vi)] = id(dd) in where(a, sc, rest)
+        return o12, o3
+
+    def evaluate(params, stems):
+        assoc = make_assoc(params)
+        sets = {"du": [(i, s) for i, s in enumerate(full) if s["stem"] in stems]}
+        sets.update({str(f): [(i, s) for i, s in enumerate(cut[f]) if s["stem"] in stems] for f in fracs})
+        out, raw = {}, {}
+        for name, a in assoc.items():
+            out[name], raw[name] = {"V1": None, "V2": {}, "V3": {}}, {}
+            for k, scenes in sets.items():
+                o12, o3 = outcomes(a, scenes)
+                raw[name][k] = (o12, o3)
+                c = Counter(o12.values())
+                x = dict(n=len(o12), dung=c["dung"], sai_nguoi=c["sai_nguoi"], khong_ghep=c["khong_ghep"],
+                         ti_le_dung=round(c["dung"] / max(len(o12), 1), 4))
+                if k == "du":
+                    out[name]["V1"] = x
+                else:
+                    out[name]["V2"][k] = x
+                out[name]["V3"][k] = dict(n=len(o3), gan_nham=sum(o3.values()))
+                stem_of = {si: sc["stem"] for si, sc in scenes}
+                by = out[name].setdefault("theo_nguon", {}).setdefault(k, {})
+                for (si, vi), v in o12.items():
+                    x = by.setdefault(src_of[stem_of[si]], dict(n=0, dung=0, sai_nguoi=0, khong_ghep=0, V3_n=0, V3_gan_nham=0))
+                    x["n"] += 1
+                    x[v] += 1
+                for (si, vi), v in o3.items():
+                    x = by.setdefault(src_of[stem_of[si]], dict(n=0, dung=0, sai_nguoi=0, khong_ghep=0, V3_n=0, V3_gan_nham=0))
+                    x["V3_n"] += 1
+                    x["V3_gan_nham"] += int(v)
+        g5 = {"ao_hop_le_bi_G5_loai": {}, "ao_G5_chan_duoc": {}}
+        for k in sets:
+            (a12, a3), (b12, b3) = raw["B2"][k], raw["B2_khong_G5"][k]
+            g5["ao_hop_le_bi_G5_loai"][k] = sum(1 for key, v in b12.items() if v == "dung" and a12[key] == "khong_ghep")
+            g5["ao_G5_chan_duoc"][k] = sum(1 for key, v in b3.items() if v and not a3[key])
+        g5["ao_nguoi_sau_gan_nham"] = {n: {k: v["gan_nham"] for k, v in out[n]["V3"].items()} for n in out}
+        return out, g5
+
+    def check(res):
+        """Tiêu chí V1-V3 (kế hoạch mục B2). Cùng tập ca cho mọi bản nên so số áo ghép đúng thay cho tỉ lệ."""
+        b, v = res["B2"], res["ban_4"]
+        return dict(
+            V1=b["V1"]["dung"] >= v["V1"]["dung"] and b["V1"]["sai_nguoi"] <= v["V1"]["sai_nguoi"],
+            V2=all(b["V2"][k]["dung"] > v["V2"][k]["dung"] and b["V2"][k]["sai_nguoi"] <= v["V2"][k]["sai_nguoi"]
+                   for k in v["V2"]),
+            V3=all(b["V3"][k]["gan_nham"] <= v["V3"][k]["gan_nham"] for k in v["V3"]))
+
+    def fold_stats(k, stems, res):
+        F = [s for s in full if s["stem"] in stems]
+        _, mau = choose(stems)
+        n_ao = Counter()
+        for s in F:
+            n_ao[src_of[s["stem"]]] += len(s["dets"])
+        return dict(don_vi=sum(1 for u in units if u["fold"] == k), anh_val=len(stems), anh_co_ao_nguoi=len(F),
+                    nguoi=sum(len(s["tracks"]) for s in F), ao=sum(len(s["dets"]) for s in F),
+                    ao_chu_duy_nhat=res["ban_4"]["V1"]["n"], ao_theo_nguon=dict(n_ao),
+                    ca_V2={kk: x["n"] for kk, x in res["ban_4"]["V2"].items()},
+                    ca_V3={kk: x["n"] for kk, x in res["ban_4"]["V3"].items()}, mau_G2_G3=mau)
+
+    all_stems = {s["stem"] for s in full} | set(edge_vals) | set(fold_of)
+    parts = {k: {st for st, kk in fold_of.items() if kk == k} for k in (1, 2)}
+    overlap = sorted({grp_of[s] for s in parts[1]} & {grp_of[s] for s in parts[2]})
+    assert not overlap, f"group_id ở cả hai phần: {overlap[:5]}"
+
+    result = dict(ho_so=provenance(cache), fold_block=cal["torso_strict_fold_block"], coverage=cov,
+                  nhom_o_ca_hai_phan=overlap, don_vi_nhieu_nguon=sum(1 for u in units if len(u["sources"]) > 1),
+                  ly_do_chon=("Phân vị theo calibration.region_coverage (thấp = (1-cov)/2, cao = (1+cov)/2): mẫu ảnh đủ, áo "
+                              "có đúng một người chứa, qua G2, G3(a)(c)(d) -> slope_max_deg = phân vị cao của góc vai; qua "
+                              "thêm G3(b) -> kx = max(-thấp, cao) của u, ky0 = -thấp của v, kh = cao của w, s_min = thấp "
+                              "của r; edge_px = phân vị cao của H - y2 (người nhãn chạm đáy ghép người phát hiện), làm "
+                              "tròn lên. kp_conf = part_cls.kp_conf. Kế hoạch ppe6 mục B2."),
+                  thiet_lap=dict(fracs=list(fracs), kp_conf=kc, inside_margin=margin, match_iou=cal["video"]["match_iou"],
+                                 conf_person=d["conf"]["person"], nms_iou=d["nms_iou"], cache_conf_min=0.01,
+                                 cache_nms_iou=0.95, cache_max_det=1000), V4={})
+    with (OUT / "torso_strict_folds.csv").open("w", encoding="utf-8", newline="") as fh:
+        wr = csv.writer(fh)
+        wr.writerow(["file", "source", "group_id", "unit_code", "unit_source", "fold"])
+        for u in units:
+            for f in u["files"]:
+                wr.writerow([f, src_of[Path(f).stem], grp_of[Path(f).stem], u["code"], u["source"], u["fold"]])
+    verdict = {}
+    for a_k, b_k in ((1, 2), (2, 1)):
+        params, counts = choose(parts[a_k])
+        res, g5 = evaluate(params, parts[b_k])
+        ck = check(res)
+        name = f"chon_phan{a_k}_do_phan{b_k}"
+        result["V4"][name] = dict(tham_so=params, mau_chon=counts, ket_qua=res, chan_doan_G5=g5, tieu_chi=ck,
+                                  phan_chon=fold_stats(a_k, parts[a_k], evaluate(params, parts[a_k])[0]),
+                                  phan_do=fold_stats(b_k, parts[b_k], res))
+        verdict[f"V4_{name}"] = all(ck.values())
+        print(name, params, ck, flush=True)
+    params, counts = choose(all_stems)
+    res, g5 = evaluate(params, all_stems)
+    ck = check(res)
+    result.update(tham_so_de_xuat=params, mau_chon=counts, toan_val_trong_mau=dict(ket_qua=res, chan_doan_G5=g5,
+                  tieu_chi=ck))
+    verdict.update({k: v for k, v in ck.items()})
+    result["dat"] = dict(verdict, tat_ca=all(verdict.values()))
+    OUT.mkdir(parents=True, exist_ok=True)
+    (OUT / "torso_strict.json").write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+    print("toàn val (trong mẫu):", params, ck)
+    print("kết luận tiêu chí V1-V4:", result["dat"])
+    print("Ghi", (OUT / "torso_strict.json").relative_to(ROOT), "(chưa ghi cấu hình; người dùng duyệt trước)")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--regions", action="store_true")
     ap.add_argument("--conf", action="store_true")
     ap.add_argument("--crop", action="store_true", help="so sánh dò PPE cả khung với dò trên ảnh cắt từng người")
     ap.add_argument("--pose", action="store_true", help="tâm găng nhãn thật có nằm trong elip cổ tay không, so với vùng tay")
+    ap.add_argument("--torso", action="store_true", help="vùng thân theo khung xương cho áo (bước B)")
+    ap.add_argument("--torso-strict", action="store_true", help="vùng thân theo khung xương bản chặt cho áo (bước B2)")
     ap.add_argument("--rerun", action="store_true", help="dự đoán lại thay vì dùng cache")
     args = ap.parse_args()
-    if not (args.regions or args.conf or args.crop or args.pose):
-        ap.error("chọn --regions, --conf, --crop và/hoặc --pose")
+    if not (args.regions or args.conf or args.crop or args.pose or args.torso or args.torso_strict):
+        ap.error("chọn --regions, --conf, --crop, --pose, --torso và/hoặc --torso-strict")
     cfg = load_config()
     if args.regions:
         regions(cfg)
@@ -543,6 +1060,11 @@ def main():
         crop_eval(cfg, args.rerun)
     if args.pose:
         pose_eval(cfg)
+    if args.torso:
+        sys.stdout.reconfigure(encoding="utf-8")
+        torso_eval(cfg)
+    if args.torso_strict:
+        torso_strict_eval(cfg)
 
 
 if __name__ == "__main__":

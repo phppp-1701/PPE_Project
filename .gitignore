@@ -96,3 +96,11 @@ preview_all.jpg
 !outputs/results/close_eval/*/*/*/frames.csv
 !outputs/results/close_eval/*/*/*/events.jsonl
 !outputs/results/close_eval/*/*/*/summary.json
+# Bước B (B1 tắt), B2 (tắt): tổng hợp hồi quy video phát triển và hiệu chuẩn val (bằng chứng, file nhỏ)
+!outputs/results/close_eval/stepB/*/results.json
+!outputs/results/close_eval/stepB/*/results.md
+!outputs/results/close_eval/stepB/*/transitions.csv
+!outputs/results/pipeline_calib_val/torso.json
+!outputs/results/pipeline_calib_val/torso_strict.json
+!outputs/results/pipeline_calib_val/torso_strict_folds.csv
+!outputs/results/pipeline_calib_val/torso_strict_run.log

@@ -144,6 +144,17 @@ association:
   # dẫn tới Chưa xác định, không dẫn tới Thiếu).
   # TẠM 05/11/2026, chưa chọn: trên video2 0.02-0.2 không đổi kết quả. Chọn lại trên video chỉnh tham số khác.
   ambiguity_margin: 0.1
+  # Bước B (14/11/2026): vùng thân theo khung xương cho áo (association.torso_box), cộng thêm vào vùng torso cũ.
+  # Chọn trên ppe4 val bằng 05a --torso (outputs/results/pipeline_calib_val/torso.json): phân vị region_coverage
+  # (0,95) vị trí tâm áo so với vai, đơn vị khoảng cách hai vai sw; kp_conf = part_cls.kp_conf. 499 áo có hai vai,
+  # 457 có hông. ky1 lớn (6,36) vì người nhìn nghiêng có sw nhỏ: không thấy hông thì vùng gần như kéo tới đáy hộp người.
+  # Val (đo trong mẫu): ghép đúng người 0,892 -> 0,953 (người đủ thân); cắt giả lập 55/65/75%: 0,780 -> 0,857,
+  # 0,815 -> 0,886, 0,874 -> 0,925; ghép sang người khác 0 -> 0 ở mọi trường hợp.
+  # TẮT 15/11/2026 theo quyết định người dùng (phương án 2): B lần 1 không đạt tiêu chí "áo báo Có sai không tăng"
+  # (video3 3 -> 4 khung, ghép nhầm sang người khác; kế hoạch ppe6 mục Bước B). Code giữ nguyên: chuỗi xử lý chỉ
+  # dùng vùng thân theo khung xương khi có khóa association.torso_pose, nay không có => ghép áo như bản 4.
+  # Tham số B lần 1 lưu dưới tên torso_pose_b1 để giữ lịch sử và cho tests/test_torso_pose.py; chuỗi xử lý không đọc khóa này.
+  torso_pose_b1: {kp_conf: 0.5, kx: 1.586, ky0: -0.247, ky1: 6.361, kh: 0.124}
 
 compliance:
   # Vùng đủ quan sát (công thức 3.7): v >= tau_in, o <= tau_occ, diện tích vùng trong ảnh >= area_min_px.
@@ -205,6 +216,9 @@ calibration:
   part_thr_grid: {start: 0.50, stop: 0.99, step: 0.01}
   part_min_person_grid: [0, 200, 300, 400, 500, 700]   # px; lưới chọn min_person_px trên video 3-6
   temporal_frac_grid: [0.1, 0.2, 0.3, 0.4, 0.5]   # lưới chọn temporal.min_valid_frac_on trên video 3-6 và A-E
+  # 05a --torso-strict (bước B2, V4): chia val hai phần theo đơn vị = group_id hợp với khối số thứ tự cuối tên file
+  # gốc cùng nguồn (floor(số / torso_strict_fold_block)). Người dùng duyệt 15/11/2026 (kế hoạch ppe6 mục B2).
+  torso_strict_fold_block: 50
   video:
     # Dùng bởi 05d_calibrate_video.py, chỉ trên video chinh_tham_so. Lưới thử, không phải giá trị đã chọn.
     match_iou: 0.5          # ghép người với nhãn (spec 7.4)

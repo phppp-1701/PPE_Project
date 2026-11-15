@@ -2,6 +2,11 @@
 
 Vùng là hình chữ nhật trong tọa độ chuẩn hóa của hộp người (configs/pipeline.yaml: association.regions).
 PPE có `sides` (găng) dùng hai nửa vùng: trái x < 0.5, phải x >= 0.5 (theo ảnh).
+Áo (vùng torso), khi có `association.torso_pose`: thêm vùng thân theo khung xương (vai, hông), cắt theo hộp người;
+tâm áo trong vùng cũ hoặc vùng này đều là ứng viên (bước B, 14/11/2026: người sát camera bị cắt ở ngực).
+Bước B lần 1 đã tắt (15/11/2026). Bước B2 (`association.torso_strict`): chỉ cho người chạm mép dưới khung, vùng
+khung xương không rộng hơn vùng cũ theo chiều ngang, có cổng hình học pose và cổng cỡ áo (kế hoạch ppe6 mục B2).
+Không được bật đồng thời B1 và B2; thiếu `torso_strict` hoặc không có kích thước khung: ghép như bản 4.
 """
 
 import math
@@ -46,6 +51,86 @@ def ellipse_value(c, track_xyxy, q, pose):
     return math.hypot((c[0] - q[0]) / (pose["rho_x"] * w), (c[1] - q[1]) / (pose["rho_y"] * h))
 
 
+def torso_pose_box(track, tp):
+    """Vùng thân theo khung xương (x1, y1, x2, y2), cắt theo hộp người; None khi không đủ điểm.
+
+    sw = khoảng cách hai vai (COCO 5, 6), (mx, my) = trung điểm vai, cả hai vai cần độ tin cậy >= tp["kp_conf"].
+    x trong [mx - kx*sw, mx + kx*sw]; y từ my - ky0*sw tới (trung điểm hông + kh*sw) nếu thấy hai hông (11, 12),
+    ngược lại tới my + ky1*sw. Người bị cắt ở ngực: phần dưới vùng nằm ngoài hộp người, bị cắt theo hộp."""
+    kps = getattr(track, "extra", {}).get("kps")
+    if not kps:
+        return None
+    c = tp["kp_conf"]
+    (ax, ay, ac), (bx, by, bc) = kps[5], kps[6]
+    if ac < c or bc < c:
+        return None
+    sw = math.hypot(ax - bx, ay - by)
+    if sw < 1.0:
+        return None
+    mx, my = (ax + bx) / 2, (ay + by) / 2
+    if kps[11][2] >= c and kps[12][2] >= c:
+        bottom = (kps[11][1] + kps[12][1]) / 2 + tp["kh"] * sw
+    else:
+        bottom = my + tp["ky1"] * sw
+    x1, y1, x2, y2 = track.xyxy
+    r = [max(mx - tp["kx"] * sw, x1), max(my - tp["ky0"] * sw, y1), min(mx + tp["kx"] * sw, x2), min(bottom, y2)]
+    if r[2] <= r[0] or r[3] <= r[1]:
+        return None
+    return np.array(r, dtype=float)
+
+
+def torso_strict_box(track, ts, old_box, frame_shape):
+    """Bước B2: (vùng R (x1, y1, x2, y2), sw) khi qua cổng G2-G4, ngược lại None (ghép như bản 4).
+
+    G2 hai vai (COCO 5, 6) có độ tin cậy >= ts["kp_conf"]. G3 hình học: (a) hai vai trong hộp người; (b) góc đường
+    vai so với phương ngang <= ts["slope_max_deg"]; (c) thấy hai hông (11, 12) thì trung điểm hông thấp hơn trung điểm
+    vai; (d) sw >= 1 px. G4 có kích thước khung và đáy hộp người y2 >= H - ts["edge_px"].
+    R: ngang [max(mép trái vùng cũ, mx - kx*sw), min(mép phải vùng cũ, mx + kx*sw)] (không rộng hơn vùng cũ);
+    dọc từ my - ky0*sw tới đáy hộp người, thấy hông thì tới min(đáy hộp, hông + kh*sw); cắt theo hộp người."""
+    if frame_shape is None:
+        return None
+    g = shoulder_geometry(track, ts["kp_conf"])                                  # G2, G3a, G3c, G3d
+    if g is None or g["angle"] > ts["slope_max_deg"]:                            # G3b
+        return None
+    x1, y1, x2, y2 = track.xyxy
+    if y2 < frame_shape[0] - ts["edge_px"]:                                      # G4
+        return None
+    sw, mx, my, hy = g["sw"], g["mx"], g["my"], g["hy"]
+    r = [max(old_box[0], mx - ts["kx"] * sw, x1), max(my - ts["ky0"] * sw, y1),
+         min(old_box[2], mx + ts["kx"] * sw, x2), y2 if hy is None else min(hy + ts["kh"] * sw, y2)]
+    if r[2] <= r[0] or r[3] <= r[1]:
+        return None
+    return np.array(r, dtype=float), sw
+
+
+def shoulder_geometry(track, kp_conf):
+    """Cổng G2, G3(a)(c)(d) của B2 (dùng chung cho chuỗi xử lý và 05a --torso-strict).
+
+    Trả về dict(sw, mx, my, angle (độ, đường vai so với phương ngang), hy (trung điểm hông y, None khi không thấy hai
+    hông)) hoặc None khi: một vai dưới kp_conf (G2); vai ngoài hộp người (G3a); thấy hai hông mà hông không thấp hơn
+    vai (G3c); sw < 1 px (G3d)."""
+    kps = getattr(track, "extra", {}).get("kps")
+    if not kps:
+        return None
+    (ax, ay, ac), (bx, by, bc) = kps[5], kps[6]
+    if ac < kp_conf or bc < kp_conf:                                             # G2
+        return None
+    x1, y1, x2, y2 = track.xyxy
+    if not all(x1 <= qx <= x2 and y1 <= qy <= y2 for qx, qy in ((ax, ay), (bx, by))):   # G3a
+        return None
+    dx, dy = abs(ax - bx), abs(ay - by)
+    sw = math.hypot(dx, dy)
+    if sw < 1.0:                                                                 # G3d
+        return None
+    mx, my = (ax + bx) / 2, (ay + by) / 2
+    hy = None
+    if kps[11][2] >= kp_conf and kps[12][2] >= kp_conf:
+        hy = (kps[11][1] + kps[12][1]) / 2
+        if hy <= my:                                                             # G3c (y ảnh tăng xuống dưới)
+            return None
+    return dict(sw=sw, mx=mx, my=my, angle=math.degrees(math.atan2(dy, dx)), hy=hy)
+
+
 def norm_distance(c, track_xyxy, rbox):
     """Khoảng cách chuẩn hóa (3.4) từ tâm PPE c tới tâm vùng rbox."""
     w, h = track_xyxy[2] - track_xyxy[0], track_xyxy[3] - track_xyxy[1]
@@ -68,14 +153,24 @@ class Associator:
         self.margin = cfg["association"]["ambiguity_margin"]   # null: từ 2 ứng viên trở lên là tranh chấp
         self.by_cls = {p["cls"]: name for name, p in self.ppe.items()}
         self.pose = cfg["pose"] if cfg.get("pose", {}).get("enabled") else None
+        # Vùng thân theo khung xương cho áo (bước B); vắng mục này -> như bản 4.
+        self.torso_pose = (require(cfg, "association", "torso_pose")
+                           if self.pose and cfg["association"].get("torso_pose") is not None else None)
+        # Bước B2: vùng thân theo khung xương bản chặt cho áo; vắng mục này -> như bản 4. Không bật cùng B1.
+        if cfg["association"].get("torso_pose") is not None and cfg["association"].get("torso_strict") is not None:
+            raise ValueError("configs/pipeline.yaml: association.torso_pose (B1) và association.torso_strict (B2) "
+                             "không được bật đồng thời")
+        self.torso_strict = (require(cfg, "association", "torso_strict")
+                             if self.pose and cfg["association"].get("torso_strict") is not None else None)
 
     def limit(self, name):
         """Khoảng cách tối đa: 1 (biên elip) khi dùng cổ tay, còn lại `max_distance` (3.4)."""
         p = self.ppe[name]
         return 1.0 if self.pose and p["sides"] and p["region"] == "hands" else self.max_distance[name]
 
-    def candidates(self, name, det, tracks):
-        """[(d, track_id, side)] của các vùng chứa tâm PPE, sắp theo d tăng dần."""
+    def candidates(self, name, det, tracks, frame_shape=None):
+        """[(d, track_id, side)] của các vùng chứa tâm PPE, sắp theo d tăng dần. frame_shape (H, W, ...) chỉ dùng
+        cho B2 (G4); None -> B2 không bật."""
         p = self.ppe[name]
         reg = self.regions[p["region"]]
         c = det.center
@@ -88,17 +183,33 @@ class Associator:
                         out.append((v, t.track_id, side))
                     continue
                 r = region_box(t.xyxy, reg, side)
-                if r[0] <= c[0] <= r[2] and r[1] <= c[1] <= r[3]:
-                    out.append((norm_distance(c, t.xyxy, r), t.track_id, side))
+                d = norm_distance(c, t.xyxy, r) if r[0] <= c[0] <= r[2] and r[1] <= c[1] <= r[3] else None
+                if self.torso_pose and p["region"] == "torso" and side is None:
+                    rp = torso_pose_box(t, self.torso_pose)
+                    if rp is not None and rp[0] <= c[0] <= rp[2] and rp[1] <= c[1] <= rp[3]:
+                        dp = norm_distance(c, t.xyxy, rp)
+                        d = dp if d is None else min(d, dp)
+                if self.torso_strict and name == "vest" and p["region"] == "torso" and side is None:   # G1
+                    g = torso_strict_box(t, self.torso_strict, r, frame_shape)
+                    if g is not None:
+                        rs, sw = g
+                        in_old = r[0] <= c[0] <= r[2] and r[1] <= c[1] <= r[3]
+                        # G5 chỉ cho áo vào được nhờ R (tâm ngoài vùng cũ)
+                        size_ok = in_old or (det.xyxy[2] - det.xyxy[0]) >= self.torso_strict["s_min"] * sw
+                        if size_ok and rs[0] <= c[0] <= rs[2] and rs[1] <= c[1] <= rs[3]:
+                            ds = norm_distance(c, t.xyxy, rs)
+                            d = ds if d is None else min(d, ds)
+                if d is not None:
+                    out.append((d, t.track_id, side))
         return sorted(out, key=lambda x: x[0])
 
-    def __call__(self, tracks, ppe_dets):
+    def __call__(self, tracks, ppe_dets, frame_shape=None):
         a = Association()
         for det in ppe_dets:
             name = self.by_cls.get(det.cls)
             if name is None:
                 continue
-            cand = self.candidates(name, det, tracks)
+            cand = self.candidates(name, det, tracks, frame_shape)
             if not cand:
                 a.rejected.append((name, det, "outside", []))
                 continue

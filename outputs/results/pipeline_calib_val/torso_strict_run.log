@@ -1,0 +1,12 @@
+  cảnh 50/272
+  cảnh 100/272
+  cảnh 150/272
+  cảnh 200/272
+  cảnh 250/272
+  cảnh 272/272
+ppe4 val: 270 ảnh có áo và người; ca cắt: {0.55: 485, 0.65: 521, 0.75: 525}
+chon_phan1_do_phan2 {'kp_conf': 0.5, 'kx': 0.653, 'ky0': -0.344, 'kh': 0.333, 'slope_max_deg': 50.61, 's_min': 1.082, 'edge_px': 432} {'V1': True, 'V2': True, 'V3': True}
+chon_phan2_do_phan1 {'kp_conf': 0.5, 'kx': 1.251, 'ky0': -0.266, 'kh': -0.168, 'slope_max_deg': 43.27, 's_min': 1.118, 'edge_px': 148} {'V1': True, 'V2': True, 'V3': True}
+toàn val (trong mẫu): {'kp_conf': 0.5, 'kx': 1.259, 'ky0': -0.297, 'kh': 0.123, 'slope_max_deg': 48.3, 's_min': 1.116, 'edge_px': 283} {'V1': True, 'V2': True, 'V3': True}
+kết luận tiêu chí V1-V4: {'V4_chon_phan1_do_phan2': True, 'V4_chon_phan2_do_phan1': True, 'V1': True, 'V2': True, 'V3': True, 'tat_ca': True}
+Ghi outputs\results\pipeline_calib_val\torso_strict.json (chưa ghi cấu hình; người dùng duyệt trước)

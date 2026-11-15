@@ -1,0 +1,2251 @@
+{
+  "ho_so": {
+    "thoi_diem": "2026-11-15T01:58:47",
+    "commit_nen": "0e6578611d3366c05d4a8289bb1a95e6e19d3336",
+    "file_dang_sua": [
+      "M configs/pipeline.yaml",
+      " M docs/experiments/2026-11-06_ppe6_plan.md",
+      " M scripts/05a_calibrate_val.py",
+      " M scripts/README.md",
+      " M src/ppe/association.py",
+      " M src/ppe/pipeline.py",
+      " M tests/README.md",
+      "?? outputs/results/close_eval/stepB/",
+      "?? tests/test_torso_pose.py",
+      "?? tests/test_torso_strict.py"
+    ],
+    "moi_truong": {
+      "python": "3.12.12",
+      "torch": "2.11.0+cu128",
+      "ultralytics": "8.4.189"
+    },
+    "sha256": {
+      "stats_csv": "6d43a45d5a2cd88316ed09fd8ac730711cccb9a5a511ad5f6119a8c4bfc0e571",
+      "val_labels": "2f144830056639472b2f115fcd9fc96412e913d6abf0fa0d9f7e364d09b0d38c",
+      "val_images": "c33f5752dedc125e5545ec265f6b3d30a50fec3670c0bfc2e44aa2d03288a0a3",
+      "preds_cache": "30e0f6790b29a7a1323100c6a75605e84e967fcf328624cbbdd31959e39461cc",
+      "pipeline_yaml": "941377f1533f6d7ac18479f51c816f89d721d2b324829d26833cfa17e2b12bba",
+      "pose_weights": "869e83fcdffdc7371fa4e34cd8e51c838cc729571d1635e5141e3075e9319dc0",
+      "detector_weights_cache": "98e3950d125401f3eca14ea9b15b57501d105153a0768fc1e6256d909783b8a3",
+      "scripts/05a_calibrate_val.py": "4b19407f7bc1b03e2829abbe530a86257d97e90e9d07e60bbc8cfafceef336a4",
+      "src/ppe/association.py": "ef4fa3f621c2b959388dc91861af3aa8f0caf6cdb2afceba68b8f23bd5f18e2d",
+      "src/ppe/pose.py": "605e7867dde8721b87a056b487ce0e5a8954664717f775b0472a7355bc8aabab",
+      "src/ppe/__init__.py": "f7f1b022041fa6931bb8d6b651ae3f31fd614c0aa885d3bcead13071c5fc7e29"
+    },
+    "ghi_chu": "Code B2 chưa commit: commit_nen + file_dang_sua; sha256 code ở trên là bản đã chạy. File text tính sau khi đổi CRLF thành LF. Cache preds.npz tạo 11/11/2026 bằng 05a --conf (C4), chỉ đọc."
+  },
+  "fold_block": 50,
+  "coverage": 0.95,
+  "nhom_o_ca_hai_phan": [],
+  "don_vi_nhieu_nguon": 10,
+  "ly_do_chon": "Phân vị theo calibration.region_coverage (thấp = (1-cov)/2, cao = (1+cov)/2): mẫu ảnh đủ, áo có đúng một người chứa, qua G2, G3(a)(c)(d) -> slope_max_deg = phân vị cao của góc vai; qua thêm G3(b) -> kx = max(-thấp, cao) của u, ky0 = -thấp của v, kh = cao của w, s_min = thấp của r; edge_px = phân vị cao của H - y2 (người nhãn chạm đáy ghép người phát hiện), làm tròn lên. kp_conf = part_cls.kp_conf. Kế hoạch ppe6 mục B2.",
+  "thiet_lap": {
+    "fracs": [
+      0.55,
+      0.65,
+      0.75
+    ],
+    "kp_conf": 0.5,
+    "inside_margin": 0.1,
+    "match_iou": 0.5,
+    "conf_person": 0.4,
+    "nms_iou": 0.5,
+    "cache_conf_min": 0.01,
+    "cache_nms_iou": 0.95,
+    "cache_max_det": 1000
+  },
+  "V4": {
+    "chon_phan1_do_phan2": {
+      "tham_so": {
+        "kp_conf": 0.5,
+        "kx": 0.653,
+        "ky0": -0.344,
+        "kh": 0.333,
+        "slope_max_deg": 50.61,
+        "s_min": 1.082,
+        "edge_px": 432
+      },
+      "mau_chon": {
+        "ao_qua_G2_G3acd": 201,
+        "ao_qua_G2_G3": 196,
+        "ao_co_hong": 184,
+        "nguoi_nhan_cham_day": 407
+      },
+      "ket_qua": {
+        "ban_4": {
+          "V1": {
+            "n": 308,
+            "dung": 276,
+            "sai_nguoi": 0,
+            "khong_ghep": 32,
+            "ti_le_dung": 0.8961
+          },
+          "V2": {
+            "0.55": {
+              "n": 280,
+              "dung": 217,
+              "sai_nguoi": 0,
+              "khong_ghep": 63,
+              "ti_le_dung": 0.775
+            },
+            "0.65": {
+              "n": 303,
+              "dung": 246,
+              "sai_nguoi": 0,
+              "khong_ghep": 57,
+              "ti_le_dung": 0.8119
+            },
+            "0.75": {
+              "n": 305,
+              "dung": 266,
+              "sai_nguoi": 0,
+              "khong_ghep": 39,
+              "ti_le_dung": 0.8721
+            }
+          },
+          "V3": {
+            "du": {
+              "n": 233,
+              "gan_nham": 0
+            },
+            "0.55": {
+              "n": 216,
+              "gan_nham": 0
+            },
+            "0.65": {
+              "n": 228,
+              "gan_nham": 0
+            },
+            "0.75": {
+              "n": 229,
+              "gan_nham": 0
+            }
+          },
+          "theo_nguon": {
+            "du": {
+              "chv": {
+                "n": 140,
+                "dung": 128,
+                "sai_nguoi": 0,
+                "khong_ghep": 12,
+                "V3_n": 132,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 128,
+                "dung": 117,
+                "sai_nguoi": 0,
+                "khong_ghep": 11,
+                "V3_n": 66,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 40,
+                "dung": 31,
+                "sai_nguoi": 0,
+                "khong_ghep": 9,
+                "V3_n": 35,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.55": {
+              "chv": {
+                "n": 127,
+                "dung": 98,
+                "sai_nguoi": 0,
+                "khong_ghep": 29,
+                "V3_n": 120,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 116,
+                "dung": 87,
+                "sai_nguoi": 0,
+                "khong_ghep": 29,
+                "V3_n": 63,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 37,
+                "dung": 32,
+                "sai_nguoi": 0,
+                "khong_ghep": 5,
+                "V3_n": 33,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.65": {
+              "chv": {
+                "n": 138,
+                "dung": 111,
+                "sai_nguoi": 0,
+                "khong_ghep": 27,
+                "V3_n": 129,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 127,
+                "dung": 100,
+                "sai_nguoi": 0,
+                "khong_ghep": 27,
+                "V3_n": 66,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 38,
+                "dung": 35,
+                "sai_nguoi": 0,
+                "khong_ghep": 3,
+                "V3_n": 33,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.75": {
+              "chv": {
+                "n": 139,
+                "dung": 122,
+                "sai_nguoi": 0,
+                "khong_ghep": 17,
+                "V3_n": 130,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 128,
+                "dung": 108,
+                "sai_nguoi": 0,
+                "khong_ghep": 20,
+                "V3_n": 66,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 38,
+                "dung": 36,
+                "sai_nguoi": 0,
+                "khong_ghep": 2,
+                "V3_n": 33,
+                "V3_gan_nham": 0
+              }
+            }
+          }
+        },
+        "B1": {
+          "V1": {
+            "n": 308,
+            "dung": 297,
+            "sai_nguoi": 0,
+            "khong_ghep": 11,
+            "ti_le_dung": 0.9643
+          },
+          "V2": {
+            "0.55": {
+              "n": 280,
+              "dung": 243,
+              "sai_nguoi": 0,
+              "khong_ghep": 37,
+              "ti_le_dung": 0.8679
+            },
+            "0.65": {
+              "n": 303,
+              "dung": 269,
+              "sai_nguoi": 0,
+              "khong_ghep": 34,
+              "ti_le_dung": 0.8878
+            },
+            "0.75": {
+              "n": 305,
+              "dung": 284,
+              "sai_nguoi": 0,
+              "khong_ghep": 21,
+              "ti_le_dung": 0.9311
+            }
+          },
+          "V3": {
+            "du": {
+              "n": 233,
+              "gan_nham": 0
+            },
+            "0.55": {
+              "n": 216,
+              "gan_nham": 0
+            },
+            "0.65": {
+              "n": 228,
+              "gan_nham": 0
+            },
+            "0.75": {
+              "n": 229,
+              "gan_nham": 0
+            }
+          },
+          "theo_nguon": {
+            "du": {
+              "chv": {
+                "n": 140,
+                "dung": 136,
+                "sai_nguoi": 0,
+                "khong_ghep": 4,
+                "V3_n": 132,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 128,
+                "dung": 123,
+                "sai_nguoi": 0,
+                "khong_ghep": 5,
+                "V3_n": 66,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 40,
+                "dung": 38,
+                "sai_nguoi": 0,
+                "khong_ghep": 2,
+                "V3_n": 35,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.55": {
+              "chv": {
+                "n": 127,
+                "dung": 112,
+                "sai_nguoi": 0,
+                "khong_ghep": 15,
+                "V3_n": 120,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 116,
+                "dung": 96,
+                "sai_nguoi": 0,
+                "khong_ghep": 20,
+                "V3_n": 63,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 37,
+                "dung": 35,
+                "sai_nguoi": 0,
+                "khong_ghep": 2,
+                "V3_n": 33,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.65": {
+              "chv": {
+                "n": 138,
+                "dung": 122,
+                "sai_nguoi": 0,
+                "khong_ghep": 16,
+                "V3_n": 129,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 127,
+                "dung": 111,
+                "sai_nguoi": 0,
+                "khong_ghep": 16,
+                "V3_n": 66,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 38,
+                "dung": 36,
+                "sai_nguoi": 0,
+                "khong_ghep": 2,
+                "V3_n": 33,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.75": {
+              "chv": {
+                "n": 139,
+                "dung": 133,
+                "sai_nguoi": 0,
+                "khong_ghep": 6,
+                "V3_n": 130,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 128,
+                "dung": 114,
+                "sai_nguoi": 0,
+                "khong_ghep": 14,
+                "V3_n": 66,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 38,
+                "dung": 37,
+                "sai_nguoi": 0,
+                "khong_ghep": 1,
+                "V3_n": 33,
+                "V3_gan_nham": 0
+              }
+            }
+          }
+        },
+        "B2": {
+          "V1": {
+            "n": 308,
+            "dung": 281,
+            "sai_nguoi": 0,
+            "khong_ghep": 27,
+            "ti_le_dung": 0.9123
+          },
+          "V2": {
+            "0.55": {
+              "n": 280,
+              "dung": 224,
+              "sai_nguoi": 0,
+              "khong_ghep": 56,
+              "ti_le_dung": 0.8
+            },
+            "0.65": {
+              "n": 303,
+              "dung": 253,
+              "sai_nguoi": 0,
+              "khong_ghep": 50,
+              "ti_le_dung": 0.835
+            },
+            "0.75": {
+              "n": 305,
+              "dung": 273,
+              "sai_nguoi": 0,
+              "khong_ghep": 32,
+              "ti_le_dung": 0.8951
+            }
+          },
+          "V3": {
+            "du": {
+              "n": 233,
+              "gan_nham": 0
+            },
+            "0.55": {
+              "n": 216,
+              "gan_nham": 0
+            },
+            "0.65": {
+              "n": 228,
+              "gan_nham": 0
+            },
+            "0.75": {
+              "n": 229,
+              "gan_nham": 0
+            }
+          },
+          "theo_nguon": {
+            "du": {
+              "chv": {
+                "n": 140,
+                "dung": 131,
+                "sai_nguoi": 0,
+                "khong_ghep": 9,
+                "V3_n": 132,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 128,
+                "dung": 118,
+                "sai_nguoi": 0,
+                "khong_ghep": 10,
+                "V3_n": 66,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 40,
+                "dung": 32,
+                "sai_nguoi": 0,
+                "khong_ghep": 8,
+                "V3_n": 35,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.55": {
+              "chv": {
+                "n": 127,
+                "dung": 101,
+                "sai_nguoi": 0,
+                "khong_ghep": 26,
+                "V3_n": 120,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 116,
+                "dung": 90,
+                "sai_nguoi": 0,
+                "khong_ghep": 26,
+                "V3_n": 63,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 37,
+                "dung": 33,
+                "sai_nguoi": 0,
+                "khong_ghep": 4,
+                "V3_n": 33,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.65": {
+              "chv": {
+                "n": 138,
+                "dung": 114,
+                "sai_nguoi": 0,
+                "khong_ghep": 24,
+                "V3_n": 129,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 127,
+                "dung": 104,
+                "sai_nguoi": 0,
+                "khong_ghep": 23,
+                "V3_n": 66,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 38,
+                "dung": 35,
+                "sai_nguoi": 0,
+                "khong_ghep": 3,
+                "V3_n": 33,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.75": {
+              "chv": {
+                "n": 139,
+                "dung": 126,
+                "sai_nguoi": 0,
+                "khong_ghep": 13,
+                "V3_n": 130,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 128,
+                "dung": 111,
+                "sai_nguoi": 0,
+                "khong_ghep": 17,
+                "V3_n": 66,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 38,
+                "dung": 36,
+                "sai_nguoi": 0,
+                "khong_ghep": 2,
+                "V3_n": 33,
+                "V3_gan_nham": 0
+              }
+            }
+          }
+        },
+        "B2_khong_G5": {
+          "V1": {
+            "n": 308,
+            "dung": 281,
+            "sai_nguoi": 0,
+            "khong_ghep": 27,
+            "ti_le_dung": 0.9123
+          },
+          "V2": {
+            "0.55": {
+              "n": 280,
+              "dung": 224,
+              "sai_nguoi": 0,
+              "khong_ghep": 56,
+              "ti_le_dung": 0.8
+            },
+            "0.65": {
+              "n": 303,
+              "dung": 253,
+              "sai_nguoi": 0,
+              "khong_ghep": 50,
+              "ti_le_dung": 0.835
+            },
+            "0.75": {
+              "n": 305,
+              "dung": 273,
+              "sai_nguoi": 0,
+              "khong_ghep": 32,
+              "ti_le_dung": 0.8951
+            }
+          },
+          "V3": {
+            "du": {
+              "n": 233,
+              "gan_nham": 0
+            },
+            "0.55": {
+              "n": 216,
+              "gan_nham": 0
+            },
+            "0.65": {
+              "n": 228,
+              "gan_nham": 0
+            },
+            "0.75": {
+              "n": 229,
+              "gan_nham": 0
+            }
+          },
+          "theo_nguon": {
+            "du": {
+              "chv": {
+                "n": 140,
+                "dung": 131,
+                "sai_nguoi": 0,
+                "khong_ghep": 9,
+                "V3_n": 132,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 128,
+                "dung": 118,
+                "sai_nguoi": 0,
+                "khong_ghep": 10,
+                "V3_n": 66,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 40,
+                "dung": 32,
+                "sai_nguoi": 0,
+                "khong_ghep": 8,
+                "V3_n": 35,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.55": {
+              "chv": {
+                "n": 127,
+                "dung": 101,
+                "sai_nguoi": 0,
+                "khong_ghep": 26,
+                "V3_n": 120,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 116,
+                "dung": 90,
+                "sai_nguoi": 0,
+                "khong_ghep": 26,
+                "V3_n": 63,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 37,
+                "dung": 33,
+                "sai_nguoi": 0,
+                "khong_ghep": 4,
+                "V3_n": 33,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.65": {
+              "chv": {
+                "n": 138,
+                "dung": 114,
+                "sai_nguoi": 0,
+                "khong_ghep": 24,
+                "V3_n": 129,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 127,
+                "dung": 104,
+                "sai_nguoi": 0,
+                "khong_ghep": 23,
+                "V3_n": 66,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 38,
+                "dung": 35,
+                "sai_nguoi": 0,
+                "khong_ghep": 3,
+                "V3_n": 33,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.75": {
+              "chv": {
+                "n": 139,
+                "dung": 126,
+                "sai_nguoi": 0,
+                "khong_ghep": 13,
+                "V3_n": 130,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 128,
+                "dung": 111,
+                "sai_nguoi": 0,
+                "khong_ghep": 17,
+                "V3_n": 66,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 38,
+                "dung": 36,
+                "sai_nguoi": 0,
+                "khong_ghep": 2,
+                "V3_n": 33,
+                "V3_gan_nham": 0
+              }
+            }
+          }
+        }
+      },
+      "chan_doan_G5": {
+        "ao_hop_le_bi_G5_loai": {
+          "du": 0,
+          "0.55": 0,
+          "0.65": 0,
+          "0.75": 0
+        },
+        "ao_G5_chan_duoc": {
+          "du": 0,
+          "0.55": 0,
+          "0.65": 0,
+          "0.75": 0
+        },
+        "ao_nguoi_sau_gan_nham": {
+          "ban_4": {
+            "du": 0,
+            "0.55": 0,
+            "0.65": 0,
+            "0.75": 0
+          },
+          "B1": {
+            "du": 0,
+            "0.55": 0,
+            "0.65": 0,
+            "0.75": 0
+          },
+          "B2": {
+            "du": 0,
+            "0.55": 0,
+            "0.65": 0,
+            "0.75": 0
+          },
+          "B2_khong_G5": {
+            "du": 0,
+            "0.55": 0,
+            "0.65": 0,
+            "0.75": 0
+          }
+        }
+      },
+      "tieu_chi": {
+        "V1": true,
+        "V2": true,
+        "V3": true
+      },
+      "phan_chon": {
+        "don_vi": 592,
+        "anh_val": 1027,
+        "anh_co_ao_nguoi": 123,
+        "nguoi": 278,
+        "ao": 243,
+        "ao_chu_duy_nhat": 220,
+        "ao_theo_nguon": {
+          "chv": 123,
+          "construction_ppe": 82,
+          "sh17": 38
+        },
+        "ca_V2": {
+          "0.55": 201,
+          "0.65": 215,
+          "0.75": 218
+        },
+        "ca_V3": {
+          "du": 144,
+          "0.55": 128,
+          "0.65": 137,
+          "0.75": 140
+        },
+        "mau_G2_G3": {
+          "ao_qua_G2_G3acd": 201,
+          "ao_qua_G2_G3": 196,
+          "ao_co_hong": 184,
+          "nguoi_nhan_cham_day": 407
+        }
+      },
+      "phan_do": {
+        "don_vi": 242,
+        "anh_val": 559,
+        "anh_co_ao_nguoi": 147,
+        "nguoi": 461,
+        "ao": 373,
+        "ao_chu_duy_nhat": 308,
+        "ao_theo_nguon": {
+          "chv": 152,
+          "construction_ppe": 155,
+          "sh17": 66
+        },
+        "ca_V2": {
+          "0.55": 280,
+          "0.65": 303,
+          "0.75": 305
+        },
+        "ca_V3": {
+          "du": 233,
+          "0.55": 216,
+          "0.65": 228,
+          "0.75": 229
+        },
+        "mau_G2_G3": {
+          "ao_qua_G2_G3acd": 276,
+          "ao_qua_G2_G3": 269,
+          "ao_co_hong": 245,
+          "nguoi_nhan_cham_day": 169
+        }
+      }
+    },
+    "chon_phan2_do_phan1": {
+      "tham_so": {
+        "kp_conf": 0.5,
+        "kx": 1.251,
+        "ky0": -0.266,
+        "kh": -0.168,
+        "slope_max_deg": 43.27,
+        "s_min": 1.118,
+        "edge_px": 148
+      },
+      "mau_chon": {
+        "ao_qua_G2_G3acd": 276,
+        "ao_qua_G2_G3": 269,
+        "ao_co_hong": 245,
+        "nguoi_nhan_cham_day": 169
+      },
+      "ket_qua": {
+        "ban_4": {
+          "V1": {
+            "n": 220,
+            "dung": 195,
+            "sai_nguoi": 0,
+            "khong_ghep": 25,
+            "ti_le_dung": 0.8864
+          },
+          "V2": {
+            "0.55": {
+              "n": 201,
+              "dung": 158,
+              "sai_nguoi": 0,
+              "khong_ghep": 43,
+              "ti_le_dung": 0.7861
+            },
+            "0.65": {
+              "n": 215,
+              "dung": 176,
+              "sai_nguoi": 0,
+              "khong_ghep": 39,
+              "ti_le_dung": 0.8186
+            },
+            "0.75": {
+              "n": 218,
+              "dung": 191,
+              "sai_nguoi": 0,
+              "khong_ghep": 27,
+              "ti_le_dung": 0.8761
+            }
+          },
+          "V3": {
+            "du": {
+              "n": 144,
+              "gan_nham": 0
+            },
+            "0.55": {
+              "n": 128,
+              "gan_nham": 0
+            },
+            "0.65": {
+              "n": 137,
+              "gan_nham": 0
+            },
+            "0.75": {
+              "n": 140,
+              "gan_nham": 0
+            }
+          },
+          "theo_nguon": {
+            "du": {
+              "chv": {
+                "n": 108,
+                "dung": 97,
+                "sai_nguoi": 0,
+                "khong_ghep": 11,
+                "V3_n": 99,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 77,
+                "dung": 72,
+                "sai_nguoi": 0,
+                "khong_ghep": 5,
+                "V3_n": 17,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 35,
+                "dung": 26,
+                "sai_nguoi": 0,
+                "khong_ghep": 9,
+                "V3_n": 28,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.55": {
+              "chv": {
+                "n": 99,
+                "dung": 72,
+                "sai_nguoi": 0,
+                "khong_ghep": 27,
+                "V3_n": 93,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 74,
+                "dung": 63,
+                "sai_nguoi": 0,
+                "khong_ghep": 11,
+                "V3_n": 14,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 28,
+                "dung": 23,
+                "sai_nguoi": 0,
+                "khong_ghep": 5,
+                "V3_n": 21,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.65": {
+              "chv": {
+                "n": 106,
+                "dung": 82,
+                "sai_nguoi": 0,
+                "khong_ghep": 24,
+                "V3_n": 98,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 77,
+                "dung": 68,
+                "sai_nguoi": 0,
+                "khong_ghep": 9,
+                "V3_n": 15,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 32,
+                "dung": 26,
+                "sai_nguoi": 0,
+                "khong_ghep": 6,
+                "V3_n": 24,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.75": {
+              "chv": {
+                "n": 107,
+                "dung": 95,
+                "sai_nguoi": 0,
+                "khong_ghep": 12,
+                "V3_n": 99,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 77,
+                "dung": 70,
+                "sai_nguoi": 0,
+                "khong_ghep": 7,
+                "V3_n": 15,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 34,
+                "dung": 26,
+                "sai_nguoi": 0,
+                "khong_ghep": 8,
+                "V3_n": 26,
+                "V3_gan_nham": 0
+              }
+            }
+          }
+        },
+        "B1": {
+          "V1": {
+            "n": 220,
+            "dung": 206,
+            "sai_nguoi": 0,
+            "khong_ghep": 14,
+            "ti_le_dung": 0.9364
+          },
+          "V2": {
+            "0.55": {
+              "n": 201,
+              "dung": 169,
+              "sai_nguoi": 0,
+              "khong_ghep": 32,
+              "ti_le_dung": 0.8408
+            },
+            "0.65": {
+              "n": 215,
+              "dung": 190,
+              "sai_nguoi": 0,
+              "khong_ghep": 25,
+              "ti_le_dung": 0.8837
+            },
+            "0.75": {
+              "n": 218,
+              "dung": 200,
+              "sai_nguoi": 0,
+              "khong_ghep": 18,
+              "ti_le_dung": 0.9174
+            }
+          },
+          "V3": {
+            "du": {
+              "n": 144,
+              "gan_nham": 0
+            },
+            "0.55": {
+              "n": 128,
+              "gan_nham": 0
+            },
+            "0.65": {
+              "n": 137,
+              "gan_nham": 0
+            },
+            "0.75": {
+              "n": 140,
+              "gan_nham": 0
+            }
+          },
+          "theo_nguon": {
+            "du": {
+              "chv": {
+                "n": 108,
+                "dung": 102,
+                "sai_nguoi": 0,
+                "khong_ghep": 6,
+                "V3_n": 99,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 77,
+                "dung": 75,
+                "sai_nguoi": 0,
+                "khong_ghep": 2,
+                "V3_n": 17,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 35,
+                "dung": 29,
+                "sai_nguoi": 0,
+                "khong_ghep": 6,
+                "V3_n": 28,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.55": {
+              "chv": {
+                "n": 99,
+                "dung": 79,
+                "sai_nguoi": 0,
+                "khong_ghep": 20,
+                "V3_n": 93,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 74,
+                "dung": 64,
+                "sai_nguoi": 0,
+                "khong_ghep": 10,
+                "V3_n": 14,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 28,
+                "dung": 26,
+                "sai_nguoi": 0,
+                "khong_ghep": 2,
+                "V3_n": 21,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.65": {
+              "chv": {
+                "n": 106,
+                "dung": 91,
+                "sai_nguoi": 0,
+                "khong_ghep": 15,
+                "V3_n": 98,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 77,
+                "dung": 70,
+                "sai_nguoi": 0,
+                "khong_ghep": 7,
+                "V3_n": 15,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 32,
+                "dung": 29,
+                "sai_nguoi": 0,
+                "khong_ghep": 3,
+                "V3_n": 24,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.75": {
+              "chv": {
+                "n": 107,
+                "dung": 99,
+                "sai_nguoi": 0,
+                "khong_ghep": 8,
+                "V3_n": 99,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 77,
+                "dung": 72,
+                "sai_nguoi": 0,
+                "khong_ghep": 5,
+                "V3_n": 15,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 34,
+                "dung": 29,
+                "sai_nguoi": 0,
+                "khong_ghep": 5,
+                "V3_n": 26,
+                "V3_gan_nham": 0
+              }
+            }
+          }
+        },
+        "B2": {
+          "V1": {
+            "n": 220,
+            "dung": 196,
+            "sai_nguoi": 0,
+            "khong_ghep": 24,
+            "ti_le_dung": 0.8909
+          },
+          "V2": {
+            "0.55": {
+              "n": 201,
+              "dung": 165,
+              "sai_nguoi": 0,
+              "khong_ghep": 36,
+              "ti_le_dung": 0.8209
+            },
+            "0.65": {
+              "n": 215,
+              "dung": 180,
+              "sai_nguoi": 0,
+              "khong_ghep": 35,
+              "ti_le_dung": 0.8372
+            },
+            "0.75": {
+              "n": 218,
+              "dung": 192,
+              "sai_nguoi": 0,
+              "khong_ghep": 26,
+              "ti_le_dung": 0.8807
+            }
+          },
+          "V3": {
+            "du": {
+              "n": 144,
+              "gan_nham": 0
+            },
+            "0.55": {
+              "n": 128,
+              "gan_nham": 0
+            },
+            "0.65": {
+              "n": 137,
+              "gan_nham": 0
+            },
+            "0.75": {
+              "n": 140,
+              "gan_nham": 0
+            }
+          },
+          "theo_nguon": {
+            "du": {
+              "chv": {
+                "n": 108,
+                "dung": 97,
+                "sai_nguoi": 0,
+                "khong_ghep": 11,
+                "V3_n": 99,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 77,
+                "dung": 73,
+                "sai_nguoi": 0,
+                "khong_ghep": 4,
+                "V3_n": 17,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 35,
+                "dung": 26,
+                "sai_nguoi": 0,
+                "khong_ghep": 9,
+                "V3_n": 28,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.55": {
+              "chv": {
+                "n": 99,
+                "dung": 77,
+                "sai_nguoi": 0,
+                "khong_ghep": 22,
+                "V3_n": 93,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 74,
+                "dung": 64,
+                "sai_nguoi": 0,
+                "khong_ghep": 10,
+                "V3_n": 14,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 28,
+                "dung": 24,
+                "sai_nguoi": 0,
+                "khong_ghep": 4,
+                "V3_n": 21,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.65": {
+              "chv": {
+                "n": 106,
+                "dung": 86,
+                "sai_nguoi": 0,
+                "khong_ghep": 20,
+                "V3_n": 98,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 77,
+                "dung": 68,
+                "sai_nguoi": 0,
+                "khong_ghep": 9,
+                "V3_n": 15,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 32,
+                "dung": 26,
+                "sai_nguoi": 0,
+                "khong_ghep": 6,
+                "V3_n": 24,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.75": {
+              "chv": {
+                "n": 107,
+                "dung": 96,
+                "sai_nguoi": 0,
+                "khong_ghep": 11,
+                "V3_n": 99,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 77,
+                "dung": 70,
+                "sai_nguoi": 0,
+                "khong_ghep": 7,
+                "V3_n": 15,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 34,
+                "dung": 26,
+                "sai_nguoi": 0,
+                "khong_ghep": 8,
+                "V3_n": 26,
+                "V3_gan_nham": 0
+              }
+            }
+          }
+        },
+        "B2_khong_G5": {
+          "V1": {
+            "n": 220,
+            "dung": 196,
+            "sai_nguoi": 0,
+            "khong_ghep": 24,
+            "ti_le_dung": 0.8909
+          },
+          "V2": {
+            "0.55": {
+              "n": 201,
+              "dung": 165,
+              "sai_nguoi": 0,
+              "khong_ghep": 36,
+              "ti_le_dung": 0.8209
+            },
+            "0.65": {
+              "n": 215,
+              "dung": 181,
+              "sai_nguoi": 0,
+              "khong_ghep": 34,
+              "ti_le_dung": 0.8419
+            },
+            "0.75": {
+              "n": 218,
+              "dung": 193,
+              "sai_nguoi": 0,
+              "khong_ghep": 25,
+              "ti_le_dung": 0.8853
+            }
+          },
+          "V3": {
+            "du": {
+              "n": 144,
+              "gan_nham": 0
+            },
+            "0.55": {
+              "n": 128,
+              "gan_nham": 0
+            },
+            "0.65": {
+              "n": 137,
+              "gan_nham": 0
+            },
+            "0.75": {
+              "n": 140,
+              "gan_nham": 0
+            }
+          },
+          "theo_nguon": {
+            "du": {
+              "chv": {
+                "n": 108,
+                "dung": 97,
+                "sai_nguoi": 0,
+                "khong_ghep": 11,
+                "V3_n": 99,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 77,
+                "dung": 73,
+                "sai_nguoi": 0,
+                "khong_ghep": 4,
+                "V3_n": 17,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 35,
+                "dung": 26,
+                "sai_nguoi": 0,
+                "khong_ghep": 9,
+                "V3_n": 28,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.55": {
+              "chv": {
+                "n": 99,
+                "dung": 77,
+                "sai_nguoi": 0,
+                "khong_ghep": 22,
+                "V3_n": 93,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 74,
+                "dung": 64,
+                "sai_nguoi": 0,
+                "khong_ghep": 10,
+                "V3_n": 14,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 28,
+                "dung": 24,
+                "sai_nguoi": 0,
+                "khong_ghep": 4,
+                "V3_n": 21,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.65": {
+              "chv": {
+                "n": 106,
+                "dung": 87,
+                "sai_nguoi": 0,
+                "khong_ghep": 19,
+                "V3_n": 98,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 77,
+                "dung": 68,
+                "sai_nguoi": 0,
+                "khong_ghep": 9,
+                "V3_n": 15,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 32,
+                "dung": 26,
+                "sai_nguoi": 0,
+                "khong_ghep": 6,
+                "V3_n": 24,
+                "V3_gan_nham": 0
+              }
+            },
+            "0.75": {
+              "chv": {
+                "n": 107,
+                "dung": 96,
+                "sai_nguoi": 0,
+                "khong_ghep": 11,
+                "V3_n": 99,
+                "V3_gan_nham": 0
+              },
+              "construction_ppe": {
+                "n": 77,
+                "dung": 71,
+                "sai_nguoi": 0,
+                "khong_ghep": 6,
+                "V3_n": 15,
+                "V3_gan_nham": 0
+              },
+              "sh17": {
+                "n": 34,
+                "dung": 26,
+                "sai_nguoi": 0,
+                "khong_ghep": 8,
+                "V3_n": 26,
+                "V3_gan_nham": 0
+              }
+            }
+          }
+        }
+      },
+      "chan_doan_G5": {
+        "ao_hop_le_bi_G5_loai": {
+          "du": 0,
+          "0.55": 0,
+          "0.65": 1,
+          "0.75": 1
+        },
+        "ao_G5_chan_duoc": {
+          "du": 0,
+          "0.55": 0,
+          "0.65": 0,
+          "0.75": 0
+        },
+        "ao_nguoi_sau_gan_nham": {
+          "ban_4": {
+            "du": 0,
+            "0.55": 0,
+            "0.65": 0,
+            "0.75": 0
+          },
+          "B1": {
+            "du": 0,
+            "0.55": 0,
+            "0.65": 0,
+            "0.75": 0
+          },
+          "B2": {
+            "du": 0,
+            "0.55": 0,
+            "0.65": 0,
+            "0.75": 0
+          },
+          "B2_khong_G5": {
+            "du": 0,
+            "0.55": 0,
+            "0.65": 0,
+            "0.75": 0
+          }
+        }
+      },
+      "tieu_chi": {
+        "V1": true,
+        "V2": true,
+        "V3": true
+      },
+      "phan_chon": {
+        "don_vi": 242,
+        "anh_val": 559,
+        "anh_co_ao_nguoi": 147,
+        "nguoi": 461,
+        "ao": 373,
+        "ao_chu_duy_nhat": 308,
+        "ao_theo_nguon": {
+          "chv": 152,
+          "construction_ppe": 155,
+          "sh17": 66
+        },
+        "ca_V2": {
+          "0.55": 280,
+          "0.65": 303,
+          "0.75": 305
+        },
+        "ca_V3": {
+          "du": 233,
+          "0.55": 216,
+          "0.65": 228,
+          "0.75": 229
+        },
+        "mau_G2_G3": {
+          "ao_qua_G2_G3acd": 276,
+          "ao_qua_G2_G3": 269,
+          "ao_co_hong": 245,
+          "nguoi_nhan_cham_day": 169
+        }
+      },
+      "phan_do": {
+        "don_vi": 592,
+        "anh_val": 1027,
+        "anh_co_ao_nguoi": 123,
+        "nguoi": 278,
+        "ao": 243,
+        "ao_chu_duy_nhat": 220,
+        "ao_theo_nguon": {
+          "chv": 123,
+          "construction_ppe": 82,
+          "sh17": 38
+        },
+        "ca_V2": {
+          "0.55": 201,
+          "0.65": 215,
+          "0.75": 218
+        },
+        "ca_V3": {
+          "du": 144,
+          "0.55": 128,
+          "0.65": 137,
+          "0.75": 140
+        },
+        "mau_G2_G3": {
+          "ao_qua_G2_G3acd": 201,
+          "ao_qua_G2_G3": 196,
+          "ao_co_hong": 184,
+          "nguoi_nhan_cham_day": 407
+        }
+      }
+    }
+  },
+  "tham_so_de_xuat": {
+    "kp_conf": 0.5,
+    "kx": 1.259,
+    "ky0": -0.297,
+    "kh": 0.123,
+    "slope_max_deg": 48.3,
+    "s_min": 1.116,
+    "edge_px": 283
+  },
+  "mau_chon": {
+    "ao_qua_G2_G3acd": 477,
+    "ao_qua_G2_G3": 465,
+    "ao_co_hong": 429,
+    "nguoi_nhan_cham_day": 576
+  },
+  "toan_val_trong_mau": {
+    "ket_qua": {
+      "ban_4": {
+        "V1": {
+          "n": 528,
+          "dung": 471,
+          "sai_nguoi": 0,
+          "khong_ghep": 57,
+          "ti_le_dung": 0.892
+        },
+        "V2": {
+          "0.55": {
+            "n": 481,
+            "dung": 375,
+            "sai_nguoi": 0,
+            "khong_ghep": 106,
+            "ti_le_dung": 0.7796
+          },
+          "0.65": {
+            "n": 518,
+            "dung": 422,
+            "sai_nguoi": 0,
+            "khong_ghep": 96,
+            "ti_le_dung": 0.8147
+          },
+          "0.75": {
+            "n": 523,
+            "dung": 457,
+            "sai_nguoi": 0,
+            "khong_ghep": 66,
+            "ti_le_dung": 0.8738
+          }
+        },
+        "V3": {
+          "du": {
+            "n": 377,
+            "gan_nham": 0
+          },
+          "0.55": {
+            "n": 344,
+            "gan_nham": 0
+          },
+          "0.65": {
+            "n": 365,
+            "gan_nham": 0
+          },
+          "0.75": {
+            "n": 369,
+            "gan_nham": 0
+          }
+        },
+        "theo_nguon": {
+          "du": {
+            "chv": {
+              "n": 248,
+              "dung": 225,
+              "sai_nguoi": 0,
+              "khong_ghep": 23,
+              "V3_n": 231,
+              "V3_gan_nham": 0
+            },
+            "construction_ppe": {
+              "n": 205,
+              "dung": 189,
+              "sai_nguoi": 0,
+              "khong_ghep": 16,
+              "V3_n": 83,
+              "V3_gan_nham": 0
+            },
+            "sh17": {
+              "n": 75,
+              "dung": 57,
+              "sai_nguoi": 0,
+              "khong_ghep": 18,
+              "V3_n": 63,
+              "V3_gan_nham": 0
+            }
+          },
+          "0.55": {
+            "chv": {
+              "n": 226,
+              "dung": 170,
+              "sai_nguoi": 0,
+              "khong_ghep": 56,
+              "V3_n": 213,
+              "V3_gan_nham": 0
+            },
+            "construction_ppe": {
+              "n": 190,
+              "dung": 150,
+              "sai_nguoi": 0,
+              "khong_ghep": 40,
+              "V3_n": 77,
+              "V3_gan_nham": 0
+            },
+            "sh17": {
+              "n": 65,
+              "dung": 55,
+              "sai_nguoi": 0,
+              "khong_ghep": 10,
+              "V3_n": 54,
+              "V3_gan_nham": 0
+            }
+          },
+          "0.65": {
+            "chv": {
+              "n": 244,
+              "dung": 193,
+              "sai_nguoi": 0,
+              "khong_ghep": 51,
+              "V3_n": 227,
+              "V3_gan_nham": 0
+            },
+            "construction_ppe": {
+              "n": 204,
+              "dung": 168,
+              "sai_nguoi": 0,
+              "khong_ghep": 36,
+              "V3_n": 81,
+              "V3_gan_nham": 0
+            },
+            "sh17": {
+              "n": 70,
+              "dung": 61,
+              "sai_nguoi": 0,
+              "khong_ghep": 9,
+              "V3_n": 57,
+              "V3_gan_nham": 0
+            }
+          },
+          "0.75": {
+            "chv": {
+              "n": 246,
+              "dung": 217,
+              "sai_nguoi": 0,
+              "khong_ghep": 29,
+              "V3_n": 229,
+              "V3_gan_nham": 0
+            },
+            "construction_ppe": {
+              "n": 205,
+              "dung": 178,
+              "sai_nguoi": 0,
+              "khong_ghep": 27,
+              "V3_n": 81,
+              "V3_gan_nham": 0
+            },
+            "sh17": {
+              "n": 72,
+              "dung": 62,
+              "sai_nguoi": 0,
+              "khong_ghep": 10,
+              "V3_n": 59,
+              "V3_gan_nham": 0
+            }
+          }
+        }
+      },
+      "B1": {
+        "V1": {
+          "n": 528,
+          "dung": 503,
+          "sai_nguoi": 0,
+          "khong_ghep": 25,
+          "ti_le_dung": 0.9527
+        },
+        "V2": {
+          "0.55": {
+            "n": 481,
+            "dung": 412,
+            "sai_nguoi": 0,
+            "khong_ghep": 69,
+            "ti_le_dung": 0.8565
+          },
+          "0.65": {
+            "n": 518,
+            "dung": 459,
+            "sai_nguoi": 0,
+            "khong_ghep": 59,
+            "ti_le_dung": 0.8861
+          },
+          "0.75": {
+            "n": 523,
+            "dung": 484,
+            "sai_nguoi": 0,
+            "khong_ghep": 39,
+            "ti_le_dung": 0.9254
+          }
+        },
+        "V3": {
+          "du": {
+            "n": 377,
+            "gan_nham": 0
+          },
+          "0.55": {
+            "n": 344,
+            "gan_nham": 0
+          },
+          "0.65": {
+            "n": 365,
+            "gan_nham": 0
+          },
+          "0.75": {
+            "n": 369,
+            "gan_nham": 0
+          }
+        },
+        "theo_nguon": {
+          "du": {
+            "chv": {
+              "n": 248,
+              "dung": 238,
+              "sai_nguoi": 0,
+              "khong_ghep": 10,
+              "V3_n": 231,
+              "V3_gan_nham": 0
+            },
+            "construction_ppe": {
+              "n": 205,
+              "dung": 198,
+              "sai_nguoi": 0,
+              "khong_ghep": 7,
+              "V3_n": 83,
+              "V3_gan_nham": 0
+            },
+            "sh17": {
+              "n": 75,
+              "dung": 67,
+              "sai_nguoi": 0,
+              "khong_ghep": 8,
+              "V3_n": 63,
+              "V3_gan_nham": 0
+            }
+          },
+          "0.55": {
+            "chv": {
+              "n": 226,
+              "dung": 191,
+              "sai_nguoi": 0,
+              "khong_ghep": 35,
+              "V3_n": 213,
+              "V3_gan_nham": 0
+            },
+            "construction_ppe": {
+              "n": 190,
+              "dung": 160,
+              "sai_nguoi": 0,
+              "khong_ghep": 30,
+              "V3_n": 77,
+              "V3_gan_nham": 0
+            },
+            "sh17": {
+              "n": 65,
+              "dung": 61,
+              "sai_nguoi": 0,
+              "khong_ghep": 4,
+              "V3_n": 54,
+              "V3_gan_nham": 0
+            }
+          },
+          "0.65": {
+            "chv": {
+              "n": 244,
+              "dung": 213,
+              "sai_nguoi": 0,
+              "khong_ghep": 31,
+              "V3_n": 227,
+              "V3_gan_nham": 0
+            },
+            "construction_ppe": {
+              "n": 204,
+              "dung": 181,
+              "sai_nguoi": 0,
+              "khong_ghep": 23,
+              "V3_n": 81,
+              "V3_gan_nham": 0
+            },
+            "sh17": {
+              "n": 70,
+              "dung": 65,
+              "sai_nguoi": 0,
+              "khong_ghep": 5,
+              "V3_n": 57,
+              "V3_gan_nham": 0
+            }
+          },
+          "0.75": {
+            "chv": {
+              "n": 246,
+              "dung": 232,
+              "sai_nguoi": 0,
+              "khong_ghep": 14,
+              "V3_n": 229,
+              "V3_gan_nham": 0
+            },
+            "construction_ppe": {
+              "n": 205,
+              "dung": 186,
+              "sai_nguoi": 0,
+              "khong_ghep": 19,
+              "V3_n": 81,
+              "V3_gan_nham": 0
+            },
+            "sh17": {
+              "n": 72,
+              "dung": 66,
+              "sai_nguoi": 0,
+              "khong_ghep": 6,
+              "V3_n": 59,
+              "V3_gan_nham": 0
+            }
+          }
+        }
+      },
+      "B2": {
+        "V1": {
+          "n": 528,
+          "dung": 477,
+          "sai_nguoi": 0,
+          "khong_ghep": 51,
+          "ti_le_dung": 0.9034
+        },
+        "V2": {
+          "0.55": {
+            "n": 481,
+            "dung": 395,
+            "sai_nguoi": 0,
+            "khong_ghep": 86,
+            "ti_le_dung": 0.8212
+          },
+          "0.65": {
+            "n": 518,
+            "dung": 437,
+            "sai_nguoi": 0,
+            "khong_ghep": 81,
+            "ti_le_dung": 0.8436
+          },
+          "0.75": {
+            "n": 523,
+            "dung": 466,
+            "sai_nguoi": 0,
+            "khong_ghep": 57,
+            "ti_le_dung": 0.891
+          }
+        },
+        "V3": {
+          "du": {
+            "n": 377,
+            "gan_nham": 0
+          },
+          "0.55": {
+            "n": 344,
+            "gan_nham": 0
+          },
+          "0.65": {
+            "n": 365,
+            "gan_nham": 0
+          },
+          "0.75": {
+            "n": 369,
+            "gan_nham": 0
+          }
+        },
+        "theo_nguon": {
+          "du": {
+            "chv": {
+              "n": 248,
+              "dung": 227,
+              "sai_nguoi": 0,
+              "khong_ghep": 21,
+              "V3_n": 231,
+              "V3_gan_nham": 0
+            },
+            "construction_ppe": {
+              "n": 205,
+              "dung": 192,
+              "sai_nguoi": 0,
+              "khong_ghep": 13,
+              "V3_n": 83,
+              "V3_gan_nham": 0
+            },
+            "sh17": {
+              "n": 75,
+              "dung": 58,
+              "sai_nguoi": 0,
+              "khong_ghep": 17,
+              "V3_n": 63,
+              "V3_gan_nham": 0
+            }
+          },
+          "0.55": {
+            "chv": {
+              "n": 226,
+              "dung": 181,
+              "sai_nguoi": 0,
+              "khong_ghep": 45,
+              "V3_n": 213,
+              "V3_gan_nham": 0
+            },
+            "construction_ppe": {
+              "n": 190,
+              "dung": 157,
+              "sai_nguoi": 0,
+              "khong_ghep": 33,
+              "V3_n": 77,
+              "V3_gan_nham": 0
+            },
+            "sh17": {
+              "n": 65,
+              "dung": 57,
+              "sai_nguoi": 0,
+              "khong_ghep": 8,
+              "V3_n": 54,
+              "V3_gan_nham": 0
+            }
+          },
+          "0.65": {
+            "chv": {
+              "n": 244,
+              "dung": 200,
+              "sai_nguoi": 0,
+              "khong_ghep": 44,
+              "V3_n": 227,
+              "V3_gan_nham": 0
+            },
+            "construction_ppe": {
+              "n": 204,
+              "dung": 175,
+              "sai_nguoi": 0,
+              "khong_ghep": 29,
+              "V3_n": 81,
+              "V3_gan_nham": 0
+            },
+            "sh17": {
+              "n": 70,
+              "dung": 62,
+              "sai_nguoi": 0,
+              "khong_ghep": 8,
+              "V3_n": 57,
+              "V3_gan_nham": 0
+            }
+          },
+          "0.75": {
+            "chv": {
+              "n": 246,
+              "dung": 223,
+              "sai_nguoi": 0,
+              "khong_ghep": 23,
+              "V3_n": 229,
+              "V3_gan_nham": 0
+            },
+            "construction_ppe": {
+              "n": 205,
+              "dung": 181,
+              "sai_nguoi": 0,
+              "khong_ghep": 24,
+              "V3_n": 81,
+              "V3_gan_nham": 0
+            },
+            "sh17": {
+              "n": 72,
+              "dung": 62,
+              "sai_nguoi": 0,
+              "khong_ghep": 10,
+              "V3_n": 59,
+              "V3_gan_nham": 0
+            }
+          }
+        }
+      },
+      "B2_khong_G5": {
+        "V1": {
+          "n": 528,
+          "dung": 477,
+          "sai_nguoi": 0,
+          "khong_ghep": 51,
+          "ti_le_dung": 0.9034
+        },
+        "V2": {
+          "0.55": {
+            "n": 481,
+            "dung": 395,
+            "sai_nguoi": 0,
+            "khong_ghep": 86,
+            "ti_le_dung": 0.8212
+          },
+          "0.65": {
+            "n": 518,
+            "dung": 437,
+            "sai_nguoi": 0,
+            "khong_ghep": 81,
+            "ti_le_dung": 0.8436
+          },
+          "0.75": {
+            "n": 523,
+            "dung": 468,
+            "sai_nguoi": 0,
+            "khong_ghep": 55,
+            "ti_le_dung": 0.8948
+          }
+        },
+        "V3": {
+          "du": {
+            "n": 377,
+            "gan_nham": 0
+          },
+          "0.55": {
+            "n": 344,
+            "gan_nham": 0
+          },
+          "0.65": {
+            "n": 365,
+            "gan_nham": 0
+          },
+          "0.75": {
+            "n": 369,
+            "gan_nham": 0
+          }
+        },
+        "theo_nguon": {
+          "du": {
+            "chv": {
+              "n": 248,
+              "dung": 227,
+              "sai_nguoi": 0,
+              "khong_ghep": 21,
+              "V3_n": 231,
+              "V3_gan_nham": 0
+            },
+            "construction_ppe": {
+              "n": 205,
+              "dung": 192,
+              "sai_nguoi": 0,
+              "khong_ghep": 13,
+              "V3_n": 83,
+              "V3_gan_nham": 0
+            },
+            "sh17": {
+              "n": 75,
+              "dung": 58,
+              "sai_nguoi": 0,
+              "khong_ghep": 17,
+              "V3_n": 63,
+              "V3_gan_nham": 0
+            }
+          },
+          "0.55": {
+            "chv": {
+              "n": 226,
+              "dung": 181,
+              "sai_nguoi": 0,
+              "khong_ghep": 45,
+              "V3_n": 213,
+              "V3_gan_nham": 0
+            },
+            "construction_ppe": {
+              "n": 190,
+              "dung": 157,
+              "sai_nguoi": 0,
+              "khong_ghep": 33,
+              "V3_n": 77,
+              "V3_gan_nham": 0
+            },
+            "sh17": {
+              "n": 65,
+              "dung": 57,
+              "sai_nguoi": 0,
+              "khong_ghep": 8,
+              "V3_n": 54,
+              "V3_gan_nham": 0
+            }
+          },
+          "0.65": {
+            "chv": {
+              "n": 244,
+              "dung": 200,
+              "sai_nguoi": 0,
+              "khong_ghep": 44,
+              "V3_n": 227,
+              "V3_gan_nham": 0
+            },
+            "construction_ppe": {
+              "n": 204,
+              "dung": 175,
+              "sai_nguoi": 0,
+              "khong_ghep": 29,
+              "V3_n": 81,
+              "V3_gan_nham": 0
+            },
+            "sh17": {
+              "n": 70,
+              "dung": 62,
+              "sai_nguoi": 0,
+              "khong_ghep": 8,
+              "V3_n": 57,
+              "V3_gan_nham": 0
+            }
+          },
+          "0.75": {
+            "chv": {
+              "n": 246,
+              "dung": 224,
+              "sai_nguoi": 0,
+              "khong_ghep": 22,
+              "V3_n": 229,
+              "V3_gan_nham": 0
+            },
+            "construction_ppe": {
+              "n": 205,
+              "dung": 182,
+              "sai_nguoi": 0,
+              "khong_ghep": 23,
+              "V3_n": 81,
+              "V3_gan_nham": 0
+            },
+            "sh17": {
+              "n": 72,
+              "dung": 62,
+              "sai_nguoi": 0,
+              "khong_ghep": 10,
+              "V3_n": 59,
+              "V3_gan_nham": 0
+            }
+          }
+        }
+      }
+    },
+    "chan_doan_G5": {
+      "ao_hop_le_bi_G5_loai": {
+        "du": 0,
+        "0.55": 0,
+        "0.65": 0,
+        "0.75": 2
+      },
+      "ao_G5_chan_duoc": {
+        "du": 0,
+        "0.55": 0,
+        "0.65": 0,
+        "0.75": 0
+      },
+      "ao_nguoi_sau_gan_nham": {
+        "ban_4": {
+          "du": 0,
+          "0.55": 0,
+          "0.65": 0,
+          "0.75": 0
+        },
+        "B1": {
+          "du": 0,
+          "0.55": 0,
+          "0.65": 0,
+          "0.75": 0
+        },
+        "B2": {
+          "du": 0,
+          "0.55": 0,
+          "0.65": 0,
+          "0.75": 0
+        },
+        "B2_khong_G5": {
+          "du": 0,
+          "0.55": 0,
+          "0.65": 0,
+          "0.75": 0
+        }
+      }
+    },
+    "tieu_chi": {
+      "V1": true,
+      "V2": true,
+      "V3": true
+    }
+  },
+  "dat": {
+    "V4_chon_phan1_do_phan2": true,
+    "V4_chon_phan2_do_phan1": true,
+    "V1": true,
+    "V2": true,
+    "V3": true,
+    "tat_ca": true
+  }
+}

@@ -57,7 +57,7 @@ class Pipeline:
         if self.parts:
             timed("parts", self.parts, frame, out["tracks"])
         if self.stage >= 2:
-            out["assoc"] = timed("association", self.associator, out["tracks"], out["ppe"])
+            out["assoc"] = timed("association", self.associator, out["tracks"], out["ppe"], frame.shape)
         if self.stage >= 3:
             out["states"] = timed("compliance", self.compliance, out["tracks"], out["assoc"], frame.shape, self.required, t)
         if self.stage >= 4:
