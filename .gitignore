@@ -104,3 +104,8 @@ preview_all.jpg
 !outputs/results/pipeline_calib_val/torso_strict.json
 !outputs/results/pipeline_calib_val/torso_strict_folds.csv
 !outputs/results/pipeline_calib_val/torso_strict_run.log
+# Bước C, D, C2: tổng hợp hồi quy, cấu hình thử (bằng chứng, file nhỏ). Ảnh chẩn đoán (helmet_veto_diag/) không đưa lên.
+!outputs/results/close_eval/stepCD/*.yaml
+!outputs/results/close_eval/stepCD/*/results.json
+!outputs/results/close_eval/stepCD/*/results.md
+!outputs/results/close_eval/stepCD/*/transitions.csv

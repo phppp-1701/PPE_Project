@@ -1,0 +1,138 @@
+{
+  "ho_so": {
+    "thoi_diem": "2026-11-15T12:46:44",
+    "commit_nen": "58c814b44e24393282fffa9a5aafb04992e52c63",
+    "file_dang_sua": [
+      "M docs/experiments/2026-11-06_ppe6_plan.md",
+      " M outputs/results/close_eval/README.md",
+      " M scripts/05e_select_part_cls.py",
+      " M src/ppe/compliance.py",
+      "?? outputs/results/parts_cls/helmet_veto_val.json",
+      "?? outputs/results/parts_cls/helmet_veto_val_records.json",
+      "?? outputs/results/parts_cls/helmet_veto_val_run1_vc2_bug.json",
+      "?? tests/test_compliance_cd.py"
+    ],
+    "sha256": {
+      "helmet_weights": "08d29990b43819b780ba89835ff5335186aca7e3ac804cb815caf9dee5017526",
+      "pose_weights": "869e83fcdffdc7371fa4e34cd8e51c838cc729571d1635e5141e3075e9319dc0",
+      "preds_cache": "30e0f6790b29a7a1323100c6a75605e84e967fcf328624cbbdd31959e39461cc",
+      "items": "fbd403962ddf965240521382d7011fa9c4b85a1e4c566ca920ebf5ca6400641c"
+    },
+    "ghi_chu": "Hộp val như 05e (03y collect_items, only val). t_neg mũ chọn trên chính val này (val_select_v4.json)."
+  },
+  "thiet_lap": {
+    "grid": [
+      0.7,
+      0.8,
+      0.9
+    ],
+    "target": 0.02,
+    "min_n": 100,
+    "t_neg": 0.5,
+    "kp_conf": 0.5,
+    "geometry_head": {
+      "k": 0.2,
+      "s": 1.3
+    },
+    "back_view": {
+      "kp_conf": 0.3,
+      "min_sep": 0.05,
+      "face_strong": 0.9,
+      "hold_s": 1.0
+    },
+    "conf_helmet": 0.34,
+    "nms_iou": 0.5
+  },
+  "do_phu": {
+    "goggles": {
+      "ghep_duoc": 29,
+      "tong": 29
+    },
+    "helmet": {
+      "ghep_duoc": 125,
+      "tong": 215
+    },
+    "no_eyewear": {
+      "ghep_duoc": 625,
+      "tong": 715
+    },
+    "no_helmet": {
+      "ghep_duoc": 901,
+      "tong": 1131
+    },
+    "ordinary_glasses": {
+      "ghep_duoc": 87,
+      "tong": 115
+    }
+  },
+  "hop_mu_cat_duoc": 1014,
+  "cache_thieu": 0,
+  "C": {
+    "0.7": {
+      "V_C1": {
+        "n": 65,
+        "phu_quyet_nham": 2,
+        "ti_le": 0.0308
+      },
+      "V_C2": {
+        "n_khong_mu": 539,
+        "neg": 536,
+        "ti_le_neg": 0.9944,
+        "hop_mu_detector_tren_dau_khong_mu": 3,
+        "phu_quyet_duoc": 2
+      }
+    },
+    "0.8": {
+      "V_C1": {
+        "n": 55,
+        "phu_quyet_nham": 2,
+        "ti_le": 0.0364
+      },
+      "V_C2": {
+        "n_khong_mu": 478,
+        "neg": 475,
+        "ti_le_neg": 0.9937,
+        "hop_mu_detector_tren_dau_khong_mu": 3,
+        "phu_quyet_duoc": 2
+      }
+    },
+    "0.9": {
+      "V_C1": {
+        "n": 39,
+        "phu_quyet_nham": 1,
+        "ti_le": 0.0256
+      },
+      "V_C2": {
+        "n_khong_mu": 361,
+        "neg": 358,
+        "ti_le_neg": 0.9917,
+        "hop_mu_detector_tren_dau_khong_mu": 3,
+        "phu_quyet_duoc": 2
+      }
+    }
+  },
+  "face_conf_chon": null,
+  "C_dat": false,
+  "D_kiem": {
+    "kinh_BH": {
+      "n": 29,
+      "quay_lung": 1,
+      "ti_le": 0.0345
+    },
+    "mu": {
+      "n": 118,
+      "quay_lung": 22,
+      "ti_le": 0.1864
+    },
+    "khong_mu": {
+      "n": 896,
+      "quay_lung": 145,
+      "ti_le": 0.1618
+    },
+    "mu_khong_mu_nhin_thang_bi_gan_quay_lung": {
+      "0.7": 0,
+      "0.8": 0,
+      "0.9": 0
+    }
+  }
+}

@@ -2,6 +2,11 @@
 
 Không phát hiện được PPE không đồng nghĩa với Thiếu: chỉ kết luận Thiếu khi vùng đủ quan sát (O = 1),
 không có PPE gán hợp lệ và không còn tranh chấp.
+
+Bước C (`part_cls.veto_frontal`): bộ phân loại chắc không có mũ phủ quyết hộp mũ của detector, chỉ khi nhìn thẳng chắc.
+Bước C2 (thêm `t_veto`): rất chắc không mũ -> phủ quyết (Thiếu); phân vân -> mâu thuẫn, Chưa xác định (không Có).
+Bước D (`compliance.back_view`): nhận quay lưng (vai ngược, không mặt rõ, giữ theo thời gian); khi quay lưng kính
+Chưa xác định, mũ không có hộp detector Chưa xác định. Vắng khóa: như bản 4 (kế hoạch ppe6 mục C, D, 16/11/2026).
 """
 
 import math
@@ -30,6 +35,32 @@ def occluded_fraction(r, others):
     return float(covered.mean())
 
 
+def frontal_strict(kps, face_conf, kp_conf):
+    """Bước C: nhìn thẳng chắc. Mũi (0), hai mắt (1, 2) >= face_conf; hai vai (5, 6) >= kp_conf và không ngược
+    (nhìn về camera thì vai trái COCO ở bên phải ảnh: x5 > x6)."""
+    if not kps:
+        return False
+    if any(kps[i][2] < face_conf for i in (0, 1, 2)):
+        return False
+    if kps[5][2] < kp_conf or kps[6][2] < kp_conf:
+        return False
+    return kps[5][0] > kps[6][0]
+
+
+def back_view_now(kps, xyxy, bv):
+    """Bước D, một khung: hai vai >= bv["kp_conf"] và ngược (x5 < x6), cách nhau theo ngang >= bv["min_sep"] x rộng
+    hộp người, và không "mặt rõ" (mũi, hai mắt đều >= bv["face_strong"]). Quy ước heuristic, không chọn trên val."""
+    if not kps:
+        return False
+    c = bv["kp_conf"]
+    if kps[5][2] < c or kps[6][2] < c:
+        return False
+    x5, x6 = kps[5][0], kps[6][0]
+    if not x5 < x6 or (x6 - x5) < bv["min_sep"] * (xyxy[2] - xyxy[0]):
+        return False
+    return not all(kps[i][2] >= bv["face_strong"] for i in (0, 1, 2))
+
+
 class Compliance:
     def __init__(self, cfg):
         self.ppe = cfg["ppe"]
@@ -44,6 +75,27 @@ class Compliance:
         pc = cfg.get("part_cls") or {}
         self.part = pc if pc.get("enabled") and self.pose else None   # bộ phân loại bộ phận (parts.py), cần pose
         self.p_hist = {}        # (track_id, ppe, bên) -> [(t, p)] trong vote_window_s giây gần nhất
+        self.last_ps = []       # p (đã gộp) của lần part_vote gần nhất
+        # Bước C: {ppe: {face_conf}}; vắng -> không phủ quyết theo hướng nhìn (như bản 4).
+        self.veto_frontal = ((self.part or {}).get("veto_frontal") or {}) if self.part else {}
+        # Bước D: {kp_conf, min_sep, face_strong, hold_s}; vắng -> không nhận quay lưng (như bản 4).
+        self.back_cfg = (cfg.get("compliance") or {}).get("back_view") if self.pose else None
+        self.back_last = {}     # track_id -> t lần cuối quay lưng
+        self._back = {}         # track_id -> quay lưng ở khung đang xét (tính một lần mỗi khung)
+
+    def back_view(self, track):
+        """Bước D: quay lưng ở khung này, hoặc đã quay lưng trong back_view.hold_s giây gần nhất (cùng track)."""
+        if not self.back_cfg:
+            return False
+        tid = track.track_id
+        if tid not in self._back:
+            now = back_view_now(getattr(track, "extra", {}).get("kps"), track.xyxy, self.back_cfg)
+            if now and self.now is not None:
+                self.back_last[tid] = self.now
+            held = (self.now is not None and tid in self.back_last
+                    and self.now - self.back_last[tid] <= self.back_cfg["hold_s"])
+            self._back[tid] = now or held
+        return self._back[tid]
 
     def part_vote(self, name, track, side):
         """Ý kiến của bộ phân loại bộ phận: "pos" (chắc có PPE), "neg" (chắc không có), "unsure", hoặc None (không có
@@ -64,6 +116,7 @@ class Compliance:
                 h[:] = [(t, q) for t, q in h if self.now - t <= win]
                 p = sum(q for _, q in h) / len(h)
             ps.append(p)
+        self.last_ps = ps       # p đã gộp theo thời gian của phiếu này (bước C2 so với t_veto, không gộp lại lần hai)
         if not ps:
             return None
         t_pos, t_neg = thr[name]["t_pos"], thr[name]["t_neg"]
@@ -120,6 +173,9 @@ class Compliance:
                       and track.confident)
         if observable and not self.keypoint_visible(name, track, frame_box):
             observable = False
+        back = name in ("helmet", "goggles") and self.back_view(track)      # bước D
+        if back and name == "goggles":
+            observable = False          # quay lưng: không thấy mắt -> kính Chưa xác định
         has = bool(assoc.owned.get(track.track_id, {}).get((name, side)))
         if name == "boots" and not has:
             ankles = getattr(track, "extra", {}).get("ankles")
@@ -139,15 +195,31 @@ class Compliance:
         if covered and vote == "neg" and name in (self.part.get("veto") or []):
             # Bộ phân loại chắc không có PPE (vd kính thường) thì phủ quyết hộp PPE của detector.
             has = False
+        conflict = False
+        vf = self.veto_frontal.get(name)
+        if (covered and vote == "neg" and vf and not back and has
+                and frontal_strict(getattr(track, "extra", {}).get("kps"), vf["face_conf"], self.part["kp_conf"])):
+            # Bước C: nhìn thẳng chắc, detector có hộp mà bộ phân loại không thấy mũ (vd đầu trọc).
+            # Không có t_veto (C): phủ quyết. Có t_veto (C2): rất chắc (1 - p >= t_veto) -> phủ quyết (Thiếu);
+            # phân vân (t_neg <= 1 - p < t_veto) -> mâu thuẫn -> Chưa xác định (không Có).
+            t_veto = vf.get("t_veto")
+            if t_veto is None or any(1 - p >= t_veto for p in self.last_ps):
+                has = False
+            else:
+                conflict = True
+        no_missing = back and name == "helmet" and not has   # bước D: không tin phiếu neg từ phía sau
         if not covered or (vote is None and self.part.get("fallback_old_rule", True)):
             # Luật cũ: có hộp PPE gán hợp lệ là Có; vùng nhìn rõ mà không có hộp là Thiếu.
             have = track.confident and has
-            missing = observable and not contested and not recently_have
+            missing = observable and not contested and not recently_have and not no_missing
         else:
             # Phương án 2, bản 2: detector thấy là Có; bộ phân loại chắc có cũng là Có. Thiếu chỉ khi bộ phân loại
             # thấy rõ không có PPE và detector không thấy. Còn lại Chưa xác định.
             have = track.confident and (has or vote == "pos")
-            missing = vote == "neg" and not has and observable and not contested and not recently_have
+            missing = (vote == "neg" and not has and observable and not contested and not recently_have
+                       and not no_missing)
+        if conflict:
+            have = missing = False          # bước C2: detector và bộ phân loại mâu thuẫn -> Chưa xác định
         if have:
             state = HAVE
             if self.now is not None:
@@ -165,6 +237,7 @@ class Compliance:
         """{track_id: {ppe: {"state", "sides": {side: (state, chi tiết)}}}} cho các PPE trong `names`.
         t (giây): bật luật giữ trạng thái Có trong `have_hold_s` (vừa thấy Có thì không đổi ngay sang Thiếu khi PPE mất vài khung)."""
         self.now = t
+        self._back = {}
         h, w = frame_shape[:2]
         frame_box = np.array([0, 0, w, h], dtype=float)
         out = {}

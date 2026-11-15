@@ -172,6 +172,12 @@ compliance:
     goggles: {kp_conf: 0.5}
     helmet: {kp_conf: 0.5, edge_px: 4}
     boots: {kp_conf: 0.5, edge_px: 8}
+  # Bước D (người dùng duyệt và cho áp dụng 16/11/2026; kế hoạch ppe6 mục D): nhận quay lưng khi hai vai >= kp_conf và
+  # ngược (x5 < x6), cách nhau >= min_sep x rộng hộp người, không "mặt rõ" (mũi, hai mắt >= face_strong); giữ hold_s
+  # giây. Quay lưng: kính Chưa xác định; mũ không có hộp detector Chưa xác định. Quy ước heuristic người dùng duyệt,
+  # KHÔNG chọn trên val (không có nhãn hướng). Hồi quy 13 video (stepCD): mũ báo thiếu oan 53 -> 0 (9 video cũ), độ
+  # chính xác không đổi, áo, găng, ủng, sự kiện giống bản 4.
+  back_view: {kp_conf: 0.3, min_sep: 0.05, face_strong: 0.9, hold_s: 1.0}
   # Vừa thấy Có trong khoảng này (giây) thì PPE mất vài khung không bị kết luận Thiếu (Chưa xác định). Claude đặt.
   have_hold_s: {helmet: 1.0, vest: 1.0, gloves: 1.5, goggles: 2.0, boots: 1.5}
 
