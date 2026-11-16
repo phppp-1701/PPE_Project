@@ -1,5 +1,7 @@
 # Hướng dẫn duyệt nhãn thử nghiệm 6 lớp
 
+> Từ 16/11/2026 công cụ duyệt nhanh (`03q`, `03r`) đã chuyển sang nhánh `archive/before-cleanup-2026-11-16`; hướng dẫn này giữ lại làm lịch sử.
+
 **Từ 07/11/2026 quy trình là máy gán nhãn, người kiểm định.** Bạn không duyệt toàn bộ `task_a`, `task_b`, `task_c`, `task_d` nữa mà làm mục "Kiểm định gói audit" ngay dưới đây. Định nghĩa nhãn và ca khó ở các mục sau vẫn áp dụng.
 
 ## Kiểm định gói audit

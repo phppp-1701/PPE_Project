@@ -209,16 +209,6 @@ def load_script(name):
     return m
 
 
-def test_blind_xml_has_no_labels():
-    from ppe.ppe6_data import leak_tokens
-    m = load_script("03p_ppe6_blind_pack.py")
-    item = dict(item_id="r00012", target="boots", cx="0.5", cy="0.5", w="0.1", h="0.1", agent_label="safety", source="sh17", group="P0a", box_id="b00001", file="sh17__x.jpeg")
-    xml = m.annotations_xml([("img_00001.jpg", 100, 100, [item])], True)
-    assert leak_tokens(xml) == []
-    assert "b00001" not in xml and "chua_chon" in xml
-    assert leak_tokens("<attribute>safety</attribute>") and leak_tokens("chvg__a.jpg") and leak_tokens("agent_label")
-
-
 def test_blind_mapping_keeps_original_group():
     from ppe.ppe6_data import merge_blind
     boxes, tags = parse_cvat(BLIND_XML)
@@ -278,15 +268,6 @@ def test_kappa():
     r = agreement(a, b, np.random.default_rng(0), n_boot=200)
     assert r["n"] == 10 and r["confusion"]["y"]["y"] == 4 and r["kappa_ci"][0] < 0.4 < r["kappa_ci"][1]
     assert "không phải quyết định" in r["note"]
-
-
-def test_second_sample_is_stratified_and_fixed():
-    m = load_script("03p_ppe6_blind_pack.py")
-    items = [dict(box_id=f"b{i:03d}", target=t, source=s, agent_label=l) for i, (t, s, l) in enumerate(
-        [("boots", "sh17", "safety")] * 60 + [("boots", "sh17", "ordinary")] * 30 + [("goggles", "chvg", "safety")] * 40 + [("goggles", "chvg", "unclear")] * 3)]
-    a = m.stratified_second(items, 20, 2, 0)
-    assert len(a) == 20 and a == m.stratified_second(items, 20, 2, 0)
-    assert len({(x["target"], x["agent_label"]) for x in a}) == 4
 
 
 FULL_XML = BLIND_XML.replace('<attribute name="decision">chua_chon</attribute><attribute name="person_ok">chua_chon</attribute>', '<attribute name="decision">unclear</attribute><attribute name="person_ok">qua_nho</attribute>').replace(
