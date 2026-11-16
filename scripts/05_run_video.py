@@ -49,7 +49,7 @@ PPE_COLOR = {
 }
 TAG = {"helmet": "Mu", "vest": "Ao", "gloves": "Gang", "goggles": "Kinh", "boots": "Ung"}
 SHORT = {"helmet": "M", "vest": "A", "gloves": "G", "goggles": "K", "boots": "U"}
-VETO_TAG = {"goggles": "Kinh thuong", "helmet": "Mu (bac bo)"}   # nhãn hộp bị bộ phân loại phủ quyết
+VETO_TAG = {"goggles": "Kinh thuong", "helmet": "Mu (bac bo)", "boots": "Ung (bac bo)"}   # nhãn hộp bị bộ phân loại phủ quyết
 PL_TAG = " (PL)"   # vùng ảnh cắt bộ phân loại đã xét (không phải hộp detector), vẽ nét đứt
 
 

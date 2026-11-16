@@ -84,6 +84,9 @@ class Compliance:
         # Bước F3: găng ghép dự phòng theo vùng tay khi cổ tay không hợp lệ -> có hộp gán thì Có (không bao giờ suy Thiếu)
         self.gloves_fallback = bool(self.pose and (cfg.get("association") or {}).get("gloves_region_fallback"))
         self._back = {}         # track_id -> quay lưng ở khung đang xét (tính một lần mỗi khung)
+        # Bước M1 (kế hoạch 2026-11-16_post_holdout_fixes mục 2): {t_veto}; mọi chân có ảnh cắt đều 1 - p >= t_veto ->
+        # bỏ hộp ủng của detector (dép, giày thường). Vắng -> như bản cuối.
+        self.veto_boots = ((self.part or {}).get("veto_boots") or None) if self.part else None
 
     def back_view(self, track):
         """Bước D: quay lưng ở khung này, hoặc đã quay lưng trong back_view.hold_s giây gần nhất (cùng track)."""
@@ -99,12 +102,9 @@ class Compliance:
             self._back[tid] = now or held
         return self._back[tid]
 
-    def part_vote(self, name, track, side):
-        """Ý kiến của bộ phân loại bộ phận: "pos" (chắc có PPE), "neg" (chắc không có), "unsure", hoặc None (không có
-        ảnh cắt). Ủng không chia bên: một chân chắc không có ủng là "neg"; không chân nào "neg" mà có chân chắc có là "pos"."""
-        thr = (self.part or {}).get("thresholds", {}) or {}
-        if name not in thr:
-            return None
+    def part_ps(self, name, track, side):
+        """p có PPE của bộ phân loại cho (người, PPE, bên), gộp theo thời gian (vote_window_s). Ủng: mọi chân.
+        Mỗi khung gọi một lần cho mỗi (người, PPE, bên), vì mỗi lần gọi thêm p vào lịch sử."""
         got = getattr(track, "extra", {}).get("parts", {})
         ps = []
         win = self.part.get("vote_window_s") or 0
@@ -118,6 +118,15 @@ class Compliance:
                 h[:] = [(t, q) for t, q in h if self.now - t <= win]
                 p = sum(q for _, q in h) / len(h)
             ps.append(p)
+        return ps
+
+    def part_vote(self, name, track, side):
+        """Ý kiến của bộ phân loại bộ phận: "pos" (chắc có PPE), "neg" (chắc không có), "unsure", hoặc None (không có
+        ảnh cắt). Ủng không chia bên: một chân chắc không có ủng là "neg"; không chân nào "neg" mà có chân chắc có là "pos"."""
+        thr = (self.part or {}).get("thresholds", {}) or {}
+        if name not in thr:
+            return None
+        ps = self.part_ps(name, track, side)
         self.last_ps = ps       # p đã gộp theo thời gian của phiếu này (bước C2 so với t_veto, không gộp lại lần hai)
         if not ps:
             return None
@@ -205,6 +214,12 @@ class Compliance:
             has = False
         conflict = False
         c2 = None               # bước C, C2 đã làm gì với hộp detector (chỉ để vẽ, không đổi trạng thái): veto / conflict
+        if self.veto_boots and name == "boots" and not covered:
+            # Bước M1: tính p mọi khung (giữ lịch sử gộp), chỉ dùng khi detector có hộp ủng gán cho người này.
+            bps = self.part_ps("boots", track, side)
+            if has and bps and all(1 - p >= self.veto_boots["t_veto"] for p in bps):
+                has = False
+                c2 = "veto"
         vf = self.veto_frontal.get(name)
         if (covered and vote == "neg" and vf and not back and has
                 and frontal_strict(getattr(track, "extra", {}).get("kps"), vf["face_conf"], self.part["kp_conf"])):

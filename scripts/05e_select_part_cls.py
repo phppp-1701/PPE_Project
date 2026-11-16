@@ -8,6 +8,12 @@ Cách chạy (từ thư mục gốc project, đã kích hoạt .venv, có output
     (ghi outputs/results/parts_cls/helmet_veto_val.json; không sửa cấu hình)
     python scripts/05e_select_part_cls.py --helmet-veto2  # bước C2: t_veto x face_conf, thêm mũ CHV val
     (ghi outputs/results/parts_cls/helmet_veto2_val.json; không sửa cấu hình)
+    python scripts/05e_select_part_cls.py --boots-veto    # bước M1: trọng số x t_veto bác bỏ hộp ủng, theo calibration.boots_veto
+    (ảnh cắt chân data/ppe6/parts/val; ghi outputs/results/parts_cls/boots_veto_val.json; không sửa cấu hình)
+    python scripts/05e_select_part_cls.py --helmet-backview <trọng số bản 4> <trọng số bản 5>   # bước M2: V-B1, V-B2, V-B3
+    (ghi outputs/results/parts_cls/helmet_backview_val.json và _records.json; không sửa cấu hình)
+    python scripts/05e_select_part_cls.py --helmet-check <trọng số bản 4> <trọng số bản 5>   # bước M2, chỉ báo cáo: tập kiểm
+    riêng parts_v5_check theo tầng (ghi outputs/results/parts_cls/helmet_check_v5.json)
 
 1. Lấy các hộp bộ phận của val như 03y (collect_items, only val): găng/tay trần, ủng/giày thường, kính BH/kính thường/không kính.
 2. Tìm người bằng YOLO11n-pose trên cả ảnh, rồi chạy PoseEstimator của pipeline trên ảnh cắt từng người (như khi chạy thật).
@@ -419,6 +425,194 @@ def helmet_veto2_eval(cfg, items, person_model, pose, out_name):
     print("Ghi", OUT.relative_to(ROOT), "(chưa ghi cấu hình)")
 
 
+def helmet_backview_eval(cfg, items, person_model, pose, weights_list, out_name):
+    """Bước M2 trên val (kế hoạch 2026-11-16_post_holdout_fixes mục 3). Không đụng test, Pictor, holdout, video.
+
+    Tập như C2: hộp mũ / không mũ val của 03y + hộp mũ CHV val (ppe4 val), ghép người, cắt vùng đầu theo
+    part_cls.geometry.head, quay lưng theo compliance.back_view (luật D). Với mỗi trọng số:
+    V-B1 = mũ thật quay lưng có 1 - p >= t_neg (<= 2%); V-B2 = đầu không mũ quay lưng có 1 - p >= t_neg (>= 85%);
+    V-B3 = độ chính xác pos (p >= t_pos) và neg (1 - p >= t_neg) trên mọi hồ sơ, không giảm quá 0,01 so với trọng số đầu
+    tiên (bản 4). Ngưỡng t_pos, t_neg của part_cls.thresholds.helmet (bản 4)."""
+    import datetime
+    from types import SimpleNamespace
+
+    from ultralytics import YOLO
+
+    from ppe.compliance import back_view_now
+    from ppe.parts import anchors, head_box
+
+    V1_MAX, V2_MIN, V3_DROP = 0.02, 0.85, 0.01          # người dùng duyệt 16/11/2026
+    DATASET4 = ROOT / "data" / "ppe4" / "dataset"
+    pc = cfg["part_cls"]
+    thr = pc["thresholds"]["helmet"]
+    geom = pc["geometry"]["head"]
+    bv = cfg["compliance"]["back_view"]
+    import csv
+    stats = list(csv.DictReader((ROOT / "data" / "ppe4" / "stats.csv").open(encoding="utf-8")))
+    by_img = defaultdict(list)
+    for _, cls, img, bx, src in items:
+        if CLS2PPE[cls] == "helmet":
+            by_img[img].append((cls, list(bx), "03y"))
+    for r in stats:
+        if r["source"] != "chv" or r["split"] != "val":
+            continue
+        lab = DATASET4 / "labels" / "val" / (Path(r["file"]).stem + ".txt")
+        for a in ([ln.split() for ln in lab.read_text(encoding="utf-8").splitlines() if ln.strip()] if lab.exists() else []):
+            if int(a[0]) == cfg["ppe"]["helmet"]["cls"]:
+                by_img[r["image"].replace("\\", "/")].append(("helmet", ["norm", *map(float, a[1:5])], "chv"))
+    crops, rec = [], []
+    for n, (img, objs) in enumerate(sorted(by_img.items())):
+        im = cv2.imdecode(np.fromfile(str(ROOT / img), dtype=np.uint8), cv2.IMREAD_COLOR)
+        if im is None:
+            continue
+        h, w = im.shape[:2]
+        r0 = person_model.predict(im, imgsz=640, conf=0.25, device=cfg["detector"]["device"], verbose=False)[0]
+        tr = [SimpleNamespace(xyxy=b, extra={}) for b in r0.boxes.xyxy.cpu().numpy()]
+        pose(im, tr)
+        ppl = [(t.xyxy, t.extra["kps"]) for t in tr if t.extra.get("kps")]
+        for cls, bx, src in objs:
+            if bx[0] == "norm":
+                _, cx, cy, bw, bh = bx
+                bx = [(cx - bw / 2) * w, (cy - bh / 2) * h, (cx + bw / 2) * w, (cy + bh / 2) * h]
+            c = ((bx[0] + bx[2]) / 2, (bx[1] + bx[3]) / 2)
+            lim = max(bx[2] - bx[0], bx[3] - bx[1])
+            best = None
+            for box, kps in ppl:
+                for pt, _ in anchors(kps, "helmet", pc["kp_conf"]):
+                    d = float(np.hypot(pt[0] - c[0], pt[1] - c[1]))
+                    if d <= lim and (best is None or d < best[0]):
+                        best = (d, box, kps)
+            if best is None:
+                continue
+            cr = cut(im, head_box(best[2], geom, pc["kp_conf"]), pc["min_px"])
+            if cr is None:
+                continue
+            crops.append(cr)
+            rec.append(dict(img=img, set=src, y=int(cls == "helmet"), back=bool(back_view_now(best[2], best[1], bv)), p={}))
+        if (n + 1) % 200 == 0:
+            print(f"  {n + 1}/{len(by_img)} ảnh", flush=True)
+    res = {}
+    for wts in weights_list:
+        clf = YOLO(ROOT / wts)
+        for i in range(0, len(crops), 64):
+            for r, rr in zip(rec[i:i + 64], clf.predict(crops[i:i + 64], imgsz=pc["imgsz"], device=cfg["detector"]["device"], verbose=False)):
+                r["p"][wts] = ppe_prob(rr.probs.data.cpu().numpy(), clf.names, "helmet")
+        neg = lambda r: 1 - r["p"][wts] >= thr["t_neg"]  # noqa: E731
+        bh = [r for r in rec if r["back"] and r["y"] == 1]
+        bn = [r for r in rec if r["back"] and r["y"] == 0]
+        pos_sel = [r for r in rec if r["p"][wts] >= thr["t_pos"]]
+        neg_sel = [r for r in rec if neg(r)]
+        res[wts] = dict(
+            n_mu_quay_lung=len(bh), n_khong_mu_quay_lung=len(bn),
+            V_B1=dict(sai=sum(neg(r) for r in bh), ti_le=round(sum(neg(r) for r in bh) / max(len(bh), 1), 4)),
+            V_B2=dict(bat_dung=sum(neg(r) for r in bn), ti_le=round(sum(neg(r) for r in bn) / max(len(bn), 1), 4)),
+            V_B3=dict(chinh_xac_pos=round(float(np.mean([r["y"] == 1 for r in pos_sel])), 4) if pos_sel else None,
+                      n_pos=len(pos_sel),
+                      chinh_xac_neg=round(float(np.mean([r["y"] == 0 for r in neg_sel])), 4) if neg_sel else None,
+                      n_neg=len(neg_sel)))
+    base = res[weights_list[0]]
+    for wts in weights_list:
+        x = res[wts]
+        b3 = all(x["V_B3"][k] is not None and base["V_B3"][k] is not None and x["V_B3"][k] >= base["V_B3"][k] - V3_DROP
+                 for k in ("chinh_xac_pos", "chinh_xac_neg"))
+        x["dat"] = dict(V_B1=x["V_B1"]["ti_le"] <= V1_MAX, V_B2=x["V_B2"]["ti_le"] >= V2_MIN, V_B3=b3)
+        x["dat_ca_ba"] = all(x["dat"].values())
+    out = dict(ngay=datetime.datetime.now().isoformat(timespec="seconds"), nguong=thr, tieu_chi=dict(
+        V_B1_max=V1_MAX, V_B2_min=V2_MIN, V_B3_giam_toi_da=V3_DROP, moc=weights_list[0]),
+        n_ho_so=len(rec), theo_tap={s: sum(r["set"] == s for r in rec) for s in ("03y", "chv")}, ket_qua=res)
+    (OUT_DIR / out_name).write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
+    (OUT_DIR / out_name.replace(".json", "_records.json")).write_text(json.dumps(rec, ensure_ascii=False), encoding="utf-8")
+    print(json.dumps(out, ensure_ascii=False, indent=1))
+    print("Ghi", (OUT_DIR / out_name).relative_to(ROOT))
+
+
+def boots_veto_eval(cfg, out_name):
+    """Bước M1 trên val (kế hoạch 2026-11-16_post_holdout_fixes mục 2). Không đụng test, Pictor, holdout, video.
+
+    Ảnh cắt chân val của 03y (data/ppe6/parts/val: safety_boot, not_safety_foot; box và kp). Với từng trọng số trong
+    calibration.boots_veto.weights và t_veto trong grid: tỉ lệ ủng thật có 1 - p >= t_veto (bị bác bỏ nhầm) và tỉ lệ chân
+    không ủng bị bác bỏ đúng. Chọn tổ hợp có t_veto nhỏ nhất đạt bác bỏ nhầm <= max_false_veto; hòa thì bác bỏ đúng nhiều hơn."""
+    import datetime
+    import glob
+
+    from ultralytics import YOLO
+
+    bc = cfg["calibration"]["boots_veto"]
+    val = ROOT / "data" / "ppe6" / "parts" / "val"
+    files = {c: sorted(glob.glob(str(val / c / "*.jpg"))) for c in PART_CLASSES["boots"][:1] + PART_CLASSES["boots"][1]}
+    pos = PART_CLASSES["boots"][0]
+    rows = []
+    for w in bc["weights"]:
+        m = YOLO(ROOT / w)
+        q = {}
+        for c, fs in files.items():
+            ps = []
+            for i in range(0, len(fs), 64):
+                for r in m.predict(fs[i:i + 64], imgsz=cfg["part_cls"]["imgsz"], device=cfg["detector"]["device"], verbose=False):
+                    ps.append(ppe_prob(r.probs.data.cpu().numpy(), m.names, "boots"))
+            q[c] = 1 - np.array(ps)
+        sb = q[pos]
+        nf = np.concatenate([q[c] for c in files if c != pos])
+        for t in bc["grid"]:
+            rows.append(dict(weights=w, t_veto=t, n_ung=len(sb), n_khong_ung=len(nf),
+                             bac_bo_nham=float((sb >= t).mean()), bac_bo_nham_n=int((sb >= t).sum()),
+                             bac_bo_dung=float((nf >= t).mean()), bac_bo_dung_n=int((nf >= t).sum())))
+    ok = [r for r in rows if r["bac_bo_nham"] <= bc["max_false_veto"]]
+    best = min(ok, key=lambda r: (r["t_veto"], -r["bac_bo_dung"])) if ok else None
+    res = dict(ngay=datetime.datetime.now().isoformat(timespec="seconds"), quy_tac=bc, tap="data/ppe6/parts/val (03y)",
+               ket_qua=rows, chon=best,
+               ghi_chu="val này cũng là val lúc train bộ phân loại (best.pt theo top1) nên hơi lạc quan")
+    out = OUT_DIR / out_name
+    out.write_text(json.dumps(res, ensure_ascii=False, indent=1), encoding="utf-8")
+    for r in rows:
+        print(f"{Path(r['weights']).parts[-3]} t {r['t_veto']}: bác bỏ nhầm {r['bac_bo_nham']:.1%} ({r['bac_bo_nham_n']}/{r['n_ung']}), "
+              f"bác bỏ đúng {r['bac_bo_dung']:.1%} ({r['bac_bo_dung_n']}/{r['n_khong_ung']})")
+    print("Chọn:", best and dict(weights=best["weights"], t_veto=best["t_veto"]))
+    print("Ghi", out.relative_to(ROOT))
+
+
+def helmet_check_eval(cfg, weights_list, out_name):
+    """Bước M2, chỉ báo cáo (kế hoạch 2026-11-16_post_holdout_fixes mục 3b): tập kiểm riêng parts_v5_check (15% ảnh CC0,
+    SHWD; nhãn gốc bộ công khai; ảnh cắt kiểu val). Theo tầng lớp × nhìn từ sau × tối: tỉ lệ 1 - p >= t_neg (cho là không
+    mũ) và p >= t_pos (cho là có mũ), ngưỡng part_cls.thresholds.helmet. Không là tiêu chí, không chọn gì."""
+    import csv
+    import datetime
+
+    from ultralytics import YOLO
+
+    ppe6 = yaml.safe_load((ROOT / "configs" / "ppe6.yaml").read_text(encoding="utf-8"))
+    v5 = ppe6["parts"]["v5"]
+    dark_v = v5["balance"]["dark_v"]
+    pc = cfg["part_cls"]
+    thr = pc["thresholds"]["helmet"]
+    rec = list(csv.DictReader((ROOT / v5["check_out"] / "meta.csv").open(encoding="utf-8")))
+    crops = [cv2.imdecode(np.fromfile(str(ROOT / r["file"]), dtype=np.uint8), cv2.IMREAD_COLOR) for r in rec]
+    res = dict(ngay=datetime.datetime.now().isoformat(timespec="seconds"), tap=v5["check_out"], nguong=thr,
+               ghi_chu="chỉ báo cáo; nhãn gốc của bộ công khai (CC0, SHWD), không phải nhãn người của project",
+               ket_qua={})
+    for wts in weights_list:
+        clf = YOLO(ROOT / wts)
+        ps = []
+        for i in range(0, len(crops), 64):
+            for rr in clf.predict(crops[i:i + 64], imgsz=pc["imgsz"], device=cfg["detector"]["device"], verbose=False):
+                ps.append(ppe_prob(rr.probs.data.cpu().numpy(), clf.names, "helmet"))
+        groups = defaultdict(list)
+        for r, p_ in zip(rec, ps):
+            for key in (r["cls"], f"{r['cls']}/sau={r['back']}/toi={int(float(r['v']) < dark_v)}",
+                        f"{r['cls']}/{r['src']}"):
+                groups[key].append(p_)
+        res["ket_qua"][wts] = {k: dict(n=len(v), cho_la_khong_mu=round(sum(1 - x >= thr["t_neg"] for x in v) / len(v), 4),
+                                       cho_la_co_mu=round(sum(x >= thr["t_pos"] for x in v) / len(v), 4))
+                               for k, v in sorted(groups.items())}
+    out = OUT_DIR / out_name
+    out.write_text(json.dumps(res, ensure_ascii=False, indent=1), encoding="utf-8")
+    for wts, g in res["ket_qua"].items():
+        print(Path(wts).parts[-3])
+        for k, v in g.items():
+            print(f"  {k}: n {v['n']}, cho là không mũ {v['cho_la_khong_mu']:.1%}, cho là có mũ {v['cho_la_co_mu']:.1%}")
+    print("Ghi", out.relative_to(ROOT))
+
+
 def main():
     sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
     ap = argparse.ArgumentParser()
@@ -426,11 +620,22 @@ def main():
     ap.add_argument("--out", default="val_select.json", help="tên file kết quả trong outputs/results/parts_cls/")
     ap.add_argument("--helmet-veto", action="store_true", help="bước C, D: V-C1, V-C2, kiểm quay lưng (helmet_veto_val.json)")
     ap.add_argument("--helmet-veto2", action="store_true", help="bước C2: hai mức, thêm mũ CHV val (helmet_veto2_val.json)")
+    ap.add_argument("--boots-veto", action="store_true", help="bước M1: bác bỏ hộp ủng (boots_veto_val.json)")
+    ap.add_argument("--helmet-backview", nargs="+", metavar="WEIGHTS",
+                    help="bước M2: V-B1..3 cho các trọng số (cái đầu là mốc, vd bản 4 rồi bản 5) -> helmet_backview_val.json")
+    ap.add_argument("--helmet-check", nargs="+", metavar="WEIGHTS",
+                    help="bước M2, chỉ báo cáo: tập kiểm riêng parts_v5_check theo tầng -> helmet_check_v5.json")
     args = ap.parse_args()
     OUT = OUT_DIR / args.out
     from ultralytics import YOLO
 
     cfg = load_config()
+    if args.boots_veto:
+        boots_veto_eval(cfg, "boots_veto_val.json")
+        return
+    if args.helmet_check:
+        helmet_check_eval(cfg, args.helmet_check, "helmet_check_v5.json")
+        return
     pc = cfg["part_cls"]
     cal = cfg["calibration"]
     ppe6 = yaml.safe_load((ROOT / "configs" / "ppe6.yaml").read_text(encoding="utf-8"))
@@ -447,6 +652,9 @@ def main():
         return
     if args.helmet_veto2:
         helmet_veto2_eval(cfg, items, person_model, pose, "helmet_veto2_val.json")
+        return
+    if args.helmet_backview:
+        helmet_backview_eval(cfg, items, person_model, pose, args.helmet_backview, "helmet_backview_val.json")
         return
     clf = YOLO(ROOT / (args.weights or pc["weights"]))
     names = clf.names

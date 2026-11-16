@@ -9,4 +9,5 @@ Các bài kiểm tra cho code trong `src/ppe`, ví dụ: thiếu mũ liên tục
 - `test_torso_pose.py`: bước B lần 1 (đã tắt), vùng thân theo khung xương cho áo; bật lại bằng tham số `association.torso_pose_b1`; cấu hình hiện tại tắt B1.
 - `test_torso_strict.py`: bước B2 (`association.torso_strict`, tham số thử, chưa hiệu chuẩn): cổng G1-G5, vùng R không rộng hơn vùng cũ theo ngang, pose bất thường và thiếu kích thước khung thì như bản 4, chỉ áo, B1 và B2 không bật cùng lúc, cảnh ngẫu nhiên không chạm mép dưới giống bản 4; hàm chia val theo nhóm `unit_folds` của 05a (V4).
 - `test_compliance_cd.py`: bước C, C2 (phủ quyết mũ khi nhìn thẳng, hai mức) và D (nhận quay lưng, giữ theo thời gian); cấu hình hiện tại D, C2 bật.
+- `test_boots_veto.py`: bước M1, bộ phân loại chân bác bỏ hộp ủng của detector khi mọi chân có ảnh cắt đều rất chắc không phải ủng; vắng khóa như bản cuối; PPE khác không đổi.
 - `test_pose_regions.py`: bước F (giá trị thử): F1 kính theo mắt, F2 áo theo vai với `edge_frac`, F3 găng dự phòng theo vùng tay (có hộp mới Có, không bao giờ suy Thiếu); vắng khóa như bản chính.

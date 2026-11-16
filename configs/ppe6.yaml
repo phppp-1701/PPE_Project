@@ -214,7 +214,26 @@ parts:
   # Bản 3 (kế hoạch 13/11/2026, sau video kiem_thu_gan): thêm áo vest / no_vest (vùng thân theo vai, hông; train có ảnh
   # cắt mất phần dưới), ảnh cắt mắt khi mặt nghiêng (một mắt + mũi), tăng cường trắng đen.
   # Bản 4 (kế hoạch 14/11/2026): thêm vùng đầu helmet / no_helmet (mũ nhìn từ sau, video17 kiem_thu_gan).
-  version: 4
+  # Bản 5 (kế hoạch 2026-11-16_post_holdout_fixes mục 3 và 3b, người dùng duyệt 16/11/2026): chỉ đổi vùng đầu. Gốc =
+  # data/ppe6/parts bản 4 chép nguyên; thêm ảnh đầu từ kho nguồn mới (CHV train, CC0, SHWD) chọn theo tầng để mỗi tầng
+  # (kiểu cắt, tối, nhỏ) có mũ ~ không mũ. version: 4 tạo lại đúng bản 4.
+  version: 5
+  v5:
+    out: data/ppe6/parts_v5
+    base_from: data/ppe6/parts        # train + val bản 4, chép nguyên
+    pool: data/ppe6/parts_v5_pool     # kho ảnh đầu nguồn mới (meta.csv), chỉ có trên máy
+    check_out: data/ppe6/parts_v5_check   # tập kiểm riêng, chỉ để báo cáo (không là tiêu chí)
+    extra_head_sources: [chv_train, hard_hat_cc0, shwd]   # nguồn nào chưa có trên máy thì bỏ qua, ghi vào summary
+    check_sources: [hard_hat_cc0, shwd]
+    check_frac: 0.15                  # người dùng duyệt 16/11/2026
+    pool_max_per_src_cls: 12000       # hộp mỗi (nguồn, lớp) trong kho; Claude đặt (đủ cho g = 1, giới hạn thời gian pose)
+    back_view: {kp_conf: 0.3, min_sep: 0.05, face_strong: 0.9}   # như compliance.back_view (bước D)
+    back_dark: {copies: 2, v: [0.2, 0.5], gray: 0.5}               # bản làm tối mỗi ảnh đầu nhìn từ sau (kho)
+    dedup_hamming: 6                  # pHash 64 bit: ảnh cách ảnh đánh giá (hoặc ảnh tập kiểm) <= mức này thì bỏ khỏi train
+    # Chọn theo tầng (mục 3b): tối = V < dark_v (chẩn đoán mục 1), nhỏ = cạnh < small_px; đích mỗi tầng g * max(gốc mũ,
+    # gốc không mũ); mỗi nguồn <= cap_src phần ảnh thêm; kiểm mũ / không mũ mỗi tầng trong ratio_ok. small_px, cap_src, g:
+    # Claude đề xuất, chạy thử trên kho lần đầu, người dùng duyệt g = 1.
+    balance: {dark_v: 90, small_px: 48, g: 1.0, cap_src: 0.6, ratio_ok: [0.8, 1.25]}
   seed: 13
   context: 1.6              # bản 1, và ảnh cắt theo hộp của val
   min_px: 24
@@ -228,5 +247,5 @@ parts:
         trunc: {prob: 0.3, keep: [0.35, 0.7]}}   # áo: giữ phần trên của ảnh cắt (người sát camera); Claude đặt
   train:
     model: yolo11n-cls.pt
-    run_name: yolo11n_cls_parts_v4   # bản 1: yolo11n_cls_parts, bản 2, 3: yolo11n_cls_parts_v2, _v3
+    run_name: yolo11n_cls_parts_v5   # bản 1: yolo11n_cls_parts, bản 2, 3, 4: yolo11n_cls_parts_v2, _v3, _v4
     args: {imgsz: 160, epochs: 60, patience: 15, batch: 128, seed: 0, deterministic: true, workers: 4, fliplr: 0.5, degrees: 0}

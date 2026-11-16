@@ -30,3 +30,8 @@ Lớp: 0-3 như `ppe4`, 4 kính bảo hộ, 5 ủng bảo hộ. Kế hoạch: `d
 `external/chvg/`: CHVG tải từ figshare (`03g`), không đưa lên git. Chưa dùng cho train.
 
 `parts/`: ảnh cắt tay, chân, mắt cho bộ phân loại kiểm tra thứ hai (`03y`), dạng thư mục YOLO-cls `train/`, `val/`; chỉ có trên máy, `summary.json` ghi số lượng.
+`parts_v5/`: bộ phân loại bản 5 (`03y`, `parts.version: 5`, kế hoạch 2026-11-16_post_holdout_fixes mục 3b): `parts/` bản 4 chép nguyên (train, val) + ảnh đầu mũ / không mũ từ kho chọn theo tầng (kiểu cắt × tối × nhỏ) để mỗi tầng có mũ ≈ không mũ; `added_meta.csv` (ảnh thêm), `summary.json` (bảng tầng, kiểm tỉ lệ); gói `variants/kaggle/parts_v5_pack.zip`; chỉ có trên máy.
+
+`parts_v5_pool/`: kho ảnh đầu nguồn mới của bản 5 (CHV train, `hard_hat_cc0`, SHWD; cắt như train, có bản làm tối cho người quay lưng), `meta.csv` (nguồn, kiểu cắt, nhìn từ sau, cỡ, độ sáng), `pool_info.json`; chỉ có trên máy.
+
+`parts_v5_check/`: tập kiểm riêng bản 5: 15% ảnh CC0 và SHWD không vào train, cắt kiểu val, `meta.csv`; nhãn gốc của bộ công khai; chỉ để báo cáo tỉ lệ nhầm theo tầng, không là tiêu chí; chỉ có trên máy.

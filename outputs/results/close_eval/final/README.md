@@ -22,6 +22,7 @@ hiển thị nhất quán) và `docs/experiments/2026-11-15_completion_plan.md`.
 | `benchmark_clean/`, `benchmark_clean_run.log` | Đo lại cùng lệnh sau khi tắt game (GPU nghỉ P8 trước khi đo): **số dùng cho báo cáo** |
 | `fr_table.md` | Bảng FR-01…10 (Đạt / Không đạt / Chưa kiểm thử) kèm bằng chứng |
 | `holdout/`, `holdout_run.log` | Đánh giá cuối, **đã chạy một lần** 16/11/2026 theo cho phép của người dùng. Trên Git chỉ có `results.md`, `results.json` (số đếm); `transitions.csv` (nhãn từng khung) và `frames.csv` của từng video chỉ giữ ở máy |
+| `holdout_viewer/` (chỉ ở máy) | Trang xem 8 video holdout đã vẽ (bản cuối) để kiểm bằng mắt: so nhãn máy với hệ thống từng khung, danh sách đoạn khác nhau, ô ghi lỗi. Dựng bằng `build_holdout_viewer.py` sau khi vẽ lại bằng `05_run_video.py` (frames.csv trùng từng byte với lượt đánh giá). `index.html` có nhãn holdout nên **không đưa lên Git, không đưa lên mạng** |
 | `holdout_summary.md` | Tóm tắt holdout: mũ giảm (0,630 → 0,542, D chặn báo thiếu ở h2), kính tăng (0,528 → 0,743), áo, găng, ủng không đổi |
 | `pictor/pictor_eval.py`, `pictor/pictor_eval.md`, `pictor/pictor_eval.json` | Kiểm thử ngoài detector trên Pictor-PPE (RQ1), C4 và r2; chép tập sang thư mục tạm để không ghi `.cache` vào `data/ppe4/`. Chạy: `python outputs/results/close_eval/final/pictor/pictor_eval.py --work <thư mục tạm>` |
 

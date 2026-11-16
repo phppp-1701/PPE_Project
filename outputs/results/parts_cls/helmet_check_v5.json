@@ -1,0 +1,83 @@
+{
+ "ngay": "2026-11-16T00:22:43",
+ "tap": "data/ppe6/parts_v5_check",
+ "nguong": {
+  "t_pos": 0.91,
+  "t_neg": 0.5
+ },
+ "ghi_chu": "chỉ báo cáo; nhãn gốc của bộ công khai (CC0, SHWD), không phải nhãn người của project",
+ "ket_qua": {
+  "outputs/train/yolo11n_cls_parts_v4/weights/best.pt": {
+   "helmet": {
+    "n": 6026,
+    "cho_la_khong_mu": 0.0606,
+    "cho_la_co_mu": 0.8186
+   },
+   "helmet/hard_hat_cc0": {
+    "n": 3930,
+    "cho_la_khong_mu": 0.0684,
+    "cho_la_co_mu": 0.8018
+   },
+   "helmet/sau=0/toi=0": {
+    "n": 4847,
+    "cho_la_khong_mu": 0.0588,
+    "cho_la_co_mu": 0.8207
+   },
+   "helmet/sau=0/toi=1": {
+    "n": 214,
+    "cho_la_khong_mu": 0.2056,
+    "cho_la_co_mu": 0.5561
+   },
+   "helmet/sau=1/toi=0": {
+    "n": 928,
+    "cho_la_khong_mu": 0.0356,
+    "cho_la_co_mu": 0.8739
+   },
+   "helmet/sau=1/toi=1": {
+    "n": 37,
+    "cho_la_khong_mu": 0.0811,
+    "cho_la_co_mu": 0.6757
+   },
+   "helmet/shwd": {
+    "n": 2096,
+    "cho_la_khong_mu": 0.0458,
+    "cho_la_co_mu": 0.8502
+   },
+   "no_helmet": {
+    "n": 21591,
+    "cho_la_khong_mu": 0.956,
+    "cho_la_co_mu": 0.0053
+   },
+   "no_helmet/hard_hat_cc0": {
+    "n": 1285,
+    "cho_la_khong_mu": 0.9455,
+    "cho_la_co_mu": 0.0093
+   },
+   "no_helmet/sau=0/toi=0": {
+    "n": 8065,
+    "cho_la_khong_mu": 0.9344,
+    "cho_la_co_mu": 0.0108
+   },
+   "no_helmet/sau=0/toi=1": {
+    "n": 10522,
+    "cho_la_khong_mu": 0.9674,
+    "cho_la_co_mu": 0.0012
+   },
+   "no_helmet/sau=1/toi=0": {
+    "n": 704,
+    "cho_la_khong_mu": 0.9361,
+    "cho_la_co_mu": 0.0142
+   },
+   "no_helmet/sau=1/toi=1": {
+    "n": 2300,
+    "cho_la_khong_mu": 0.9857,
+    "cho_la_co_mu": 0.0022
+   },
+   "no_helmet/shwd": {
+    "n": 20306,
+    "cho_la_khong_mu": 0.9567,
+    "cho_la_co_mu": 0.0051
+   }
+  }
+ }
+}

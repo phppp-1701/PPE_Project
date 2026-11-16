@@ -126,3 +126,15 @@ preview_all.jpg
 !outputs/results/close_eval/final/*/*.json
 !outputs/results/close_eval/final/*/*.md
 !outputs/results/close_eval/final/*/*.csv
+# Holdout: bảng chuyển nhãn - dự đoán từng khung và trang xem holdout chỉ giữ trên máy (repo công khai)
+outputs/results/close_eval/final/holdout/transitions.csv
+outputs/results/close_eval/final/holdout_viewer/
+# Bước M2: thẻ dữ liệu của bộ tải thêm, tổng hợp parts_v5 (file nhỏ, không có ảnh)
+!data/raw/*/DATA_CARD.md
+!data/ppe6/parts_v5/
+!data/ppe6/parts_v5/summary.json
+# Bước M1: hồi quy video phát triển (như stepCD, stepF)
+!outputs/results/close_eval/stepM1/*.yaml
+!outputs/results/close_eval/stepM1/*/results.json
+!outputs/results/close_eval/stepM1/*/results.md
+!outputs/results/close_eval/stepM1/*/transitions.csv

@@ -1,0 +1,7 @@
+﻿compare,video,frame,label_track,ppe,label,base_pred,other_pred
+final_vs_M1,video3,1213,6,boots,chua_xac_dinh,co,chua_xac_dinh
+final_vs_M1,video3,1214,6,boots,chua_xac_dinh,co,chua_xac_dinh
+final_vs_M1,video3,1726,7,boots,thieu,co,thieu
+final_vs_M1,video3,1727,7,boots,thieu,chua_xac_dinh,thieu
+final_vs_M1,video3,1728,7,boots,thieu,chua_xac_dinh,thieu
+final_vs_M1,video3,1729,7,boots,chua_xac_dinh,co,thieu

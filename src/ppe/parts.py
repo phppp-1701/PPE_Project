@@ -130,6 +130,8 @@ class PartClassifier:
         self.c = cfg["part_cls"]
         self.device = cfg["detector"]["device"]
         self.use = set(self.c.get("thresholds") or {})
+        if self.c.get("veto_boots"):
+            self.use.add("boots")       # bước M1: ảnh cắt chân chỉ để phủ quyết hộp ủng (không dùng làm phiếu Có / Thiếu)
         by = self.c.get("weights_by_ppe") or {}
         self.path_of = {ppe: by.get(ppe, self.c["weights"]) for ppe in PART_CLASSES}
         self.models = {w: YOLO(root / w) for w in {self.path_of[p] for p in self.use}}

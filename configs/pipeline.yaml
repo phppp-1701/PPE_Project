@@ -86,6 +86,7 @@ part_cls:
   weights_by_ppe:
     gloves: outputs/train/yolo11n_cls_parts_v2/weights/best.pt
     helmet: outputs/train/yolo11n_cls_parts_v4/weights/best.pt
+    boots: outputs/train/yolo11n_cls_parts_v4/weights/best.pt   # bước M1: chọn trên val (05e --boots-veto)
   imgsz: 160                # như lúc train (configs/ppe6.yaml parts.train)
   min_px: 24                # cạnh ảnh cắt tối thiểu, như parts.min_px lúc tạo dữ liệu train
   kp_conf: 0.5              # Claude đặt, như keypoint_gate
@@ -100,6 +101,10 @@ part_cls:
   # V-C1 3/280 (1,07%), V-C3 2/280 (0,71%). Hồi quy 13 video (stepCD/c2_*): mũ báo Có sai 49 -> 2, độ chính xác 0,880 -> 0,900.
   veto_frontal:
     helmet: {face_conf: 0.7, t_veto: 0.7}
+  # Bước M1 (kế hoạch 2026-11-16_post_holdout_fixes mục 2; người dùng duyệt bật 16/11/2026 sau hồi quy 13 video ở
+  # close_eval/stepM1): chọn trên val, 05e --boots-veto -> parts_cls/boots_veto_val.json (v4, bác bỏ nhầm 0/71).
+  # Mọi chân có ảnh cắt đều có 1 - p >= t_veto thì bỏ hộp ủng của detector (dép, giày thường).
+  veto_boots: {t_veto: 0.8}
   # Cổng cỡ người (px chiều cao hộp người trên khung gốc): PPE có giá trị ở đây chỉ dùng bộ phân loại khi người cao từ mức
   # này, người nhỏ hơn dùng luật cũ. Chọn trên video chỉnh tham số 3-6 (calibration.part_min_person_grid), xem kế hoạch.
   min_person_px: {}
@@ -238,6 +243,12 @@ calibration:
   # 05a --torso-strict (bước B2, V4): chia val hai phần theo đơn vị = group_id hợp với khối số thứ tự cuối tên file
   # gốc cùng nguồn (floor(số / torso_strict_fold_block)). Người dùng duyệt 15/11/2026 (kế hoạch ppe6 mục B2).
   torso_strict_fold_block: 50
+  # Bước M1 (kế hoạch 2026-11-16_post_holdout_fixes mục 2, người dùng duyệt 16/11/2026): 05e --boots-veto chọn trọng số và
+  # t_veto (part_cls.veto_boots) trên ảnh cắt chân val: t_veto nhỏ nhất có ủng thật bị bác bỏ <= max_false_veto.
+  boots_veto:
+    weights: [outputs/train/yolo11n_cls_parts_v3/weights/best.pt, outputs/train/yolo11n_cls_parts_v4/weights/best.pt]
+    grid: [0.7, 0.8, 0.9]
+    max_false_veto: 0.02
   video:
     # Dùng bởi 05d_calibrate_video.py, chỉ trên video chinh_tham_so. Lưới thử, không phải giá trị đã chọn.
     match_iou: 0.5          # ghép người với nhãn (spec 7.4)

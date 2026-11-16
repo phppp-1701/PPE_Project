@@ -1,0 +1,89 @@
+{
+ "ngay": "2026-11-15T20:47:33",
+ "quy_tac": {
+  "weights": [
+   "outputs/train/yolo11n_cls_parts_v3/weights/best.pt",
+   "outputs/train/yolo11n_cls_parts_v4/weights/best.pt"
+  ],
+  "grid": [
+   0.7,
+   0.8,
+   0.9
+  ],
+  "max_false_veto": 0.02
+ },
+ "tap": "data/ppe6/parts/val (03y)",
+ "ket_qua": [
+  {
+   "weights": "outputs/train/yolo11n_cls_parts_v3/weights/best.pt",
+   "t_veto": 0.7,
+   "n_ung": 71,
+   "n_khong_ung": 278,
+   "bac_bo_nham": 0.2112676056338028,
+   "bac_bo_nham_n": 15,
+   "bac_bo_dung": 0.8381294964028777,
+   "bac_bo_dung_n": 233
+  },
+  {
+   "weights": "outputs/train/yolo11n_cls_parts_v3/weights/best.pt",
+   "t_veto": 0.8,
+   "n_ung": 71,
+   "n_khong_ung": 278,
+   "bac_bo_nham": 0.19718309859154928,
+   "bac_bo_nham_n": 14,
+   "bac_bo_dung": 0.7913669064748201,
+   "bac_bo_dung_n": 220
+  },
+  {
+   "weights": "outputs/train/yolo11n_cls_parts_v3/weights/best.pt",
+   "t_veto": 0.9,
+   "n_ung": 71,
+   "n_khong_ung": 278,
+   "bac_bo_nham": 0.08450704225352113,
+   "bac_bo_nham_n": 6,
+   "bac_bo_dung": 0.7014388489208633,
+   "bac_bo_dung_n": 195
+  },
+  {
+   "weights": "outputs/train/yolo11n_cls_parts_v4/weights/best.pt",
+   "t_veto": 0.7,
+   "n_ung": 71,
+   "n_khong_ung": 278,
+   "bac_bo_nham": 0.056338028169014086,
+   "bac_bo_nham_n": 4,
+   "bac_bo_dung": 0.7805755395683454,
+   "bac_bo_dung_n": 217
+  },
+  {
+   "weights": "outputs/train/yolo11n_cls_parts_v4/weights/best.pt",
+   "t_veto": 0.8,
+   "n_ung": 71,
+   "n_khong_ung": 278,
+   "bac_bo_nham": 0.0,
+   "bac_bo_nham_n": 0,
+   "bac_bo_dung": 0.7122302158273381,
+   "bac_bo_dung_n": 198
+  },
+  {
+   "weights": "outputs/train/yolo11n_cls_parts_v4/weights/best.pt",
+   "t_veto": 0.9,
+   "n_ung": 71,
+   "n_khong_ung": 278,
+   "bac_bo_nham": 0.0,
+   "bac_bo_nham_n": 0,
+   "bac_bo_dung": 0.6079136690647482,
+   "bac_bo_dung_n": 169
+  }
+ ],
+ "chon": {
+  "weights": "outputs/train/yolo11n_cls_parts_v4/weights/best.pt",
+  "t_veto": 0.8,
+  "n_ung": 71,
+  "n_khong_ung": 278,
+  "bac_bo_nham": 0.0,
+  "bac_bo_nham_n": 0,
+  "bac_bo_dung": 0.7122302158273381,
+  "bac_bo_dung_n": 198
+ },
+ "ghi_chu": "val này cũng là val lúc train bộ phân loại (best.pt theo top1) nên hơi lạc quan"
+}
