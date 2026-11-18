@@ -1,0 +1,64 @@
+{
+ "run": "c6ft_val_boots",
+ "capture": "outputs/results/c5_eval/c6_ft_val",
+ "images": 923,
+ "ignored_predictions": 2012,
+ "classes": {
+  "boots": {
+   "ap50": 0.6767,
+   "gt": 76,
+   "recall": 0.9342,
+   "by_size": {
+    "<16": {
+     "found": 1,
+     "total": 2,
+     "recall": 0.5
+    },
+    "<32": {
+     "found": 13,
+     "total": 14,
+     "recall": 0.929
+    },
+    "<64": {
+     "found": 32,
+     "total": 35,
+     "recall": 0.914
+    },
+    ">=64": {
+     "found": 25,
+     "total": 25,
+     "recall": 1.0
+    }
+   },
+   "by_source": {
+    "construction_ppe": {
+     "found": 25,
+     "total": 25,
+     "recall": 1.0
+    },
+    "sh17": {
+     "found": 46,
+     "total": 51,
+     "recall": 0.902
+    }
+   },
+   "missed_by_kind": {
+    "lech_hop": 2,
+    "khong_thay": 3
+   },
+   "false_pos_by_kind": {
+    "khong_ro": 15,
+    "lech_hop": 3,
+    "vat_am": 14,
+    "trung_lap": 1
+   },
+   "false_pos_total": 33
+  }
+ },
+ "sheets": {
+  "boots_bo_sot_lon": 3,
+  "boots_bo_sot_ngau_nhien": 5,
+  "boots_thua_khong_ro": 15,
+  "boots_thua_vat_am": 14
+ }
+}

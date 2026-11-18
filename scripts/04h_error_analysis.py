@@ -272,7 +272,7 @@ def main():
         img_dir = ROOT / run["images"]
         sheets = {}
         for name in run["classes"]:
-            if name in ("helmet", "vest"):
+            if name == "helmet" or (name == "vest" and not run.get("sheets_vest")):
                 continue      # chỉ để đối chiếu số, không vẽ
             fn_c = [r for r in fn_rows if r["cls"] == name]
             big = sorted([r for r in fn_c if r["side"] >= cfg["size_bins_px"][1]], key=lambda r: -r["side"])
