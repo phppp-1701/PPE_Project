@@ -1,0 +1,113 @@
+{
+ "run": "c4_valnew",
+ "capture": "outputs/results/ppe6_eval/c4_valnew",
+ "images": 69,
+ "ignored_predictions": 125,
+ "classes": {
+  "goggles": {
+   "ap50": 0.7263,
+   "gt": 29,
+   "recall": 0.8621,
+   "by_size": {
+    "<32": {
+     "found": 2,
+     "total": 4,
+     "recall": 0.5
+    },
+    "<64": {
+     "found": 11,
+     "total": 12,
+     "recall": 0.917
+    },
+    ">=64": {
+     "found": 12,
+     "total": 13,
+     "recall": 0.923
+    }
+   },
+   "by_source": {
+    "construction_ppe": {
+     "found": 4,
+     "total": 5,
+     "recall": 0.8
+    },
+    "sh17": {
+     "found": 21,
+     "total": 24,
+     "recall": 0.875
+    }
+   },
+   "missed_by_kind": {
+    "lech_hop": 2,
+    "khong_thay": 2
+   },
+   "false_pos_by_kind": {
+    "trung_lap": 2,
+    "vat_am": 2,
+    "khong_ro": 2,
+    "lech_hop": 2
+   },
+   "false_pos_total": 8
+  },
+  "boots": {
+   "ap50": 0.5264,
+   "gt": 83,
+   "recall": 0.7108,
+   "by_size": {
+    "<16": {
+     "found": 1,
+     "total": 1,
+     "recall": 1.0
+    },
+    "<32": {
+     "found": 10,
+     "total": 12,
+     "recall": 0.833
+    },
+    "<64": {
+     "found": 21,
+     "total": 27,
+     "recall": 0.778
+    },
+    ">=64": {
+     "found": 27,
+     "total": 43,
+     "recall": 0.628
+    }
+   },
+   "by_source": {
+    "construction_ppe": {
+     "found": 18,
+     "total": 36,
+     "recall": 0.5
+    },
+    "sh17": {
+     "found": 41,
+     "total": 47,
+     "recall": 0.872
+    }
+   },
+   "missed_by_kind": {
+    "khong_thay": 7,
+    "lech_hop": 16,
+    "nham_lop": 1
+   },
+   "false_pos_by_kind": {
+    "khong_ro": 2,
+    "lech_hop": 11,
+    "vat_am": 5
+   },
+   "false_pos_total": 18
+  }
+ },
+ "sheets": {
+  "goggles_bo_sot_lon": 2,
+  "goggles_bo_sot_ngau_nhien": 4,
+  "goggles_thua_khong_ro": 2,
+  "goggles_thua_vat_am": 2,
+  "boots_bo_sot_lon": 22,
+  "boots_bo_sot_ngau_nhien": 24,
+  "boots_thua_khong_ro": 2,
+  "boots_thua_vat_am": 5
+ }
+}

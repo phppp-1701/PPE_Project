@@ -529,6 +529,32 @@ với C5 về dữ liệu) và **c6_ft** (tinh chỉnh từ C5-s960: 40 epoch, l
 bình mAP50 găng, kính, ủng cao hơn. **C6 thay C5-s960** khi ủng tăng ≥ 0,03 và găng, kính, người, mũ, áo không tụt quá
 0,02 (val đã sửa, cùng tập con như C5). Người dùng quyết định cuối.
 
+### Kết quả C6 (18/11/2026)
+
+Kaggle T4 x2, một phiên, hai bản song song (log `outputs/train/yolo11s_ppe6_c6_*/kaggle_train.log`): cả hai ghép đúng
+`train 7169, val_monitor 1070`, bộ phụ 4.369 ảnh, 3.197 bản lặp, 14.735 ảnh train. **c6_scratch**: 52 epoch, 6,94 giờ,
+dừng sớm (best epoch 32 theo val_monitor). **c6_ft**: 21 epoch, 3,05 giờ, dừng sớm, **best epoch 1** (theo mAP50-95 trên
+val_monitor; val_monitor vẫn là nhãn cũ). `04f` đạt cả hai; sha256 best.pt: c6_scratch `575678ca…c6be4`, c6_ft
+`881afaa7…8ec8`. Chấm: `04d` + `04j` → `outputs/results/c5_eval/c5_vs_c6_scratch.json`, `c5_vs_c6_ft.json`.
+
+| Lớp (tập) | C5-s960 | c6_scratch | c6_ft | c6_ft − C5 [KTC 95%] |
+|---|---|---|---|---|
+| người (ppe4) | 0,893 | 0,885 | 0,894 | +0,001 |
+| mũ (ppe4) | 0,899 | 0,903 | 0,899 | −0,000 |
+| áo (ppe4) | 0,783 | 0,779 | 0,780 | −0,004 |
+| găng (ppe4) | 0,667 | 0,655 | 0,657 | −0,010 [−0,023; −0,001] |
+| kính (goggles_all, 155) | 0,809 | 0,706 | 0,807 | −0,002 [−0,045; +0,035] |
+| ủng (lớp mới, 76) | 0,625 | 0,636 | **0,677** | **+0,051** [−0,018; +0,116] |
+
+**Áp tiêu chí đã khóa (`c6_decision`):**
+1. Giữa hai bản C6: trung bình găng, kính, ủng: c6_ft 0,714, c6_scratch 0,666 → **chọn c6_ft**. c6_scratch tụt kính rõ
+   (CHVG −0,101 [−0,154; −0,052]).
+2. c6_ft so với C5-s960: ủng +0,051 ≥ 0,03 (**đạt**); găng −0,010, kính −0,002, người +0,001, mũ −0,000, áo −0,004, đều
+   không tụt quá 0,02 (**đạt**). → **C6 (c6_ft) đạt tiêu chí thay C5-s960.** Người dùng quyết định cuối.
+3. Lưu ý khi viết báo cáo: KTC của mức tăng ủng còn chứa 0 (76 hộp); c6_ft tốt nhất ở epoch 1, tức gần như C5 tinh chỉnh
+   một epoch với dữ liệu ủng mới; găng giảm nhẹ nhưng KTC không chứa 0. Mục tiêu 0,8: kính 0,807 đạt; găng 0,657, ủng 0,677
+   chưa đạt.
+
 ## 3. Điểm cần người dùng quyết định
 
 1. **Kiểm định của người.** Theo CLAUDE.md: nhãn máy phải ghi "nhãn máy, có kiểm định mẫu của người", tầng không đạt kiểm

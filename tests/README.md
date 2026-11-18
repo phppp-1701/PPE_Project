@@ -12,3 +12,5 @@ Các bài kiểm tra cho code trong `src/ppe`, ví dụ: thiếu mũ liên tục
 - `test_boots_veto.py`: bước M1, bộ phân loại chân bác bỏ hộp ủng của detector khi mọi chân có ảnh cắt đều rất chắc không phải ủng; vắng khóa như bản cuối; PPE khác không đổi.
 - `test_live.py`: camera trực tiếp với webcam giả, pipeline giả, database tạm (không cần GPU): đổi PPE bắt buộc khi đang chạy đóng sự kiện với lý do `policy_changed` và đếm lại; bắt đầu, dừng, lỗi webcam, lỗi nạp mô hình; luồng MJPEG kết thúc khi dừng; API `/api/live/*`, chính sách áp dụng ngay, ảnh minh chứng không ghi trùng, phiên được ghi.
 - `test_pose_regions.py`: bước F (giá trị thử): F1 kính theo mắt, F2 áo theo vai với `edge_frac`, F3 găng dự phòng theo vùng tay (có hộp mới Có, không bao giờ suy Thiếu); vắng khóa như bản chính.
+
+**Chạy tự động trên GitHub:** `.github/workflows/tests.yml` chạy toàn bộ `pytest` (Windows, PyTorch CPU) cho mỗi push và pull request vào `main`, `exp/ppe6`, `feat/desktop`. Test không được cần trọng số, dữ liệu, video (không có trong git); test mới cần dữ liệu thì tự tạo dữ liệu giả trong test.

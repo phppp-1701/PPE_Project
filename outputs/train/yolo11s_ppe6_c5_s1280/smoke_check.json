@@ -1,0 +1,15 @@
+{
+  "best": "outputs\\train\\yolo11s_ppe6_c5_s1280\\weights\\best.pt",
+  "best_mb": 19.26,
+  "sha256": "2dcfb6241a4bea42fb76214bd3929b9b11c74456ba97ae50bfc2ff3cd2853fa4",
+  "names": [
+    "person",
+    "helmet",
+    "vest",
+    "gloves",
+    "goggles",
+    "boots"
+  ],
+  "folder_mb": 68.0,
+  "errors": []
+}

@@ -1,0 +1,105 @@
+{
+  "run_name": "yolo11s_ppe6_c5_s960",
+  "gpu": "Tesla T4",
+  "ultralytics": "8.4.189",
+  "torch": "2.11.0+cu130",
+  "data": "/tmp/ppe_data_960/data.yaml",
+  "model": "yolo11s.pt",
+  "config": {
+    "run_name": "yolo11s_ppe6_c5_s960",
+    "model": "yolo11s.pt",
+    "copy_max_side": 960,
+    "train": {
+      "imgsz": 960,
+      "epochs": 100,
+      "batch": -1,
+      "patience": 20,
+      "time": 11,
+      "seed": 0,
+      "deterministic": true,
+      "device": 0,
+      "workers": 4,
+      "cache": false,
+      "flipud": 0.0,
+      "degrees": 0.0
+    },
+    "extra": {
+      "seed": 0,
+      "video_side": 1920,
+      "margin": 0.1,
+      "min_person_px": 30,
+      "max_person_px": 180,
+      "min_visible": 0.5,
+      "max_crops": 2500,
+      "max_per_image": 3,
+      "no_ppe_share": 0.15,
+      "oversample_gloves": 1500,
+      "shrink_px": [
+        60,
+        360
+      ]
+    },
+    "analyze": {
+      "conf": 0.25,
+      "match_iou": 0.5,
+      "size_bins_px": [
+        8,
+        16,
+        32
+      ],
+      "n_samples": 30,
+      "sample_classes": [
+        "gloves"
+      ],
+      "seed": 0,
+      "speed_images": 200
+    }
+  },
+  "resumed_from": null,
+  "train_hours": 7.76,
+  "weights": "/kaggle/working/runs/yolo11s_ppe6_c5_s960/weights/best.pt",
+  "val": {
+    "all": {
+      "P": 0.6227,
+      "R": 0.6402,
+      "mAP50": 0.6003,
+      "mAP50_95": 0.3653
+    },
+    "person": {
+      "P": 0.8806,
+      "R": 0.8197,
+      "mAP50": 0.8731,
+      "mAP50_95": 0.6124
+    },
+    "helmet": {
+      "P": 0.9207,
+      "R": 0.8424,
+      "mAP50": 0.8781,
+      "mAP50_95": 0.5075
+    },
+    "vest": {
+      "P": 0.7974,
+      "R": 0.6861,
+      "mAP50": 0.6989,
+      "mAP50_95": 0.4197
+    },
+    "gloves": {
+      "P": 0.6486,
+      "R": 0.4594,
+      "mAP50": 0.5005,
+      "mAP50_95": 0.294
+    },
+    "goggles": {
+      "P": 0.2674,
+      "R": 0.5517,
+      "mAP50": 0.3645,
+      "mAP50_95": 0.1827
+    },
+    "boots": {
+      "P": 0.2212,
+      "R": 0.4819,
+      "mAP50": 0.2865,
+      "mAP50_95": 0.1755
+    }
+  }
+}

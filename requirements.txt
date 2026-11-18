@@ -14,3 +14,8 @@ tokenizers==0.22.2
 huggingface-hub==0.36.2
 safetensors==0.8.0
 regex==2025.11.3
+# Backend (FastAPI) và test API: đã có trong .venv từ bước 4 (backend) nhưng chưa ghi vào đây; ghi lại 18/11/2026 khi thêm CI
+fastapi==0.162.5
+uvicorn==0.54.0
+httpx==0.28.1
+pyyaml==6.0.3

@@ -1,0 +1,71 @@
+{
+ "run": "c5s960_val_gloves",
+ "capture": "outputs/results/c5_eval/c5_s960_val",
+ "images": 1586,
+ "ignored_predictions": 1641,
+ "classes": {
+  "gloves": {
+   "ap50": 0.6674,
+   "gt": 864,
+   "recall": 0.8241,
+   "by_size": {
+    "<16": {
+     "found": 74,
+     "total": 118,
+     "recall": 0.627
+    },
+    "<32": {
+     "found": 136,
+     "total": 160,
+     "recall": 0.85
+    },
+    "<64": {
+     "found": 171,
+     "total": 207,
+     "recall": 0.826
+    },
+    ">=64": {
+     "found": 331,
+     "total": 379,
+     "recall": 0.873
+    }
+   },
+   "by_source": {
+    "chv": {
+     "found": 188,
+     "total": 228,
+     "recall": 0.825
+    },
+    "construction_ppe": {
+     "found": 181,
+     "total": 216,
+     "recall": 0.838
+    },
+    "sh17": {
+     "found": 343,
+     "total": 420,
+     "recall": 0.817
+    }
+   },
+   "missed_by_kind": {
+    "nham_lop": 2,
+    "lech_hop": 81,
+    "khong_thay": 69
+   },
+   "false_pos_by_kind": {
+    "khong_ro": 77,
+    "trung_lap": 14,
+    "lech_hop": 43,
+    "vat_am": 25,
+    "nham_lop": 1
+   },
+   "false_pos_total": 160
+  }
+ },
+ "sheets": {
+  "gloves_bo_sot_lon": 40,
+  "gloves_bo_sot_ngau_nhien": 40,
+  "gloves_thua_khong_ro": 40,
+  "gloves_thua_vat_am": 25
+ }
+}
