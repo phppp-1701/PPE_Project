@@ -14,3 +14,5 @@ Các bài kiểm tra cho code trong `src/ppe`, ví dụ: thiếu mũ liên tục
 - `test_pose_regions.py`: bước F (giá trị thử): F1 kính theo mắt, F2 áo theo vai với `edge_frac`, F3 găng dự phòng theo vùng tay (có hộp mới Có, không bao giờ suy Thiếu); vắng khóa như bản chính.
 
 **Chạy tự động trên GitHub:** `.github/workflows/tests.yml` chạy toàn bộ `pytest` (Windows, PyTorch CPU) cho mỗi push và pull request vào `main`, `exp/ppe6`, `feat/desktop`. Test không được cần trọng số, dữ liệu, video (không có trong git); test mới cần dữ liệu thì tự tạo dữ liệu giả trong test.
+
+`test_train_extra.py`: ghép bộ phụ của `scripts/04_train.py` (ảnh cùng tên thay ảnh gốc, tên lặp trong `oversample.txt` tạo nhiều bản), dữ liệu giả trong thư mục tạm.

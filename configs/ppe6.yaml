@@ -344,3 +344,24 @@ c6_decision:
   min_boots_gain: 0.03           # C6 thay C5 khi ủng tăng >= mức này
   max_drop: 0.02                 # và găng, kính, người, mũ, áo không tụt quá mức này
   ft: {epochs: 40, optimizer: SGD, lr0: 0.002, warmup_epochs: 1}   # tinh chỉnh; Claude đặt, không chọn trên val. optimizer phải đặt rõ (auto bỏ qua lr0)
+
+c7:
+  # C7 (03zb_c7_prep.py, kế hoạch 2026-11-16_c5_detector_plan mục C7), người dùng chọn phương án a 18/11/2026.
+  # Claude đặt trước khi xem kết quả, không chọn trên val.
+  weights: outputs/train/yolo11s_ppe6_c6_ft/weights/best.pt   # mô hình dùng để tìm ủng báo thừa trên train
+  fp_conf: 0.3            # dự đoán ủng từ mức này, không trùng nhãn ủng (IoU < match_iou) -> Claude xem
+  match_iou: 0.3
+  seed: 19
+  hard_neg_copies: 2      # ảnh có giày thường bị nhận nhầm (Claude xác nhận n): lặp thêm 2 bản
+  vest_sh17_copies: 1     # ảnh SH17 train có áo: lặp thêm 1 bản (áo SH17 recall 0,452 ở c6_ft)
+
+c7_decision:
+  # Tiêu chí chọn C7 (kế hoạch 2026-11-16_c5_detector_plan mục C7), khóa 18/11/2026 trước khi train.
+  # C7-m: YOLO11m (yolo11m.pt COCO), imgsz 960, dữ liệu c5_pack + c7_extra_pack, train DDP trên 2 GPU T4 của Kaggle.
+  baseline: c6_ft
+  min_mean_gain: 0.02     # trung bình mAP50 găng (ppe4), kính (goggles_all), ủng (lớp mới) tăng >= mức này
+  max_drop: 0.02          # và không lớp nào (người, mũ, áo, găng, kính, ủng) tụt quá mức này
+  half_check: 0.005       # chấm FP16 trên val: mỗi lớp lệch FP32 không quá mức này thì được chạy FP16
+  min_fps: 20             # và pipeline (07, FP16 nếu đạt half_check) >= 20 khung/giây, p95 <= 100 ms
+  max_p95_ms: 100
+  train: {model: yolo11m.pt, imgsz: 960, device: "0,1", batch: 16, epochs: 100, patience: 20, time: 11}

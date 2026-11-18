@@ -39,3 +39,5 @@ Lớp: 0-3 như `ppe4`, 4 kính bảo hộ, 5 ủng bảo hộ. Kế hoạch: `d
 `c5/`: C5, sửa nhãn và mở rộng val/test (`03z`, kế hoạch 2026-11-16_c5_detector_plan), nhãn máy: `owl_eval.json`, `c4_*_pred.json`, `sh17_hands.csv` (đề xuất); `review_items_*.csv`, `review/` (bảng ảnh, `.txt` ô → item, `.dec` quyết định của Claude), `machine_pass_claude.csv`; `dataset_c5/` (train C2 + sửa), `c5_extra/` (bộ phụ), `changes_*.csv` (mọi thay đổi); `eval/{val,test}/`, `eval/ignore.csv`, `eval/files.json` (val/test đã sửa); `audit/audit.html` (kiểm định của người), `audit/_private/` (đáp án máy, người kiểm định không mở). Ảnh, nhãn chỉ có trên máy. Gói Kaggle `variants/kaggle/c5_pack.zip`, `c5_extra_pack.zip`.
 
 `c6/`: C6 (`03za`): `scan.json`, `eval_hashes.json` (pHash), `ext/` (ảnh ủng ngoài đã lọc, nhãn), `rotcheck/` (bảng Claude xem, `.dec` ô bị loại), `c6_extra/` (bộ phụ C6). Chỉ có trên máy; gói `variants/kaggle/c6_extra_pack.zip`.
+
+`c7/`: C7 (`03zb`): `c6ft_train_boots_pred.json`, `changes_c7.csv`, `c7_extra/` (bộ phụ C7). Chỉ có trên máy; gói `variants/kaggle/c7_extra_pack.zip`.
