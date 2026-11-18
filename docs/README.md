@@ -6,3 +6,4 @@
 - `experiments/`: mỗi lần huấn luyện hoặc đo đạc ghi một file. Số liệu Chương 4 lấy từ đây.
 - `c5_kaggle_run.md`: cách train C5-s@960 và C5-s@1280 trên Kaggle (gói `c5_pack.zip`, `c5_extra_pack.zip`) và chấm trên val đã sửa.
 - `c6_kaggle_run.md`: cách train C6 (c6_scratch, c6_ft song song trên Kaggle T4 x2).
+- `desktop_app_plan.md`: kế hoạch app desktop Windows (kiến trúc, việc ở backend, giao diện chi tiết, đóng gói, mốc, kiểm thử) cho thành viên làm app.
