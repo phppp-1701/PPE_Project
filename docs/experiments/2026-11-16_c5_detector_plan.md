@@ -555,6 +555,11 @@ val_monitor; val_monitor vẫn là nhãn cũ). `04f` đạt cả hai; sha256 bes
    một epoch với dữ liệu ủng mới; găng giảm nhẹ nhưng KTC không chứa 0. Mục tiêu 0,8: kính 0,807 đạt; găng 0,657, ủng 0,677
    chưa đạt.
 
+**Người dùng đồng ý 18/11/2026 chuyển sang c6_ft** ("cũng được, nhưng tôi vẫn muốn kết quả phải trên 0.8 hết").
+`configs/pipeline.yaml` `detector.weights` = `outputs/train/yolo11s_ppe6_c6_ft/weights/best.pt` (sha256
+`881afaa7f858d2cf7d95d15335609851574d3a7fd59f900ec5b41b1ad3818ec8`). **Test đã sửa và hồi quy video hoãn tới khi chốt bản
+cuối** (người dùng muốn tiếp tục nâng áo, găng, ủng lên 0,8; test chỉ chạy một lần cho bản được chọn cuối cùng).
+
 ## 3. Điểm cần người dùng quyết định
 
 1. **Kiểm định của người.** Theo CLAUDE.md: nhãn máy phải ghi "nhãn máy, có kiểm định mẫu của người", tầng không đạt kiểm
