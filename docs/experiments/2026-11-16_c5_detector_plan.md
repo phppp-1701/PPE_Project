@@ -650,6 +650,22 @@ Trên c6_ft, val đã sửa, ảnh ppe4 (864 hộp găng), tính lại AP găng 
 chưa có nhãn ở val (găng da, găng trắng, găng hở ngón); còn lại là tay trần, dụng cụ, vật cầm tay, và một số hộp dự đoán
 dẹt như một đường kẻ. Nhãn val găng còn thiếu là một giới hạn của phép đo.
 
+### C8: kế hoạch và chỗ dừng (19/11/2026, người dùng chọn phương án a)
+
+Ba việc, train một lần (tinh chỉnh từ c6_ft như C6), tiêu chí khóa trước khi train:
+1. **Sửa nốt nhãn găng val, test** theo tiêu chí chặt (hộp bao sát đúng một chiếc găng), có kiểm định của người; ứng viên
+   gộp từ dự đoán conf ≥ 0,4 của **mọi** bản C4, C5-s960, C6-ft, C7-m (để không nghiêng về một mô hình); test chỉ chạy
+   predict lấy vị trí ứng viên, không tính điểm. Mọi bản được chấm lại trên cùng bộ nhãn mới.
+2. **Dữ liệu găng ngoài** (người dùng tải từ Roboflow): Safety Gloves (Roboflow Universe Projects, safety-gloves-xbnf8,
+   Gloves / NO-Gloves, CC BY 4.0 theo trang), hand glove (Eshwaran), gloves (Construction Images). Xử lý như C6 (lọc nhóm cảnh
+   trùng ảnh đánh giá, ảnh xoay; găng → lớp 3, người / mũ / áo nhãn máy, kính / ủng che).
+3. **Mẫu âm khó găng** trên train (găng báo thừa conf ≥ 0,4 của c6_ft, Claude xem: n → lặp 2 lần).
+
+Script `scripts/03zc_c8_gloves.py` (`pred-train`, `pred-test`, `candidates` → `data/ppe6/c5/review_items_c8.csv`, nhiệm vụ
+`gloves8_train_add`, `gloves8_eval_add`), mục `c8`. **Dừng 19/11 do hết hạn mức sử dụng tuần của Claude:** đã có danh sách
+ứng viên; **chưa** xem bảng ảnh (`03z sheets --task gloves8_train_add` / `gloves8_eval_add`, ghi `.dec`, `collect`), chưa có
+bước dựng dữ liệu, gói Kaggle, tiêu chí C8, kiểm định. Hệ thống vẫn dùng c6_ft.
+
 ## 3. Điểm cần người dùng quyết định
 
 1. **Kiểm định của người.** Theo CLAUDE.md: nhãn máy phải ghi "nhãn máy, có kiểm định mẫu của người", tầng không đạt kiểm

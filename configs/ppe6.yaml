@@ -372,3 +372,16 @@ c8_rescore:
   context: 1.6         # như parts.context
   imgsz: 160           # như part_cls.imgsz
   weights_grid: [0.0, 0.25, 0.5, 0.75]   # 0 = điểm gốc của detector
+
+c8:
+  # C8 găng (03zc_c8_gloves.py, kế hoạch 2026-11-16_c5_detector_plan mục C8), người dùng chọn phương án a 19/11/2026.
+  # Claude đặt trước khi xem kết quả.
+  weights: outputs/train/yolo11s_ppe6_c6_ft/weights/best.pt
+  seed: 23
+  train_conf: 0.4       # găng báo thừa trên train từ mức này -> Claude xem (mẫu âm khó / găng thiếu nhãn)
+  eval_conf: 0.4        # val, test: dự đoán găng từ mức này của mọi bản, gộp hộp trùng (merge_iou)
+  match_iou: 0.3        # trùng nhãn găng có sẵn từ mức này thì không phải ứng viên
+  merge_iou: 0.5
+  eval_captures: [outputs/results/c5_eval/c4_val, outputs/results/c5_eval/c5_s960_val, outputs/results/c5_eval/c6_ft_val, outputs/results/c5_eval/c7_m_val]
+  hard_neg_copies: 2
+  test_weights: [outputs/train/yolo11s_ppe6_c4/weights/best.pt, outputs/train/yolo11s_ppe6_c5_s960/weights/best.pt, outputs/train/yolo11s_ppe6_c6_ft/weights/best.pt, outputs/train/yolo11m_ppe6_c7/weights/best.pt]
