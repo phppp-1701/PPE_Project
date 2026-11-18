@@ -365,3 +365,10 @@ c7_decision:
   min_fps: 20             # và pipeline (07, FP16 nếu đạt half_check) >= 20 khung/giây, p95 <= 100 ms
   max_p95_ms: 100
   train: {model: yolo11m.pt, imgsz: 960, device: "0,1", batch: 16, epochs: 100, patience: 20, time: 11}
+
+c8_rescore:
+  # C8 thử (04l_gloves_rescore.py): chấm lại hộp găng của detector bằng bộ phân loại tay. Claude đặt 19/11/2026; w chọn trên val.
+  min_conf: 0.05       # chỉ chấm lại dự đoán từ mức này (dưới mức này xếp cuối)
+  context: 1.6         # như parts.context
+  imgsz: 160           # như part_cls.imgsz
+  weights_grid: [0.0, 0.25, 0.5, 0.75]   # 0 = điểm gốc của detector

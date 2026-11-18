@@ -629,6 +629,27 @@ Nhận xét (Claude): qua C4 → C7 (sửa nhãn, 1280, dữ liệu ủng ngoài
 0,66 (0,655–0,674), áo quanh 0,78**; mọi khác biệt giữa các bản nằm trong KTC. Mức trần này nhiều khả năng do dữ liệu
 (găng nhỏ, bị che, nhập nhằng găng / tay; áo SH17 ở xa) và do tập val nhỏ với ủng (76 hộp), không phải do cỡ mô hình.
 
+## C8: găng lên 0,8 (người dùng yêu cầu 19/11/2026) — chẩn đoán
+
+Trên c6_ft, val đã sửa, ảnh ppe4 (864 hộp găng), tính lại AP găng theo ngưỡng IoU ghép (chẩn đoán, 19/11/2026):
+
+| Nguồn | hộp | AP@0,5 | AP@0,3 | AP@0,1 |
+|---|---|---|---|---|
+| tất cả | 864 | 0,657 | 0,708 | 0,722 |
+| SH17 | 420 | 0,627 | 0,667 | 0,685 |
+| CHV | 228 | 0,590 | 0,646 | 0,658 |
+| Construction-PPE | 216 | 0,774 | 0,844 | 0,859 |
+
+→ Kể cả chỉ cần hộp chạm găng (IoU 0,1) AP vẫn 0,722: **khoanh lệch chỉ chiếm khoảng 0,06**; phần còn lại là **nhận sai**
+(báo găng ở chỗ không có, bỏ sót găng).
+
+**Chấm lại bằng bộ phân loại tay** (`04l_gloves_rescore.py`, `rescore_c6ft_cls_v2.json`, `_v4.json`): AP găng 0,657 → 0,668
+(v2, w 0,25) / 0,669 (v4, w 0,25); không đáng kể.
+
+**(Claude quan sát)** bảng báo thừa conf cao của c6_ft (`sheet_gloves_thua_khong_ro.jpg`): khoảng 5–8/40 là găng thật vẫn
+chưa có nhãn ở val (găng da, găng trắng, găng hở ngón); còn lại là tay trần, dụng cụ, vật cầm tay, và một số hộp dự đoán
+dẹt như một đường kẻ. Nhãn val găng còn thiếu là một giới hạn của phép đo.
+
 ## 3. Điểm cần người dùng quyết định
 
 1. **Kiểm định của người.** Theo CLAUDE.md: nhãn máy phải ghi "nhãn máy, có kiểm định mẫu của người", tầng không đạt kiểm

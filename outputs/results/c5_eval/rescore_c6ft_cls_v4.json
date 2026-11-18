@@ -1,0 +1,42 @@
+{
+ "capture": "outputs/results/c5_eval/c6_ft_val",
+ "weights": "outputs/train/yolo11n_cls_parts_v4/weights/best.pt",
+ "n_pred": 1271,
+ "params": {
+  "min_conf": 0.05,
+  "context": 1.6,
+  "imgsz": 160,
+  "weights_grid": [
+   0.0,
+   0.25,
+   0.5,
+   0.75
+  ]
+ },
+ "by_w": {
+  "0.0": {
+   "all": 0.6573,
+   "sh17": 0.6268,
+   "chv": 0.5901,
+   "construction_ppe": 0.7744
+  },
+  "0.25": {
+   "all": 0.6692,
+   "sh17": 0.6435,
+   "chv": 0.5917,
+   "construction_ppe": 0.7758
+  },
+  "0.5": {
+   "all": 0.6638,
+   "sh17": 0.6341,
+   "chv": 0.5826,
+   "construction_ppe": 0.7766
+  },
+  "0.75": {
+   "all": 0.6554,
+   "sh17": 0.6214,
+   "chv": 0.5691,
+   "construction_ppe": 0.7759
+  }
+ }
+}
