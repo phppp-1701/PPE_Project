@@ -24,6 +24,8 @@ Mỗi thư mục có README riêng giải thích chi tiết.
 
 Bỏ dữ liệu vào `data/` → chỉnh số trong `configs/` → chạy lệnh trong `scripts/` → xem kết quả ở `outputs/` → ghi số liệu vào `docs/experiments/`.
 
+Demo camera trực tiếp (webcam laptop, dashboard, bật tắt PPE bắt buộc): xem `backend/README.md`.
+
 ## Trạng thái
 
 - [x] Bước 0: cài môi trường (Python, PyTorch GPU, Ultralytics)

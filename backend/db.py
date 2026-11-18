@@ -138,6 +138,18 @@ def init_db():
     conn.close()
 
 
+def ensure_source(source_id, name, source_type, required_ppe):
+    """Tạo nguồn (vd. webcam của chế độ trực tiếp) kèm chính sách phiên bản 1 nếu chưa có; có rồi thì giữ nguyên."""
+    conn = get_db()
+    now = datetime.now().isoformat()
+    conn.execute("INSERT OR IGNORE INTO sources (source_id, name, source_type, rtsp_url, is_active, created_at) "
+                 "VALUES (?, ?, ?, NULL, 1, ?)", (source_id, name, source_type, now))
+    conn.execute("INSERT OR IGNORE INTO ppe_policies (source_id, version, required_ppe, created_at) VALUES (?, 1, ?, ?)",
+                 (source_id, json.dumps(list(required_ppe)), now))
+    conn.commit()
+    conn.close()
+
+
 def ensure_default_sources():
     """Tạo sẵn các nguồn video mặc định kèm chính sách 6 lớp."""
     conn = get_db()

@@ -214,6 +214,43 @@
     .fill-goggles { background: #06b6d4; }
     .fill-boots { background: #3b82f6; }
 
+    /* Camera trực tiếp */
+    .live-view {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #020617;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .live-view img { width: 100%; height: 100%; object-fit: contain; display: none; }
+    .live-view.on img { display: block; }
+    .live-view.on .live-placeholder { display: none; }
+    .live-placeholder { color: var(--text-muted); font-size: 14px; text-align: center; padding: 16px; }
+    .live-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .live-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 18px;
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .live-meta b { color: var(--text-main); font-weight: 600; }
+    .live-state { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: #334155; color: var(--text-muted); }
+    .live-state.running { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+    .live-state.starting, .live-state.stopping { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+    .live-state.error { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+    .live-error { margin-top: 8px; font-size: 13px; color: var(--danger); }
+    .btn-danger { background: var(--danger); }
+    .btn-danger:hover { background: #dc2626; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .policy-note { font-size: 12px; color: var(--text-muted); margin-top: 10px; min-height: 16px; }
+
     /* Policy Form */
     .policy-item {
       display: flex;
@@ -567,16 +604,29 @@
     </div>
   </div>
 
-  <!-- DASHBOARD GRID: STATS & POLICY -->
+  <!-- DASHBOARD GRID: CAMERA TRỰC TIẾP & POLICY -->
   <div class="dashboard-grid">
-    <!-- Phân bố vi phạm theo 5 trang bị -->
+    <!-- Camera trực tiếp (backend/live.py) -->
     <div class="card">
       <div class="card-header">
-        <div class="card-title">Thống kê vi phạm theo từng loại trang bị bảo hộ</div>
+        <div class="card-title">Camera trực tiếp <span class="live-state" id="live-state">Đang tắt</span></div>
+        <div class="live-actions">
+          <button class="btn" id="live-start" onclick="startLive()">Bắt đầu</button>
+          <button class="btn btn-danger" id="live-stop" onclick="stopLive()" disabled>Dừng</button>
+        </div>
       </div>
-      <div class="ppe-bars" id="ppe-bars-container">
-        <!-- JS fill -->
+      <div class="live-view" id="live-view">
+        <img id="live-img" alt="Hình camera đã nhận diện">
+        <div class="live-placeholder" id="live-placeholder">Camera đang tắt. Bấm "Bắt đầu" để mở webcam.</div>
       </div>
+      <div class="live-meta">
+        <span>FPS xử lý / camera: <b id="live-fps">—</b></span>
+        <span>Người trong khung: <b id="live-persons">—</b></span>
+        <span>PPE đang kiểm: <b id="live-required">—</b></span>
+        <span>Chính sách: <b id="live-policy">—</b></span>
+        <span>Phiên: <b id="live-session">—</b></span>
+      </div>
+      <div class="live-error" id="live-error"></div>
     </div>
 
     <!-- Cấu hình chính sách nguồn -->
@@ -584,31 +634,40 @@
       <div class="card-header">
         <div class="card-title">Quy định PPE bắt buộc cho nguồn</div>
       </div>
+      <select class="select-input" id="policy-source" style="width: 100%; margin-bottom: 8px;" onchange="loadPolicy()"></select>
       <div id="policy-container">
         <div class="policy-item">
           <span>Mũ bảo hộ (Helmet)</span>
-          <label class="switch"><input type="checkbox" id="pol-helmet" checked><span class="slider"></span></label>
+          <label class="switch"><input type="checkbox" id="pol-helmet" checked onchange="schedulePolicySave()"><span class="slider"></span></label>
         </div>
         <div class="policy-item">
           <span>Áo phản quang (Vest)</span>
-          <label class="switch"><input type="checkbox" id="pol-vest" checked><span class="slider"></span></label>
+          <label class="switch"><input type="checkbox" id="pol-vest" checked onchange="schedulePolicySave()"><span class="slider"></span></label>
         </div>
         <div class="policy-item">
           <span>Găng tay bảo hộ (Gloves)</span>
-          <label class="switch"><input type="checkbox" id="pol-gloves" checked><span class="slider"></span></label>
+          <label class="switch"><input type="checkbox" id="pol-gloves" checked onchange="schedulePolicySave()"><span class="slider"></span></label>
         </div>
         <div class="policy-item">
           <span>Kính bảo hộ (Goggles)</span>
-          <label class="switch"><input type="checkbox" id="pol-goggles" checked><span class="slider"></span></label>
+          <label class="switch"><input type="checkbox" id="pol-goggles" checked onchange="schedulePolicySave()"><span class="slider"></span></label>
         </div>
         <div class="policy-item">
           <span>Giày / Ủng bảo hộ (Boots)</span>
-          <label class="switch"><input type="checkbox" id="pol-boots" checked><span class="slider"></span></label>
+          <label class="switch"><input type="checkbox" id="pol-boots" checked onchange="schedulePolicySave()"><span class="slider"></span></label>
         </div>
       </div>
-      <button class="btn" style="width: 100%; margin-top: 16px; justify-content: center;" onclick="savePolicy()">
-        Lưu quy định bắt buộc
-      </button>
+      <div class="policy-note" id="policy-note"></div>
+    </div>
+  </div>
+
+  <!-- Phân bố vi phạm theo 5 trang bị -->
+  <div class="card" style="margin-bottom: 24px;">
+    <div class="card-header">
+      <div class="card-title">Thống kê vi phạm theo từng loại trang bị bảo hộ</div>
+    </div>
+    <div class="ppe-bars" id="ppe-bars-container">
+      <!-- JS fill -->
     </div>
   </div>
 
@@ -620,12 +679,13 @@
 
     <!-- Filters -->
     <div class="filters">
+      <select class="select-input" id="filter-session" onchange="sessionFilterTouched = true; renderEvents()">
+        <option value="live">Phiên camera gần nhất</option>
+        <option value="">Mọi phiên (cả video)</option>
+      </select>
       <select class="select-input" id="filter-source" onchange="renderEvents()">
         <option value="">Tất cả nguồn camera</option>
-        <option value="video">Luồng Video Chung</option>
-        <option value="video4">Video 4 (Công trường)</option>
-        <option value="video5">Video 5 (Demo bắt tay)</option>
-        <option value="video6">Video 6 (Công trường cắt biên)</option>
+        <!-- JS điền từ /api/sources -->
       </select>
       <select class="select-input" id="filter-state" onchange="renderEvents()">
         <option value="">Tất cả trạng thái</option>
@@ -648,7 +708,7 @@
         <thead>
           <tr>
             <th>Ảnh vi phạm</th>
-            <th>Thời điểm (s)</th>
+            <th>Thời điểm</th>
             <th>Nguồn / Phiên</th>
             <th>Mã người (Track ID)</th>
             <th>Trang bị thiếu</th>
@@ -818,8 +878,11 @@
       const srcFilter = document.getElementById('filter-source').value;
       const stateFilter = document.getElementById('filter-state').value;
       const ppeFilter = document.getElementById('filter-ppe').value;
+      const sessionFilter = document.getElementById('filter-session').value;
 
       const filtered = allEvents.filter(ev => {
+        // "Phiên camera gần nhất": chỉ sự kiện từ lúc bấm Bắt đầu của phiên camera đang chạy (hoặc vừa dừng)
+        if (sessionFilter === 'live' && ev.session_id !== liveSessionId) return false;
         if (srcFilter && ev.source_id !== srcFilter) return false;
         if (stateFilter && ev.event_state !== stateFilter) return false;
         if (ppeFilter && !ev.missing_items.includes(ppeFilter)) return false;
@@ -828,7 +891,10 @@
 
       const tbody = document.getElementById('events-tbody');
       if (!filtered.length) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 30px;">Không có sự kiện vi phạm phù hợp với bộ lọc</td></tr>`;
+        const emptyText = sessionFilter === 'live'
+          ? (liveSessionId ? `Chưa có vi phạm nào trong phiên camera ${liveSessionId}` : 'Chưa có phiên camera nào, bấm "Bắt đầu" ở ô Camera trực tiếp')
+          : 'Không có sự kiện vi phạm phù hợp với bộ lọc';
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 30px;">${emptyText}</td></tr>`;
         return;
       }
 
@@ -845,7 +911,8 @@
           : `<span class="badge badge-state-pending">Đã khắc phục mục thiếu, chờ xác minh trang bị còn lại</span>`;
 
         const closeText = ev.close_reason === 'recovered' ? 'Khắc phục hoàn toàn'
-                        : ev.close_reason === 'session_ended_unverified' ? 'Hết video (chưa xác minh)'
+                        : ev.close_reason === 'session_ended_unverified' ? 'Hết phiên (chưa xác minh)'
+                        : ev.close_reason === 'policy_changed' ? 'Đổi quy định PPE'
                         : (ev.close_reason || '—');
 
         const thumbUrl = ev.thumbnail_url 
@@ -858,8 +925,10 @@
         return `
           <tr>
             <td style="width: 86px; padding: 8px;">${thumbHtml}</td>
-            <td style="font-weight: 600;">${ev.confirmed_at.toFixed(2)}s</td>
-            <td><span style="color: var(--text-muted); font-size: 13px;">${ev.source_id}</span></td>
+            <td><div style="font-weight: 600;">${fmtClock(ev.system_time)}</div>
+                <div style="color: var(--text-muted); font-size: 12px;">giây ${ev.confirmed_at.toFixed(1)} của phiên</div></td>
+            <td><div style="font-size: 13px;">${ev.source_id}</div>
+                <div style="color: var(--text-muted); font-size: 11px;">${ev.session_id}</div></td>
             <td><strong style="color: #60a5fa;">ID ${ev.track_id}</strong></td>
             <td>${ppeBadges || '<span style="color: var(--text-muted);">Không</span>'}</td>
             <td>${stateBadge}</td>
@@ -1088,29 +1157,152 @@
       document.getElementById('event-modal').style.display = 'none';
     }
 
-    async function savePolicy() {
-      const items = [];
-      if (document.getElementById('pol-helmet').checked) items.push('helmet');
-      if (document.getElementById('pol-vest').checked) items.push('vest');
-      if (document.getElementById('pol-gloves').checked) items.push('gloves');
-      if (document.getElementById('pol-goggles').checked) items.push('goggles');
-      if (document.getElementById('pol-boots').checked) items.push('boots');
+    const PPE_KEYS = ['helmet', 'vest', 'gloves', 'goggles', 'boots'];
+    let liveSourceId = null;
+    let liveSessionId;                 // phiên camera đang chạy hoặc vừa dừng (bộ lọc "Phiên camera gần nhất"); undefined = chưa hỏi
+    let sessionFilterTouched = false;  // người dùng tự chọn bộ lọc phiên thì không tự đổi nữa
 
+    // Giờ hệ thống của sự kiện (ISO, giờ máy) -> "19:51:48 16/11"
+    function fmtClock(iso) {
+      if (!iso) return '—';
+      const d = new Date(iso);
+      if (isNaN(d)) return iso;
+      const p = n => String(n).padStart(2, '0');
+      return `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())} ${p(d.getDate())}/${p(d.getMonth() + 1)}`;
+    }
+
+    // ===== Nguồn và chính sách PPE =====
+    async function loadSources() {
       try {
-        await fetch(`${API_BASE}/api/sources/video/policy`, {
+        const sources = await fetch(`${API_BASE}/api/sources`).then(r => r.json());
+        const polSel = document.getElementById('policy-source');
+        const filSel = document.getElementById('filter-source');
+        const keep = polSel.value;
+        polSel.innerHTML = sources.map(s => `<option value="${s.source_id}">${s.name} (${s.source_id})</option>`).join('');
+        filSel.innerHTML = `<option value="">Tất cả nguồn camera</option>` +
+          sources.map(s => `<option value="${s.source_id}">${s.name}</option>`).join('');
+        // Mặc định chọn nguồn webcam (nếu có) để bật/tắt PPE cho camera trực tiếp
+        const cam = sources.find(s => s.source_type === 'camera');
+        polSel.value = keep || (cam ? cam.source_id : (sources[0] && sources[0].source_id));
+        await loadPolicy();
+      } catch (err) {
+        console.error("Lỗi tải danh sách nguồn:", err);
+      }
+    }
+
+    async function loadPolicy() {
+      const src = document.getElementById('policy-source').value;
+      if (!src) return;
+      const pol = await fetch(`${API_BASE}/api/sources/${encodeURIComponent(src)}/policy`).then(r => r.json());
+      PPE_KEYS.forEach(p => { document.getElementById(`pol-${p}`).checked = pol.required_ppe.includes(p); });
+      document.getElementById('policy-note').textContent = `Phiên bản ${pol.version} của nguồn ${src}. Gạt công tắc là áp dụng ngay.`;
+    }
+
+    // Gạt công tắc là lưu ngay; gạt nhiều công tắc liền nhau (trong 0,6 s) chỉ tạo một phiên bản chính sách
+    let policyTimer = null;
+    function schedulePolicySave() {
+      document.getElementById('policy-note').textContent = 'Đang lưu…';
+      clearTimeout(policyTimer);
+      policyTimer = setTimeout(savePolicy, 600);
+    }
+
+    async function savePolicy() {
+      const src = document.getElementById('policy-source').value;
+      const items = PPE_KEYS.filter(p => document.getElementById(`pol-${p}`).checked);
+      const note = document.getElementById('policy-note');
+      try {
+        const res = await fetch(`${API_BASE}/api/sources/${encodeURIComponent(src)}/policy`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ required_ppe: items })
         });
-        alert("Đã cập nhật quy định PPE bắt buộc cho nguồn!");
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || res.status);
+        note.textContent = data.applied_live
+          ? `Đã lưu phiên bản ${data.version}, áp dụng ngay cho camera đang chạy (sự kiện đang mở được đóng: "Đổi quy định PPE").`
+          : `Đã lưu phiên bản ${data.version} cho nguồn ${src}.`;
+        pollLive();
       } catch (err) {
-        alert("Lỗi lưu quy định: " + err);
+        note.textContent = "Lỗi lưu quy định: " + err.message;
       }
     }
 
-    // Auto refresh every 3 seconds
+    // ===== Camera trực tiếp =====
+    const LIVE_TEXT = { idle: 'Đang tắt', starting: 'Đang khởi động…', running: 'Đang chạy', stopping: 'Đang dừng…', error: 'Lỗi' };
+
+    async function startLive() {
+      document.getElementById('live-start').disabled = true;
+      document.getElementById('live-error').textContent = '';
+      try {
+        const res = await fetch(`${API_BASE}/api/live/start`, { method: 'POST' });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || res.status);
+      } catch (err) {
+        document.getElementById('live-error').textContent = "Không bắt đầu được: " + err.message;
+      }
+      pollLive();
+    }
+
+    async function stopLive() {
+      document.getElementById('live-stop').disabled = true;
+      try { await fetch(`${API_BASE}/api/live/stop`, { method: 'POST' }); } catch (err) { console.error(err); }
+      pollLive();
+      fetchData();
+    }
+
+    async function pollLive() {
+      let s;
+      try { s = await fetch(`${API_BASE}/api/live/status`).then(r => r.json()); }
+      catch (err) { return; }
+      liveSourceId = s.source_id;
+      const active = s.state === 'starting' || s.state === 'running';
+      if (s.session_id !== liveSessionId) {
+        const isNew = !!s.session_id && active;
+        liveSessionId = s.session_id;
+        const sel = document.getElementById('filter-session');
+        if (isNew) { sel.value = 'live'; sessionFilterTouched = false; }      // bấm Bắt đầu: xem lịch sử của phiên mới
+        else if (!liveSessionId && !sessionFilterTouched) sel.value = '';    // chưa có phiên camera: xem mọi phiên
+        renderEvents();
+      }
+      const badge = document.getElementById('live-state');
+      badge.textContent = LIVE_TEXT[s.state] || s.state;
+      badge.className = `live-state ${s.state}`;
+      document.getElementById('live-start').disabled = active || s.state === 'stopping';
+      document.getElementById('live-stop').disabled = !active;
+      document.getElementById('live-fps').textContent = s.state === 'running' ? `${s.fps.toFixed(1)} / ${s.camera_fps.toFixed(1)}` : '—';
+      document.getElementById('live-persons').textContent = s.state === 'running' ? s.persons : '—';
+      document.getElementById('live-required').textContent = s.session_id
+        ? (s.required_ppe.length ? s.required_ppe.map(p => PPE_LABELS[p] || p).join(', ') : '(không kiểm món nào)') : '—';
+      document.getElementById('live-policy').textContent = s.policy_version ? `${s.source_id} v${s.policy_version}` : '—';
+      document.getElementById('live-session').textContent = s.session_id || '—';
+      if (s.error) document.getElementById('live-error').textContent = s.error;
+      else if (active) document.getElementById('live-error').textContent = '';
+
+      const view = document.getElementById('live-view');
+      const img = document.getElementById('live-img');
+      img.onerror = () => { delete img.dataset.session; };   // luồng ảnh đứt: lần hỏi trạng thái sau sẽ nối lại
+      const ph = document.getElementById('live-placeholder');
+      if (s.state === 'running') {
+        if (!img.dataset.session || img.dataset.session !== s.session_id) {
+          img.dataset.session = s.session_id;
+          img.src = `${API_BASE}/api/live/stream?session=${encodeURIComponent(s.session_id)}`;
+        }
+        view.classList.add('on');
+      } else {
+        if (img.dataset.session) { img.removeAttribute('src'); delete img.dataset.session; }
+        view.classList.remove('on');
+        ph.textContent = s.state === 'starting' ? 'Đang nạp mô hình và mở webcam (vài giây)…'
+                       : s.state === 'error' ? 'Camera lỗi, xem thông báo bên dưới.'
+                       : 'Camera đang tắt. Bấm "Bắt đầu" để mở webcam.';
+      }
+    }
+
+    // Tải dữ liệu, tự làm mới: sự kiện 3 giây, trạng thái camera 1 giây
+    loadSources();
     fetchData();
+    pollLive();
     setInterval(fetchData, 3000);
+    setInterval(pollLive, 1000);
   </script>
 
 </body>

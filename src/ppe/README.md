@@ -13,6 +13,6 @@ Mỗi file ứng với một bước xử lý:
 | `compliance.py` | Kết luận Có / Thiếu / Chưa xác định |
 | `temporal.py` | Cửa sổ thời gian xác nhận vi phạm, khắc phục |
 | `events.py` | Mở, cập nhật, đóng sự kiện cảnh báo |
-| `pipeline.py` | Nối các bước trên thành một luồng |
+| `pipeline.py` | Nối các bước trên thành một luồng; `set_required` đổi PPE bắt buộc khi đang chạy (camera trực tiếp): đóng sự kiện đang mở với lý do `policy_changed`, đếm lại từ đầu |
 
 Người dùng không cần chạy trực tiếp các file này; các script trong `scripts/` gọi chúng.

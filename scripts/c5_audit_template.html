@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kiểm định nhãn C5</title>
+<!-- Mẫu trang kiểm định của scripts/03z_c5_relabel.py audit. __CELLS__ được thay bằng danh sách ô (id, câu hỏi, ảnh). -->
+<style>
+  :root { --bg: #f6f6f4; --fg: #1d1d1b; --card: #fff; --muted: #6b6b66; --yes: #1f7a3a; --no: #b3261e; --unsure: #8a6d00; --line: #ddd; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #151514; --fg: #ececea; --card: #222220; --muted: #a3a39d; --line: #3a3a37; } }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.5 system-ui, sans-serif; }
+  main { max-width: 720px; margin: 0 auto; padding: 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+  img { display: block; max-width: 100%; margin: 12px auto; border-radius: 6px; image-rendering: auto; }
+  .q { font-weight: 600; font-size: 18px; }
+  .btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  button { flex: 1; min-width: 120px; padding: 12px; font-size: 16px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--fg); cursor: pointer; }
+  button.yes { border-color: var(--yes); color: var(--yes); } button.no { border-color: var(--no); color: var(--no); } button.unsure { border-color: var(--unsure); color: var(--unsure); }
+  button.sel { color: #fff; } button.yes.sel { background: var(--yes); } button.no.sel { background: var(--no); } button.unsure.sel { background: var(--unsure); }
+  .bar { height: 6px; background: var(--line); border-radius: 3px; margin: 8px 0 16px; } .bar > div { height: 100%; background: var(--yes); border-radius: 3px; }
+  .muted { color: var(--muted); font-size: 14px; } input { padding: 8px; font-size: 16px; width: 100%; box-sizing: border-box; }
+  .nav { display: flex; justify-content: space-between; margin-top: 12px; }
+</style>
+</head>
+<body>
+<main>
+  <h1 style="font-size:22px;margin:0 0 4px">Kiểm định nhãn C5</h1>
+  <p class="muted">Mỗi ô: một ảnh cắt, hộp đỏ là chỗ cần xét. Bấm Đúng / Sai / Không rõ (phím 1 / 2 / 3, ← → để lùi, tiến). Câu trả lời được lưu trong trình duyệt; xong thì bấm "Tải kết quả" ở ô cuối và chép file vào <code>data/ppe6/c5/audit/</code>.</p>
+  <div class="bar"><div id="prog" style="width:0"></div></div>
+  <div class="card" id="card"></div>
+  <div class="nav"><button id="prev">← Lùi</button><span class="muted" id="count"></span><button id="next">Tiến →</button></div>
+</main>
+<script>
+const CELLS = __CELLS__;
+const KEY = "c5_audit_v1";
+let st = { reviewer: "", answers: {}, i: 0 };
+try { const s = JSON.parse(localStorage.getItem(KEY)); if (s) st = s; } catch (e) {}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
+const card = document.getElementById("card");
+function render() {
+  const done = Object.keys(st.answers).length;
+  document.getElementById("prog").style.width = (100 * done / CELLS.length) + "%";
+  document.getElementById("count").textContent = `${Math.min(st.i + 1, CELLS.length + 1)} / ${CELLS.length + 1} · đã trả lời ${done}`;
+  if (st.i >= CELLS.length) {
+    const left = CELLS.filter(c => !st.answers[c.id]).length;
+    card.innerHTML = `<p class="q">Xong ${done}/${CELLS.length} ô${left ? ` (còn ${left} ô chưa trả lời)` : ""}.</p>
+      <p>Tên người kiểm định:</p><input id="who" value="${st.reviewer || ""}" placeholder="Họ tên">
+      <div class="btns"><button class="yes sel" id="dl">Tải kết quả (audit_results.json)</button></div>`;
+    document.getElementById("who").oninput = e => { st.reviewer = e.target.value; save(); };
+    document.getElementById("dl").onclick = () => {
+      const out = { reviewer: st.reviewer, saved_at: new Date().toISOString(), answers: CELLS.map(c => ({ id: c.id, answer: st.answers[c.id] || "" })) };
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([JSON.stringify(out, null, 1)], { type: "application/json" }));
+      a.download = "audit_results.json"; a.click();
+    };
+    return;
+  }
+  const c = CELLS[st.i], a = st.answers[c.id];
+  card.innerHTML = `<div class="q">${c.q}</div><img src="${c.img}" alt="ảnh cắt ${c.id}">
+    <div class="btns"><button class="yes ${a === "yes" ? "sel" : ""}" data-v="yes">1 · Đúng</button>
+    <button class="no ${a === "no" ? "sel" : ""}" data-v="no">2 · Sai</button>
+    <button class="unsure ${a === "unsure" ? "sel" : ""}" data-v="unsure">3 · Không rõ</button></div>`;
+  card.querySelectorAll("button[data-v]").forEach(b => b.onclick = () => answer(b.dataset.v));
+}
+function answer(v) { st.answers[CELLS[st.i].id] = v; st.i = Math.min(st.i + 1, CELLS.length); save(); render(); }
+function go(d) { st.i = Math.max(0, Math.min(CELLS.length, st.i + d)); save(); render(); }
+document.getElementById("prev").onclick = () => go(-1);
+document.getElementById("next").onclick = () => go(1);
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT") return;
+  if (st.i < CELLS.length && ({ "1": "yes", "2": "no", "3": "unsure" })[e.key]) answer(({ "1": "yes", "2": "no", "3": "unsure" })[e.key]);
+  if (e.key === "ArrowLeft") go(-1); if (e.key === "ArrowRight") go(1);
+});
+render();
+</script>
+</body>
+</html>

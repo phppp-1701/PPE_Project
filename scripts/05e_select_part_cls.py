@@ -624,7 +624,7 @@ def main():
     ap.add_argument("--helmet-backview", nargs="+", metavar="WEIGHTS",
                     help="bước M2: V-B1..3 cho các trọng số (cái đầu là mốc, vd bản 4 rồi bản 5) -> helmet_backview_val.json")
     ap.add_argument("--helmet-check", nargs="+", metavar="WEIGHTS",
-                    help="bước M2, chỉ báo cáo: tập kiểm riêng parts_v5_check theo tầng -> helmet_check_v5.json")
+                    help="bước M2, chỉ báo cáo: tập kiểm riêng parts_v5_check theo tầng -> helmet_check_v5.json (hoặc tên ở --out)")
     args = ap.parse_args()
     OUT = OUT_DIR / args.out
     from ultralytics import YOLO
@@ -634,7 +634,8 @@ def main():
         boots_veto_eval(cfg, "boots_veto_val.json")
         return
     if args.helmet_check:
-        helmet_check_eval(cfg, args.helmet_check, "helmet_check_v5.json")
+        # --out đặt tên khác để không ghi đè kết quả cũ (helmet_check_v5.json là mốc bản 4 đã lưu)
+        helmet_check_eval(cfg, args.helmet_check, args.out if args.out != "val_select.json" else "helmet_check_v5.json")
         return
     pc = cfg["part_cls"]
     cal = cfg["calibration"]

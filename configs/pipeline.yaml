@@ -3,7 +3,7 @@
 # cạnh giá trị. Chuỗi xử lý dừng ở bước đầu tiên còn tham số null và báo tên tham số.
 
 detector:
-  weights: outputs/train/yolo11s_ppe6_c4/weights/best.pt   # C4 6 lớp, xem docs/experiments/2026-11-06_ppe6_plan.md
+  weights: outputs/train/yolo11s_ppe6_c5_s960/weights/best.pt   # C5-s960 (người dùng chọn 17/11/2026, ngoại lệ; kế hoạch 2026-11-16_c5_detector_plan). Trước: yolo11s_ppe6_c4
   imgsz: 960                                               # chốt 04/11/2026 (1280 kém hơn trên val)
   device: 0
   # Ngưỡng conf từng lớp: chọn trên val (ppe4 val cho 4 lớp cũ, val_new cho 2 lớp mới) ngày 11/11/2026 bằng 05a --conf

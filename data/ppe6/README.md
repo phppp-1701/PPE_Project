@@ -35,3 +35,7 @@ Lớp: 0-3 như `ppe4`, 4 kính bảo hộ, 5 ủng bảo hộ. Kế hoạch: `d
 `parts_v5_pool/`: kho ảnh đầu nguồn mới của bản 5 (CHV train, `hard_hat_cc0`, SHWD; cắt như train, có bản làm tối cho người quay lưng), `meta.csv` (nguồn, kiểu cắt, nhìn từ sau, cỡ, độ sáng), `pool_info.json`; chỉ có trên máy.
 
 `parts_v5_check/`: tập kiểm riêng bản 5: 15% ảnh CC0 và SHWD không vào train, cắt kiểu val, `meta.csv`; nhãn gốc của bộ công khai; chỉ để báo cáo tỉ lệ nhầm theo tầng, không là tiêu chí; chỉ có trên máy.
+
+`c5/`: C5, sửa nhãn và mở rộng val/test (`03z`, kế hoạch 2026-11-16_c5_detector_plan), nhãn máy: `owl_eval.json`, `c4_*_pred.json`, `sh17_hands.csv` (đề xuất); `review_items_*.csv`, `review/` (bảng ảnh, `.txt` ô → item, `.dec` quyết định của Claude), `machine_pass_claude.csv`; `dataset_c5/` (train C2 + sửa), `c5_extra/` (bộ phụ), `changes_*.csv` (mọi thay đổi); `eval/{val,test}/`, `eval/ignore.csv`, `eval/files.json` (val/test đã sửa); `audit/audit.html` (kiểm định của người), `audit/_private/` (đáp án máy, người kiểm định không mở). Ảnh, nhãn chỉ có trên máy. Gói Kaggle `variants/kaggle/c5_pack.zip`, `c5_extra_pack.zip`.
+
+`c6/`: C6 (`03za`): `scan.json`, `eval_hashes.json` (pHash), `ext/` (ảnh ủng ngoài đã lọc, nhãn), `rotcheck/` (bảng Claude xem, `.dec` ô bị loại), `c6_extra/` (bộ phụ C6). Chỉ có trên máy; gói `variants/kaggle/c6_extra_pack.zip`.

@@ -74,6 +74,21 @@ class Pipeline:
         out["timing"] = timing
         return out
 
+    def set_required(self, required_ppe, policy_version, t):
+        """Đổi PPE bắt buộc khi đang chạy (camera trực tiếp, FR-10), áp dụng ngay:
+        đóng mọi sự kiện đang mở với lý do policy_changed, xóa lịch sử cửa sổ thời gian (đếm lại từ đầu theo danh sách
+        mới), rồi dùng danh sách mới cho các khung sau. Chạy video không gọi hàm này."""
+        known = set(self.cfg["ppe"])
+        bad = [p for p in required_ppe if p not in known]
+        if bad:
+            raise ValueError(f"PPE không có trong configs/pipeline.yaml: {bad}")
+        self.required = [p for p in self.cfg["ppe"] if p in set(required_ppe)]   # giữ thứ tự cố định của cấu hình
+        if self.stage >= 4:
+            self.events.end_session(t, reason="policy_changed")
+            self.events.required = list(self.required)
+            self.events.policy_version = policy_version
+            self.temporal.history.clear()
+
     def close(self, t):
         """Kết thúc phiên: đóng sự kiện chưa có bằng chứng khắc phục (session_ended_unverified)."""
         if self.stage >= 4:

@@ -1,0 +1,14 @@
+# Chế độ camera trực tiếp (backend/live.py, demo trên laptop). Tham số vận hành, KHÔNG phải ngưỡng nhận diện:
+# nhận diện dùng nguyên configs/pipeline.yaml. Đặt 16/11/2026 theo phần cứng (webcam laptop), không chọn trên val.
+
+source_id: cam0            # nguồn trong database; chính sách PPE bắt buộc đọc theo nguồn này
+source_name: Webcam laptop
+camera_index: 0            # chỉ số webcam của OpenCV (0 = webcam mặc định)
+backend: dshow             # dshow (Windows, mở nhanh) hoặc any (OpenCV tự chọn)
+width: 1280                # độ phân giải xin webcam; webcam không hỗ trợ thì dùng độ phân giải gần nhất
+height: 720
+
+stream:
+  max_width: 960           # thu nhỏ khung đã vẽ trước khi gửi lên trình duyệt (chỉ để xem, không ảnh hưởng nhận diện)
+  jpeg_quality: 80
+  fps_window_s: 2.0        # FPS hiển thị = số khung xử lý trong cửa sổ này / độ dài cửa sổ

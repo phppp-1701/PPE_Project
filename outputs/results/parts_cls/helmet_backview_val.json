@@ -1,0 +1,68 @@
+{
+ "ngay": "2026-11-16T17:26:52",
+ "nguong": {
+  "t_pos": 0.91,
+  "t_neg": 0.5
+ },
+ "tieu_chi": {
+  "V_B1_max": 0.02,
+  "V_B2_min": 0.85,
+  "V_B3_giam_toi_da": 0.01,
+  "moc": "outputs/train/yolo11n_cls_parts_v4/weights/best.pt"
+ },
+ "n_ho_so": 1384,
+ "theo_tap": {
+  "03y": 1014,
+  "chv": 370
+ },
+ "ket_qua": {
+  "outputs/train/yolo11n_cls_parts_v4/weights/best.pt": {
+   "n_mu_quay_lung": 108,
+   "n_khong_mu_quay_lung": 145,
+   "V_B1": {
+    "sai": 6,
+    "ti_le": 0.0556
+   },
+   "V_B2": {
+    "bat_dung": 135,
+    "ti_le": 0.931
+   },
+   "V_B3": {
+    "chinh_xac_pos": 0.9887,
+    "n_pos": 442,
+    "chinh_xac_neg": 0.9788,
+    "n_neg": 897
+   },
+   "dat": {
+    "V_B1": false,
+    "V_B2": true,
+    "V_B3": true
+   },
+   "dat_ca_ba": false
+  },
+  "outputs/train/yolo11n_cls_parts_v5/weights/best.pt": {
+   "n_mu_quay_lung": 108,
+   "n_khong_mu_quay_lung": 145,
+   "V_B1": {
+    "sai": 5,
+    "ti_le": 0.0463
+   },
+   "V_B2": {
+    "bat_dung": 135,
+    "ti_le": 0.931
+   },
+   "V_B3": {
+    "chinh_xac_pos": 0.9848,
+    "n_pos": 460,
+    "chinh_xac_neg": 0.9853,
+    "n_neg": 882
+   },
+   "dat": {
+    "V_B1": false,
+    "V_B2": true,
+    "V_B3": true
+   },
+   "dat_ca_ba": false
+  }
+ }
+}

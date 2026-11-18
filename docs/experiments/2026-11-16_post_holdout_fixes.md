@@ -204,3 +204,41 @@ Sau khi cân: mũ 11.774 (thêm thật 3.199, làm tối 2.948), không mũ 11.2
 [0,8; 1,25]. Gói `data/ppe6/variants/kaggle/parts_v5_pack.zip` 667,9 MB, SHA-256
 `7c100cd0a9914a4eeecdc073530baeb5cb1fcf8a95fd8061bd523a14417024a6` (thay gói ở trên). Bước tiếp: người dùng train trên
 Kaggle (`yolo11n_cls_parts_v5`).
+
+### M2: kết quả bản 5 (16/11/2026)
+
+Train trên Kaggle xong (người dùng chạy, `04g`, cấu hình như bản 4; dữ liệu `yolo11n-cls-parts-v5/parts`). Trọng số
+`outputs/train/yolo11n_cls_parts_v5/weights/best.pt` (chỉ trên máy), SHA-256
+`7c66ae83a326a64d23bdeaf8751dcbbb2650d9fe6ae7f320d36d2b02e38e9d31`; top-1 val 11 lớp 0,8334 (`run_info.json`).
+
+**Tiêu chí V-B trên val** (`05e --helmet-backview` bản 4 rồi bản 5, `outputs/results/parts_cls/helmet_backview_val.json`):
+
+| Tiêu chí | Ngưỡng | Bản 4 | Bản 5 | Bản 5 đạt |
+|---|---|---|---|---|
+| V-B1 mũ nhìn từ sau bị cho là không mũ | ≤ 2% | 6 / 108 (5,56%) | 5 / 108 (4,63%) | **không** |
+| V-B2 đầu không mũ nhìn từ sau bị bắt | ≥ 85% | 135 / 145 (93,1%) | 135 / 145 (93,1%) | có |
+| V-B3 độ chính xác mũ pos / neg | giảm ≤ 0,01 | 0,9887 / 0,9788 | 0,9848 / 0,9853 | có (pos −0,004) |
+
+Ca sai V-B1 (p = xác suất có mũ): bản 5 sửa 2 ca CHV (`ppe_0632` 0,167 → 0,707; `ppe_1053` 0,357 → 0,907), thêm 1 ca
+SH17 (`pexels-photo-10246146` 0,916 → 0,410); 4 ca sai ở cả hai bản (`chv/ppe_0645`, SH17 `11213214`, `15483318`,
+`15794743`; p bản 5 0,000–0,139). Ngưỡng 2% của 108 hộp cho tối đa 2 ca sai.
+
+**Kết luận theo luật đã khóa: bản 5 không đạt V-B1 → giữ D cho mũ, không đổi `weights_by_ppe.helmet`, không chạy hồi
+quy 13 video; ghi giới hạn.** Không đổi ngưỡng, tiêu chí hay dữ liệu sau khi thấy kết quả.
+
+**Tập kiểm riêng** (chỉ báo cáo, không là tiêu chí; `05e --helmet-check ... --out helmet_check_v4_v5.json`; số bản 4
+trùng mốc `helmet_check_v5.json` ở trên):
+
+| Tầng | n | Bản 4 cho là không mũ | Bản 5 cho là không mũ | Bản 4 / bản 5 cho là có mũ |
+|---|---|---|---|---|
+| mũ, nhìn trước, sáng | 4.847 | 5,9% | 4,4% | 82,1% / 87,4% |
+| mũ, nhìn trước, tối | 214 | 20,6% | 15,4% | 55,6% / 65,9% |
+| mũ, nhìn từ sau, sáng | 928 | 3,6% | 1,5% | 87,4% / 94,0% |
+| mũ, nhìn từ sau, tối | 37 | 8,1% | 0,0% | 67,6% / 91,9% |
+| không mũ (cả tập) | 21.591 | 95,6% | 97,9% | 0,5% / 0,4% |
+
+Tập kiểm cùng nguồn với ảnh thêm vào train bản 5 (CC0, SHWD; khác ảnh, đã bỏ ảnh gần trùng), nên cải thiện ở đây là
+trong phân phối đó, không thay được val của project. Mũ tối nhìn trước vẫn bị cho là không mũ 15,4%.
+
+**Giới hạn ghi vào báo cáo:** bộ phân loại bộ phận (cả bản 4 và bản 5) vẫn cho một số mũ nhìn từ sau là không mũ
+(val: 4,6–5,6%, trên 108 hộp); pipeline giữ luật D (không báo thiếu mũ khi nhìn từ sau) để tránh báo thiếu oan.

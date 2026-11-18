@@ -270,7 +270,7 @@ class Compliance:
         for t in tracks:
             others = [o.xyxy for o in tracks if o.track_id != t.track_id]
             res = {}
-            for name in (names or self.ppe):
+            for name in (self.ppe if names is None else names):   # danh sách rỗng = không kiểm món nào (tắt hết)
                 sides = SIDES if self.ppe[name]["sides"] else (None,)
                 per = {s: self.side_state(name, t, s, assoc, frame_box, others) for s in sides}
                 states = [st for st, _ in per.values()]

@@ -8,11 +8,17 @@ from typing import Any, List, Optional
 
 from fastapi import Body, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.responses import FileResponse, RedirectResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from .db import ROOT, ensure_default_sources, get_db, init_db
+from .db import ROOT, ensure_default_sources, ensure_source, get_db, init_db
+from .live import LiveCamera
+
+import yaml
+
+# PPE hệ thống biết (thứ tự cố định theo configs/pipeline.yaml); chính sách chỉ nhận các tên này.
+KNOWN_PPE = list(yaml.safe_load((ROOT / "configs" / "pipeline.yaml").read_text(encoding="utf-8"))["ppe"])
 
 app = FastAPI(
     title="Hệ thống Giám sát Trang bị Bảo hộ Lao động (PPE-6)",
@@ -33,6 +39,12 @@ app.add_middleware(
 def startup():
     init_db()
     ensure_default_sources()
+    ensure_source(LIVE.source_id, LIVE.cfg.get("source_name", LIVE.source_id), "camera", KNOWN_PPE)
+
+
+@app.on_event("shutdown")
+def shutdown():
+    LIVE.stop()   # đóng sự kiện đang mở, tắt webcam
 
 
 # === SCHEMAS ===
@@ -197,6 +209,7 @@ def update_event(event_id: str, patch: EventPatchSchema):
 @app.get("/api/events")
 def list_events(
     source_id: Optional[str] = None,
+    session_id: Optional[str] = None,
     state: Optional[str] = None,
     ppe: Optional[str] = None,
     limit: int = 100,
@@ -215,9 +228,15 @@ def list_events(
     if state:
         conditions.append("event_state = ?")
         params.append(state)
+    if session_id:
+        conditions.append("session_id = ?")
+        params.append(session_id)
 
     where_clause = f"WHERE {' AND '.join(conditions)}" if conditions else ""
-    cur.execute(f"SELECT * FROM violation_events {where_clause} ORDER BY confirmed_at DESC LIMIT ? OFFSET ?", (*params, limit, offset))
+    # Sắp theo giờ hệ thống lúc tạo sự kiện (mới nhất trước). confirmed_at là giây tính từ đầu mỗi video / phiên camera,
+    # không so được giữa các phiên nên chỉ dùng để xếp các sự kiện cùng giây.
+    cur.execute(f"SELECT * FROM violation_events {where_clause} ORDER BY system_time DESC, confirmed_at DESC LIMIT ? OFFSET ?",
+                (*params, limit, offset))
     rows = cur.fetchall()
 
     events = []
@@ -500,6 +519,12 @@ def get_policy(source_id: str):
 
 @app.put("/api/sources/{source_id}/policy")
 def update_policy(source_id: str, payload: PolicyUpdateSchema):
+    """Lưu phiên bản chính sách mới. Nguồn đang chạy camera trực tiếp thì áp dụng ngay (đóng sự kiện đang mở với lý do
+    policy_changed, đếm lại theo danh sách mới)."""
+    bad = [p for p in payload.required_ppe if p not in KNOWN_PPE]
+    if bad:
+        raise HTTPException(status_code=400, detail=f"PPE không hợp lệ: {bad}; chỉ nhận {KNOWN_PPE}")
+    payload.required_ppe = [p for p in KNOWN_PPE if p in set(payload.required_ppe)]
     conn = get_db()
     cur = conn.cursor()
     cur.execute("SELECT version FROM ppe_policies WHERE source_id = ? ORDER BY version DESC LIMIT 1", (source_id,))
@@ -514,7 +539,84 @@ def update_policy(source_id: str, payload: PolicyUpdateSchema):
 
     conn.commit()
     conn.close()
-    return {"source_id": source_id, "version": next_ver, "required_ppe": payload.required_ppe}
+    applied = LIVE.source_id == source_id and LIVE.set_policy(payload.required_ppe, next_ver)
+    return {"source_id": source_id, "version": next_ver, "required_ppe": payload.required_ppe, "applied_live": applied}
+
+
+# === CAMERA TRỰC TIẾP (backend/live.py, configs/live.yaml) ===
+_sent_refs = {}   # event_id -> số ảnh minh chứng đã ghi vào database (PATCH chỉ gửi ảnh mới)
+
+
+def _live_event(kind, ev):
+    """Sự kiện từ chuỗi xử lý của camera: ghi thẳng vào SQLite bằng cùng hàm của POST/PATCH /api/events."""
+    eid = ev["event_id"]
+    refs = ev.get("evidence_refs") or []
+    if kind == "created":
+        create_event(EventCreateSchema(**ev))
+    else:
+        update_event(eid, EventPatchSchema(
+            last_seen_time=ev.get("last_seen_time"), missing_items=ev.get("missing_items"),
+            event_state=ev.get("event_state"), end_time=ev.get("end_time"), close_reason=ev.get("close_reason"),
+            last_change_time=ev.get("last_change_time"), evidence_refs=refs[_sent_refs.get(eid, 0):] or None,
+            change_type=kind))
+    _sent_refs[eid] = len(refs)
+    if kind == "closed":
+        _sent_refs.pop(eid, None)
+
+
+def _live_session(kind, info):
+    conn = get_db()
+    now = datetime.now().isoformat()
+    if kind == "start":
+        conn.execute("INSERT OR IGNORE INTO monitoring_sessions (session_id, source_id, policy_version, start_time, status) "
+                     "VALUES (?, ?, ?, ?, 'active')", (info["session_id"], info["source_id"], info["policy_version"] or 1, now))
+    else:
+        conn.execute("UPDATE monitoring_sessions SET end_time = ?, status = ? WHERE session_id = ?",
+                     (now, "error" if info.get("error") else "ended", info["session_id"]))
+    conn.commit()
+    conn.close()
+
+
+LIVE = LiveCamera(on_event=_live_event, on_session=_live_session)
+
+
+@app.post("/api/live/start")
+def live_start():
+    """Mở webcam và chạy chuỗi xử lý với chính sách mới nhất của nguồn camera. Nạp mô hình mất vài giây
+    (trạng thái starting -> running, xem /api/live/status)."""
+    pol = get_policy(LIVE.source_id)
+    try:
+        return LIVE.start(pol["required_ppe"], pol["version"])
+    except RuntimeError as e:
+        raise HTTPException(status_code=409, detail=str(e))
+
+
+@app.post("/api/live/stop")
+def live_stop():
+    return LIVE.stop()
+
+
+@app.get("/api/live/status")
+def live_status():
+    return LIVE.status()
+
+
+@app.get("/api/live/stream")
+def live_stream():
+    """Khung đã vẽ dạng MJPEG (dùng trực tiếp trong <img src>). Kết thúc khi camera dừng."""
+    if not LIVE.is_active():
+        raise HTTPException(status_code=409, detail="Camera chưa chạy")
+    return StreamingResponse(LIVE.mjpeg(), media_type="multipart/x-mixed-replace; boundary=frame",
+                             headers={"Cache-Control": "no-store"})
+
+
+@app.get("/api/live/snapshot")
+def live_snapshot():
+    """Một ảnh JPEG mới nhất (để kiểm tra nhanh, không cần trình duyệt)."""
+    jpg = LIVE.latest_jpeg()
+    if jpg is None:
+        raise HTTPException(status_code=404, detail="Chưa có khung hình")
+    return Response(content=jpg, media_type="image/jpeg", headers={"Cache-Control": "no-store"})
 
 
 # Mount Static Files Dashboard

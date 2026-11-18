@@ -9,5 +9,8 @@
 - Mục `fast_review` của `ppe6.yaml`: cổng, địa chỉ CVAT cục bộ, tên biến token, mã task cho công cụ duyệt nhanh; không chứa giá trị nhãn.
 - Mục `labeling` của `ppe6.yaml`: quy trình máy gán, người kiểm định: seed từng lượt, bảng ảnh, mẫu kiểm định, mức bất đồng. Không chứa nhãn.
 - `pipeline.yaml`: chuỗi xử lý video (`src/ppe`, `scripts/05*`): trọng số và `imgsz` của detector, danh sách PPE (thêm loại mới chỉ cần thêm mục), tham số ByteTrack (mặc định Ultralytics, chưa chỉnh), vùng cơ thể, khả năng quan sát, cửa sổ thời gian, mục `calibration` cho `05a`. `null` = chưa chọn; ghi ngày và cách chọn cạnh mỗi giá trị.
+- `live.yaml`: chế độ camera trực tiếp (`backend/live.py`): nguồn `cam0`, chỉ số webcam, độ phân giải xin webcam, cỡ và chất lượng ảnh gửi lên trình duyệt. Tham số vận hành theo phần cứng, không phải ngưỡng nhận diện (nhận diện vẫn theo `pipeline.yaml`).
+
+- `ppe6.yaml` mục `error_analysis`, `speed_check`, `c5_relabel`: phân tích lỗi C4, đo tốc độ detector, sửa nhãn C5 (kế hoạch `docs/experiments/2026-11-16_c5_detector_plan.md`). Ngưỡng đề xuất của `c5_relabel` do Claude đặt từ chạy thử trên mẫu, chỉ để chọn chỗ cần xem, không chọn theo điểm mô hình.
 
 Muốn đổi con số thì sửa ở đây, không sửa trong code.

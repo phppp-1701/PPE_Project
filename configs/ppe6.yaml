@@ -249,3 +249,92 @@ parts:
     model: yolo11n-cls.pt
     run_name: yolo11n_cls_parts_v5   # bản 1: yolo11n_cls_parts, bản 2, 3, 4: yolo11n_cls_parts_v2, _v3, _v4
     args: {imgsz: 160, epochs: 60, patience: 15, batch: 128, seed: 0, deterministic: true, workers: 4, fliplr: 0.5, degrees: 0}
+
+error_analysis:
+  # Phân tích lỗi detector trên val (scripts/04h_error_analysis.py, kế hoạch 2026-11-16_c5_detector_plan.md bước A).
+  # Chỉ để chẩn đoán, không chọn tham số. Claude đặt 16/11/2026; conf 0,25 và IoU 0,5 như analyze ở train.yaml.
+  conf: 0.25                 # dự đoán từ mức này mới tính là báo thừa
+  match_iou: 0.5             # ghép dự đoán với nhãn cùng lớp
+  loc_iou: 0.1               # 0,1 <= IoU < 0,5 với nhãn cùng lớp: lỗi lệch hộp
+  neg_iou: 0.3               # dự đoán trùng vật âm của nhãn gốc (tay trần, giày thường...) từ mức này
+  size_bins_px: [16, 32, 64] # cạnh ngắn của hộp nhãn ở không gian ảnh vào mô hình (imgsz 960)
+  n_samples: 40              # số ô cắt mỗi bảng ảnh
+  seed: 0
+  runs:
+    - {name: c4_val_gloves, capture: outputs/results/ppe6_eval/c4_ppe4val, images: data/ppe4/dataset/images/val, classes: [gloves, helmet, vest]}
+    - {name: c4_valnew, capture: outputs/results/ppe6_eval/c4_valnew, images: data/ppe6/dataset/images/val_new_draft, classes: [goggles, boots], ignore: true}
+    # C5-s960 trên val đã sửa (17/11/2026, sau khi chọn C5): găng trên ảnh ppe4 val, ủng trên ảnh lớp mới; ignore của 03z
+    - {name: c5s960_val_gloves, capture: outputs/results/c5_eval/c5_s960_val, images: data/ppe6/c5/eval/val/images, classes: [gloves], ignore: c5, split: val, subset: ppe4}
+    - {name: c5s960_val_boots, capture: outputs/results/c5_eval/c5_s960_val, images: data/ppe6/c5/eval/val/images, classes: [boots], ignore: c5, split: val, subset: new_class_files}
+  # Vật âm trong nhãn gốc (không phải lớp của detector): mã lớp gốc theo bộ
+  negatives:
+    sh17: {gloves: [11], boots: [6, 14], goggles: [8]}            # 11 hands, 6 foot, 14 shoes, 8 glasses
+    construction_ppe: {gloves: [9], boots: [10], goggles: [8]}    # 9 no_gloves, 10 no_boots, 8 no_goggle
+
+speed_check:
+  # Đo tốc độ detector trên laptop (scripts/04i_detector_speed.py), kế hoạch 2026-11-16_c5_detector_plan.md bước A.
+  video: data/videos/video4.mp4   # video phát triển, như benchmark 07
+  frames: 220
+  warmup: 20
+  weights: [outputs/train/yolo11s_ppe6_c4/weights/best.pt, yolo11s.pt, yolo11m.pt]   # C4 để đối chiếu; COCO s, m để đo cỡ
+  imgsz: [960, 1280]
+
+c5_relabel:
+  # Bước B, F kế hoạch 2026-11-16_c5_detector_plan.md: sửa nhãn găng, ủng, kính và mở rộng val, test kính, ủng
+  # (scripts/03z_c5_relabel.py). Nhãn máy (lượt máy + Claude xem ảnh), không phải nhãn người. Tham số do Claude đặt
+  # 16/11/2026 từ hai lần chạy thử trên mẫu train / val (scratchpad, ghi trong kế hoạch mục 2B), không chọn theo điểm mô hình.
+  out: data/ppe6/c5
+  seed: 16                  # thứ tự ô trên bảng ảnh
+  owl:
+    model: google/owlv2-base-patch16-ensemble
+    # Chạy thử 60 ảnh val: "a glove", "a work glove", "a gloved hand" tìm lại 92% hộp găng ở 0,2
+    queries:
+      gloves: ["a glove", "a work glove", "a gloved hand"]
+      boots: ["rubber boots", "work boots", "safety boots"]
+      goggles: ["safety goggles", "safety glasses"]
+    min_score: 0.1            # lưu mọi dự đoán từ mức này
+    nms_iou: 0.5
+  propose:
+    owl_score: 0.2            # đề xuất OWLv2 từ mức này (chạy thử: tìm lại 92% găng có nhãn)
+    c4_conf: 0.25             # đề xuất của detector C4 từ mức này (như error_analysis.conf)
+    hand_p: 0.25              # hộp hands SH17: p găng của bộ phân loại tay từ mức này thì đưa Claude xem
+    new_iou: 0.3              # đề xuất trùng nhãn cùng lớp từ mức này thì không phải nhãn thiếu
+    hands_weights: outputs/train/yolo11n_cls_parts_v4/weights/best.pt
+    context: 1.6              # ảnh cắt tay như parts.context
+
+c5_decision:
+  # Tiêu chí chọn bản C5 (kế hoạch 2026-11-16_c5_detector_plan, khóa 17/11/2026 trước khi train, người dùng đồng ý).
+  runs: [c5_s960, c5_s1280]
+  new_classes_mean: [gloves, goggles, boots]   # găng: tập ppe4; kính: goggles_all (lớp mới + CHVG, 17/11 sau khi thêm CHVG, trước train); ủng: tập lớp mới (04j)
+  min_gain_1280: 0.02
+  min_fps: 20
+  max_p95_ms: 100
+  no_drop: [gloves, boots]       # so với C4 trên val đã sửa
+  max_old_drop: 0.02             # người, mũ, áo
+
+c6_ext:
+  # C6 bước C (03za_c6_external_boots.py, kế hoạch 2026-11-16_c5_detector_plan mục C6), người dùng đồng ý 17/11/2026.
+  # Ngưỡng do Claude đặt trước khi xem kết quả, chỉ để lọc / gán nhãn máy cho train; không chọn trên val.
+  weights: outputs/train/yolo11s_ppe6_c5_s960/weights/best.pt
+  sources:
+    vf: {dir: data/raw/safety_shoe_vf, prefix: vf, boots: [1]}        # 1 safety-shoe; 0 no_safety-shoe = mẫu âm
+    nc: {dir: data/raw/safety_shoes_nc, prefix: nc, boots: [0, 4]}    # 0 Safety-shoes, 4 safety_shoe; 2 not_safety_shoe = mẫu âm; 1 d, 3 person bỏ
+  rot_min: 0.5          # ảnh xoay: person conf khi xoay 90° >= mức này
+  rot_margin: 0.2       # và hơn ảnh gốc ít nhất chừng này
+  dedup_hamming: 6      # như parts.v5.dedup_hamming (gần trùng trong, giữa hai bộ)
+  group_hamming: 10     # nhóm cảnh (tên gốc) có ảnh cách ảnh đánh giá <= mức này thì bỏ cả nhóm; khoảng cách ngẫu nhiên tối thiểu thường 12-16 (đo 17/11)
+  pseudo_conf: 0.5      # người, mũ, áo: nhãn máy từ C5-s960
+  mask_conf: 0.25       # người, mũ, áo conf trong [0,25; 0,5): che
+  mask_conf_small: 0.1  # găng, kính: che mọi dự đoán từ mức này (không gán nhãn máy)
+  max_side: 1280
+
+c6_decision:
+  # Tiêu chí chọn C6 (kế hoạch 2026-11-16_c5_detector_plan mục C6), khóa 17/11/2026 trước khi train, người dùng đồng ý.
+  # Hai bản cùng dữ liệu (c5_pack + c6_extra_pack), imgsz 960: c6_scratch (từ yolo11s.pt, như C5) và c6_ft (tinh chỉnh từ
+  # C5-s960). So với C5-s960 trên val đã sửa (04j), mỗi lớp như c5_decision (găng: ppe4; kính: goggles_all; ủng: lớp mới).
+  baseline: c5_s960
+  runs: [c6_scratch, c6_ft]
+  pick_by: mean_new_classes      # giữa hai bản C6: trung bình mAP50 găng, kính, ủng cao hơn
+  min_boots_gain: 0.03           # C6 thay C5 khi ủng tăng >= mức này
+  max_drop: 0.02                 # và găng, kính, người, mũ, áo không tụt quá mức này
+  ft: {epochs: 40, optimizer: SGD, lr0: 0.002, warmup_epochs: 1}   # tinh chỉnh; Claude đặt, không chọn trên val. optimizer phải đặt rõ (auto bỏ qua lr0)

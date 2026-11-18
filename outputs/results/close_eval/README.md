@@ -14,6 +14,7 @@ tiêu chí "bỏ sót không tăng" trên video 3-6. Người dùng chọn bật
 | `kiem_thu_gan/` | Giai đoạn 5 (chỉ chạy khi người dùng cho phép): hai cấu hình trên 9 video `kiem_thu_gan` |
 | `stepB/` | Bước B lần 1 (đã tắt): `dev36/`, `old9/` hồi quy bản 4 với B1; `off13/` cấu hình tắt B (trùng bản 4); `pipeline_v4_0b756b8.yaml` cấu hình bản 4 lấy từ `git show 0b756b8:configs/pipeline.yaml` |
 | `annotated_main/` | Video đã vẽ của bản chính hiện tại (bản 4 + D + C2 + F1, `configs/pipeline.yaml` @ `61e4c8c`) cho 13 video phát triển, trang xem `index.html` (dựng bằng `annotated/build_viewer.py`); `frames.csv` kiểm trùng lượt chấm `stepF/*/F1`; `display_audit.json` kiểm nhất quán hình vẽ - trạng thái (`06c`), `outside_diag.json` chẩn đoán hộp không gán (bước F). Video, ảnh không đưa lên Git |
+| `annotated_current/` | Video đã vẽ của hệ thống hiện tại (bản cuối + M1, `configs/pipeline.yaml` @ `3a19e4b`, bản chép `pipeline_current.yaml`) cho 13 video phát triển, trang xem `index.html`; `frames.csv` kiểm trùng lượt chấm `stepM1/*/M1`. Video phát triển, chỉ để xem. Video, ảnh không đưa lên Git |
 | `stepM1/` | Bước M1 (kế hoạch 2026-11-16_post_holdout_fixes mục 2): `pipeline_final_e40e793.yaml` (bản cuối) so với `pipeline_M1.yaml` (thêm `veto_boots`), hồi quy `dev36/`, `old9/`; video phát triển, chỉ kiểm hồi quy |
 | `stepCD/` | Bước C, D (kế hoạch ppe6 mục C, D): cấu hình thử `pipeline_C.yaml`, `pipeline_D.yaml`, `pipeline_CD.yaml` (bản 4 + khóa C, D), hồi quy `dev36/`, `old9/`; video phát triển, chỉ kiểm hồi quy |
 
