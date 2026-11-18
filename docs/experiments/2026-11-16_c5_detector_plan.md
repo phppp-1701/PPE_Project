@@ -603,6 +603,32 @@ khi có trọng số thật. FP16 phải kiểm trên val (AP gần như không 
 trung bình mAP50 găng, kính, ủng tăng ≥ 0,02, không lớp nào tụt quá 0,02, FP16 lệch FP32 ≤ 0,005 mỗi lớp trên val (mới được
 chạy FP16), và pipeline (07) ≥ 20 khung/giây, p95 ≤ 100 ms. Hướng dẫn: `docs/c7_kaggle_run.md`.
 
+### Kết quả C7-m (19/11/2026)
+
+Kaggle T4 x2, DDP (`device 0,1`, batch 16), log `outputs/train/yolo11m_ppe6_c7/kaggle_train.log`: ghép đúng `train 7169,
+val_monitor 1070`, bộ phụ 4.475 ảnh, 3.705 bản lặp, 15.243 ảnh train; **53 epoch, 8,35 giờ, dừng sớm, best epoch 33**.
+`04f` đạt; sha256 best.pt `7a8eef5d1efdb94034565cdcf44371604d855840b906d9d517e943287a1ae1ea`. Chấm `04d` (FP32 và `--half`)
++ `04j` → `outputs/results/c5_eval/c6_vs_c7.json`, `c7_fp32_vs_fp16.json`.
+
+| Lớp (tập) | c6_ft | C7-m | C7-m − c6_ft [KTC 95%] |
+|---|---|---|---|
+| người (ppe4) | 0,894 | 0,897 | +0,004 |
+| mũ (ppe4) | 0,899 | 0,898 | −0,000 |
+| áo (ppe4) | 0,780 | 0,779 | −0,001 |
+| găng (ppe4) | 0,657 | 0,661 | +0,003 [−0,021; +0,028] |
+| kính (goggles_all) | 0,807 | 0,774 | −0,033 [−0,104; +0,034] |
+| ủng (lớp mới, 76) | 0,677 | 0,620 | −0,057 [−0,149; +0,036] |
+
+FP16 so với FP32 của C7-m: mọi lớp lệch ≤ 0,005 (lớn nhất găng tập lớp mới −0,004) → đạt `half_check`.
+
+**Áp tiêu chí đã khóa (`c7_decision`):** trung bình găng, kính, ủng: C7-m 0,685, c6_ft 0,714 → giảm 0,029 (cần tăng ≥ 0,02):
+**không đạt**; ủng −0,057, kính −0,033 tụt quá 0,02: **không đạt**. → **C7-m không thay c6_ft**; hệ thống giữ c6_ft. Không đo
+tốc độ 07 cho C7 (đã không đạt điều kiện độ chính xác).
+
+Nhận xét (Claude): qua C4 → C7 (sửa nhãn, 1280, dữ liệu ủng ngoài, mẫu âm khó, mô hình m), **găng nằm yên quanh
+0,66 (0,655–0,674), áo quanh 0,78**; mọi khác biệt giữa các bản nằm trong KTC. Mức trần này nhiều khả năng do dữ liệu
+(găng nhỏ, bị che, nhập nhằng găng / tay; áo SH17 ở xa) và do tập val nhỏ với ủng (76 hộp), không phải do cỡ mô hình.
+
 ## 3. Điểm cần người dùng quyết định
 
 1. **Kiểm định của người.** Theo CLAUDE.md: nhãn máy phải ghi "nhãn máy, có kiểm định mẫu của người", tầng không đạt kiểm
