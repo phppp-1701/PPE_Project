@@ -19,3 +19,5 @@ fastapi==0.162.5
 uvicorn==0.54.0
 httpx==0.28.1
 pyyaml==6.0.3
+# Vẽ biểu đồ báo cáo (scripts/08_report_figures.ipynb); đã có trong .venv (requirements-lock.txt), ghi lại 18/11/2026
+matplotlib==3.11.2
