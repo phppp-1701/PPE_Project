@@ -158,8 +158,9 @@ def writable_copy(data_yaml, dst, max_side=None, force=False):
 
 
 def add_extra(extra, data_yaml):
-    """Ghép bộ phụ vào phần train của bản ghi được: chép ảnh cắt, thêm một bản cho ảnh trong oversample.txt.
-    Bản thêm là liên kết tới ảnh đã có, tên rep__<ảnh>. Không đụng val, test."""
+    """Ghép bộ phụ vào phần train của bản ghi được: chép ảnh cắt, thêm một bản cho mỗi lần tên ảnh xuất hiện trong
+    oversample.txt. Bản thêm là liên kết tới ảnh đã có, tên rep__<ảnh> (rep1__, rep2__ nếu tên lặp). Ảnh trong bộ phụ
+    trùng tên ảnh gốc thì thay ảnh gốc (C7). Không đụng val, test."""
     base = Path(data_yaml).parent
     found = [p.parent for p in Path(extra).rglob("oversample.txt")]
     if len(found) != 1:
@@ -168,15 +169,22 @@ def add_extra(extra, data_yaml):
     img, lab = base / "images" / "train", base / "labels" / "train"
     n = 0
     for f in (src / "images" / "train").iterdir():
-        shutil.copy2(f, img / f.name)
+        dst = img / f.name
+        if dst.exists() or dst.is_symlink():   # C7: ảnh cùng tên trong bộ phụ thay ảnh gốc; bỏ liên kết cũ trước khi chép
+            dst.unlink()
+        shutil.copy2(f, dst)
         shutil.copy2(src / "labels" / "train" / f"{f.stem}.txt", lab / f"{f.stem}.txt")
         n += 1
     names = [x for x in (src / "oversample.txt").read_text(encoding="utf-8").split("\n") if x]
-    for name in names:
-        out = img / f"rep__{name}"
+    seen = collections.Counter()
+    for name in names:   # tên lặp k lần -> k bản thêm: rep__, rep1__, rep2__...
+        k = seen[name]
+        seen[name] += 1
+        pre = "rep__" if k == 0 else f"rep{k}__"
+        out = img / f"{pre}{name}"
         if not out.exists() and not out.is_symlink():
             out.symlink_to((img / name).resolve())
-        shutil.copy2(lab / f"{Path(name).stem}.txt", lab / f"rep__{Path(name).stem}.txt")
+        shutil.copy2(lab / f"{Path(name).stem}.txt", lab / f"{pre}{Path(name).stem}.txt")
     print(f"Bộ phụ: {n} ảnh cắt, {len(names)} bản thêm; train còn {sum(1 for _ in img.iterdir())} ảnh", flush=True)
 
 
@@ -247,7 +255,8 @@ def main():
     # Đánh giá lại best.pt trên val để có số từng lớp (chỉ val; test để dành đến cuối).
     best = YOLO(save_dir / "weights" / "best.pt")
     metrics = best.val(data=data, split="val", imgsz=cfg["train"]["imgsz"], batch=2 if args.smoke else 16,
-                       device=cfg["train"]["device"], project=str(save_dir), name="val_best")
+                       device=str(cfg["train"]["device"]).split(",")[0],   # val một GPU (train nhiều GPU: "0,1")
+                       project=str(save_dir), name="val_best")
     info = dict(
         run_name=cfg["run_name"], gpu=gpu, ultralytics=ultralytics.__version__, torch=torch.__version__,
         data=data, model=cfg["model"], config=cfg, resumed_from=args.resume, train_hours=round(hours, 2),

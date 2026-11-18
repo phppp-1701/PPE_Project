@@ -585,6 +585,24 @@ Lần đo 17/11 (máy rảnh) m@960 FP32 là 45,05 ms; lần này 35,34 ms (khá
 pipeline với m FP16: khoảng 38 − 17 + 22 ≈ 43 ms/khung ≈ 23 FPS → **YOLO11m FP16 có thể đạt mốc ≥ 20 FPS**; phải đo bằng 07
 khi có trọng số thật. FP16 phải kiểm trên val (AP gần như không đổi so với FP32) trước khi dùng.
 
+### C7: dữ liệu (người dùng chọn phương án a, 18/11/2026; `scripts/03zb_c7_prep.py`, mục `c7`)
+
+1. **Ủng báo thừa trên train:** c6_ft dự đoán ủng trên 8.132 ảnh train (gốc C5 + ảnh nguyên bộ phụ C6); 589 dự đoán conf ≥ 0,3
+   không trùng nhãn ủng. Claude xem 15 bảng (`bootsfp_train_add_*`): **ủng thật thiếu nhãn 63** (thêm nhãn), **giày thường /
+   vật khác 216** (giày thể thao, giày da, dép, giày cao gót, ống quần, tay, vật dụng), không rõ 310 (che xám). 270 ảnh sửa.
+   **(Claude quan sát)** nhiều ô "không rõ" là giày / bốt da lao động cổ thấp: ca biên của định nghĩa "ủng / giày bảo hộ nhìn
+   rõ", che để không học sai chiều nào.
+2. **Mẫu âm khó:** 178 ảnh có giày thường bị nhận nhầm, lặp thêm 2 lần.
+3. **Áo SH17:** 152 ảnh SH17 train có áo, lặp thêm 1 lần.
+4. Ảnh sửa nằm trong bộ phụ **cùng tên** ảnh gốc; `04_train.py add_extra` sửa để ảnh bộ phụ thay ảnh gốc và tên lặp trong
+   `oversample.txt` tạo nhiều bản (`rep__`, `rep1__`…), test `tests/test_train_extra.py`. Gói chính `c5_pack.zip` không đổi.
+   Gói `data/ppe6/variants/kaggle/c7_extra_pack.zip` (676 MB, oversample 3.705).
+5. Găng: không có dữ liệu mới (người dùng chưa trả lời câu hỏi tìm thêm bộ găng).
+
+**Tiêu chí C7 (khóa 18/11/2026 trước khi train, `c7_decision`):** C7-m (YOLO11m COCO, 960, DDP 2 GPU, batch 16) thay c6_ft khi
+trung bình mAP50 găng, kính, ủng tăng ≥ 0,02, không lớp nào tụt quá 0,02, FP16 lệch FP32 ≤ 0,005 mỗi lớp trên val (mới được
+chạy FP16), và pipeline (07) ≥ 20 khung/giây, p95 ≤ 100 ms. Hướng dẫn: `docs/c7_kaggle_run.md`.
+
 ## 3. Điểm cần người dùng quyết định
 
 1. **Kiểm định của người.** Theo CLAUDE.md: nhãn máy phải ghi "nhãn máy, có kiểm định mẫu của người", tầng không đạt kiểm
