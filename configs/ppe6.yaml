@@ -266,9 +266,12 @@ error_analysis:
     # C5-s960 trên val đã sửa (17/11/2026, sau khi chọn C5): găng trên ảnh ppe4 val, ủng trên ảnh lớp mới; ignore của 03z
     - {name: c5s960_val_gloves, capture: outputs/results/c5_eval/c5_s960_val, images: data/ppe6/c5/eval/val/images, classes: [gloves], ignore: c5, split: val, subset: ppe4}
     - {name: c5s960_val_boots, capture: outputs/results/c5_eval/c5_s960_val, images: data/ppe6/c5/eval/val/images, classes: [boots], ignore: c5, split: val, subset: new_class_files}
+    # C6 c6_ft (18/11/2026, sau khi chọn C6): áo, găng trên ảnh ppe4 val; ủng trên ảnh lớp mới
+    - {name: c6ft_val_ppe4, capture: outputs/results/c5_eval/c6_ft_val, images: data/ppe6/c5/eval/val/images, classes: [vest, gloves], ignore: c5, split: val, subset: ppe4, sheets_vest: true}
+    - {name: c6ft_val_boots, capture: outputs/results/c5_eval/c6_ft_val, images: data/ppe6/c5/eval/val/images, classes: [boots], ignore: c5, split: val, subset: new_class_files}
   # Vật âm trong nhãn gốc (không phải lớp của detector): mã lớp gốc theo bộ
   negatives:
-    sh17: {gloves: [11], boots: [6, 14], goggles: [8]}            # 11 hands, 6 foot, 14 shoes, 8 glasses
+    sh17: {gloves: [11], boots: [6, 14], goggles: [8], vest: [13, 15]}   # 11 hands, 6 foot, 14 shoes, 8 glasses, 13 medical-suit, 15 safety-suit
     construction_ppe: {gloves: [9], boots: [10], goggles: [8]}    # 9 no_gloves, 10 no_boots, 8 no_goggle
 
 speed_check:
@@ -276,8 +279,11 @@ speed_check:
   video: data/videos/video4.mp4   # video phát triển, như benchmark 07
   frames: 220
   warmup: 20
-  weights: [outputs/train/yolo11s_ppe6_c4/weights/best.pt, yolo11s.pt, yolo11m.pt]   # C4 để đối chiếu; COCO s, m để đo cỡ
-  imgsz: [960, 1280]
+  imgsz: [960]
+  # 18/11/2026: thêm FP16 (half) để xem YOLO11m có đạt >= 20 FPS (c5 mục tiêu tốc độ); lần 17/11 dùng imgsz [960, 1280], FP32
+  weights: [outputs/train/yolo11s_ppe6_c6_ft/weights/best.pt, yolo11m.pt]
+  half: [false, true]
+  out: detector_speed_fp16.json
 
 c5_relabel:
   # Bước B, F kế hoạch 2026-11-16_c5_detector_plan.md: sửa nhãn găng, ủng, kính và mở rộng val, test kính, ủng

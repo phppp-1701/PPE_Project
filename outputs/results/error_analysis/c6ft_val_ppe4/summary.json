@@ -1,0 +1,131 @@
+{
+ "run": "c6ft_val_ppe4",
+ "capture": "outputs/results/c5_eval/c6_ft_val",
+ "images": 1586,
+ "ignored_predictions": 2012,
+ "classes": {
+  "vest": {
+   "ap50": 0.7798,
+   "gt": 620,
+   "recall": 0.8516,
+   "by_size": {
+    "<16": {
+     "found": 5,
+     "total": 57,
+     "recall": 0.088
+    },
+    "<32": {
+     "found": 16,
+     "total": 22,
+     "recall": 0.727
+    },
+    "<64": {
+     "found": 67,
+     "total": 73,
+     "recall": 0.918
+    },
+    ">=64": {
+     "found": 440,
+     "total": 468,
+     "recall": 0.94
+    }
+   },
+   "by_source": {
+    "chv": {
+     "found": 265,
+     "total": 275,
+     "recall": 0.964
+    },
+    "construction_ppe": {
+     "found": 216,
+     "total": 241,
+     "recall": 0.896
+    },
+    "sh17": {
+     "found": 47,
+     "total": 104,
+     "recall": 0.452
+    }
+   },
+   "missed_by_kind": {
+    "khong_thay": 50,
+    "nham_lop": 2,
+    "lech_hop": 40
+   },
+   "false_pos_by_kind": {
+    "khong_ro": 50,
+    "nham_lop": 15,
+    "lech_hop": 30,
+    "trung_lap": 3,
+    "vat_am": 5
+   },
+   "false_pos_total": 103
+  },
+  "gloves": {
+   "ap50": 0.6573,
+   "gt": 864,
+   "recall": 0.8102,
+   "by_size": {
+    "<16": {
+     "found": 69,
+     "total": 118,
+     "recall": 0.585
+    },
+    "<32": {
+     "found": 132,
+     "total": 160,
+     "recall": 0.825
+    },
+    "<64": {
+     "found": 167,
+     "total": 207,
+     "recall": 0.807
+    },
+    ">=64": {
+     "found": 332,
+     "total": 379,
+     "recall": 0.876
+    }
+   },
+   "by_source": {
+    "chv": {
+     "found": 185,
+     "total": 228,
+     "recall": 0.811
+    },
+    "construction_ppe": {
+     "found": 177,
+     "total": 216,
+     "recall": 0.819
+    },
+    "sh17": {
+     "found": 338,
+     "total": 420,
+     "recall": 0.805
+    }
+   },
+   "missed_by_kind": {
+    "nham_lop": 2,
+    "lech_hop": 77,
+    "khong_thay": 85
+   },
+   "false_pos_by_kind": {
+    "khong_ro": 71,
+    "trung_lap": 13,
+    "lech_hop": 36,
+    "vat_am": 26
+   },
+   "false_pos_total": 146
+  }
+ },
+ "sheets": {
+  "vest_bo_sot_lon": 34,
+  "vest_bo_sot_ngau_nhien": 40,
+  "vest_thua_khong_ro": 40,
+  "vest_thua_vat_am": 5,
+  "gloves_bo_sot_lon": 40,
+  "gloves_bo_sot_ngau_nhien": 40,
+  "gloves_thua_khong_ro": 40,
+  "gloves_thua_vat_am": 26
+ }
+}

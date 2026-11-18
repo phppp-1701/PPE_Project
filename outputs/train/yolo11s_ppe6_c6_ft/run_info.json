@@ -1,0 +1,108 @@
+{
+  "run_name": "yolo11s_ppe6_c6_ft",
+  "gpu": "Tesla T4",
+  "ultralytics": "8.4.189",
+  "torch": "2.11.0+cu130",
+  "data": "/tmp/ppe_data_c6_ft/data.yaml",
+  "model": "/kaggle/input/datasets/phpp1701/khoa-luan-ppe6-c6-extra/c6_extra/weights/c5_s960_best.pt",
+  "config": {
+    "run_name": "yolo11s_ppe6_c6_ft",
+    "model": "/kaggle/input/datasets/phpp1701/khoa-luan-ppe6-c6-extra/c6_extra/weights/c5_s960_best.pt",
+    "copy_max_side": 960,
+    "train": {
+      "imgsz": 960,
+      "optimizer": "SGD",
+      "lr0": 0.002,
+      "warmup_epochs": 1,
+      "epochs": 40,
+      "batch": -1,
+      "patience": 20,
+      "time": 11,
+      "seed": 0,
+      "deterministic": true,
+      "device": 0,
+      "workers": 4,
+      "cache": false,
+      "flipud": 0.0,
+      "degrees": 0.0
+    },
+    "extra": {
+      "seed": 0,
+      "video_side": 1920,
+      "margin": 0.1,
+      "min_person_px": 30,
+      "max_person_px": 180,
+      "min_visible": 0.5,
+      "max_crops": 2500,
+      "max_per_image": 3,
+      "no_ppe_share": 0.15,
+      "oversample_gloves": 1500,
+      "shrink_px": [
+        60,
+        360
+      ]
+    },
+    "analyze": {
+      "conf": 0.25,
+      "match_iou": 0.5,
+      "size_bins_px": [
+        8,
+        16,
+        32
+      ],
+      "n_samples": 30,
+      "sample_classes": [
+        "gloves"
+      ],
+      "seed": 0,
+      "speed_images": 200
+    }
+  },
+  "resumed_from": null,
+  "train_hours": 3.08,
+  "weights": "/kaggle/working/runs/yolo11s_ppe6_c6_ft/weights/best.pt",
+  "val": {
+    "all": {
+      "P": 0.6674,
+      "R": 0.5981,
+      "mAP50": 0.6054,
+      "mAP50_95": 0.369
+    },
+    "person": {
+      "P": 0.9183,
+      "R": 0.7844,
+      "mAP50": 0.8711,
+      "mAP50_95": 0.6102
+    },
+    "helmet": {
+      "P": 0.9389,
+      "R": 0.7994,
+      "mAP50": 0.8743,
+      "mAP50_95": 0.5041
+    },
+    "vest": {
+      "P": 0.8692,
+      "R": 0.6184,
+      "mAP50": 0.6952,
+      "mAP50_95": 0.406
+    },
+    "gloves": {
+      "P": 0.7534,
+      "R": 0.3995,
+      "mAP50": 0.4949,
+      "mAP50_95": 0.2849
+    },
+    "goggles": {
+      "P": 0.2888,
+      "R": 0.5172,
+      "mAP50": 0.3865,
+      "mAP50_95": 0.208
+    },
+    "boots": {
+      "P": 0.2358,
+      "R": 0.4699,
+      "mAP50": 0.3102,
+      "mAP50_95": 0.2007
+    }
+  }
+}

@@ -529,6 +529,62 @@ với C5 về dữ liệu) và **c6_ft** (tinh chỉnh từ C5-s960: 40 epoch, l
 bình mAP50 găng, kính, ủng cao hơn. **C6 thay C5-s960** khi ủng tăng ≥ 0,03 và găng, kính, người, mũ, áo không tụt quá
 0,02 (val đã sửa, cùng tập con như C5). Người dùng quyết định cuối.
 
+### Kết quả C6 (18/11/2026)
+
+Kaggle T4 x2, một phiên, hai bản song song (log `outputs/train/yolo11s_ppe6_c6_*/kaggle_train.log`): cả hai ghép đúng
+`train 7169, val_monitor 1070`, bộ phụ 4.369 ảnh, 3.197 bản lặp, 14.735 ảnh train. **c6_scratch**: 52 epoch, 6,94 giờ,
+dừng sớm (best epoch 32 theo val_monitor). **c6_ft**: 21 epoch, 3,05 giờ, dừng sớm, **best epoch 1** (theo mAP50-95 trên
+val_monitor; val_monitor vẫn là nhãn cũ). `04f` đạt cả hai; sha256 best.pt: c6_scratch `575678ca…c6be4`, c6_ft
+`881afaa7…8ec8`. Chấm: `04d` + `04j` → `outputs/results/c5_eval/c5_vs_c6_scratch.json`, `c5_vs_c6_ft.json`.
+
+| Lớp (tập) | C5-s960 | c6_scratch | c6_ft | c6_ft − C5 [KTC 95%] |
+|---|---|---|---|---|
+| người (ppe4) | 0,893 | 0,885 | 0,894 | +0,001 |
+| mũ (ppe4) | 0,899 | 0,903 | 0,899 | −0,000 |
+| áo (ppe4) | 0,783 | 0,779 | 0,780 | −0,004 |
+| găng (ppe4) | 0,667 | 0,655 | 0,657 | −0,010 [−0,023; −0,001] |
+| kính (goggles_all, 155) | 0,809 | 0,706 | 0,807 | −0,002 [−0,045; +0,035] |
+| ủng (lớp mới, 76) | 0,625 | 0,636 | **0,677** | **+0,051** [−0,018; +0,116] |
+
+**Áp tiêu chí đã khóa (`c6_decision`):**
+1. Giữa hai bản C6: trung bình găng, kính, ủng: c6_ft 0,714, c6_scratch 0,666 → **chọn c6_ft**. c6_scratch tụt kính rõ
+   (CHVG −0,101 [−0,154; −0,052]).
+2. c6_ft so với C5-s960: ủng +0,051 ≥ 0,03 (**đạt**); găng −0,010, kính −0,002, người +0,001, mũ −0,000, áo −0,004, đều
+   không tụt quá 0,02 (**đạt**). → **C6 (c6_ft) đạt tiêu chí thay C5-s960.** Người dùng quyết định cuối.
+3. Lưu ý khi viết báo cáo: KTC của mức tăng ủng còn chứa 0 (76 hộp); c6_ft tốt nhất ở epoch 1, tức gần như C5 tinh chỉnh
+   một epoch với dữ liệu ủng mới; găng giảm nhẹ nhưng KTC không chứa 0. Mục tiêu 0,8: kính 0,807 đạt; găng 0,657, ủng 0,677
+   chưa đạt.
+
+**Người dùng đồng ý 18/11/2026 chuyển sang c6_ft** ("cũng được, nhưng tôi vẫn muốn kết quả phải trên 0.8 hết").
+`configs/pipeline.yaml` `detector.weights` = `outputs/train/yolo11s_ppe6_c6_ft/weights/best.pt` (sha256
+`881afaa7f858d2cf7d95d15335609851574d3a7fd59f900ec5b41b1ad3818ec8`). **Test đã sửa và hồi quy video hoãn tới khi chốt bản
+cuối** (người dùng muốn tiếp tục nâng áo, găng, ủng lên 0,8; test chỉ chạy một lần cho bản được chọn cuối cùng).
+
+## C7: nâng áo, găng, ủng lên 0,8 (người dùng yêu cầu 18/11/2026)
+
+### Phân tích lỗi c6_ft trên val đã sửa (`04h --run c6ft_val_ppe4`, `c6ft_val_boots`)
+
+| Lớp | AP50 | Recall tối đa | Chỗ hỏng chính |
+|---|---|---|---|
+| Áo (ppe4, 620) | 0,780 | 0,852 | **SH17 recall 0,452** (104 hộp; CHV 0,964, Construction-PPE 0,896); hộp < 16 px recall 0,088 (57 hộp); báo thừa 103 (không rõ 50, lệch 30, nhầm lớp 15) |
+| Găng (ppe4, 864) | 0,657 | 0,810 | bỏ sót 164 (không thấy 85, lệch hộp 77), < 16 px recall 0,585; báo thừa 146 (không rõ 71, lệch 36, vật âm 26) — chia đều, không có một nguyên nhân lớn |
+| Ủng (lớp mới, 76) | 0,677 | **0,934** | ủng gần như tìm đủ; AP bị kéo bởi **báo thừa conf cao** (33: giày thường SH17 14, không rõ 15), có cái conf 0,81 |
+
+**(Claude quan sát)** bảng ảnh: áo bỏ sót tập trung ở một số ảnh SH17 đông người, áo nhỏ ở xa; vài nhãn "vest" của
+Construction-PPE cũ là áo giáp quân sự (không phải áo phản quang). Ủng báo thừa: giày thể thao, bốt cổ ngắn có gót, và vài
+giày da lao động màu nâu (ca biên theo định nghĩa "ủng / giày bảo hộ nhìn rõ").
+
+### Tốc độ FP16 (`04i`, `speed_check` bản 18/11, `outputs/results/error_analysis/detector_speed_fp16.json`)
+
+| Detector @960 | FP32 ms/khung | FP16 ms/khung (p95) |
+|---|---|---|
+| s (c6_ft) | 17,02 | 12,49 (15,98) |
+| m (COCO, cùng kiến trúc) | 35,34 | **21,73** (22,48) |
+
+Lần đo 17/11 (máy rảnh) m@960 FP32 là 45,05 ms; lần này 35,34 ms (khác nhau, chưa rõ lý do; FP16 đo cùng lượt). Ước lượng
+pipeline với m FP16: khoảng 38 − 17 + 22 ≈ 43 ms/khung ≈ 23 FPS → **YOLO11m FP16 có thể đạt mốc ≥ 20 FPS**; phải đo bằng 07
+khi có trọng số thật. FP16 phải kiểm trên val (AP gần như không đổi so với FP32) trước khi dùng.
+
 ## 3. Điểm cần người dùng quyết định
 
 1. **Kiểm định của người.** Theo CLAUDE.md: nhãn máy phải ghi "nhãn máy, có kiểm định mẫu của người", tầng không đạt kiểm

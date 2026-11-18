@@ -138,3 +138,14 @@ outputs/results/close_eval/final/holdout_viewer/
 !outputs/results/close_eval/stepM1/*/results.json
 !outputs/results/close_eval/stepM1/*/results.md
 !outputs/results/close_eval/stepM1/*/transitions.csv
+# C5, C6 (kế hoạch 2026-11-16_c5_detector_plan): kết quả chấm trên val đã sửa và số liệu train (file nhỏ, bằng chứng)
+!outputs/results/c5_eval/*.json
+!outputs/results/c5_eval/*/ultralytics.json
+!outputs/results/error_analysis/*.json
+!outputs/results/error_analysis/*/summary.json
+!outputs/train/yolo11s_ppe6_c5_*/results.csv
+!outputs/train/yolo11s_ppe6_c5_*/run_info.json
+!outputs/train/yolo11s_ppe6_c5_*/smoke_check.json
+!outputs/train/yolo11s_ppe6_c6_*/results.csv
+!outputs/train/yolo11s_ppe6_c6_*/run_info.json
+!outputs/train/yolo11s_ppe6_c6_*/smoke_check.json

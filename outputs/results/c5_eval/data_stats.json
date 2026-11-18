@@ -1,0 +1,372 @@
+{
+ "c4": {
+  "images": {
+   "chv": 891,
+   "cppe_cu": 663,
+   "sh17": 5615,
+   "cppe_moi": 963,
+   "cat_nguoi": 1040,
+   "thu_nho": 1460
+  },
+  "images_total": 10632,
+  "oversample": 1391,
+  "boxes": {
+   "boots|cat_nguoi": 30,
+   "boots|chv": 344,
+   "boots|cppe_cu": 110,
+   "boots|cppe_moi": 1609,
+   "boots|sh17": 198,
+   "boots|thu_nho": 279,
+   "gloves|cat_nguoi": 408,
+   "gloves|chv": 692,
+   "gloves|cppe_cu": 421,
+   "gloves|cppe_moi": 1860,
+   "gloves|sh17": 1925,
+   "gloves|thu_nho": 2453,
+   "goggles|cat_nguoi": 5,
+   "goggles|chv": 115,
+   "goggles|cppe_cu": 40,
+   "goggles|cppe_moi": 735,
+   "goggles|sh17": 230,
+   "goggles|thu_nho": 133,
+   "helmet|cat_nguoi": 506,
+   "helmet|chv": 2008,
+   "helmet|cppe_cu": 852,
+   "helmet|cppe_moi": 1500,
+   "helmet|sh17": 644,
+   "helmet|thu_nho": 764,
+   "person|cat_nguoi": 1126,
+   "person|chv": 2255,
+   "person|cppe_cu": 1310,
+   "person|cppe_moi": 2336,
+   "person|sh17": 9780,
+   "person|thu_nho": 1658,
+   "vest|cat_nguoi": 265,
+   "vest|chv": 982,
+   "vest|cppe_cu": 772,
+   "vest|cppe_moi": 1723,
+   "vest|sh17": 345,
+   "vest|thu_nho": 449
+  },
+  "boxes_total": {
+   "person": 18465,
+   "helmet": 6274,
+   "vest": 4536,
+   "gloves": 7759,
+   "goggles": 1258,
+   "boots": 2570
+  },
+  "images_with": {
+   "person": 10398,
+   "helmet": 3509,
+   "gloves": 3778,
+   "vest": 2441,
+   "boots": 1059,
+   "goggles": 966
+  },
+  "size_share": {
+   "960": {
+    "person": [
+     0.034,
+     0.05,
+     0.073,
+     0.843
+    ],
+    "helmet": [
+     0.126,
+     0.122,
+     0.198,
+     0.554
+    ],
+    "vest": [
+     0.065,
+     0.101,
+     0.122,
+     0.712
+    ],
+    "gloves": [
+     0.097,
+     0.141,
+     0.321,
+     0.44
+    ],
+    "goggles": [
+     0.027,
+     0.249,
+     0.516,
+     0.208
+    ],
+    "boots": [
+     0.023,
+     0.174,
+     0.405,
+     0.399
+    ]
+   },
+   "1280": {
+    "person": [
+     0.022,
+     0.041,
+     0.063,
+     0.875
+    ],
+    "helmet": [
+     0.083,
+     0.115,
+     0.148,
+     0.654
+    ],
+    "vest": [
+     0.035,
+     0.085,
+     0.114,
+     0.766
+    ],
+    "gloves": [
+     0.055,
+     0.112,
+     0.233,
+     0.6
+    ],
+    "goggles": [
+     0.01,
+     0.095,
+     0.508,
+     0.388
+    ],
+    "boots": [
+     0.003,
+     0.097,
+     0.295,
+     0.605
+    ]
+   }
+  }
+ },
+ "c5": {
+  "images": {
+   "chv": 891,
+   "cppe_cu": 663,
+   "sh17": 5615,
+   "cppe_moi": 963,
+   "cat_nguoi": 1042,
+   "thu_nho": 1458
+  },
+  "images_total": 10632,
+  "oversample": 1413,
+  "boxes": {
+   "boots|cat_nguoi": 30,
+   "boots|chv": 344,
+   "boots|cppe_cu": 105,
+   "boots|cppe_moi": 1579,
+   "boots|sh17": 198,
+   "boots|thu_nho": 272,
+   "gloves|cat_nguoi": 411,
+   "gloves|chv": 695,
+   "gloves|cppe_cu": 426,
+   "gloves|cppe_moi": 1868,
+   "gloves|sh17": 1958,
+   "gloves|thu_nho": 2458,
+   "goggles|cat_nguoi": 5,
+   "goggles|chv": 115,
+   "goggles|cppe_cu": 40,
+   "goggles|cppe_moi": 735,
+   "goggles|sh17": 230,
+   "goggles|thu_nho": 134,
+   "helmet|cat_nguoi": 506,
+   "helmet|chv": 2008,
+   "helmet|cppe_cu": 852,
+   "helmet|cppe_moi": 1500,
+   "helmet|sh17": 644,
+   "helmet|thu_nho": 764,
+   "person|cat_nguoi": 1128,
+   "person|chv": 2255,
+   "person|cppe_cu": 1310,
+   "person|cppe_moi": 2336,
+   "person|sh17": 9780,
+   "person|thu_nho": 1656,
+   "vest|cat_nguoi": 265,
+   "vest|chv": 982,
+   "vest|cppe_cu": 772,
+   "vest|cppe_moi": 1723,
+   "vest|sh17": 345,
+   "vest|thu_nho": 447
+  },
+  "boxes_total": {
+   "person": 18465,
+   "helmet": 6274,
+   "vest": 4534,
+   "gloves": 7816,
+   "goggles": 1259,
+   "boots": 2528
+  },
+  "images_with": {
+   "person": 10398,
+   "helmet": 3505,
+   "gloves": 3801,
+   "vest": 2439,
+   "boots": 1052,
+   "goggles": 967
+  },
+  "size_share": {
+   "960": {
+    "person": [
+     0.034,
+     0.05,
+     0.073,
+     0.843
+    ],
+    "helmet": [
+     0.126,
+     0.122,
+     0.198,
+     0.554
+    ],
+    "vest": [
+     0.066,
+     0.101,
+     0.122,
+     0.712
+    ],
+    "gloves": [
+     0.098,
+     0.144,
+     0.32,
+     0.438
+    ],
+    "goggles": [
+     0.027,
+     0.249,
+     0.513,
+     0.211
+    ],
+    "boots": [
+     0.021,
+     0.171,
+     0.41,
+     0.398
+    ]
+   },
+   "1280": {
+    "person": [
+     0.022,
+     0.041,
+     0.063,
+     0.875
+    ],
+    "helmet": [
+     0.084,
+     0.114,
+     0.148,
+     0.654
+    ],
+    "vest": [
+     0.035,
+     0.085,
+     0.114,
+     0.766
+    ],
+    "gloves": [
+     0.055,
+     0.113,
+     0.233,
+     0.598
+    ],
+    "goggles": [
+     0.01,
+     0.095,
+     0.507,
+     0.389
+    ],
+    "boots": [
+     0.002,
+     0.095,
+     0.296,
+     0.608
+    ]
+   }
+  }
+ },
+ "eval": {
+  "val|ppe4": {
+   "images": 1586,
+   "person": {
+    "gt": 3029,
+    "ignore": 0
+   },
+   "helmet": {
+    "gt": 897,
+    "ignore": 0
+   },
+   "vest": {
+    "gt": 620,
+    "ignore": 0
+   },
+   "gloves": {
+    "gt": 864,
+    "ignore": 757
+   }
+  },
+  "val|lop_moi": {
+   "images": 923,
+   "goggles": {
+    "gt": 29,
+    "ignore": 61
+   },
+   "boots": {
+    "gt": 79,
+    "ignore": 420
+   }
+  },
+  "val|chvg": {
+   "images": 171,
+   "goggles": {
+    "gt": 127,
+    "ignore": 72
+   }
+  },
+  "test|ppe4": {
+   "images": 1583,
+   "person": {
+    "gt": 3034,
+    "ignore": 0
+   },
+   "helmet": {
+    "gt": 894,
+    "ignore": 0
+   },
+   "vest": {
+    "gt": 597,
+    "ignore": 0
+   },
+   "gloves": {
+    "gt": 864,
+    "ignore": 681
+   }
+  },
+  "test|lop_moi": {
+   "images": 981,
+   "goggles": {
+    "gt": 41,
+    "ignore": 91
+   },
+   "boots": {
+    "gt": 92,
+    "ignore": 430
+   }
+  },
+  "test|chvg": {
+   "images": 171,
+   "goggles": {
+    "gt": 125,
+    "ignore": 67
+   }
+  }
+ },
+ "size_bins_px": [
+  16,
+  32,
+  64
+ ],
+ "note": "nhãn C5: nhãn máy có kiểm định mẫu của người (kế hoạch 2026-11-16_c5_detector_plan)"
+}

@@ -40,22 +40,22 @@ def main():
     res = dict(video=cfg["video"], frames=len(frames), gpu=torch.cuda.get_device_name(0), runs=[])
     for w in cfg["weights"]:
         model = YOLO(w)
-        for imgsz in cfg["imgsz"]:
+        for imgsz, half in [(z, h) for z in cfg["imgsz"] for h in cfg.get("half", [False])]:
             for f in frames[:cfg["warmup"]]:
-                model.predict(f, imgsz=imgsz, conf=0.1, device=0, verbose=False)
+                model.predict(f, imgsz=imgsz, conf=0.1, device=0, verbose=False, half=half)
             ts = []
             for f in frames[cfg["warmup"]:]:
                 torch.cuda.synchronize()
                 s = time.perf_counter()
-                model.predict(f, imgsz=imgsz, conf=0.1, device=0, verbose=False)
+                model.predict(f, imgsz=imgsz, conf=0.1, device=0, verbose=False, half=half)
                 torch.cuda.synchronize()
                 ts.append((time.perf_counter() - s) * 1000)
             ts = np.array(ts)
-            r = dict(weights=w, imgsz=imgsz, n=len(ts), mean_ms=round(float(ts.mean()), 2),
+            r = dict(weights=w, imgsz=imgsz, half=half, n=len(ts), mean_ms=round(float(ts.mean()), 2),
                      p50_ms=round(float(np.percentile(ts, 50)), 2), p95_ms=round(float(np.percentile(ts, 95)), 2))
             res["runs"].append(r)
             print(r)
-    out = ROOT / "outputs" / "results" / "error_analysis" / "detector_speed.json"
+    out = ROOT / "outputs" / "results" / "error_analysis" / cfg.get("out", "detector_speed.json")
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(res, ensure_ascii=False, indent=1), encoding="utf-8")
 

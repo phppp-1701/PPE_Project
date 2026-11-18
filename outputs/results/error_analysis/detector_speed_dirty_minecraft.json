@@ -1,0 +1,55 @@
+{
+ "video": "data/videos/video4.mp4",
+ "frames": 220,
+ "gpu": "NVIDIA GeForce RTX 3050 Laptop GPU",
+ "runs": [
+  {
+   "weights": "outputs/train/yolo11s_ppe6_c4/weights/best.pt",
+   "imgsz": 960,
+   "n": 200,
+   "mean_ms": 36.72,
+   "p50_ms": 36.59,
+   "p95_ms": 39.45
+  },
+  {
+   "weights": "outputs/train/yolo11s_ppe6_c4/weights/best.pt",
+   "imgsz": 1280,
+   "n": 200,
+   "mean_ms": 60.28,
+   "p50_ms": 60.21,
+   "p95_ms": 63.92
+  },
+  {
+   "weights": "yolo11s.pt",
+   "imgsz": 960,
+   "n": 200,
+   "mean_ms": 39.17,
+   "p50_ms": 39.06,
+   "p95_ms": 41.69
+  },
+  {
+   "weights": "yolo11s.pt",
+   "imgsz": 1280,
+   "n": 200,
+   "mean_ms": 62.54,
+   "p50_ms": 62.55,
+   "p95_ms": 65.24
+  },
+  {
+   "weights": "yolo11m.pt",
+   "imgsz": 960,
+   "n": 200,
+   "mean_ms": 82.5,
+   "p50_ms": 82.94,
+   "p95_ms": 86.78
+  },
+  {
+   "weights": "yolo11m.pt",
+   "imgsz": 1280,
+   "n": 200,
+   "mean_ms": 137.79,
+   "p50_ms": 138.73,
+   "p95_ms": 145.07
+  }
+ ]
+}

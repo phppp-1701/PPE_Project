@@ -1,0 +1,31 @@
+# Chạy toàn bộ pytest cho mỗi push / pull request vào các nhánh chính (người dùng đồng ý 18/11/2026).
+# Bản CPU của PyTorch (GitHub không có GPU); test không cần trọng số, dữ liệu, video (đều không có trong git).
+name: tests
+
+on:
+  push:
+    branches: [main, exp/ppe6, feat/desktop]
+  pull_request:
+    branches: [main, exp/ppe6, feat/desktop]
+  workflow_dispatch:
+
+jobs:
+  pytest:
+    runs-on: windows-latest          # cùng hệ điều hành với máy phát triển và app desktop
+    timeout-minutes: 30
+    env:
+      YOLO_AUTOINSTALL: "False"      # không để Ultralytics tự cài gói
+      PYTHONIOENCODING: utf-8
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Cài gói (PyTorch CPU, phiên bản như requirements.txt)
+        run: |
+          python -m pip install --upgrade pip
+          pip install torch==2.11.0 torchvision==0.26.0 --index-url https://download.pytorch.org/whl/cpu
+          pip install ultralytics==8.4.189 opencv-python==5.0.0.93 pytest==9.1.1 lap==0.5.14 fastapi==0.162.5 uvicorn==0.54.0 httpx==0.28.1 pyyaml==6.0.3
+      - name: pytest
+        run: python -m pytest -q
