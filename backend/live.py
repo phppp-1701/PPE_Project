@@ -10,6 +10,7 @@ Thời gian t của chuỗi xử lý = giây thật kể từ lúc mở phiên (
 Video webcam không được lưu; chỉ ảnh minh chứng của sự kiện được lưu như khi chạy video.
 """
 
+import copy
 import importlib.util
 import os
 import sys
@@ -24,16 +25,61 @@ os.environ.setdefault("YOLO_AUTOINSTALL", "False")   # không để Ultralytics 
 import cv2
 import yaml
 
-ROOT = Path(__file__).resolve().parents[1]
-LIVE_CONFIG = ROOT / "configs" / "live.yaml"
-if str(ROOT / "src") not in sys.path:
+from desktop.paths import (
+    bundle_root,
+    get_evidence_dir,
+    is_desktop_mode,
+    load_desktop_config,
+    resolve_resource,
+)
+
+ROOT = bundle_root()
+LIVE_CONFIG = resolve_resource("configs/live.yaml")
+if str(ROOT / "src") not in sys.path and (ROOT / "src").exists():
     sys.path.insert(0, str(ROOT / "src"))
 
 IDLE, STARTING, RUNNING, STOPPING, ERROR = "idle", "starting", "running", "stopping", "error"
 
 
-def load_live_config(path=LIVE_CONFIG):
-    return yaml.safe_load(Path(path).read_text(encoding="utf-8"))
+def load_live_config(path=None):
+    target = Path(path) if path is not None else resolve_resource("configs/live.yaml")
+    return yaml.safe_load(target.read_text(encoding="utf-8"))
+
+
+def _resolve_runtime_device(default_device):
+    """Chọn thiết bị suy luận theo cài đặt người dùng và tự rơi về CPU nếu máy không có CUDA."""
+    pref = "auto"
+    if is_desktop_mode():
+        pref = str((load_desktop_config().get("processing") or {}).get("device") or "auto").lower()
+    if pref == "cpu":
+        return "cpu"
+    try:
+        import torch
+
+        if not torch.cuda.is_available():
+            return "cpu"
+    except Exception:
+        return "cpu"
+    return 0 if pref == "cuda" else default_device
+
+
+def build_runtime_pipeline_config():
+    """Tạo bản sao cấu hình pipeline trong bộ nhớ (không sửa file configs/pipeline.yaml hay src/ppe/):
+    quy đổi đường dẫn trọng số, thư mục minh chứng và thiết bị suy luận theo môi trường chạy."""
+    from ppe import load_config
+
+    cfg = copy.deepcopy(load_config(resolve_resource("configs/pipeline.yaml")))
+    cfg["detector"]["weights"] = str(resolve_resource(cfg["detector"]["weights"]))
+    cfg["detector"]["device"] = _resolve_runtime_device(cfg["detector"].get("device", 0))
+    if (cfg.get("pose") or {}).get("weights"):
+        cfg["pose"]["weights"] = str(resolve_resource(cfg["pose"]["weights"]))
+    if cfg.get("part_cls"):
+        if cfg["part_cls"].get("weights"):
+            cfg["part_cls"]["weights"] = str(resolve_resource(cfg["part_cls"]["weights"]))
+        by_ppe = cfg["part_cls"].get("weights_by_ppe") or {}
+        cfg["part_cls"]["weights_by_ppe"] = {k: str(resolve_resource(v)) for k, v in by_ppe.items()}
+    cfg["events"]["evidence_dir"] = str(get_evidence_dir())
+    return cfg
 
 
 def open_camera(cfg):
@@ -41,7 +87,10 @@ def open_camera(cfg):
     api = cv2.CAP_DSHOW if cfg.get("backend") == "dshow" and os.name == "nt" else cv2.CAP_ANY
     cap = cv2.VideoCapture(int(cfg["camera_index"]), api)
     if not cap.isOpened():
-        raise RuntimeError(f"Không mở được webcam số {cfg['camera_index']} (đang bị ứng dụng khác dùng?)")
+        raise RuntimeError(
+            f"Không mở được webcam số {cfg['camera_index']} "
+            "(đang bị ứng dụng khác dùng hoặc bị chặn ở Cài đặt Windows > Quyền riêng tư > Camera?)"
+        )
     if cfg.get("fourcc"):
         cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*cfg["fourcc"]))
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, int(cfg["width"]))
@@ -53,13 +102,13 @@ def open_camera(cfg):
 def default_pipeline(source_id, session_id, on_event):
     """Pipeline đầy đủ với configs/pipeline.yaml (nạp mô hình mất vài giây)."""
     from ppe.pipeline import Pipeline
-    return Pipeline(source_id, session_id, stage="full", on_event=on_event)
+    return Pipeline(source_id, session_id, stage="full", cfg=build_runtime_pipeline_config(), on_event=on_event)
 
 
 def default_draw():
     """Hàm draw của scripts/05_run_video.py (cùng quy tắc hiển thị với video đã vẽ). Nạp bằng importlib như 06c,
     không sửa 05_run_video.py (file nằm trong manifest đóng băng)."""
-    spec = importlib.util.spec_from_file_location("run_video", ROOT / "scripts" / "05_run_video.py")
+    spec = importlib.util.spec_from_file_location("run_video", resolve_resource("scripts/05_run_video.py"))
     rv = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(rv)
     return lambda frame, out, cfg: rv.draw(frame, hide_rejected(out, cfg, rv.box_status), cfg, False)

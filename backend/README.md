@@ -4,8 +4,8 @@ FastAPI nhận cảnh báo từ chuỗi xử lý, lưu vào SQLite (`outputs/ppe
 
 | File | Dùng để |
 |---|---|
-| `app.py` | Các API: sự kiện (`/api/events`), ảnh minh chứng, thống kê, nguồn và chính sách PPE theo nguồn (có phiên bản), phản hồi của giám sát viên, camera trực tiếp (`/api/live/*`); phục vụ dashboard ở `/dashboard` |
-| `db.py` | Tạo bảng SQLite, tạo sẵn các nguồn mặc định |
+| `app.py` | Các API: sự kiện (`/api/events`), ảnh minh chứng, thống kê, nguồn và chính sách PPE theo nguồn (có phiên bản), phản hồi của giám sát viên, camera trực tiếp (`/api/live/*`), kiểm tra sẵn sàng và gọi cửa sổ desktop (`/api/health`, `/api/desktop/focus`); phục vụ dashboard ở `/dashboard` |
+| `db.py` | Tạo bảng SQLite, tạo sẵn các nguồn mặc định, phục hồi sự kiện/phiên bị ngắt đột ngột (`recover_crashed_sessions` → `app_crash_recovered`); đọc đường dẫn qua `desktop/paths.py` (mặc định giữ `outputs/ppe.db` cho bản web) |
 | `live.py` | Camera trực tiếp: đọc webcam, chạy chuỗi xử lý (`src/ppe`, cấu hình `configs/pipeline.yaml`), vẽ khung bằng hàm vẽ của `scripts/05_run_video.py`, phát ảnh MJPEG, ghi sự kiện và phiên vào SQLite. Tham số ở `configs/live.yaml` |
 | `import_events.py` | Nạp `events.jsonl` của các video đã chạy vào database |
 

@@ -12,13 +12,29 @@ from fastapi.responses import FileResponse, RedirectResponse, Response, Streamin
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from .db import ROOT, ensure_default_sources, ensure_source, get_db, init_db
+from .db import (
+    ROOT,
+    ensure_default_sources,
+    ensure_source,
+    get_db,
+    init_db,
+    recover_crashed_sessions,
+)
 from .live import LiveCamera
+from desktop.paths import get_evidence_dir, is_desktop_mode, resolve_resource
 
 import yaml
 
 # PPE hệ thống biết (thứ tự cố định theo configs/pipeline.yaml); chính sách chỉ nhận các tên này.
-KNOWN_PPE = list(yaml.safe_load((ROOT / "configs" / "pipeline.yaml").read_text(encoding="utf-8"))["ppe"])
+KNOWN_PPE = list(yaml.safe_load(resolve_resource("configs/pipeline.yaml").read_text(encoding="utf-8"))["ppe"])
+_FOCUS_CALLBACK = None
+
+
+def register_focus_handler(callback):
+    """Đăng ký hàm đưa cửa sổ ứng dụng desktop lên trước khi người dùng mở lần hai."""
+    global _FOCUS_CALLBACK
+    _FOCUS_CALLBACK = callback
+
 
 app = FastAPI(
     title="Hệ thống Giám sát Trang bị Bảo hộ Lao động (PPE-6)",
@@ -38,6 +54,7 @@ app.add_middleware(
 @app.on_event("startup")
 def startup():
     init_db()
+    recover_crashed_sessions()
     ensure_default_sources()
     ensure_source(LIVE.source_id, LIVE.cfg.get("source_name", LIVE.source_id), "camera", KNOWN_PPE)
 
@@ -279,7 +296,7 @@ def extract_event_frames(row, cur):
     event_id = row["event_id"]
     session_id = row["session_id"]
     track_id = row["track_id"]
-    out_dir = ROOT / "outputs" / "evidence" / session_id
+    out_dir = get_evidence_dir() / session_id
     out_dir.mkdir(parents=True, exist_ok=True)
 
     # 1. Minh chứng đã ghi nhận trong bảng event_evidence
@@ -454,10 +471,11 @@ def submit_feedback(event_id: str, fb: FeedbackSchema):
 @app.get("/api/evidence/{session_id}/{filename}")
 def serve_evidence(session_id: str, filename: str):
     """GET /events/{event_id}/evidence: Trả về tệp ảnh minh chứng cắt từ video."""
-    target = ROOT / "outputs" / "evidence" / session_id / filename
+    ev_root = get_evidence_dir()
+    target = ev_root / session_id / filename
     if not target.exists():
-        # Kiểm tra tìm kiếm trong toàn bộ outputs/evidence
-        matches = list((ROOT / "outputs" / "evidence").glob(f"**/{filename}"))
+        # Kiểm tra tìm kiếm trong toàn bộ thư mục minh chứng
+        matches = list(ev_root.glob(f"**/{filename}")) if ev_root.exists() else []
         if matches:
             target = matches[0]
         else:
@@ -568,6 +586,8 @@ def _live_session(kind, info):
     conn = get_db()
     now = datetime.now().isoformat()
     if kind == "start":
+        conn.execute("INSERT OR IGNORE INTO sources (source_id, name, source_type, created_at) "
+                     "VALUES (?, ?, 'camera', ?)", (info["source_id"], f"Nguồn {info['source_id']}", now))
         conn.execute("INSERT OR IGNORE INTO monitoring_sessions (session_id, source_id, policy_version, start_time, status) "
                      "VALUES (?, ?, ?, ?, 'active')", (info["session_id"], info["source_id"], info["policy_version"] or 1, now))
     else:
@@ -619,8 +639,30 @@ def live_snapshot():
     return Response(content=jpg, media_type="image/jpeg", headers={"Cache-Control": "no-store"})
 
 
+@app.get("/api/health")
+def health_check():
+    """Kiểm tra trạng thái sẵn sàng của máy chủ nội bộ (dùng bởi cửa sổ desktop lúc khởi động)."""
+    return {
+        "status": "ok",
+        "desktop": is_desktop_mode(),
+        "live_state": LIVE.state,
+    }
+
+
+@app.post("/api/desktop/focus")
+def desktop_focus():
+    """Đưa cửa sổ đang mở lên trước khi người dùng bấm mở ứng dụng lần thứ hai."""
+    if callable(_FOCUS_CALLBACK):
+        try:
+            _FOCUS_CALLBACK()
+        except Exception:
+            pass
+    return {"status": "ok"}
+
+
 # Mount Static Files Dashboard
-DASHBOARD_DIR = ROOT / "dashboard"
-DASHBOARD_DIR.mkdir(parents=True, exist_ok=True)
+DASHBOARD_DIR = resolve_resource("dashboard")
+if not DASHBOARD_DIR.exists():
+    DASHBOARD_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/dashboard", StaticFiles(directory=str(DASHBOARD_DIR), html=True), name="dashboard")
 

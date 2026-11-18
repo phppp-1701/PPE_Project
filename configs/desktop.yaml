@@ -1,0 +1,61 @@
+# Cấu hình vận hành cho ứng dụng desktop Windows (docs/desktop_app_plan.md mục 2.4, 3, 5.7).
+# LƯU Ý: Chỉ chứa tham số vận hành của vỏ ứng dụng. Ngưỡng nhận diện nằm ở configs/pipeline.yaml (chỉ đọc, không sửa từ app).
+# Khi người dùng đổi cài đặt trong app, bản ghi đè được lưu vào %LOCALAPPDATA%\PPEMonitor\settings.yaml,
+# không ghi đè trực tiếp lên file này trong thư mục cài đặt.
+
+app:
+  name: PPE Monitor
+  slug: PPEMonitor
+  title: "PPE Monitor — Giám sát Trang bị Bảo hộ Lao động"
+  version: "1.0.0"
+  min_width: 1280
+  min_height: 720
+  maximized: true
+
+server:
+  host: "127.0.0.1"
+  port: 0                    # 0 = tự chọn cổng trống lúc mở app, tránh đụng server khác
+  startup_timeout_s: 30.0
+  shutdown_timeout_s: 5.0
+
+paths:
+  data_dir: ""               # rỗng = dùng %LOCALAPPDATA%\PPEMonitor khi chạy app desktop
+
+camera:
+  default_index: 0           # chỉ số webcam mặc định của OpenCV
+  max_probe_index: 4         # dò webcam từ 0..max_probe_index cho GET /api/cameras
+  backend: dshow             # dshow (Windows, mở nhanh) hoặc any
+  width: 1280                # độ phân giải xin webcam (1280x720 hoặc 1920x1080)
+  height: 720
+
+processing:
+  device: auto               # auto (ưu tiên GPU NVIDIA, tự rơi về CPU nếu không có) | cuda | cpu
+
+retention:
+  keep_days: 30              # số ngày giữ sự kiện và ảnh minh chứng
+  auto_cleanup: false        # mặc định tắt tự động xóa dữ liệu cũ
+  low_disk_warn_gb: 2.0      # cảnh báo khi ổ chứa dữ liệu còn dưới mức này (GB)
+
+alerts:
+  sound_enabled: false       # âm báo ngắn khi có sự kiện vi phạm mới (mặc định tắt)
+  toast_duration_ms: 5000    # thời gian hiện thông báo góc màn hình (ms)
+
+logging:
+  level: INFO
+  max_files: 7               # giữ tối đa 7 file log xoay vòng trong %LOCALAPPDATA%\PPEMonitor\logs\
+  max_bytes: 5242880         # 5 MB mỗi file log
+
+presets:
+  - id: cong_truong
+    name: "Công trường"
+    description: "Mũ, áo phản quang, găng tay, ủng bảo hộ"
+    required_ppe: [helmet, vest, gloves, boots]
+  - id: han_mai
+    name: "Hàn / mài"
+    description: "Đầy đủ 5 món bảo hộ (có kính bảo hộ)"
+    required_ppe: [helmet, vest, gloves, goggles, boots]
+  - id: kho
+    name: "Kho bãi"
+    description: "Mũ bảo hộ và áo phản quang"
+    required_ppe: [helmet, vest]
+

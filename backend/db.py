@@ -14,8 +14,18 @@ import sqlite3
 from datetime import datetime
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-DB_PATH = ROOT / "outputs" / "ppe.db"
+from desktop.paths import bundle_root, get_db_path
+
+ROOT = bundle_root()
+DB_PATH = get_db_path()
+
+
+def configure_db_path(path: Path | None = None) -> Path:
+    """Cập nhật lại đường dẫn SQLite theo cấu hình hiện hành (dùng khi khởi động app desktop)."""
+    global DB_PATH
+    DB_PATH = Path(path) if path is not None else get_db_path()
+    init_db()
+    return DB_PATH
 
 
 def get_db():
@@ -170,6 +180,42 @@ def ensure_default_sources():
 
     conn.commit()
     conn.close()
+
+
+def recover_crashed_sessions(close_reason: str = "app_crash_recovered") -> dict:
+    """Đóng các sự kiện và phiên giám sát còn treo từ lần tắt đột ngột trước (docs/desktop_app_plan.md mục 7)."""
+    conn = get_db()
+    cur = conn.cursor()
+    now = datetime.now().isoformat()
+
+    cur.execute(
+        "SELECT event_id, last_seen_time, missing_items FROM violation_events "
+        "WHERE event_state IN ('active', 'pending_observation')"
+    )
+    open_events = cur.fetchall()
+    for ev in open_events:
+        t = float(ev["last_seen_time"] or 0.0)
+        cur.execute(
+            "UPDATE violation_events SET event_state = 'closed', end_time = ?, close_reason = ?, last_change_time = ? "
+            "WHERE event_id = ?",
+            (t, close_reason, t, ev["event_id"]),
+        )
+        cur.execute(
+            "INSERT INTO event_history (event_id, t, change_type, missing_items, system_time) VALUES (?, ?, 'closed', ?, ?)",
+            (ev["event_id"], t, ev["missing_items"], now),
+        )
+
+    cur.execute("SELECT COUNT(*) FROM monitoring_sessions WHERE status = 'active'")
+    open_sessions = cur.fetchone()[0]
+    if open_sessions:
+        cur.execute(
+            "UPDATE monitoring_sessions SET end_time = ?, status = 'recovered' WHERE status = 'active'",
+            (now,),
+        )
+
+    conn.commit()
+    conn.close()
+    return {"recovered_events": len(open_events), "recovered_sessions": open_sessions}
 
 
 if __name__ == "__main__":

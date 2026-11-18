@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PPE Monitor — Đang khởi động</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card: #152033;
+      --border: #283852;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --primary: #3b82f6;
+      --accent: #f59e0b;
+      --ok: #10b981;
+      --warn: #f59e0b;
+      --err: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at 50% 25%, #172554 0%, var(--bg) 68%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      user-select: none;
+    }
+    .splash-card {
+      width: 100%;
+      max-width: 560px;
+      background: rgba(21, 32, 51, 0.94);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 32px 30px 26px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+    .brand-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #1d4ed8, #0f172a);
+      border: 1px solid rgba(59, 130, 246, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    }
+    .brand-title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .version-pill {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 2px 9px;
+      border-radius: 999px;
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      color: #93c5fd;
+    }
+    .brand-sub {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+    .stage-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: #0b1324;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+      margin-bottom: 20px;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 12%;
+      background: linear-gradient(90deg, #3b82f6, #06b6d4);
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+    .checks {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+      font-size: 14px;
+    }
+    .check-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .check-name { color: #cbd5e1; }
+    .check-val {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: right;
+    }
+    .check-val.ok { color: var(--ok); font-weight: 500; }
+    .check-val.warn { color: var(--warn); font-weight: 500; }
+    .check-val.err { color: var(--err); font-weight: 500; }
+    .notice-box {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #fde68a;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .notice-box.error {
+      background: rgba(239, 68, 68, 0.12);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #fecaca;
+    }
+    .actions {
+      display: none;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .btn {
+      min-height: 36px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid rgba(59, 130, 246, 0.5);
+      background: var(--primary);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn:hover { background: #2563eb; }
+  </style>
+</head>
+<body>
+  <div class="splash-card">
+    <div class="brand">
+      <div class="brand-icon" aria-hidden="true">
+        <svg width="36" height="36" viewBox="0 0 64 64" fill="none">
+          <path d="M32 6L10 15V31C10 45.2 19.4 56.8 32 60C44.6 56.8 54 45.2 54 31V15L32 6Z" fill="#1E3A8A" stroke="#60A5FA" stroke-width="2.5"/>
+          <path d="M18 33C18 24.7 24.3 18 32 18C39.7 18 46 24.7 46 33H18Z" fill="#F59E0B"/>
+          <rect x="29" y="15" width="6" height="11" rx="2" fill="#FDE68A"/>
+          <rect x="15" y="33" width="34" height="5" rx="2.5" fill="#D97706"/>
+          <path d="M25 44L30 49L40 39" stroke="#34D399" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-title">
+          <span>PPE Monitor</span>
+          <span class="version-pill" id="app-version">v1.0.0</span>
+        </div>
+        <div class="brand-sub">Hệ thống Giám sát Trang bị Bảo hộ Lao động (Windows 64-bit)</div>
+      </div>
+    </div>
+
+    <div class="stage-label">
+      <span id="stage-message">Đang kiểm tra môi trường và khởi động dịch vụ…</span>
+      <span id="stage-pct" style="color: var(--muted);">15%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <div class="checks">
+      <div class="check-row">
+        <span class="check-name">Thư mục dữ liệu người dùng</span>
+        <span class="check-val" id="chk-data">Đang kiểm tra…</span>
+      </div>
+      <div class="check-row">
+        <span class="check-name">Thiết bị suy luận (GPU / CPU)</span>
+        <span class="check-val" id="chk-device">Đang dò phần cứng…</span>
+      </div>
+      <div class="check-row">
+        <span class="check-name">Trọng số mô hình nhận diện</span>
+        <span class="check-val" id="chk-weights">Đang kiểm tra…</span>
+      </div>
+      <div class="check-row">
+        <span class="check-name">Máy chủ nội bộ (127.0.0.1)</span>
+        <span class="check-val" id="chk-server">Đang mở cổng…</span>
+      </div>
+    </div>
+
+    <div class="notice-box" id="notice-box"></div>
+    <div class="actions" id="actions-box">
+      <button class="btn" id="btn-continue" onclick="continueToApp()">Tiếp tục mở ứng dụng</button>
+    </div>
+  </div>
+
+  <script>
+    let readyUrl = null;
+    let navigated = false;
+
+    function setCheck(id, item) {
+      if (!item) return;
+      const el = document.getElementById(id);
+      el.textContent = item.text || '—';
+      el.className = 'check-val ' + (item.level || '');
+    }
+
+    function continueToApp() {
+      if (readyUrl && !navigated) {
+        navigated = true;
+        setTimeout(() => window.location.replace(readyUrl), 50);
+      }
+    }
+
+    async function pollStartup() {
+      if (navigated) return;
+      try {
+        if (!window.pywebview || !window.pywebview.api || !window.pywebview.api.get_startup_status) {
+          setTimeout(pollStartup, 150);
+          return;
+        }
+        const st = await window.pywebview.api.get_startup_status();
+        if (st.version) document.getElementById('app-version').textContent = 'v' + st.version;
+        if (st.message) document.getElementById('stage-message').textContent = st.message;
+        const pct = Math.max(5, Math.min(100, Number(st.progress || 15)));
+        document.getElementById('stage-pct').textContent = pct + '%';
+        document.getElementById('progress-bar').style.width = pct + '%';
+
+        if (st.checks) {
+          setCheck('chk-data', st.checks.data);
+          setCheck('chk-device', st.checks.device);
+          setCheck('chk-weights', st.checks.weights);
+          setCheck('chk-server', st.checks.server);
+        }
+
+        const notice = document.getElementById('notice-box');
+        if (st.warnings && st.warnings.length) {
+          notice.style.display = 'block';
+          notice.className = st.fatal ? 'notice-box error' : 'notice-box';
+          notice.innerHTML = st.warnings.join('<br>');
+        }
+
+        if (st.ready && st.url) {
+          readyUrl = st.url;
+          if (st.warnings && st.warnings.length && !st.auto_proceed) {
+            document.getElementById('actions-box').style.display = 'flex';
+          } else {
+            continueToApp();
+            return;
+          }
+        }
+      } catch (e) {
+        // tiếp tục hỏi lại khi cầu nối pywebview đang khởi tạo
+      }
+      setTimeout(pollStartup, 200);
+    }
+
+    window.addEventListener('pywebviewready', pollStartup);
+    setTimeout(pollStartup, 250);
+  </script>
+</body>
+</html>
+
