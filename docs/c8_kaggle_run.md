@@ -35,9 +35,9 @@ repo = "/kaggle/working/code_c8"
 subprocess.run(f"rm -rf {repo}; git clone -q -b exp/ppe6 https://github.com/phppp-1701/PPE_Project.git {repo}", shell=True, check=True)
 cfg = f"{repo}/configs/train.yaml"
 for s in [f"s|^model: yolo11s.pt|model: {W6}|", "s|^  epochs: 100 .*|  epochs: 40|", "/^  time: 11/d",
-          "s|^  imgsz: 960|  imgsz: 960\n  optimizer: SGD\n  lr0: 0.002\n  warmup_epochs: 1|"]:
+          "s|^  imgsz: 960|  imgsz: 960\\n  optimizer: SGD\\n  lr0: 0.002\\n  warmup_epochs: 1|"]:
     subprocess.run(["sed", "-i", s, cfg], check=True)
-print(subprocess.run(f"grep -n '^model\|^  time\|^  imgsz\|^  epochs\|^  optimizer\|^  lr0\|^  warmup' {cfg}",
+print(subprocess.run(f"grep -n '^model\\|^  time\\|^  imgsz\\|^  epochs\\|^  optimizer\\|^  lr0\\|^  warmup' {cfg}",
                      shell=True, capture_output=True, text=True).stdout)
 env = dict(os.environ, CUDA_VISIBLE_DEVICES="0", YOLO_AUTOINSTALL="False")
 log = open("/kaggle/working/train_c8_ft.log", "w")
