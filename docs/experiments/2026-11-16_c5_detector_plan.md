@@ -712,6 +712,29 @@ hộp; Claude không vẽ được hộp găng đủ chính xác từ bảng ả
 - **Tiêu chí (khóa trước train, `c8_decision`):** C8-ft (tinh chỉnh từ c6_ft) thay c6_ft khi găng (ppe4, val nhãn găng bản 2)
   tăng ≥ 0,03 và người, mũ, áo, kính, ủng không tụt quá 0,02.
 
+### Kết quả C8-ft (19/11/2026)
+
+Kaggle (tài khoản mới, 1 GPU T4; dataset chính tải lại dạng gọn `ppe4_main_960.zip`, 1,97 GB: train + val thu về cạnh dài
+960, như `copy_max_side` của 04_train): ghép đúng `train 7169, val_monitor 1070`, bộ phụ 5.047 ảnh, 4.027 bản lặp, 16.103
+ảnh train; **23 epoch, 3,0 giờ, dừng sớm, best epoch 3**. `04f` đạt; sha256 best.pt
+`2567b1060b17353600f1da84064f0f6c7e99e96e17eb020c567ded59a3b66903`. Chấm trên val nhãn găng bản 2 (`c8lab_c6_vs_c8.json`):
+
+| Lớp (tập) | c6_ft | C8-ft | C8-ft − c6_ft [KTC 95%] |
+|---|---|---|---|
+| người (ppe4) | 0,894 | 0,887 | −0,007 |
+| mũ (ppe4) | 0,899 | 0,897 | −0,001 |
+| áo (ppe4) | 0,780 | 0,778 | −0,002 |
+| **găng (ppe4)** | 0,674 | **0,662** | **−0,012** [−0,027; +0,001] |
+| kính (goggles_all) | 0,807 | 0,794 | −0,013 |
+| ủng (lớp mới) | 0,677 | 0,658 | −0,019 |
+
+**Áp `c8_decision`:** găng giảm 0,012 (cần tăng ≥ 0,03) → **không đạt**; C8-ft không thay c6_ft. Hệ thống giữ c6_ft.
+
+**Tổng kết găng (C4 → C8, 7 bản):** sửa nhãn train, cỡ 1280, dữ liệu ủng ngoài, mẫu âm khó, YOLO11m, dữ liệu găng CCTV
+ngoài: găng trên val ở khoảng 0,66–0,69, mọi khác biệt trong KTC. Nhận định (Claude): giới hạn nằm ở dữ liệu đánh giá và
+huấn luyện găng (găng nhỏ, bị che, nhập nhằng găng / tay; nhãn găng thiếu mà máy không sửa đạt kiểm định), không phải ở mô
+hình; nâng găng lên 0,8 cần nhãn găng do người vẽ lại hộp, vượt quá thời gian còn lại.
+
 ## 3. Điểm cần người dùng quyết định
 
 1. **Kiểm định của người.** Theo CLAUDE.md: nhãn máy phải ghi "nhãn máy, có kiểm định mẫu của người", tầng không đạt kiểm
