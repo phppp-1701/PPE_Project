@@ -152,3 +152,4 @@ outputs/results/close_eval/final/holdout_viewer/
 !outputs/train/yolo11m_ppe6_c7/results.csv
 !outputs/train/yolo11m_ppe6_c7/run_info.json
 !outputs/train/yolo11m_ppe6_c7/smoke_check.json
+!outputs/results/c5_eval/*/ultralytics.json

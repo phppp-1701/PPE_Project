@@ -750,7 +750,7 @@ def cmd_build_extra(args):
 
 
 PART_OF_TASK = {"gloves_eval_add": "gloves", "shoes_cls": "boots", "boots_eval_add": "boots", "glasses_cls": "goggles",
-                "goggles_eval_add": "goggles", "goggles_chvg_add": "goggles", "shoes_cls_train": "boots"}
+                "goggles_eval_add": "goggles", "goggles_chvg_add": "goggles", "shoes_cls_train": "boots", "gloves8_eval_add": "gloves"}
 
 
 def part_probs(items):

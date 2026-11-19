@@ -666,6 +666,31 @@ Script `scripts/03zc_c8_gloves.py` (`pred-train`, `pred-test`, `candidates` → 
 ứng viên; **chưa** xem bảng ảnh (`03z sheets --task gloves8_train_add` / `gloves8_eval_add`, ghi `.dec`, `collect`), chưa có
 bước dựng dữ liệu, gói Kaggle, tiêu chí C8, kiểm định. Hệ thống vẫn dùng c6_ft.
 
+### C8: nhãn găng val, test bản 2 (19–20/11/2026, nhãn máy, CHỜ kiểm định của người)
+
+Claude xem 756 ô (`gloves8_*`, tiêu chí chặt "hộp bao sát đúng một chiếc găng"):
+
+| | găng (g) | không phải (n) | không rõ (u) |
+|---|---|---|---|
+| train (găng báo thừa c6_ft) | 7 | 170 | 43 |
+| val (dự đoán C4–C7 không trùng nhãn) | 17 | 189 | 62 |
+| test (vị trí từ predict C4–C7, không tính điểm) | 12 | 188 | 68 |
+
+Gộp với bộ phân loại tay (luật hai lượt): thêm nhãn găng val 12, test 10; vùng ignore mới val 179, test 178 (gồm ô
+không rõ, ô Claude nói găng mà bộ phân loại không, ô Claude nói không mà bộ phân loại nói găng). Val, test dựng lại
+(`build-eval`); bản trước sao lưu ở scratchpad. **Ignore mới phần lớn rơi đúng chỗ các mô hình báo thừa, nên làm AP găng
+tăng mà mô hình không đổi**; báo cáo phải nói rõ.
+
+Chấm lại mọi bản trên val nhãn găng bản 2 (`c8lab_*`, găng tập ppe4, 876 hộp):
+
+| | C4 | C5-s960 | C6-ft | C7-m |
+|---|---|---|---|---|
+| găng (ppe4) | 0,673 | 0,688 | 0,677 | 0,681 |
+| găng (ảnh lớp mới, 352) | 0,531 | 0,558 | 0,551 | 0,520 |
+
+So với nhãn bản 1: C6-ft 0,657 → 0,677 (+0,020, toàn bộ do đổi nhãn đo). Các bản vẫn chênh nhau trong KTC. Còn cách 0,8
+khoảng 0,12.
+
 ## 3. Điểm cần người dùng quyết định
 
 1. **Kiểm định của người.** Theo CLAUDE.md: nhãn máy phải ghi "nhãn máy, có kiểm định mẫu của người", tầng không đạt kiểm
