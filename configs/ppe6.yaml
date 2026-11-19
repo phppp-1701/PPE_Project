@@ -385,3 +385,17 @@ c8:
   eval_captures: [outputs/results/c5_eval/c4_val, outputs/results/c5_eval/c5_s960_val, outputs/results/c5_eval/c6_ft_val, outputs/results/c5_eval/c7_m_val]
   hard_neg_copies: 2
   test_weights: [outputs/train/yolo11s_ppe6_c4/weights/best.pt, outputs/train/yolo11s_ppe6_c5_s960/weights/best.pt, outputs/train/yolo11s_ppe6_c6_ft/weights/best.pt, outputs/train/yolo11m_ppe6_c7/weights/best.pt]
+
+c8_ext:
+  # C8 găng ngoài (03za --section c8_ext), như c6_ext. Nguồn điền khi người dùng tải (data/raw/<bộ>/, README ghi giấy phép).
+  out: data/ppe6/c8
+  weights: outputs/train/yolo11s_ppe6_c6_ft/weights/best.pt
+  sources: {}            # vd: sg: {dir: data/raw/safety_gloves_ru, prefix: sg, ids: [<mã lớp gloves>], target: 3}
+  rot_min: 0.5
+  rot_margin: 0.2
+  dedup_hamming: 6
+  group_hamming: 10
+  pseudo_conf: 0.5
+  mask_conf: 0.25
+  mask_conf_small: 0.1
+  max_side: 1280

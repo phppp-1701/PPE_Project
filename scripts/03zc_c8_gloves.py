@@ -172,12 +172,86 @@ def cmd_candidates(args):
     print(len(items), "ô", Counter((it["task"], it["set"]) for it in items))
 
 
+def cmd_pack(args):
+    """Bộ phụ C8 = bộ phụ C7 + ảnh găng ngoài (data/ppe6/c8/ext, 03za --section c8_ext) + quyết định của Claude trên găng
+    báo thừa ở train (gloves8_train_add): g -> thêm nhãn găng, u -> che xám (ảnh cùng tên thay ảnh gốc), n -> mẫu âm khó lặp
+    `hard_neg_copies` lần; ảnh găng ngoài lặp thêm 1 lần. Gói data/ppe6/variants/kaggle/c8_extra_pack.zip, kèm trọng số c6_ft
+    để tinh chỉnh."""
+    import shutil
+    import zipfile
+
+    import cv2
+
+    c = cfg()
+    c7x = ROOT / "data" / "ppe6" / "c7" / "c7_extra"
+    out = OUT / "c8_extra"
+    if out.exists():
+        shutil.rmtree(out)
+    shutil.copytree(c7x, out)
+    ext = OUT / "ext"
+    n_ext = 0
+    if (ext / "images" / "train").exists():
+        for p in sorted((ext / "images" / "train").iterdir()):
+            shutil.copy2(p, out / "images" / "train" / p.name)
+            shutil.copy2(ext / "labels" / "train" / (p.stem + ".txt"), out / "labels" / "train" / (p.stem + ".txt"))
+            n_ext += 1
+    else:
+        print("Chưa có ảnh găng ngoài (03za --section c8_ext): gói chỉ có mẫu âm khó")
+    dec = {r["item"]: r["decision"] for r in csv.DictReader(open(C5 / "machine_pass_claude.csv", encoding="utf-8"))}
+    items = [r for r in csv.DictReader(open(C5 / "review_items_c8.csv", encoding="utf-8")) if r["task"] == "gloves8_train_add"]
+    by_img, stat = {}, Counter()
+    for it in items:
+        by_img.setdefault(it["img"], []).append(it)
+    hard = []
+    for img, its in by_img.items():
+        src, lab = ROOT / img, ROOT / json.loads(its[0]["meta"])["label"]
+        rows = [[k, b] for k, b in yolo_rows(lab)]
+        masks, changed = [], False
+        for it in its:
+            v = dec.get(it["item"])
+            stat[v] += 1
+            b = [float(x) for x in it["target"].split()]
+            if v == "g":
+                rows.append([3, b]); changed = True
+            elif v == "u":
+                masks.append(b); changed = True
+        if any(dec.get(it["item"]) == "n" for it in its):
+            hard.append(src.name)
+        if changed:
+            im = cv2.imdecode(np.fromfile(str(src), dtype=np.uint8), cv2.IMREAD_COLOR)
+            h, w = im.shape[:2]
+            for b in masks:
+                im[max(int(b[1] * h), 0):int(np.ceil(b[3] * h)), max(int(b[0] * w), 0):int(np.ceil(b[2] * w))] = (114, 114, 114)
+            dst = out / "images" / "train" / src.name
+            if dst.exists():
+                dst.unlink()
+            cv2.imencode(Path(src.name).suffix or ".jpg", im, [cv2.IMWRITE_JPEG_QUALITY, 92])[1].tofile(str(dst))
+            (out / "labels" / "train" / (src.stem + ".txt")).write_text("".join(
+                f"{k} {(b[0] + b[2]) / 2:.6f} {(b[1] + b[3]) / 2:.6f} {b[2] - b[0]:.6f} {b[3] - b[1]:.6f}\n" for k, b in rows), encoding="utf-8")
+            stat["anh_sua"] += 1
+    ext_names = sorted(p.name for p in (ext / "images" / "train").iterdir()) if (ext / "images" / "train").exists() else []
+    rep = [x for x in (c7x / "oversample.txt").read_text(encoding="utf-8").split() if x]
+    rep += hard * c["hard_neg_copies"] + ext_names
+    (out / "oversample.txt").write_text("".join(x + "\n" for x in rep), encoding="utf-8")
+    (out / "weights").mkdir(exist_ok=True)
+    shutil.copy2(ROOT / c["weights"], out / "weights" / "c6_ft_best.pt")
+    summ = json.loads((out / "summary.json").read_text(encoding="utf-8"))
+    summ["c8"] = dict(gloves_train_review=dict(stat), hard_neg_images=len(hard), ext_images=n_ext, oversample_total=len(rep))
+    (out / "summary.json").write_text(json.dumps(summ, ensure_ascii=False, indent=2), encoding="utf-8")
+    pack = ROOT / "data" / "ppe6" / "variants" / "kaggle" / "c8_extra_pack.zip"
+    with zipfile.ZipFile(pack, "w", zipfile.ZIP_STORED) as z:
+        for p in sorted(out.rglob("*")):
+            if p.is_file():
+                z.write(p, "c8_extra/" + p.relative_to(out).as_posix())
+    print(summ["c8"], f"| gói {pack.name} {pack.stat().st_size / 1e6:.1f} MB")
+
+
 def main():
     sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=["pred-train", "pred-test", "candidates"])
+    ap.add_argument("cmd", choices=["pred-train", "pred-test", "candidates", "pack"])
     args = ap.parse_args()
-    dict(**{"pred-train": cmd_pred_train, "pred-test": cmd_pred_test, "candidates": cmd_candidates})[args.cmd](args)
+    dict(**{"pred-train": cmd_pred_train, "pred-test": cmd_pred_test, "candidates": cmd_candidates, "pack": cmd_pack})[args.cmd](args)
 
 
 if __name__ == "__main__":
