@@ -988,7 +988,7 @@ def cmd_audit(args):
             continue
         if args.task and it["task"] != args.task:
             continue
-        if cls == "gloves" and act == "add":
+        if it["task"] == "gloves_eval_add" and act == "add":
             continue   # sau kiểm định lần 1: hộp găng thêm ở val, test đã thành ignore
         if cls == "boots" and act in ("keep", "replace", "add") and it["item"] in rc:
             boxes = [b for b, x in rc[it["item"]] if x == "k"]   # chỉ hộp lượt xem lại giữ
