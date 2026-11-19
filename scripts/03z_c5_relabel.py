@@ -862,7 +862,7 @@ def cmd_build_eval(args):
             cls = {"gloves": 3, "boots": 5, "goggles": 4}[PART_OF_TASK.get(it["task"]) or it["task"].split("_")[0]]
             t = [float(x) for x in it["target"].split()]
             # Sau kiểm định lần 1 (găng không đạt, lỗi hệ thống hình học hộp): hộp găng máy thêm ở val, test thành ignore.
-            if it["task"] == "gloves_eval_add" and act == "add":
+            if it["task"] in ("gloves_eval_add", "gloves8_eval_add") and act == "add":   # cả hai lượt găng thêm không đạt kiểm định (lần 1, lần 4)
                 act, status, v = "ignore", "machine_labeled", v + ">audit1_fail"
             # Ủng: hộp giữ / nắn / thêm mà lượt xem lại chặt không giữ (k) thì thành ignore.
             if cls == 5 and act in ("keep", "replace", "add") and it["item"] in rc:

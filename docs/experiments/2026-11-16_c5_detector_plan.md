@@ -691,6 +691,15 @@ Chấm lại mọi bản trên val nhãn găng bản 2 (`c8lab_*`, găng tập p
 So với nhãn bản 1: C6-ft 0,657 → 0,677 (+0,020, toàn bộ do đổi nhãn đo). Các bản vẫn chênh nhau trong KTC. Còn cách 0,8
 khoảng 0,12.
 
+**Kiểm định lần 4 (găng C8, 62 ô, Hoàng Phương, `audit4/report.json`):** máy nói có 9/22 (41%) — **không đạt** (lại
+lỗi hình học hộp: có găng nhưng hộp chỉ bao một phần, ví dụ ô hộp chỉ khoanh ngón và vật cầm, Claude đã chấm g); máy nói
+không 3/39 (7,7%) — đạt. → 22 hộp găng thêm của C8 thành ignore như lần 1 (`build-eval`). Val nhãn găng bản 2 cuối cùng:
+không thêm hộp găng nào, chỉ thêm vùng ignore (val 190, test 189). Chấm lại (`c8lab_*`), găng tập ppe4 (864 hộp):
+C4 0,671, C5-s960 0,684, **C6-ft 0,674**, C7-m 0,680; ảnh lớp mới (343): 0,525 / 0,547 / 0,542 / 0,516.
+
+**Kết luận về sửa nhãn găng:** hai lần (lần 1, lần 4) hộp găng do máy + Claude thêm đều không đạt kiểm định vì hình học
+hộp; Claude không vẽ được hộp găng đủ chính xác từ bảng ảnh. Mức tăng 0,657 → 0,674 của C6-ft chỉ do thêm vùng ignore.
+
 ## 3. Điểm cần người dùng quyết định
 
 1. **Kiểm định của người.** Theo CLAUDE.md: nhãn máy phải ghi "nhãn máy, có kiểm định mẫu của người", tầng không đạt kiểm
