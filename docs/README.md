@@ -7,3 +7,4 @@
 - `c5_kaggle_run.md`: cách train C5-s@960 và C5-s@1280 trên Kaggle (gói `c5_pack.zip`, `c5_extra_pack.zip`) và chấm trên val đã sửa.
 - `c6_kaggle_run.md`: cách train C6 (c6_scratch, c6_ft song song trên Kaggle T4 x2).
 - `c7_kaggle_run.md`: cách train C7-m (YOLO11m, 2 GPU T4) trên Kaggle.
+- `c8_kaggle_run.md`: cách train C8-ft (găng, tinh chỉnh từ c6_ft) trên Kaggle.

@@ -384,13 +384,15 @@ c8:
   merge_iou: 0.5
   eval_captures: [outputs/results/c5_eval/c4_val, outputs/results/c5_eval/c5_s960_val, outputs/results/c5_eval/c6_ft_val, outputs/results/c5_eval/c7_m_val]
   hard_neg_copies: 2
+  ext_cap_per_group: 120   # ảnh găng ngoài tối đa mỗi nhóm tên gốc (19/11: 938 ảnh gần như cùng một xưởng, 1-2 camera)
   test_weights: [outputs/train/yolo11s_ppe6_c4/weights/best.pt, outputs/train/yolo11s_ppe6_c5_s960/weights/best.pt, outputs/train/yolo11s_ppe6_c6_ft/weights/best.pt, outputs/train/yolo11m_ppe6_c7/weights/best.pt]
 
 c8_ext:
   # C8 găng ngoài (03za --section c8_ext), như c6_ext. Nguồn điền khi người dùng tải (data/raw/<bộ>/, README ghi giấy phép).
   out: data/ppe6/c8
   weights: outputs/train/yolo11s_ppe6_c6_ft/weights/best.pt
-  sources: {}            # vd: sg: {dir: data/raw/safety_gloves_ru, prefix: sg, ids: [<mã lớp gloves>], target: 3}
+  sources:
+    sg: {dir: data/raw/safety_gloves_ru, prefix: sg, ids: [0], target: 3}   # 0 Gloves -> 3; 1 NO-Gloves (tay trần) = mẫu âm, không nhãn
   rot_min: 0.5
   rot_margin: 0.2
   dedup_hamming: 6
@@ -399,3 +401,12 @@ c8_ext:
   mask_conf: 0.25
   mask_conf_small: 0.1
   max_side: 1280
+
+c8_decision:
+  # Tiêu chí chọn C8 (kế hoạch 2026-11-16_c5_detector_plan mục C8), khóa 19/11/2026 trước khi train, người dùng chọn (a).
+  # C8-ft: tinh chỉnh từ c6_ft (như c6_ft: SGD, lr0 0,002, warmup 1, 40 epoch, không time), imgsz 960, dữ liệu c5_pack +
+  # c8_extra_pack. Chấm trên val nhãn găng bản 2 (c8lab_*, 04j), so với c6_ft trên cùng nhãn.
+  baseline: c6_ft
+  min_gloves_gain: 0.03   # găng (tập ppe4) tăng >= mức này
+  max_drop: 0.02          # và người, mũ, áo, kính (goggles_all), ủng (lớp mới) không tụt quá mức này
+  ft: {epochs: 40, optimizer: SGD, lr0: 0.002, warmup_epochs: 1}

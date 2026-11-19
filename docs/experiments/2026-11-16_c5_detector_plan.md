@@ -700,6 +700,18 @@ C4 0,671, C5-s960 0,684, **C6-ft 0,674**, C7-m 0,680; ảnh lớp mới (343): 0
 **Kết luận về sửa nhãn găng:** hai lần (lần 1, lần 4) hộp găng do máy + Claude thêm đều không đạt kiểm định vì hình học
 hộp; Claude không vẽ được hộp găng đủ chính xác từ bảng ảnh. Mức tăng 0,657 → 0,674 của C6-ft chỉ do thêm vùng ignore.
 
+### C8: dữ liệu và tiêu chí (19/11/2026)
+
+- **Găng ngoài:** `data/raw/safety_gloves_ru/` (Safety Gloves, Roboflow Universe Projects, CC BY 4.0, 3.373 ảnh CCTV nhà
+  xưởng, Gloves / NO-Gloves). `03za --section c8_ext`: bỏ gần trùng 1.146, không có găng 1.261, xoay 27, nhóm cảnh trùng
+  đánh giá 1 → 938 ảnh (2.009 hộp găng; người, mũ, áo nhãn máy C6; kính, ủng che). **(Claude quan sát)** gần như toàn bộ là
+  cùng một xưởng, 1–2 camera → giới hạn 120 ảnh mỗi nhóm tên gốc (`c8.ext_cap_per_group`), không lặp → **538 ảnh**.
+- **Train:** 7 găng thiếu nhãn thêm, 43 vùng che, 161 ảnh mẫu âm khó (Claude n) lặp 2 lần (`03zc pack`).
+- Gói `data/ppe6/variants/kaggle/c8_extra_pack.zip` (839 MB, oversample 4.027, kèm trọng số c6_ft). Hướng dẫn
+  `docs/c8_kaggle_run.md`.
+- **Tiêu chí (khóa trước train, `c8_decision`):** C8-ft (tinh chỉnh từ c6_ft) thay c6_ft khi găng (ppe4, val nhãn găng bản 2)
+  tăng ≥ 0,03 và người, mũ, áo, kính, ủng không tụt quá 0,02.
+
 ## 3. Điểm cần người dùng quyết định
 
 1. **Kiểm định của người.** Theo CLAUDE.md: nhãn máy phải ghi "nhãn máy, có kiểm định mẫu của người", tầng không đạt kiểm

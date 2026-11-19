@@ -190,8 +190,21 @@ def cmd_pack(args):
     shutil.copytree(c7x, out)
     ext = OUT / "ext"
     n_ext = 0
+    keep_ext = set()
+    if (ext / "images" / "train").exists():
+        import re
+        src_of = {f["file"]: f["source"].split("/")[-1] for f in json.loads((ext / "summary.json").read_text(encoding="utf-8"))["files"]}
+        groups = {}
+        for p in sorted((ext / "images" / "train").iterdir()):
+            groups.setdefault(re.sub(r"[_-]?\d+.*", "", src_of.get(p.name, p.name))[:30], []).append(p)
+        rng = random.Random(c["seed"])
+        for g, ps in sorted(groups.items()):   # giới hạn ảnh mỗi nhóm tên gốc (bộ có nhiều khung liên tiếp của cùng camera)
+            rng.shuffle(ps)
+            keep_ext |= {p.name for p in ps[:c["ext_cap_per_group"]]}
     if (ext / "images" / "train").exists():
         for p in sorted((ext / "images" / "train").iterdir()):
+            if p.name not in keep_ext:
+                continue
             shutil.copy2(p, out / "images" / "train" / p.name)
             shutil.copy2(ext / "labels" / "train" / (p.stem + ".txt"), out / "labels" / "train" / (p.stem + ".txt"))
             n_ext += 1
@@ -229,9 +242,8 @@ def cmd_pack(args):
             (out / "labels" / "train" / (src.stem + ".txt")).write_text("".join(
                 f"{k} {(b[0] + b[2]) / 2:.6f} {(b[1] + b[3]) / 2:.6f} {b[2] - b[0]:.6f} {b[3] - b[1]:.6f}\n" for k, b in rows), encoding="utf-8")
             stat["anh_sua"] += 1
-    ext_names = sorted(p.name for p in (ext / "images" / "train").iterdir()) if (ext / "images" / "train").exists() else []
     rep = [x for x in (c7x / "oversample.txt").read_text(encoding="utf-8").split() if x]
-    rep += hard * c["hard_neg_copies"] + ext_names
+    rep += hard * c["hard_neg_copies"]   # ảnh găng ngoài không lặp (ít cảnh, tránh học thuộc cảnh)
     (out / "oversample.txt").write_text("".join(x + "\n" for x in rep), encoding="utf-8")
     (out / "weights").mkdir(exist_ok=True)
     shutil.copy2(ROOT / c["weights"], out / "weights" / "c6_ft_best.pt")
