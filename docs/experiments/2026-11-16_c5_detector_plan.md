@@ -735,6 +735,42 @@ ngoài: găng trên val ở khoảng 0,66–0,69, mọi khác biệt trong KTC. 
 huấn luyện găng (găng nhỏ, bị che, nhập nhằng găng / tay; nhãn găng thiếu mà máy không sửa đạt kiểm định), không phải ở mô
 hình; nâng găng lên 0,8 cần nhãn găng do người vẽ lại hộp, vượt quá thời gian còn lại.
 
+## C9: người dùng vẫn yêu cầu mọi PPE ≥ 0,8 (19/11/2026) — chẩn đoán, thử nhanh, CHỜ người dùng đồng ý
+
+Thử nhanh bằng script tạm (không thuộc pipeline), lưu tại `outputs/results/c5_eval/crop_probe/` (bị .gitignore, chỉ có trên
+máy). Detector c6_ft, val đã sửa, nhãn găng bản 2, nhãn máy có kiểm định mẫu của người. Bộ chấm của script cho lại đúng số
+04j của c6_ft (găng 0,6744, kính 0,8067, ủng 0,6767) nên so sánh dưới đây cùng một đường tính.
+
+**Lỗi găng là bỏ sót, không phải hộp lệch** (găng, tập ppe4, 864 hộp): AP50 theo mức IoU 0,1 / 0,3 / 0,5 = 0,755 / 0,720 /
+0,665. Ở conf ≥ 0,25: 524 hộp đúng IoU ≥ 0,5, 48 hộp lệch (IoU 0,1–0,5), **292 hộp (34%) không có dự đoán nào**. Theo cỡ
+(căn diện tích, px ở canvas 960): < 20 px thấy 22%, 20–64 px khoảng 53–60%, ≥ 64 px khoảng 72–80%. Theo nguồn: SH17 59%,
+CHV 48%, Construction-PPE 77%. Bảng ảnh 48 găng to bị sót (`miss_big.jpg`, Claude xem): phần lớn là găng thật (găng mỏng, găng
+y tế, nilon, găng len), một số ô hộp val nằm chỗ không thấy găng (nhãn val sai). Áo: 119/620 hộp bỏ sót; ủng: 14/76.
+
+**Ảnh val rất lớn** (cạnh dài trung vị 5.816 px), detector thu về 960 nên găng nhỏ mất chi tiết. Cỡ 1280 toàn ảnh đã không giúp
+(C5: găng +0,006).
+
+**Thử: detector lần hai trên vùng người cắt từ ảnh gốc** (người conf ≥ 0,3, nới 15% mỗi cạnh, bỏ người có cạnh < 0,6 × cỡ
+crop; dự đoán găng / kính / ủng của crop đổi về toạ độ ảnh, gộp với dự đoán toàn ảnh bằng NMS; không train lại):
+
+| Lớp (tập) | toàn ảnh | + crop 640, NMS 0,5, conf crop × 0,8 | + crop 640, NMS 0,5, × 1,0 | + crop 960, NMS 0,5, × 0,8 |
+|---|---|---|---|---|
+| găng (ppe4) | 0,674 | **0,707** | 0,697 | 0,708 |
+| kính (goggles_all) | 0,807 | **0,863** | 0,852 | 0,806 |
+| ủng (lớp mới) | 0,677 | **0,691** | 0,698 | 0,691 |
+
+Chưa có KTC bootstrap; tham số mới thử 6 tổ hợp trên val (chọn trên val, test chỉ chạy một lần cho bản chốt). Lưu ý: lợi ích đến
+từ ảnh gốc độ phân giải cao; video 1080p có ít chi tiết thừa hơn, nên phải đo riêng trên video và đo FPS (mỗi người thêm một
+lượt detector).
+
+**Đề xuất (Claude), chờ người dùng đồng ý:**
+1. Đưa "crop người" vào script chấm chính thức (bootstrap, ignore) và vào pipeline như tùy chọn trong `configs/`; đo FPS bằng 07.
+2. C9 train: tinh chỉnh c6_ft trên train + crop người cắt từ ảnh gốc độ phân giải cao (dùng nhãn sẵn có, hộp bị cắt dở ở mép
+   crop thì che xám), để mô hình học găng ở độ chi tiết như lúc suy luận crop. Khóa tiêu chí trước khi train.
+3. Song song, phần của người: sửa nhãn găng val trên CVAT có hộp vẽ sẵn (khoảng 6–8 giờ), **sửa toàn bộ ảnh val có găng**,
+   không chỉ các ca mô hình sót, để không làm số đẹp lên một chiều.
+Không hứa trước 0,8 cho găng; mỗi bước báo số thật.
+
 ## 3. Điểm cần người dùng quyết định
 
 1. **Kiểm định của người.** Theo CLAUDE.md: nhãn máy phải ghi "nhãn máy, có kiểm định mẫu của người", tầng không đạt kiểm
