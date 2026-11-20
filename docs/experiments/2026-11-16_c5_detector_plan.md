@@ -795,6 +795,25 @@ Số sự kiện trên video3–6 không đổi giữa các cấu hình (7, 3, 2
 ít người); trên video4–6 (nhiều người lớn) bản tắt zoom đã chỉ khoảng 21 khung/giây. Chưa đo ảnh hưởng của zoom lên kết quả
 trên video (cần video có nhãn); N chưa chọn (`every_n_frames: null`).
 
+**Trên video chỉnh tham số (20/11/2026):** `06b_evaluate_close_videos.py evaluate`, pipeline đầy đủ, nhãn CVAT của người
+trên video3–6 (video2 chạy nhưng không chấm vì nhãn không có thuộc tính kính, ủng); kết quả
+`outputs/results/c5_eval/zoom_bench/video_eval/results.md`. Số khung-người (mũ, áo không đổi ở mọi cấu hình):
+
+| PPE | Chỉ số | tắt zoom | N = 1 | N = 2 | N = 3 |
+|---|---|---|---|---|---|
+| ủng | Có đúng / 832 nhãn Có | 193 | **318** | 256 | 237 |
+| ủng | báo Thiếu oan | 119 | **61** | 76 | 76 |
+| ủng | Thiếu đúng / 925 | 551 | 551 | 551 | 551 |
+| găng | Có đúng / 904 | 670 | 686 | 682 | 675 |
+| găng | Thiếu đúng / 2.072 | 1.714 | 1.676 | 1.678 | 1.707 |
+| găng | báo Có sai | 0 | 1 | 1 | 0 |
+| kính | Có đúng / 438 | 349 | 357 | 353 | 353 |
+| kính | Thiếu đúng / 2.886 | 2.474 | 2.474 | 2.474 | 2.474 |
+
+Zoom giúp rõ nhất ở ủng (Có đúng +125, báo Thiếu oan −58 với N = 1); găng Có đúng +16 nhưng Thiếu đúng −38 (chuyển sang Chưa
+xác định, không thành báo sai); kính +8. N = 1 tốt nhất về nhận diện nhưng chậm nhất (20,2 khung/giây gộp, video4 12,6).
+Bật zoom và chọn N là quyết định của người dùng.
+
 Ghi chú lần thử: tham số mới thử 6 tổ hợp trên val (chọn trên val, test chỉ chạy một lần cho bản chốt). Lưu ý: lợi ích đến
 từ ảnh gốc độ phân giải cao; video 1080p có ít chi tiết thừa hơn, nên phải đo riêng trên video và đo FPS (mỗi người thêm một
 lượt detector).
