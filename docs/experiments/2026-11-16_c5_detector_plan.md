@@ -759,7 +759,23 @@ crop; dự đoán găng / kính / ủng của crop đổi về toạ độ ảnh
 | kính (goggles_all) | 0,807 | **0,863** | 0,852 | 0,806 |
 | ủng (lớp mới) | 0,677 | **0,691** | 0,698 | 0,691 |
 
-Chưa có KTC bootstrap; tham số mới thử 6 tổ hợp trên val (chọn trên val, test chỉ chạy một lần cho bản chốt). Lưu ý: lợi ích đến
+**Chấm chính thức (20/11/2026, người dùng đồng ý bước 1):** `scripts/04m_crop_pass.py` (tham số `configs/ppe6.yaml` mục
+`crop_pass` = cột "crop 640, × 0,8" ở trên), tp tính lại bằng đúng cách ghép của Ultralytics (`--check`: 0 khác biệt trên
+68.777 dự đoán c6_ft và 53.748 dự đoán C7-m); chấm bằng 04j (`c8lab_c6_vs_crop.json`, bootstrap theo cảnh, hiệu ghép cặp):
+
+| Lớp (tập) | c6_ft | c6_ft + crop | Hiệu [KTC 95%] |
+|---|---|---|---|
+| găng (ppe4) | 0,674 | **0,707** | **+0,033 [+0,017; +0,053]** |
+| găng (lớp mới) | 0,542 | 0,589 | +0,047 [+0,021; +0,074] |
+| kính (goggles_all) | 0,807 | **0,863** | **+0,057 [+0,026; +0,089]** |
+| kính (CHVG) | 0,854 | 0,917 | +0,063 [+0,028; +0,105] |
+| ủng (lớp mới) | 0,677 | 0,691 | +0,014 [−0,027; +0,073] |
+| người, mũ, áo | không đổi | không đổi | 0 |
+
+1.773 ảnh val, 2.809 crop (1,58 crop / ảnh), khoảng 43 ms / crop khi chấm (gồm cắt ảnh gốc 5–8 nghìn px và tiền xử lý; không
+thay cho đo FPS bằng 07). Găng và kính tăng có ý nghĩa; ủng chưa chắc. Găng vẫn dưới 0,8.
+
+Ghi chú lần thử: tham số mới thử 6 tổ hợp trên val (chọn trên val, test chỉ chạy một lần cho bản chốt). Lưu ý: lợi ích đến
 từ ảnh gốc độ phân giải cao; video 1080p có ít chi tiết thừa hơn, nên phải đo riêng trên video và đo FPS (mỗi người thêm một
 lượt detector).
 

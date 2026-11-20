@@ -410,3 +410,16 @@ c8_decision:
   min_gloves_gain: 0.03   # găng (tập ppe4) tăng >= mức này
   max_drop: 0.02          # và người, mũ, áo, kính (goggles_all), ủng (lớp mới) không tụt quá mức này
   ft: {epochs: 40, optimizer: SGD, lr0: 0.002, warmup_epochs: 1}
+
+crop_pass:
+  # C9 (04m_crop_pass.py): detector lần hai trên vùng người cắt từ ảnh gốc, gộp hộp găng, kính, ủng.
+  # Claude chọn trên val ngày 19/11/2026 (thử 6 tổ hợp: imgsz 640 / 960, nms_iou 0,5 / 0,6, conf_scale 0,8 / 1,0), chưa xem test.
+  person_conf: 0.3       # hộp người từ mức này mới cắt
+  pad: 0.15              # nới mỗi cạnh theo tỉ lệ cạnh hộp người
+  imgsz: 640             # cỡ suy luận của crop
+  min_side_ratio: 0.6    # bỏ người có cạnh dài < tỉ lệ này * imgsz (phóng to không thêm chi tiết)
+  classes: [3, 4, 5]     # găng, kính, ủng
+  conf_scale: 0.8        # conf của hộp từ crop nhân hệ số này trước khi gộp
+  nms_iou: 0.5           # gộp hai nguồn bằng NMS theo lớp
+  max_det: 300           # như model.val
+  half: true             # FP16, như lần thử
