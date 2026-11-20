@@ -850,6 +850,11 @@ c6_ft), không trùng tên train gốc. Hướng dẫn chạy: `docs/c9_kaggle_r
 (goggles_all), ủng (lớp mới) không tụt quá 0,02 so với c6_ft; (3) **có zoom**: kính, ủng không tụt quá 0,02 so với
 c6_ft + zoom. Không đạt thì giữ c6_ft (zoom bật hay tắt vẫn là quyết định riêng của người dùng).
 
+**Cách áp tiêu chí viết sẵn 20/11/2026, khi C9-ft đang train trên Kaggle (chưa có kết quả):** `scripts/04n_c9_decide.py`
+đọc hai file 04j (`c8lab_c6_vs_c9`, `c8lab_c6crop_vs_c9crop`), dùng điểm ước lượng hiệu mAP50 (như khi áp c6 / c7 /
+c8_decision; khoảng tin cậy chỉ in để tham khảo), ghi `outputs/results/c5_eval/c9_decision.json`. Chuỗi lệnh chấm ở
+docstring của script. Test: `tests/test_c9_decide.py`.
+
 ## 3. Điểm cần người dùng quyết định
 
 1. **Kiểm định của người.** Theo CLAUDE.md: nhãn máy phải ghi "nhãn máy, có kiểm định mẫu của người", tầng không đạt kiểm
