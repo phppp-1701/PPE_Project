@@ -16,4 +16,4 @@ Các bài kiểm tra cho code trong `src/ppe`, ví dụ: thiếu mũ liên tục
 **Chạy tự động trên GitHub:** `.github/workflows/tests.yml` chạy toàn bộ `pytest` (Windows, PyTorch CPU) cho mỗi push và pull request vào `main`, `exp/ppe6`, `feat/desktop`. Test không được cần trọng số, dữ liệu, video (không có trong git); test mới cần dữ liệu thì tự tạo dữ liệu giả trong test.
 
 `test_train_extra.py`: ghép bộ phụ của `scripts/04_train.py` (ảnh cùng tên thay ảnh gốc, tên lặp trong `oversample.txt` tạo nhiều bản), dữ liệu giả trong thư mục tạm.
-`test_crop_pass.py`: C9 (`scripts/04m_crop_pass.py`): cách tính tp trùng `match_predictions` của Ultralytics trên dữ liệu ngẫu nhiên, NMS, gộp hộp crop chỉ cho lớp trong `classes`, cắt vùng người và đổi toạ độ.
+`test_crop_pass.py`: C9 (`scripts/04m_crop_pass.py`): cách tính tp trùng `match_predictions` của Ultralytics trên dữ liệu ngẫu nhiên, NMS, gộp hộp crop chỉ cho lớp trong `classes`, cắt vùng người và đổi toạ độ; `detector.zoom` của `src/ppe/detector.py` với mô hình giả (đổi toạ độ, nhân `conf_scale`, lọc conf, NMS với PPE cả khung).

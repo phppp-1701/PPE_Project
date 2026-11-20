@@ -16,7 +16,6 @@ Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
 
 import argparse
 import json
-import logging
 import os
 import sys
 import time
@@ -27,6 +26,8 @@ import yaml
 
 os.environ.setdefault("YOLO_AUTOINSTALL", "False")
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
+from ppe.detector import letterbox_square, unletterbox  # noqa: E402
 EVAL = ROOT / "data" / "ppe6" / "c5" / "eval"
 IOUV = np.linspace(0.5, 0.95, 10)
 
@@ -111,8 +112,9 @@ def person_crops(im, pbox, ratio_pad, cfg):
         x2, y2 = int(min(x2 + cfg["pad"] * bw, w)), int(min(y2 + cfg["pad"] * bh, h))
         if max(x2 - x1, y2 - y1) < cfg["min_side_ratio"] * cfg["imgsz"]:
             continue
-        crops.append(im[y1:y2, x1:x2])
-        offs.append((x1, y1))
+        sq, r, dx, dy = letterbox_square(im[y1:y2, x1:x2], cfg["imgsz"])   # cùng cỡ đầu vào như pipeline
+        crops.append(sq)
+        offs.append((r, dx, dy, x1, y1))
     return crops, offs
 
 
@@ -141,7 +143,6 @@ def main():
     cfg = yaml.safe_load((ROOT / "configs" / "ppe6.yaml").read_text(encoding="utf-8"))["crop_pass"]
     import cv2
     from ultralytics import YOLO
-    from ultralytics.utils import LOGGER
 
     model = YOLO(args.weights)
     img_dir = EVAL / args.split / "images"
@@ -158,20 +159,18 @@ def main():
             crops, offs = person_crops(im, persons, z["ratio_pad"][i], cfg)
             if crops:
                 g, px, py = z["ratio_pad"][i]
-                level = LOGGER.level
-                LOGGER.setLevel(logging.ERROR)   # Ultralytics 8.4.189 cảnh báo 'half' mỗi lần gọi predict
                 t1 = time.time()
-                res = model.predict(crops, imgsz=cfg["imgsz"], conf=0.001, iou=0.7, verbose=False, device=0, half=cfg["half"])
+                res = [model.predict(c, imgsz=cfg["imgsz"], conf=0.001, iou=0.7, verbose=False, device=0,
+                                     quantize=16 if cfg["half"] else None)[0] for c in crops]   # từng ảnh, như pipeline
                 t_model += time.time() - t1
-                LOGGER.setLevel(level)
                 n_crops += len(crops)
                 rows = []
-                for r, (ox, oy) in zip(res, offs):
+                for r, off in zip(res, offs):
                     xy = r.boxes.xyxy.cpu().numpy().astype(np.float64)
                     cf = r.boxes.conf.cpu().numpy().astype(np.float64)
                     cl = r.boxes.cls.cpu().numpy().astype(int)
                     m = np.isin(cl, cfg["classes"])
-                    q = (xy[m] + [ox, oy, ox, oy]) * g + [px, py, px, py]
+                    q = unletterbox(xy[m], *off) * g + [px, py, px, py]
                     rows.append(np.column_stack([q, cf[m] * cfg["conf_scale"], cl[m]]))
                 extra = np.vstack(rows) if rows else extra
         b, s, c = merge_image(pbox, pconf, pcls, extra, cfg)

@@ -30,6 +30,19 @@ detector:
     imgsz: 320            # trên val nhóm < 120 px: crop256 0.578, crop320 0.564, crop480 0.555
     # conf cho F1 lớn nhất của crop trên val.
     conf: {helmet: 0.50, vest: 0.57, gloves: 0.42, goggles: 0.40, boots: 0.40}
+  # C9 (20/11/2026): dò lại găng, kính, ủng trên ảnh cắt người lớn ở ảnh gốc, gộp với PPE cả khung (src/ppe/detector.py).
+  # Tham số = configs/ppe6.yaml mục crop_pass, chọn trên val ảnh (04m + 04j): găng +0,033, kính +0,057, ủng +0,014.
+  # Tắt cho tới khi đo FPS (07) và người dùng đồng ý bật.
+  zoom:
+    enabled: false
+    pad: 0.15
+    imgsz: 640
+    min_side_ratio: 0.6
+    classes: [3, 4, 5]
+    conf_scale: 0.8
+    nms_iou: 0.5
+    half: true
+    every_n_frames: null   # chạy zoom mỗi N khung; chọn bằng 07 (tốc độ) và video chỉnh tham số
 
 # Danh sách PPE. Thêm loại mới (vd. giày) = thêm một mục ở đây, một vùng ở association.regions
 # và một mục ở compliance; không sửa code. `region`: tên vùng; `sides`: true = xét từng bên (trái/phải).

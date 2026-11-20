@@ -5,7 +5,7 @@ Mỗi file ứng với một bước xử lý:
 | File | Việc |
 |---|---|
 | `__init__.py` | Kiểu dữ liệu dùng chung (`Det`, `Track`, ba trạng thái), đọc `configs/pipeline.yaml`, báo lỗi khi tham số còn null |
-| `detector.py` | Chạy YOLO11s, trả về hộp người và PPE; `ppe_source` = `full` (PPE dò cả khung), `crop` (PPE dò trên ảnh cắt từng người) hoặc `auto` (ảnh cắt cho người nhỏ, cả khung cho người lớn) |
+| `detector.py` | Chạy YOLO11s, trả về hộp người và PPE; `ppe_source` = `full` (PPE dò cả khung), `crop` (PPE dò trên ảnh cắt từng người) hoặc `auto` (ảnh cắt cho người nhỏ, cả khung cho người lớn); `zoom` (C9, tùy chọn): dò lại găng, kính, ủng trên ảnh cắt người lớn ở 640 rồi gộp với PPE cả khung bằng NMS |
 | `tracker.py` | Chạy ByteTrack cho hộp người |
 | `pose.py` | Tìm cổ tay bằng YOLO11n-pose trên ảnh cắt từng người (bật/tắt ở `configs/pipeline.yaml` mục `pose`) |
 | `parts.py` | Bước kiểm tra thứ hai cho găng, ủng, kính: cắt ảnh tay, chân, mắt theo keypoint, phân loại bằng YOLO11n-cls (bật ở mục `part_cls`) |

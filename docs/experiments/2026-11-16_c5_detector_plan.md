@@ -775,6 +775,26 @@ crop; dự đoán găng / kính / ủng của crop đổi về toạ độ ảnh
 1.773 ảnh val, 2.809 crop (1,58 crop / ảnh), khoảng 43 ms / crop khi chấm (gồm cắt ảnh gốc 5–8 nghìn px và tiền xử lý; không
 thay cho đo FPS bằng 07). Găng và kính tăng có ý nghĩa; ủng chưa chắc. Găng vẫn dưới 0,8.
 
+**Đưa vào pipeline (20/11/2026):** `detector.zoom` trong `src/ppe/detector.py`, `configs/pipeline.yaml` (để **tắt**, chờ
+người dùng). Ảnh cắt thu về vuông 640 (`letterbox_square`, dùng chung với 04m; chấm lại val sau khi đổi: găng 0,7075
+[+0,018; +0,053], kính 0,862 [+0,025; +0,086], ủng 0,691, như trên), một bản mô hình riêng cho zoom, dò từng ảnh cắt một
+(đo được: dùng chung mô hình với lần dò cả khung FP32 thì 240 ms / khung; mỗi cỡ lô mới chậm khoảng 1,8 giây một lần; lô 2
+ảnh mất gần bằng 2 lần lô 1 ảnh). `zoom.every_n_frames` = N: chỉ chạy zoom mỗi N khung (cửa sổ thời gian gộp quan sát).
+
+Benchmark 07 (`outputs/results/c5_eval/zoom_bench/benchmark/`, video3–6, 2 lượt lặp, RTX 3050 Laptop; tiêu chí cũ
+≥ 20 khung/giây và p95 ≤ 100 ms):
+
+| Cấu hình | FPS xử lý | Latency TB (ms) | P95 video cao nhất (ms) | Detector (ms) | FPS video4 (đông người nhất) |
+|---|---|---|---|---|---|
+| c6_ft (tắt zoom) | 27,7 | 36,0 | 54,4 | 16,3 | 20,6 |
+| zoom N = 1 | 20,2 | 49,5 | 91,1 | 29,8 | 12,6 |
+| zoom N = 2 | 23,4 | 42,8 | 83,3 | 23,1 | 15,7 |
+| zoom N = 3 | 24,7 | 40,6 | 80,3 | 20,9 | 17,1 |
+
+Số sự kiện trên video3–6 không đổi giữa các cấu hình (7, 3, 2, 2). FPS gộp chịu ảnh hưởng lớn của video3 (1.950 khung,
+ít người); trên video4–6 (nhiều người lớn) bản tắt zoom đã chỉ khoảng 21 khung/giây. Chưa đo ảnh hưởng của zoom lên kết quả
+trên video (cần video có nhãn); N chưa chọn (`every_n_frames: null`).
+
 Ghi chú lần thử: tham số mới thử 6 tổ hợp trên val (chọn trên val, test chỉ chạy một lần cho bản chốt). Lưu ý: lợi ích đến
 từ ảnh gốc độ phân giải cao; video 1080p có ít chi tiết thừa hơn, nên phải đo riêng trên video và đo FPS (mỗi người thêm một
 lượt detector).
