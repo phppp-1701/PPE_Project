@@ -814,6 +814,11 @@ Zoom giúp rõ nhất ở ủng (Có đúng +125, báo Thiếu oan −58 với N
 xác định, không thành báo sai); kính +8. N = 1 tốt nhất về nhận diện nhưng chậm nhất (20,2 khung/giây gộp, video4 12,6).
 Bật zoom và chọn N là quyết định của người dùng.
 
+**Người dùng chọn 20/11/2026: bật zoom mọi khung (N = 1)** (`configs/pipeline.yaml`: `zoom.enabled: true`,
+`every_n_frames: 1`; trùng cấu hình `zoom_bench/pipeline_zoom_n1.yaml` đã đo 07 và chấm video). N chỉ ảnh hưởng chạy video:
+mAP val chấm trên ảnh tĩnh (mỗi ảnh một khung), nên mọi N cho cùng mAP val có zoom (găng 0,7075, kính goggles_all 0,862, ủng
+0,691; áo không thuộc lớp zoom, giữ 0,780). Zoom một mình chưa đưa găng, ủng, áo lên 0,8.
+
 Ghi chú lần thử: tham số mới thử 6 tổ hợp trên val (chọn trên val, test chỉ chạy một lần cho bản chốt). Lưu ý: lợi ích đến
 từ ảnh gốc độ phân giải cao; video 1080p có ít chi tiết thừa hơn, nên phải đo riêng trên video và đo FPS (mỗi người thêm một
 lượt detector).
