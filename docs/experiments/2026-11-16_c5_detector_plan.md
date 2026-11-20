@@ -807,6 +807,30 @@ lượt detector).
    không chỉ các ca mô hình sót, để không làm số đẹp lên một chiều.
 Không hứa trước 0,8 cho găng; mỗi bước báo số thật.
 
+### C9 bước 2: train trên ảnh cắt người (người dùng đồng ý 20/11/2026; `scripts/03zd_c9_zoom_crops.py`, mục `c9`)
+
+Ý tưởng: ảnh train SH17 rất lớn bị thu về 960 khi train nên găng nhỏ mất chi tiết; lượt zoom lúc chạy đưa vào detector ảnh
+cắt người ở độ phân giải gốc, mà c6_ft chưa từng học kiểu ảnh này. C9-ft học thêm ảnh cắt người như lúc chạy.
+
+Dữ liệu (Claude đặt trước khi train, không chọn trên val): ảnh nguồn là train C5 (đã che vùng ignore), nhãn của train C5.
+Vùng cắt = hộp người (nhãn) nới 15% mỗi cạnh (như `crop_pass.pad`), lấy khi cạnh dài ≥ 384 px ảnh gốc (người lúc chạy có
+zoom) và ≤ 0,7 cạnh dài ảnh (người gần kín ảnh thì cắt không thêm chi tiết). 7.303 người đủ điều kiện trong 3.823 ảnh; chỉ
+1.331 vùng cắt có găng / kính / ủng (train vốn ít găng: SH17 9.780 người, 1.958 găng). Lấy tối đa 3 người mỗi ảnh, ưu tiên
+người có găng / kính / ủng, tổng 3.000 ảnh (1.271 có lớp nhỏ, phần còn lại là tay trần độ phân giải cao, làm mẫu âm): SH17
+2.437, CHV 466, Construction-PPE 97. Hộp: người 4.289, mũ 864, áo 451, găng 1.739, kính 216, ủng 352. Hộp lớp 1-5 bị mép
+cắt còn thấy < 60% thì che xám (638 vùng; tránh dạy mô hình hộp chỉ bao một phần găng, như lỗi người dùng chỉ ra ở kiểm định
+lần 4), người thấy < 25% thì bỏ nhãn. Ảnh cắt thu về cạnh dài ≤ 960. Claude xem bảng 24 ảnh cắt có găng: hộp khớp vị trí sau
+khi cắt.
+
+Bộ phụ `c9_extra` = bộ phụ của c6_ft (`c6_extra`, giữ nguyên để chỉ khác ở ảnh cắt) + 3.000 ảnh `zoom__*`: 7.369 ảnh, 3.197
+bản lặp; train 17.735 ảnh. Kiểm gói: mọi ảnh có nhãn, nhãn hợp lệ, mọi tên lặp có ảnh (164 tên là ảnh che đổi đuôi .jpg, như
+c6_ft), không trùng tên train gốc. Hướng dẫn chạy: `docs/c9_kaggle_run.md`.
+
+**Tiêu chí khóa trước khi train** (`configs/ppe6.yaml` mục `c9_decision`): chấm val nhãn găng bản 2; C9-ft được chọn khi
+(1) găng (ppe4) **có zoom**: C9-ft + zoom − c6_ft + zoom ≥ +0,03; (2) **cả ảnh**: người, mũ, áo, găng (ppe4), kính
+(goggles_all), ủng (lớp mới) không tụt quá 0,02 so với c6_ft; (3) **có zoom**: kính, ủng không tụt quá 0,02 so với
+c6_ft + zoom. Không đạt thì giữ c6_ft (zoom bật hay tắt vẫn là quyết định riêng của người dùng).
+
 ## 3. Điểm cần người dùng quyết định
 
 1. **Kiểm định của người.** Theo CLAUDE.md: nhãn máy phải ghi "nhãn máy, có kiểm định mẫu của người", tầng không đạt kiểm

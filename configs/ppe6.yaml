@@ -423,3 +423,28 @@ crop_pass:
   nms_iou: 0.5           # gộp hai nguồn bằng NMS theo lớp
   max_det: 300           # như model.val
   half: true             # FP16, như lần thử
+
+c9:
+  # C9 bộ phụ ảnh cắt người ở độ phân giải gốc (03zd_c9_zoom_crops.py), người dùng đồng ý 20/11/2026. Claude đặt trước khi train.
+  weights: outputs/train/yolo11s_ppe6_c6_ft/weights/best.pt   # tinh chỉnh từ c6_ft
+  seed: 29
+  pad: 0.15                # như crop_pass.pad (lúc chạy)
+  min_side: 384            # = crop_pass.min_side_ratio * crop_pass.imgsz: người lúc chạy có zoom
+  max_frac: 0.7            # vùng cắt dài hơn tỉ lệ này của cạnh dài ảnh: không thêm chi tiết, bỏ
+  min_visible_ppe: 0.6     # lớp 1-5 bị mép cắt: thấy ít hơn thì che xám
+  min_visible_person: 0.25 # người bị mép cắt: thấy ít hơn thì bỏ nhãn
+  max_per_image: 3
+  max_crops: 3000          # 7.303 người đủ điều kiện, 1.331 có găng / kính / ủng trong vùng cắt (lấy hết), còn lại mẫu không có
+  max_side: 960            # = imgsz train
+  jpeg_quality: 92
+
+c9_decision:
+  # Tiêu chí chọn C9 (kế hoạch 2026-11-16_c5_detector_plan mục C9), Claude đề xuất, khóa 20/11/2026 TRƯỚC khi train
+  # (người dùng đồng ý làm C9). C9-ft: tinh chỉnh từ c6_ft (như c6_ft / C8-ft), imgsz 960, dữ liệu c5_pack + c9_extra_pack.
+  # Chấm trên val nhãn găng bản 2 (c8lab_*): C9-ft cả ảnh (04d) và C9-ft + crop_pass (04m, cùng tham số mục crop_pass),
+  # so với c6_ft cả ảnh và c6_ft + crop_pass (04j, hiệu ghép cặp).
+  baseline: c6_ft
+  min_gloves_gain: 0.03   # găng (tập ppe4), chế độ có zoom: C9-ft + zoom − c6_ft + zoom >= mức này
+  max_drop: 0.02          # cả ảnh: người, mũ, áo, găng (ppe4), kính (goggles_all), ủng (lớp mới) không tụt quá mức này so với
+                          # c6_ft; có zoom: kính, ủng không tụt quá mức này so với c6_ft + zoom
+  ft: {epochs: 40, optimizer: SGD, lr0: 0.002, warmup_epochs: 1}
