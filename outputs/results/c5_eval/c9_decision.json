@@ -1,0 +1,127 @@
+{
+ "criteria": {
+  "baseline": "c6_ft",
+  "min_gloves_gain": 0.03,
+  "max_drop": 0.02,
+  "ft": {
+   "epochs": 40,
+   "optimizer": "SGD",
+   "lr0": 0.002,
+   "warmup_epochs": 1
+  }
+ },
+ "full": "c8lab_c6_vs_c9",
+ "zoom": "c8lab_c6crop_vs_c9crop",
+ "checks": [
+  {
+   "check": "có zoom: găng tăng",
+   "cls": "gloves",
+   "subset": "ppe4",
+   "diff": -0.013,
+   "ci": [
+    -0.0291,
+    0.005
+   ],
+   "need": ">= 0.03",
+   "ok": false
+  },
+  {
+   "check": "cả ảnh: không tụt",
+   "cls": "person",
+   "subset": "ppe4",
+   "diff": -0.0058,
+   "ci": [
+    -0.0121,
+    -0.0005
+   ],
+   "need": ">= -0.02",
+   "ok": true
+  },
+  {
+   "check": "cả ảnh: không tụt",
+   "cls": "helmet",
+   "subset": "ppe4",
+   "diff": 0.0056,
+   "ci": [
+    -0.0032,
+    0.0142
+   ],
+   "need": ">= -0.02",
+   "ok": true
+  },
+  {
+   "check": "cả ảnh: không tụt",
+   "cls": "vest",
+   "subset": "ppe4",
+   "diff": -0.0006,
+   "ci": [
+    -0.0139,
+    0.0118
+   ],
+   "need": ">= -0.02",
+   "ok": true
+  },
+  {
+   "check": "cả ảnh: không tụt",
+   "cls": "gloves",
+   "subset": "ppe4",
+   "diff": -0.0169,
+   "ci": [
+    -0.0325,
+    -0.0009
+   ],
+   "need": ">= -0.02",
+   "ok": true
+  },
+  {
+   "check": "cả ảnh: không tụt",
+   "cls": "goggles",
+   "subset": "goggles_all",
+   "diff": -0.0592,
+   "ci": [
+    -0.1023,
+    -0.0211
+   ],
+   "need": ">= -0.02",
+   "ok": false
+  },
+  {
+   "check": "cả ảnh: không tụt",
+   "cls": "boots",
+   "subset": "new",
+   "diff": 0.0264,
+   "ci": [
+    -0.0235,
+    0.0802
+   ],
+   "need": ">= -0.02",
+   "ok": true
+  },
+  {
+   "check": "có zoom: không tụt",
+   "cls": "goggles",
+   "subset": "goggles_all",
+   "diff": -0.0655,
+   "ci": [
+    -0.1192,
+    -0.0177
+   ],
+   "need": ">= -0.02",
+   "ok": false
+  },
+  {
+   "check": "có zoom: không tụt",
+   "cls": "boots",
+   "subset": "new",
+   "diff": 0.0058,
+   "ci": [
+    -0.0444,
+    0.0472
+   ],
+   "need": ">= -0.02",
+   "ok": true
+  }
+ ],
+ "passed": false,
+ "note": "nhãn máy, có kiểm định mẫu của người; điểm ước lượng mAP50 val"
+}

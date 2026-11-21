@@ -1,0 +1,15 @@
+{
+  "best": "/kaggle/working/runs/yolo11s_ppe6_c9_ft/weights/best.pt",
+  "best_mb": 19.2,
+  "sha256": "535500442d553ddd56cb139b8008e41415a8baf4211910f5b293293492ba4e04",
+  "names": [
+    "person",
+    "helmet",
+    "vest",
+    "gloves",
+    "goggles",
+    "boots"
+  ],
+  "folder_mb": 49.9,
+  "errors": []
+}

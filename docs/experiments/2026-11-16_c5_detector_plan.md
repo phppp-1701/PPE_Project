@@ -860,6 +860,28 @@ c6_ft + zoom. Không đạt thì giữ c6_ft (zoom bật hay tắt vẫn là quy
 c8_decision; khoảng tin cậy chỉ in để tham khảo), ghi `outputs/results/c5_eval/c9_decision.json`. Chuỗi lệnh chấm ở
 docstring của script. Test: `tests/test_c9_decide.py`.
 
+### Kết quả C9-ft (21/11/2026)
+
+Train Kaggle (T4, 40 epoch, 5,44 giờ; `outputs/train/yolo11s_ppe6_c9_ft`, sha256 `535500442d553ddd56cb139b8008e41415a8baf4211910f5b293293492ba4e04`,
+khớp `smoke_check.json`); log đúng `Bộ 6 lớp: {'train': 7169, 'val_monitor': 1070}`, `Bộ phụ: 7369 ảnh cắt, 3197 bản thêm;
+train còn 17735 ảnh`. Chấm trên val nhãn găng bản 2: 04d (`c8lab_c9_ft_val`), 04m (`c8lab_c9_ft_crop_val`, 2.763 ảnh cắt),
+04j (`c8lab_c6_vs_c9.json`, `c8lab_c6crop_vs_c9crop.json`), 04n (`c9_decision.json`). mAP50, KTC 95% bootstrap theo cảnh;
+nhãn máy, có kiểm định mẫu của người:
+
+| Lớp (tập con) | c6_ft | C9-ft | hiệu | c6_ft + zoom | C9-ft + zoom | hiệu |
+|---|---|---|---|---|---|---|
+| người (ppe4) | 0,894 | 0,888 | −0,006 [−0,012; −0,001] | 0,894 | 0,888 | −0,006 |
+| mũ (ppe4) | 0,899 | 0,904 | +0,006 [−0,003; +0,014] | 0,899 | 0,904 | +0,006 |
+| áo (ppe4) | 0,780 | 0,779 | −0,001 [−0,014; +0,012] | 0,780 | 0,779 | −0,001 |
+| găng (ppe4) | 0,674 | 0,658 | −0,017 [−0,033; −0,001] | 0,708 | 0,695 | **−0,013** [−0,029; +0,005] |
+| kính (goggles_all) | 0,807 | 0,748 | **−0,059** [−0,102; −0,021] | 0,862 | 0,797 | **−0,066** [−0,119; −0,018] |
+| ủng (new) | 0,677 | 0,703 | +0,026 [−0,024; +0,080] | 0,691 | 0,697 | +0,006 [−0,044; +0,047] |
+
+**Áp `c9_decision`:** (1) găng có zoom −0,013 (cần ≥ +0,03): **không đạt**; (2) cả ảnh: kính −0,059 tụt quá 0,02: **không
+đạt**; (3) có zoom: kính −0,066: **không đạt**. → **C9-ft không thay c6_ft**; hệ thống giữ c6_ft + zoom mọi khung. Không
+đo tốc độ 07 cho C9. Học thêm ảnh cắt người không làm mô hình mạnh hơn khi dò trên ảnh cắt; kính tụt có ý nghĩa (nhiều ảnh
+cắt SH17 có kính thường không gán nhãn hoặc bị che xám, có thể đã dạy mô hình bớt báo kính; giả thuyết, chưa kiểm).
+
 ## 3. Điểm cần người dùng quyết định
 
 1. **Kiểm định của người.** Theo CLAUDE.md: nhãn máy phải ghi "nhãn máy, có kiểm định mẫu của người", tầng không đạt kiểm
