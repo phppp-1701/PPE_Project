@@ -149,10 +149,15 @@ outputs/results/close_eval/final/holdout_viewer/
 !outputs/train/yolo11s_ppe6_c6_*/results.csv
 !outputs/train/yolo11s_ppe6_c6_*/run_info.json
 !outputs/train/yolo11s_ppe6_c6_*/smoke_check.json
+!outputs/train/yolo11m_ppe6_c7/results.csv
+!outputs/train/yolo11m_ppe6_c7/run_info.json
+!outputs/train/yolo11m_ppe6_c7/smoke_check.json
+!outputs/train/yolo11s_ppe6_c8_ft/results.csv
+!outputs/train/yolo11s_ppe6_c8_ft/run_info.json
+!outputs/train/yolo11s_ppe6_c8_ft/smoke_check.json
 
 # App desktop Windows (PyInstaller, khóa phiên bản chạy, bộ cài)
 build/
 dist/
 *.lock
 *.iss.out/
-

@@ -603,6 +603,285 @@ khi có trọng số thật. FP16 phải kiểm trên val (AP gần như không 
 trung bình mAP50 găng, kính, ủng tăng ≥ 0,02, không lớp nào tụt quá 0,02, FP16 lệch FP32 ≤ 0,005 mỗi lớp trên val (mới được
 chạy FP16), và pipeline (07) ≥ 20 khung/giây, p95 ≤ 100 ms. Hướng dẫn: `docs/c7_kaggle_run.md`.
 
+### Kết quả C7-m (19/11/2026)
+
+Kaggle T4 x2, DDP (`device 0,1`, batch 16), log `outputs/train/yolo11m_ppe6_c7/kaggle_train.log`: ghép đúng `train 7169,
+val_monitor 1070`, bộ phụ 4.475 ảnh, 3.705 bản lặp, 15.243 ảnh train; **53 epoch, 8,35 giờ, dừng sớm, best epoch 33**.
+`04f` đạt; sha256 best.pt `7a8eef5d1efdb94034565cdcf44371604d855840b906d9d517e943287a1ae1ea`. Chấm `04d` (FP32 và `--half`)
++ `04j` → `outputs/results/c5_eval/c6_vs_c7.json`, `c7_fp32_vs_fp16.json`.
+
+| Lớp (tập) | c6_ft | C7-m | C7-m − c6_ft [KTC 95%] |
+|---|---|---|---|
+| người (ppe4) | 0,894 | 0,897 | +0,004 |
+| mũ (ppe4) | 0,899 | 0,898 | −0,000 |
+| áo (ppe4) | 0,780 | 0,779 | −0,001 |
+| găng (ppe4) | 0,657 | 0,661 | +0,003 [−0,021; +0,028] |
+| kính (goggles_all) | 0,807 | 0,774 | −0,033 [−0,104; +0,034] |
+| ủng (lớp mới, 76) | 0,677 | 0,620 | −0,057 [−0,149; +0,036] |
+
+FP16 so với FP32 của C7-m: mọi lớp lệch ≤ 0,005 (lớn nhất găng tập lớp mới −0,004) → đạt `half_check`.
+
+**Áp tiêu chí đã khóa (`c7_decision`):** trung bình găng, kính, ủng: C7-m 0,685, c6_ft 0,714 → giảm 0,029 (cần tăng ≥ 0,02):
+**không đạt**; ủng −0,057, kính −0,033 tụt quá 0,02: **không đạt**. → **C7-m không thay c6_ft**; hệ thống giữ c6_ft. Không đo
+tốc độ 07 cho C7 (đã không đạt điều kiện độ chính xác).
+
+Nhận xét (Claude): qua C4 → C7 (sửa nhãn, 1280, dữ liệu ủng ngoài, mẫu âm khó, mô hình m), **găng nằm yên quanh
+0,66 (0,655–0,674), áo quanh 0,78**; mọi khác biệt giữa các bản nằm trong KTC. Mức trần này nhiều khả năng do dữ liệu
+(găng nhỏ, bị che, nhập nhằng găng / tay; áo SH17 ở xa) và do tập val nhỏ với ủng (76 hộp), không phải do cỡ mô hình.
+
+## C8: găng lên 0,8 (người dùng yêu cầu 19/11/2026) — chẩn đoán
+
+Trên c6_ft, val đã sửa, ảnh ppe4 (864 hộp găng), tính lại AP găng theo ngưỡng IoU ghép (chẩn đoán, 19/11/2026):
+
+| Nguồn | hộp | AP@0,5 | AP@0,3 | AP@0,1 |
+|---|---|---|---|---|
+| tất cả | 864 | 0,657 | 0,708 | 0,722 |
+| SH17 | 420 | 0,627 | 0,667 | 0,685 |
+| CHV | 228 | 0,590 | 0,646 | 0,658 |
+| Construction-PPE | 216 | 0,774 | 0,844 | 0,859 |
+
+→ Kể cả chỉ cần hộp chạm găng (IoU 0,1) AP vẫn 0,722: **khoanh lệch chỉ chiếm khoảng 0,06**; phần còn lại là **nhận sai**
+(báo găng ở chỗ không có, bỏ sót găng).
+
+**Chấm lại bằng bộ phân loại tay** (`04l_gloves_rescore.py`, `rescore_c6ft_cls_v2.json`, `_v4.json`): AP găng 0,657 → 0,668
+(v2, w 0,25) / 0,669 (v4, w 0,25); không đáng kể.
+
+**(Claude quan sát)** bảng báo thừa conf cao của c6_ft (`sheet_gloves_thua_khong_ro.jpg`): khoảng 5–8/40 là găng thật vẫn
+chưa có nhãn ở val (găng da, găng trắng, găng hở ngón); còn lại là tay trần, dụng cụ, vật cầm tay, và một số hộp dự đoán
+dẹt như một đường kẻ. Nhãn val găng còn thiếu là một giới hạn của phép đo.
+
+### C8: kế hoạch và chỗ dừng (19/11/2026, người dùng chọn phương án a)
+
+Ba việc, train một lần (tinh chỉnh từ c6_ft như C6), tiêu chí khóa trước khi train:
+1. **Sửa nốt nhãn găng val, test** theo tiêu chí chặt (hộp bao sát đúng một chiếc găng), có kiểm định của người; ứng viên
+   gộp từ dự đoán conf ≥ 0,4 của **mọi** bản C4, C5-s960, C6-ft, C7-m (để không nghiêng về một mô hình); test chỉ chạy
+   predict lấy vị trí ứng viên, không tính điểm. Mọi bản được chấm lại trên cùng bộ nhãn mới.
+2. **Dữ liệu găng ngoài** (người dùng tải từ Roboflow): Safety Gloves (Roboflow Universe Projects, safety-gloves-xbnf8,
+   Gloves / NO-Gloves, CC BY 4.0 theo trang), hand glove (Eshwaran), gloves (Construction Images). Xử lý như C6 (lọc nhóm cảnh
+   trùng ảnh đánh giá, ảnh xoay; găng → lớp 3, người / mũ / áo nhãn máy, kính / ủng che).
+3. **Mẫu âm khó găng** trên train (găng báo thừa conf ≥ 0,4 của c6_ft, Claude xem: n → lặp 2 lần).
+
+Script `scripts/03zc_c8_gloves.py` (`pred-train`, `pred-test`, `candidates` → `data/ppe6/c5/review_items_c8.csv`, nhiệm vụ
+`gloves8_train_add`, `gloves8_eval_add`), mục `c8`. **Dừng 19/11 do hết hạn mức sử dụng tuần của Claude:** đã có danh sách
+ứng viên; **chưa** xem bảng ảnh (`03z sheets --task gloves8_train_add` / `gloves8_eval_add`, ghi `.dec`, `collect`), chưa có
+bước dựng dữ liệu, gói Kaggle, tiêu chí C8, kiểm định. Hệ thống vẫn dùng c6_ft.
+
+### C8: nhãn găng val, test bản 2 (19–20/11/2026, nhãn máy, CHỜ kiểm định của người)
+
+Claude xem 756 ô (`gloves8_*`, tiêu chí chặt "hộp bao sát đúng một chiếc găng"):
+
+| | găng (g) | không phải (n) | không rõ (u) |
+|---|---|---|---|
+| train (găng báo thừa c6_ft) | 7 | 170 | 43 |
+| val (dự đoán C4–C7 không trùng nhãn) | 17 | 189 | 62 |
+| test (vị trí từ predict C4–C7, không tính điểm) | 12 | 188 | 68 |
+
+Gộp với bộ phân loại tay (luật hai lượt): thêm nhãn găng val 12, test 10; vùng ignore mới val 179, test 178 (gồm ô
+không rõ, ô Claude nói găng mà bộ phân loại không, ô Claude nói không mà bộ phân loại nói găng). Val, test dựng lại
+(`build-eval`); bản trước sao lưu ở scratchpad. **Ignore mới phần lớn rơi đúng chỗ các mô hình báo thừa, nên làm AP găng
+tăng mà mô hình không đổi**; báo cáo phải nói rõ.
+
+Chấm lại mọi bản trên val nhãn găng bản 2 (`c8lab_*`, găng tập ppe4, 876 hộp):
+
+| | C4 | C5-s960 | C6-ft | C7-m |
+|---|---|---|---|---|
+| găng (ppe4) | 0,673 | 0,688 | 0,677 | 0,681 |
+| găng (ảnh lớp mới, 352) | 0,531 | 0,558 | 0,551 | 0,520 |
+
+So với nhãn bản 1: C6-ft 0,657 → 0,677 (+0,020, toàn bộ do đổi nhãn đo). Các bản vẫn chênh nhau trong KTC. Còn cách 0,8
+khoảng 0,12.
+
+**Kiểm định lần 4 (găng C8, 62 ô, Hoàng Phương, `audit4/report.json`):** máy nói có 9/22 (41%) — **không đạt** (lại
+lỗi hình học hộp: có găng nhưng hộp chỉ bao một phần, ví dụ ô hộp chỉ khoanh ngón và vật cầm, Claude đã chấm g); máy nói
+không 3/39 (7,7%) — đạt. → 22 hộp găng thêm của C8 thành ignore như lần 1 (`build-eval`). Val nhãn găng bản 2 cuối cùng:
+không thêm hộp găng nào, chỉ thêm vùng ignore (val 190, test 189). Chấm lại (`c8lab_*`), găng tập ppe4 (864 hộp):
+C4 0,671, C5-s960 0,684, **C6-ft 0,674**, C7-m 0,680; ảnh lớp mới (343): 0,525 / 0,547 / 0,542 / 0,516.
+
+**Kết luận về sửa nhãn găng:** hai lần (lần 1, lần 4) hộp găng do máy + Claude thêm đều không đạt kiểm định vì hình học
+hộp; Claude không vẽ được hộp găng đủ chính xác từ bảng ảnh. Mức tăng 0,657 → 0,674 của C6-ft chỉ do thêm vùng ignore.
+
+### C8: dữ liệu và tiêu chí (19/11/2026)
+
+- **Găng ngoài:** `data/raw/safety_gloves_ru/` (Safety Gloves, Roboflow Universe Projects, CC BY 4.0, 3.373 ảnh CCTV nhà
+  xưởng, Gloves / NO-Gloves). `03za --section c8_ext`: bỏ gần trùng 1.146, không có găng 1.261, xoay 27, nhóm cảnh trùng
+  đánh giá 1 → 938 ảnh (2.009 hộp găng; người, mũ, áo nhãn máy C6; kính, ủng che). **(Claude quan sát)** gần như toàn bộ là
+  cùng một xưởng, 1–2 camera → giới hạn 120 ảnh mỗi nhóm tên gốc (`c8.ext_cap_per_group`), không lặp → **538 ảnh**.
+- **Train:** 7 găng thiếu nhãn thêm, 43 vùng che, 161 ảnh mẫu âm khó (Claude n) lặp 2 lần (`03zc pack`).
+- Gói `data/ppe6/variants/kaggle/c8_extra_pack.zip` (839 MB, oversample 4.027, kèm trọng số c6_ft). Hướng dẫn
+  `docs/c8_kaggle_run.md`.
+- **Tiêu chí (khóa trước train, `c8_decision`):** C8-ft (tinh chỉnh từ c6_ft) thay c6_ft khi găng (ppe4, val nhãn găng bản 2)
+  tăng ≥ 0,03 và người, mũ, áo, kính, ủng không tụt quá 0,02.
+
+### Kết quả C8-ft (19/11/2026)
+
+Kaggle (tài khoản mới, 1 GPU T4; dataset chính tải lại dạng gọn `ppe4_main_960.zip`, 1,97 GB: train + val thu về cạnh dài
+960, như `copy_max_side` của 04_train): ghép đúng `train 7169, val_monitor 1070`, bộ phụ 5.047 ảnh, 4.027 bản lặp, 16.103
+ảnh train; **23 epoch, 3,0 giờ, dừng sớm, best epoch 3**. `04f` đạt; sha256 best.pt
+`2567b1060b17353600f1da84064f0f6c7e99e96e17eb020c567ded59a3b66903`. Chấm trên val nhãn găng bản 2 (`c8lab_c6_vs_c8.json`):
+
+| Lớp (tập) | c6_ft | C8-ft | C8-ft − c6_ft [KTC 95%] |
+|---|---|---|---|
+| người (ppe4) | 0,894 | 0,887 | −0,007 |
+| mũ (ppe4) | 0,899 | 0,897 | −0,001 |
+| áo (ppe4) | 0,780 | 0,778 | −0,002 |
+| **găng (ppe4)** | 0,674 | **0,662** | **−0,012** [−0,027; +0,001] |
+| kính (goggles_all) | 0,807 | 0,794 | −0,013 |
+| ủng (lớp mới) | 0,677 | 0,658 | −0,019 |
+
+**Áp `c8_decision`:** găng giảm 0,012 (cần tăng ≥ 0,03) → **không đạt**; C8-ft không thay c6_ft. Hệ thống giữ c6_ft.
+
+**Tổng kết găng (C4 → C8, 7 bản):** sửa nhãn train, cỡ 1280, dữ liệu ủng ngoài, mẫu âm khó, YOLO11m, dữ liệu găng CCTV
+ngoài: găng trên val ở khoảng 0,66–0,69, mọi khác biệt trong KTC. Nhận định (Claude): giới hạn nằm ở dữ liệu đánh giá và
+huấn luyện găng (găng nhỏ, bị che, nhập nhằng găng / tay; nhãn găng thiếu mà máy không sửa đạt kiểm định), không phải ở mô
+hình; nâng găng lên 0,8 cần nhãn găng do người vẽ lại hộp, vượt quá thời gian còn lại.
+
+## C9: người dùng vẫn yêu cầu mọi PPE ≥ 0,8 (19/11/2026) — chẩn đoán, thử nhanh, CHỜ người dùng đồng ý
+
+Thử nhanh bằng script tạm (không thuộc pipeline), lưu tại `outputs/results/c5_eval/crop_probe/` (bị .gitignore, chỉ có trên
+máy). Detector c6_ft, val đã sửa, nhãn găng bản 2, nhãn máy có kiểm định mẫu của người. Bộ chấm của script cho lại đúng số
+04j của c6_ft (găng 0,6744, kính 0,8067, ủng 0,6767) nên so sánh dưới đây cùng một đường tính.
+
+**Lỗi găng là bỏ sót, không phải hộp lệch** (găng, tập ppe4, 864 hộp): AP50 theo mức IoU 0,1 / 0,3 / 0,5 = 0,755 / 0,720 /
+0,665. Ở conf ≥ 0,25: 524 hộp đúng IoU ≥ 0,5, 48 hộp lệch (IoU 0,1–0,5), **292 hộp (34%) không có dự đoán nào**. Theo cỡ
+(căn diện tích, px ở canvas 960): < 20 px thấy 22%, 20–64 px khoảng 53–60%, ≥ 64 px khoảng 72–80%. Theo nguồn: SH17 59%,
+CHV 48%, Construction-PPE 77%. Bảng ảnh 48 găng to bị sót (`miss_big.jpg`, Claude xem): phần lớn là găng thật (găng mỏng, găng
+y tế, nilon, găng len), một số ô hộp val nằm chỗ không thấy găng (nhãn val sai). Áo: 119/620 hộp bỏ sót; ủng: 14/76.
+
+**Ảnh val rất lớn** (cạnh dài trung vị 5.816 px), detector thu về 960 nên găng nhỏ mất chi tiết. Cỡ 1280 toàn ảnh đã không giúp
+(C5: găng +0,006).
+
+**Thử: detector lần hai trên vùng người cắt từ ảnh gốc** (người conf ≥ 0,3, nới 15% mỗi cạnh, bỏ người có cạnh < 0,6 × cỡ
+crop; dự đoán găng / kính / ủng của crop đổi về toạ độ ảnh, gộp với dự đoán toàn ảnh bằng NMS; không train lại):
+
+| Lớp (tập) | toàn ảnh | + crop 640, NMS 0,5, conf crop × 0,8 | + crop 640, NMS 0,5, × 1,0 | + crop 960, NMS 0,5, × 0,8 |
+|---|---|---|---|---|
+| găng (ppe4) | 0,674 | **0,707** | 0,697 | 0,708 |
+| kính (goggles_all) | 0,807 | **0,863** | 0,852 | 0,806 |
+| ủng (lớp mới) | 0,677 | **0,691** | 0,698 | 0,691 |
+
+**Chấm chính thức (20/11/2026, người dùng đồng ý bước 1):** `scripts/04m_crop_pass.py` (tham số `configs/ppe6.yaml` mục
+`crop_pass` = cột "crop 640, × 0,8" ở trên), tp tính lại bằng đúng cách ghép của Ultralytics (`--check`: 0 khác biệt trên
+68.777 dự đoán c6_ft và 53.748 dự đoán C7-m); chấm bằng 04j (`c8lab_c6_vs_crop.json`, bootstrap theo cảnh, hiệu ghép cặp):
+
+| Lớp (tập) | c6_ft | c6_ft + crop | Hiệu [KTC 95%] |
+|---|---|---|---|
+| găng (ppe4) | 0,674 | **0,707** | **+0,033 [+0,017; +0,053]** |
+| găng (lớp mới) | 0,542 | 0,589 | +0,047 [+0,021; +0,074] |
+| kính (goggles_all) | 0,807 | **0,863** | **+0,057 [+0,026; +0,089]** |
+| kính (CHVG) | 0,854 | 0,917 | +0,063 [+0,028; +0,105] |
+| ủng (lớp mới) | 0,677 | 0,691 | +0,014 [−0,027; +0,073] |
+| người, mũ, áo | không đổi | không đổi | 0 |
+
+1.773 ảnh val, 2.809 crop (1,58 crop / ảnh), khoảng 43 ms / crop khi chấm (gồm cắt ảnh gốc 5–8 nghìn px và tiền xử lý; không
+thay cho đo FPS bằng 07). Găng và kính tăng có ý nghĩa; ủng chưa chắc. Găng vẫn dưới 0,8.
+
+**Đưa vào pipeline (20/11/2026):** `detector.zoom` trong `src/ppe/detector.py`, `configs/pipeline.yaml` (để **tắt**, chờ
+người dùng). Ảnh cắt thu về vuông 640 (`letterbox_square`, dùng chung với 04m; chấm lại val sau khi đổi: găng 0,7075
+[+0,018; +0,053], kính 0,862 [+0,025; +0,086], ủng 0,691, như trên), một bản mô hình riêng cho zoom, dò từng ảnh cắt một
+(đo được: dùng chung mô hình với lần dò cả khung FP32 thì 240 ms / khung; mỗi cỡ lô mới chậm khoảng 1,8 giây một lần; lô 2
+ảnh mất gần bằng 2 lần lô 1 ảnh). `zoom.every_n_frames` = N: chỉ chạy zoom mỗi N khung (cửa sổ thời gian gộp quan sát).
+
+Benchmark 07 (`outputs/results/c5_eval/zoom_bench/benchmark/`, video3–6, 2 lượt lặp, RTX 3050 Laptop; tiêu chí cũ
+≥ 20 khung/giây và p95 ≤ 100 ms):
+
+| Cấu hình | FPS xử lý | Latency TB (ms) | P95 video cao nhất (ms) | Detector (ms) | FPS video4 (đông người nhất) |
+|---|---|---|---|---|---|
+| c6_ft (tắt zoom) | 27,7 | 36,0 | 54,4 | 16,3 | 20,6 |
+| zoom N = 1 | 20,2 | 49,5 | 91,1 | 29,8 | 12,6 |
+| zoom N = 2 | 23,4 | 42,8 | 83,3 | 23,1 | 15,7 |
+| zoom N = 3 | 24,7 | 40,6 | 80,3 | 20,9 | 17,1 |
+
+Số sự kiện trên video3–6 không đổi giữa các cấu hình (7, 3, 2, 2). FPS gộp chịu ảnh hưởng lớn của video3 (1.950 khung,
+ít người); trên video4–6 (nhiều người lớn) bản tắt zoom đã chỉ khoảng 21 khung/giây. Chưa đo ảnh hưởng của zoom lên kết quả
+trên video (cần video có nhãn); N chưa chọn (`every_n_frames: null`).
+
+**Trên video chỉnh tham số (20/11/2026):** `06b_evaluate_close_videos.py evaluate`, pipeline đầy đủ, nhãn CVAT của người
+trên video3–6 (video2 chạy nhưng không chấm vì nhãn không có thuộc tính kính, ủng); kết quả
+`outputs/results/c5_eval/zoom_bench/video_eval/results.md`. Số khung-người (mũ, áo không đổi ở mọi cấu hình):
+
+| PPE | Chỉ số | tắt zoom | N = 1 | N = 2 | N = 3 |
+|---|---|---|---|---|---|
+| ủng | Có đúng / 832 nhãn Có | 193 | **318** | 256 | 237 |
+| ủng | báo Thiếu oan | 119 | **61** | 76 | 76 |
+| ủng | Thiếu đúng / 925 | 551 | 551 | 551 | 551 |
+| găng | Có đúng / 904 | 670 | 686 | 682 | 675 |
+| găng | Thiếu đúng / 2.072 | 1.714 | 1.676 | 1.678 | 1.707 |
+| găng | báo Có sai | 0 | 1 | 1 | 0 |
+| kính | Có đúng / 438 | 349 | 357 | 353 | 353 |
+| kính | Thiếu đúng / 2.886 | 2.474 | 2.474 | 2.474 | 2.474 |
+
+Zoom giúp rõ nhất ở ủng (Có đúng +125, báo Thiếu oan −58 với N = 1); găng Có đúng +16 nhưng Thiếu đúng −38 (chuyển sang Chưa
+xác định, không thành báo sai); kính +8. N = 1 tốt nhất về nhận diện nhưng chậm nhất (20,2 khung/giây gộp, video4 12,6).
+Bật zoom và chọn N là quyết định của người dùng.
+
+**Người dùng chọn 20/11/2026: bật zoom mọi khung (N = 1)** (`configs/pipeline.yaml`: `zoom.enabled: true`,
+`every_n_frames: 1`; trùng cấu hình `zoom_bench/pipeline_zoom_n1.yaml` đã đo 07 và chấm video). N chỉ ảnh hưởng chạy video:
+mAP val chấm trên ảnh tĩnh (mỗi ảnh một khung), nên mọi N cho cùng mAP val có zoom (găng 0,7075, kính goggles_all 0,862, ủng
+0,691; áo không thuộc lớp zoom, giữ 0,780). Zoom một mình chưa đưa găng, ủng, áo lên 0,8.
+
+Ghi chú lần thử: tham số mới thử 6 tổ hợp trên val (chọn trên val, test chỉ chạy một lần cho bản chốt). Lưu ý: lợi ích đến
+từ ảnh gốc độ phân giải cao; video 1080p có ít chi tiết thừa hơn, nên phải đo riêng trên video và đo FPS (mỗi người thêm một
+lượt detector).
+
+**Đề xuất (Claude), chờ người dùng đồng ý:**
+1. Đưa "crop người" vào script chấm chính thức (bootstrap, ignore) và vào pipeline như tùy chọn trong `configs/`; đo FPS bằng 07.
+2. C9 train: tinh chỉnh c6_ft trên train + crop người cắt từ ảnh gốc độ phân giải cao (dùng nhãn sẵn có, hộp bị cắt dở ở mép
+   crop thì che xám), để mô hình học găng ở độ chi tiết như lúc suy luận crop. Khóa tiêu chí trước khi train.
+3. Song song, phần của người: sửa nhãn găng val trên CVAT có hộp vẽ sẵn (khoảng 6–8 giờ), **sửa toàn bộ ảnh val có găng**,
+   không chỉ các ca mô hình sót, để không làm số đẹp lên một chiều.
+Không hứa trước 0,8 cho găng; mỗi bước báo số thật.
+
+### C9 bước 2: train trên ảnh cắt người (người dùng đồng ý 20/11/2026; `scripts/03zd_c9_zoom_crops.py`, mục `c9`)
+
+Ý tưởng: ảnh train SH17 rất lớn bị thu về 960 khi train nên găng nhỏ mất chi tiết; lượt zoom lúc chạy đưa vào detector ảnh
+cắt người ở độ phân giải gốc, mà c6_ft chưa từng học kiểu ảnh này. C9-ft học thêm ảnh cắt người như lúc chạy.
+
+Dữ liệu (Claude đặt trước khi train, không chọn trên val): ảnh nguồn là train C5 (đã che vùng ignore), nhãn của train C5.
+Vùng cắt = hộp người (nhãn) nới 15% mỗi cạnh (như `crop_pass.pad`), lấy khi cạnh dài ≥ 384 px ảnh gốc (người lúc chạy có
+zoom) và ≤ 0,7 cạnh dài ảnh (người gần kín ảnh thì cắt không thêm chi tiết). 7.303 người đủ điều kiện trong 3.823 ảnh; chỉ
+1.331 vùng cắt có găng / kính / ủng (train vốn ít găng: SH17 9.780 người, 1.958 găng). Lấy tối đa 3 người mỗi ảnh, ưu tiên
+người có găng / kính / ủng, tổng 3.000 ảnh (1.271 có lớp nhỏ, phần còn lại là tay trần độ phân giải cao, làm mẫu âm): SH17
+2.437, CHV 466, Construction-PPE 97. Hộp: người 4.289, mũ 864, áo 451, găng 1.739, kính 216, ủng 352. Hộp lớp 1-5 bị mép
+cắt còn thấy < 60% thì che xám (638 vùng; tránh dạy mô hình hộp chỉ bao một phần găng, như lỗi người dùng chỉ ra ở kiểm định
+lần 4), người thấy < 25% thì bỏ nhãn. Ảnh cắt thu về cạnh dài ≤ 960. Claude xem bảng 24 ảnh cắt có găng: hộp khớp vị trí sau
+khi cắt.
+
+Bộ phụ `c9_extra` = bộ phụ của c6_ft (`c6_extra`, giữ nguyên để chỉ khác ở ảnh cắt) + 3.000 ảnh `zoom__*`: 7.369 ảnh, 3.197
+bản lặp; train 17.735 ảnh. Kiểm gói: mọi ảnh có nhãn, nhãn hợp lệ, mọi tên lặp có ảnh (164 tên là ảnh che đổi đuôi .jpg, như
+c6_ft), không trùng tên train gốc. Hướng dẫn chạy: `docs/c9_kaggle_run.md`.
+
+**Tiêu chí khóa trước khi train** (`configs/ppe6.yaml` mục `c9_decision`): chấm val nhãn găng bản 2; C9-ft được chọn khi
+(1) găng (ppe4) **có zoom**: C9-ft + zoom − c6_ft + zoom ≥ +0,03; (2) **cả ảnh**: người, mũ, áo, găng (ppe4), kính
+(goggles_all), ủng (lớp mới) không tụt quá 0,02 so với c6_ft; (3) **có zoom**: kính, ủng không tụt quá 0,02 so với
+c6_ft + zoom. Không đạt thì giữ c6_ft (zoom bật hay tắt vẫn là quyết định riêng của người dùng).
+
+**Cách áp tiêu chí viết sẵn 20/11/2026, khi C9-ft đang train trên Kaggle (chưa có kết quả):** `scripts/04n_c9_decide.py`
+đọc hai file 04j (`c8lab_c6_vs_c9`, `c8lab_c6crop_vs_c9crop`), dùng điểm ước lượng hiệu mAP50 (như khi áp c6 / c7 /
+c8_decision; khoảng tin cậy chỉ in để tham khảo), ghi `outputs/results/c5_eval/c9_decision.json`. Chuỗi lệnh chấm ở
+docstring của script. Test: `tests/test_c9_decide.py`.
+
+### Kết quả C9-ft (21/11/2026)
+
+Train Kaggle (T4, 40 epoch, 5,44 giờ; `outputs/train/yolo11s_ppe6_c9_ft`, sha256 `535500442d553ddd56cb139b8008e41415a8baf4211910f5b293293492ba4e04`,
+khớp `smoke_check.json`); log đúng `Bộ 6 lớp: {'train': 7169, 'val_monitor': 1070}`, `Bộ phụ: 7369 ảnh cắt, 3197 bản thêm;
+train còn 17735 ảnh`. Chấm trên val nhãn găng bản 2: 04d (`c8lab_c9_ft_val`), 04m (`c8lab_c9_ft_crop_val`, 2.763 ảnh cắt),
+04j (`c8lab_c6_vs_c9.json`, `c8lab_c6crop_vs_c9crop.json`), 04n (`c9_decision.json`). mAP50, KTC 95% bootstrap theo cảnh;
+nhãn máy, có kiểm định mẫu của người:
+
+| Lớp (tập con) | c6_ft | C9-ft | hiệu | c6_ft + zoom | C9-ft + zoom | hiệu |
+|---|---|---|---|---|---|---|
+| người (ppe4) | 0,894 | 0,888 | −0,006 [−0,012; −0,001] | 0,894 | 0,888 | −0,006 |
+| mũ (ppe4) | 0,899 | 0,904 | +0,006 [−0,003; +0,014] | 0,899 | 0,904 | +0,006 |
+| áo (ppe4) | 0,780 | 0,779 | −0,001 [−0,014; +0,012] | 0,780 | 0,779 | −0,001 |
+| găng (ppe4) | 0,674 | 0,658 | −0,017 [−0,033; −0,001] | 0,708 | 0,695 | **−0,013** [−0,029; +0,005] |
+| kính (goggles_all) | 0,807 | 0,748 | **−0,059** [−0,102; −0,021] | 0,862 | 0,797 | **−0,066** [−0,119; −0,018] |
+| ủng (new) | 0,677 | 0,703 | +0,026 [−0,024; +0,080] | 0,691 | 0,697 | +0,006 [−0,044; +0,047] |
+
+**Áp `c9_decision`:** (1) găng có zoom −0,013 (cần ≥ +0,03): **không đạt**; (2) cả ảnh: kính −0,059 tụt quá 0,02: **không
+đạt**; (3) có zoom: kính −0,066: **không đạt**. → **C9-ft không thay c6_ft**; hệ thống giữ c6_ft + zoom mọi khung. Không
+đo tốc độ 07 cho C9. Học thêm ảnh cắt người không làm mô hình mạnh hơn khi dò trên ảnh cắt; kính tụt có ý nghĩa (nhiều ảnh
+cắt SH17 có kính thường không gán nhãn hoặc bị che xám, có thể đã dạy mô hình bớt báo kính; giả thuyết, chưa kiểm).
+
 ## 3. Điểm cần người dùng quyết định
 
 1. **Kiểm định của người.** Theo CLAUDE.md: nhãn máy phải ghi "nhãn máy, có kiểm định mẫu của người", tầng không đạt kiểm

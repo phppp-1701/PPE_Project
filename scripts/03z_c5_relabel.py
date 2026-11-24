@@ -750,7 +750,7 @@ def cmd_build_extra(args):
 
 
 PART_OF_TASK = {"gloves_eval_add": "gloves", "shoes_cls": "boots", "boots_eval_add": "boots", "glasses_cls": "goggles",
-                "goggles_eval_add": "goggles", "goggles_chvg_add": "goggles", "shoes_cls_train": "boots"}
+                "goggles_eval_add": "goggles", "goggles_chvg_add": "goggles", "shoes_cls_train": "boots", "gloves8_eval_add": "gloves"}
 
 
 def part_probs(items):
@@ -862,7 +862,7 @@ def cmd_build_eval(args):
             cls = {"gloves": 3, "boots": 5, "goggles": 4}[PART_OF_TASK.get(it["task"]) or it["task"].split("_")[0]]
             t = [float(x) for x in it["target"].split()]
             # Sau kiểm định lần 1 (găng không đạt, lỗi hệ thống hình học hộp): hộp găng máy thêm ở val, test thành ignore.
-            if it["task"] == "gloves_eval_add" and act == "add":
+            if it["task"] in ("gloves_eval_add", "gloves8_eval_add") and act == "add":   # cả hai lượt găng thêm không đạt kiểm định (lần 1, lần 4)
                 act, status, v = "ignore", "machine_labeled", v + ">audit1_fail"
             # Ủng: hộp giữ / nắn / thêm mà lượt xem lại chặt không giữ (k) thì thành ignore.
             if cls == 5 and act in ("keep", "replace", "add") and it["item"] in rc:
@@ -988,7 +988,7 @@ def cmd_audit(args):
             continue
         if args.task and it["task"] != args.task:
             continue
-        if cls == "gloves" and act == "add":
+        if it["task"] == "gloves_eval_add" and act == "add":
             continue   # sau kiểm định lần 1: hộp găng thêm ở val, test đã thành ignore
         if cls == "boots" and act in ("keep", "replace", "add") and it["item"] in rc:
             boxes = [b for b, x in rc[it["item"]] if x == "k"]   # chỉ hộp lượt xem lại giữ

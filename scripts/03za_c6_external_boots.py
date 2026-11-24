@@ -5,6 +5,7 @@ Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
     python scripts/03za_c6_external_boots.py scan     # pHash + C5-s960 trên ảnh gốc và ảnh xoay 90° -> scan.json
     python scripts/03za_c6_external_boots.py build    # lọc, gán nhãn, ghi data/ppe6/c6/ext/{images,labels}/train
     python scripts/03za_c6_external_boots.py pack     # bộ phụ C6 + gói Kaggle c6_extra_pack.zip
+    python scripts/03za_c6_external_boots.py scan --section c8_ext; ... build --section c8_ext   # C8: bộ găng (gói ở 03zc pack)
 
 Tham số ở configs/ppe6.yaml mục `c6_ext`. Cách làm:
 - Bộ chỉ có nhãn giày. Hộp ủng / giày bảo hộ của bộ -> lớp 5 (boots); giày thường -> không nhãn (mẫu âm).
@@ -30,11 +31,12 @@ import numpy as np  # noqa: E402
 import yaml  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
+SECTION = "c6_ext"   # đổi bằng --section (C8: c8_ext, găng)
 OUT = ROOT / "data" / "ppe6" / "c6"
 
 
 def cfg():
-    return yaml.safe_load((ROOT / "configs" / "ppe6.yaml").read_text(encoding="utf-8"))["c6_ext"]
+    return yaml.safe_load((ROOT / "configs" / "ppe6.yaml").read_text(encoding="utf-8"))[SECTION]
 
 
 def imread(p):
@@ -160,7 +162,8 @@ def cmd_build(args):
             continue
         sc = c["sources"][src]
         rows = yolo_rows(p.parent.parent / "labels" / (p.stem + ".txt"))
-        boots = [b for k, b in rows if k in sc["boots"]]
+        target = sc.get("target", 5)   # lớp đích của bộ: 5 ủng (C6), 3 găng (C8)
+        boots = [b for k, b in rows if k in sc.get("ids", sc.get("boots", []))]
         if not boots:
             stat["khong_co_ung"] += 1
             continue
@@ -177,7 +180,7 @@ def cmd_build(args):
             stat["gan_trung"] += 1
             continue
         kept_h.append(h)
-        labels = [[5, b] for b in boots]
+        labels = [[target, b] for b in boots]
         masks = []
         for k, conf, b in s["pred"]:
             if k in (0, 1, 2):
@@ -186,7 +189,7 @@ def cmd_build(args):
                     stat[f"nhan_may_{k}"] += 1
                 elif conf >= c["mask_conf"]:
                     masks.append(b)
-            elif k in (3, 4) and conf >= c["mask_conf_small"]:
+            elif k in (3, 4, 5) and k != target and conf >= c["mask_conf_small"]:   # PPE nhỏ khác lớp đích: che
                 masks.append(b)
         masks = [m for m in masks if all(ioa(g, m) <= 0.3 for g in boots)]
         im = imread(p)
@@ -231,7 +234,7 @@ def cmd_pack(args):
     c = cfg()
     src = ROOT / "data" / "ppe6" / "c5" / "c5_extra"
     ext = OUT / "ext"
-    out = OUT / "c6_extra"
+    out = OUT / c.get("pack_name", "c6_extra")
     if out.exists():
         shutil.rmtree(out)
     shutil.copytree(src, out)
@@ -270,7 +273,11 @@ def main():
     sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("cmd", choices=["scan", "build", "pack"])
+    ap.add_argument("--section", default="c6_ext", help="mục cấu hình: c6_ext (ủng, C6) hoặc c8_ext (găng, C8; chỉ scan, build)")
     args = ap.parse_args()
+    global SECTION, OUT
+    SECTION = args.section
+    OUT = ROOT / cfg().get("out", "data/ppe6/c6")
     dict(scan=cmd_scan, build=cmd_build, pack=cmd_pack)[args.cmd](args)
 
 

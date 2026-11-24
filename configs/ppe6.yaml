@@ -365,3 +365,86 @@ c7_decision:
   min_fps: 20             # và pipeline (07, FP16 nếu đạt half_check) >= 20 khung/giây, p95 <= 100 ms
   max_p95_ms: 100
   train: {model: yolo11m.pt, imgsz: 960, device: "0,1", batch: 16, epochs: 100, patience: 20, time: 11}
+
+c8_rescore:
+  # C8 thử (04l_gloves_rescore.py): chấm lại hộp găng của detector bằng bộ phân loại tay. Claude đặt 19/11/2026; w chọn trên val.
+  min_conf: 0.05       # chỉ chấm lại dự đoán từ mức này (dưới mức này xếp cuối)
+  context: 1.6         # như parts.context
+  imgsz: 160           # như part_cls.imgsz
+  weights_grid: [0.0, 0.25, 0.5, 0.75]   # 0 = điểm gốc của detector
+
+c8:
+  # C8 găng (03zc_c8_gloves.py, kế hoạch 2026-11-16_c5_detector_plan mục C8), người dùng chọn phương án a 19/11/2026.
+  # Claude đặt trước khi xem kết quả.
+  weights: outputs/train/yolo11s_ppe6_c6_ft/weights/best.pt
+  seed: 23
+  train_conf: 0.4       # găng báo thừa trên train từ mức này -> Claude xem (mẫu âm khó / găng thiếu nhãn)
+  eval_conf: 0.4        # val, test: dự đoán găng từ mức này của mọi bản, gộp hộp trùng (merge_iou)
+  match_iou: 0.3        # trùng nhãn găng có sẵn từ mức này thì không phải ứng viên
+  merge_iou: 0.5
+  eval_captures: [outputs/results/c5_eval/c4_val, outputs/results/c5_eval/c5_s960_val, outputs/results/c5_eval/c6_ft_val, outputs/results/c5_eval/c7_m_val]
+  hard_neg_copies: 2
+  ext_cap_per_group: 120   # ảnh găng ngoài tối đa mỗi nhóm tên gốc (19/11: 938 ảnh gần như cùng một xưởng, 1-2 camera)
+  test_weights: [outputs/train/yolo11s_ppe6_c4/weights/best.pt, outputs/train/yolo11s_ppe6_c5_s960/weights/best.pt, outputs/train/yolo11s_ppe6_c6_ft/weights/best.pt, outputs/train/yolo11m_ppe6_c7/weights/best.pt]
+
+c8_ext:
+  # C8 găng ngoài (03za --section c8_ext), như c6_ext. Nguồn điền khi người dùng tải (data/raw/<bộ>/, README ghi giấy phép).
+  out: data/ppe6/c8
+  weights: outputs/train/yolo11s_ppe6_c6_ft/weights/best.pt
+  sources:
+    sg: {dir: data/raw/safety_gloves_ru, prefix: sg, ids: [0], target: 3}   # 0 Gloves -> 3; 1 NO-Gloves (tay trần) = mẫu âm, không nhãn
+  rot_min: 0.5
+  rot_margin: 0.2
+  dedup_hamming: 6
+  group_hamming: 10
+  pseudo_conf: 0.5
+  mask_conf: 0.25
+  mask_conf_small: 0.1
+  max_side: 1280
+
+c8_decision:
+  # Tiêu chí chọn C8 (kế hoạch 2026-11-16_c5_detector_plan mục C8), khóa 19/11/2026 trước khi train, người dùng chọn (a).
+  # C8-ft: tinh chỉnh từ c6_ft (như c6_ft: SGD, lr0 0,002, warmup 1, 40 epoch, không time), imgsz 960, dữ liệu c5_pack +
+  # c8_extra_pack. Chấm trên val nhãn găng bản 2 (c8lab_*, 04j), so với c6_ft trên cùng nhãn.
+  baseline: c6_ft
+  min_gloves_gain: 0.03   # găng (tập ppe4) tăng >= mức này
+  max_drop: 0.02          # và người, mũ, áo, kính (goggles_all), ủng (lớp mới) không tụt quá mức này
+  ft: {epochs: 40, optimizer: SGD, lr0: 0.002, warmup_epochs: 1}
+
+crop_pass:
+  # C9 (04m_crop_pass.py): detector lần hai trên vùng người cắt từ ảnh gốc, gộp hộp găng, kính, ủng.
+  # Claude chọn trên val ngày 19/11/2026 (thử 6 tổ hợp: imgsz 640 / 960, nms_iou 0,5 / 0,6, conf_scale 0,8 / 1,0), chưa xem test.
+  person_conf: 0.3       # hộp người từ mức này mới cắt
+  pad: 0.15              # nới mỗi cạnh theo tỉ lệ cạnh hộp người
+  imgsz: 640             # cỡ suy luận của crop
+  min_side_ratio: 0.6    # bỏ người có cạnh dài < tỉ lệ này * imgsz (phóng to không thêm chi tiết)
+  classes: [3, 4, 5]     # găng, kính, ủng
+  conf_scale: 0.8        # conf của hộp từ crop nhân hệ số này trước khi gộp
+  nms_iou: 0.5           # gộp hai nguồn bằng NMS theo lớp
+  max_det: 300           # như model.val
+  half: true             # FP16, như lần thử
+
+c9:
+  # C9 bộ phụ ảnh cắt người ở độ phân giải gốc (03zd_c9_zoom_crops.py), người dùng đồng ý 20/11/2026. Claude đặt trước khi train.
+  weights: outputs/train/yolo11s_ppe6_c6_ft/weights/best.pt   # tinh chỉnh từ c6_ft
+  seed: 29
+  pad: 0.15                # như crop_pass.pad (lúc chạy)
+  min_side: 384            # = crop_pass.min_side_ratio * crop_pass.imgsz: người lúc chạy có zoom
+  max_frac: 0.7            # vùng cắt dài hơn tỉ lệ này của cạnh dài ảnh: không thêm chi tiết, bỏ
+  min_visible_ppe: 0.6     # lớp 1-5 bị mép cắt: thấy ít hơn thì che xám
+  min_visible_person: 0.25 # người bị mép cắt: thấy ít hơn thì bỏ nhãn
+  max_per_image: 3
+  max_crops: 3000          # 7.303 người đủ điều kiện, 1.331 có găng / kính / ủng trong vùng cắt (lấy hết), còn lại mẫu không có
+  max_side: 960            # = imgsz train
+  jpeg_quality: 92
+
+c9_decision:
+  # Tiêu chí chọn C9 (kế hoạch 2026-11-16_c5_detector_plan mục C9), Claude đề xuất, khóa 20/11/2026 TRƯỚC khi train
+  # (người dùng đồng ý làm C9). C9-ft: tinh chỉnh từ c6_ft (như c6_ft / C8-ft), imgsz 960, dữ liệu c5_pack + c9_extra_pack.
+  # Chấm trên val nhãn găng bản 2 (c8lab_*): C9-ft cả ảnh (04d) và C9-ft + crop_pass (04m, cùng tham số mục crop_pass),
+  # so với c6_ft cả ảnh và c6_ft + crop_pass (04j, hiệu ghép cặp).
+  baseline: c6_ft
+  min_gloves_gain: 0.03   # găng (tập ppe4), chế độ có zoom: C9-ft + zoom − c6_ft + zoom >= mức này
+  max_drop: 0.02          # cả ảnh: người, mũ, áo, găng (ppe4), kính (goggles_all), ủng (lớp mới) không tụt quá mức này so với
+                          # c6_ft; có zoom: kính, ủng không tụt quá mức này so với c6_ft + zoom
+  ft: {epochs: 40, optimizer: SGD, lr0: 0.002, warmup_epochs: 1}

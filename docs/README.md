@@ -8,3 +8,4 @@
 - `c6_kaggle_run.md`: cách train C6 (c6_scratch, c6_ft song song trên Kaggle T4 x2).
 - `c7_kaggle_run.md`: cách train C7-m (YOLO11m, 2 GPU T4) trên Kaggle.
 - `desktop_app_plan.md`: kế hoạch app desktop Windows (kiến trúc, việc ở backend, giao diện chi tiết, đóng gói, mốc, kiểm thử) cho thành viên làm app.
+- `c8_kaggle_run.md`: cách train C8-ft (găng, tinh chỉnh từ c6_ft) trên Kaggle.

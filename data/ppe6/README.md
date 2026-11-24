@@ -41,3 +41,7 @@ Lớp: 0-3 như `ppe4`, 4 kính bảo hộ, 5 ủng bảo hộ. Kế hoạch: `d
 `c6/`: C6 (`03za`): `scan.json`, `eval_hashes.json` (pHash), `ext/` (ảnh ủng ngoài đã lọc, nhãn), `rotcheck/` (bảng Claude xem, `.dec` ô bị loại), `c6_extra/` (bộ phụ C6). Chỉ có trên máy; gói `variants/kaggle/c6_extra_pack.zip`.
 
 `c7/`: C7 (`03zb`): `c6ft_train_boots_pred.json`, `changes_c7.csv`, `c7_extra/` (bộ phụ C7). Chỉ có trên máy; gói `variants/kaggle/c7_extra_pack.zip`.
+
+`c8/`: C8 găng (`03zc`, `03za --section c8_ext`): `c6ft_train_gloves_pred.json`, `test_gloves_pred.json`, `scan.json`, `eval_hashes.json`, `ext/` (ảnh găng ngoài đã lọc), `c8_extra/` (bộ phụ C8, không đạt `c8_decision`). Chỉ có trên máy; gói `variants/kaggle/c8_extra_pack.zip`.
+
+`c9/`: C9 (`03zd`): `zoom/` (3.000 ảnh cắt người `zoom__<ảnh>__<người>.jpg` ở độ phân giải gốc của train C5, nhãn đã đổi theo vùng cắt, `summary.json` có vùng cắt của từng ảnh), `c9_extra/` (= `c6/c6_extra` + `zoom/`, trọng số c6_ft). Chỉ có trên máy; gói `variants/kaggle/c9_extra_pack.zip`.

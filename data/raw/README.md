@@ -13,3 +13,5 @@ Mỗi bộ dữ liệu giải nén vào thư mục con của nó. Không sửa f
 `safety_shoes_nc/`: Safety Shoes Detection (Roboflow Universe, Nedrick Chandra, CC BY 4.0, 1.693 ảnh; chủ yếu safety_shoe), người dùng tải 17/11/2026 để thêm ủng cho C6 (chỉ train); xem README trong thư mục.
 
 `gloves_bare_tm/`: Gloves and bare hands detection (Roboflow Universe, Tejan Mehndiratta, CC BY 4.0, 868 ảnh; tên lớp không khớp nội dung), người dùng tải 17/11/2026, chưa quyết định dùng; xem README trong thư mục.
+
+`safety_gloves_ru/`: Safety Gloves (Roboflow Universe Projects, CC BY 4.0, 3.373 ảnh CCTV nhà xưởng; Gloves, NO-Gloves), người dùng tải 19/11/2026 để thêm găng cho C8 (chỉ train); xem README trong thư mục.
