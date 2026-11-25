@@ -252,3 +252,11 @@ giữ 25/37 hộp; bỏ bộ PPEs). `03zf` → `data/ppe6/parts_v6`: thêm 821 �
 keypoint, goggles_safety 17 + 16, goggles_workplace 6 + 6; bỏ 1 ảnh gần trùng ảnh đánh giá, 3 ảnh gần trùng nhau); train
 goggles 1.945 → 2.766, các lớp khác và val như bản 4. Gói `parts_v6_pack.zip` 644.143.829 byte, SHA-256
 `83c08ea7bb02bb6b2d33432268baf179a1b221d2feb4d154687448ba629d4f32`. Chờ người dùng train trên Kaggle (`yolo11n_cls_parts_v6`).
+
+## Tốc độ sau đợt sửa (25/11/2026)
+
+`07 --config before=c5_eval/zoom_bench/pipeline_zoom_n1.yaml --config current=configs/pipeline.yaml`, video3-6, 3 lượt
+(`outputs/results/close_eval/bench_close_fixes/`): FPS xử lý 18,06 ± 0,61 → 17,99 ± 0,43 (−0,4%), latency TB 55,4 → 55,6 ms;
+p95 video cao nhất 100,9 → 113,6 ± 15,6 ms (dao động lớn giữa các lượt). Các bước thêm (association, compliance) < 0,1 ms.
+Số tuyệt đối thấp hơn lần đo 20/11 (20,2 FPS) cho **cùng** cấu hình `before` → do trạng thái máy khác nhau giữa hai ngày;
+so sánh trong cùng lượt đo cho thấy đợt sửa không làm chậm. Số cho báo cáo lấy ở lượt đo cuối (kế hoạch đánh giá cuối).
