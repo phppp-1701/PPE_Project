@@ -151,3 +151,18 @@ gán cho người (116 khớp nhãn). Bộ phân loại phủ quyết 23 hộp: 
 thật bị bác bỏ giảm" không đạt. Conf của detector không tách được hai nhóm. Code (`part_cls.veto_max_conf`) giữ, không bật.
 Ghi nhận: trên val này phủ quyết kính bỏ đúng 12 và bỏ nhầm 11 (nhãn máy có kiểm định mẫu); lý do bật phủ quyết (13/11/2026)
 là kính cận trên video11. Đưa vào Giới hạn: kính bảo hộ màu (vàng, ôm mặt) có thể bị nhận là kính thường.
+
+## Xem lại video18-27 sau F1 (ủng) + F2 (găng, kính, ủng) — 25/11/2026
+
+`05h --ids 18-27 --out outputs/results/close_probe/after_F1F2` (cấu hình đang dùng), so với lần chẩn đoán đầu
+(`close_probe/summary.json`). Video đã dùng để chẩn đoán nên đây chỉ là xem lại, không phải đánh giá khách quan.
+Tỉ lệ khung Có / Thiếu, đổi trạng thái mỗi phút:
+
+- Ủng video26 (ủng cao su, chỉ thấy cẳng chân): Có 0,08 → **0,84**, Thiếu 0,45 → **0,00**, 95 → 54 lần/phút.
+- Ủng video25 (đổ bê tông, nhiều người chỉ thấy nửa dưới): Có 0,46 → 0,75, Thiếu 0,04 → 0,01, 149 → 97 lần/phút.
+- Găng video18: Có 0,25 → 0,64, 514 → 115 lần/phút (mất Có ngắn 250 → 54); video19: 0,39 → 0,60, 120 → 36 (91 → 27);
+  video20: 0,18 → 0,42, 109 → 76; video24: 0,79 → 0,80.
+- Kính video20: Có 0,28 → 0,37. Kính video18 đổi trạng thái tăng 270 → 346 lần/phút (người ở xa, kính lúc thấy lúc không;
+  giữ Có tạo thêm đổi Có↔Chưa xác định).
+- Chưa sửa: kính vàng video21 vẫn bị phủ quyết (F3 không đạt); giày bảo hộ video27 (người quỳ) vẫn Thiếu 0,49 và nhảy
+  ~500 lần/phút; mũ cứu hỏa video23 bị phủ quyết (ca biên).
