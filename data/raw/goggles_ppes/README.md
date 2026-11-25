@@ -1,6 +1,6 @@
 # data/raw/goggles_ppes — PPEs, Roboflow Universe
 
-CHỈ ĐỌC, không sửa file trong thư mục này. Dùng cho B1 (bộ phân loại kính bản 6, kế hoạch
+CHỈ ĐỌC, không sửa file trong thư mục này. Tải cho B1 nhưng không dùng (bộ phân loại kính bản 6, kế hoạch
 `docs/experiments/2026-11-25_close_range_fixes.md`), chỉ vào **train** của bộ phân loại ảnh cắt mắt.
 
 | Mục | Giá trị |
@@ -12,4 +12,4 @@ CHỈ ĐỌC, không sửa file trong thư mục này. Dùng cho B1 (bộ phân 
 | Ghi nguồn | "PPEs, Roboflow Universe, CC BY 4.0" |
 | Lớp | goggles, no_goggles, no_shoes, shoes |
 | Số ảnh | 5.429 (train 4.429, valid 1.000) |
-| Dùng | lớp `goggles` (3.346 hộp, 3.043 ảnh): camera phòng thí nghiệm, vài người lặp lại, không đội mũ, nhiều ảnh gần trùng |
+| Dùng | **KHÔNG dùng** (người dùng quyết định 25/11/2026: mẫu kiểm định cho thấy nhiều kính cận thường gán nhãn `goggles`; camera phòng thí nghiệm, vài người lặp lại) |
