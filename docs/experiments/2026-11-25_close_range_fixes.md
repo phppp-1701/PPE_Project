@@ -48,6 +48,12 @@ Thêm ứng viên (hợp với vùng cũ, như bước F1 kính theo mắt 16/11
   gần vị trí cũ (IoU với hộp nhớ ≥ `hold_iou`) thì giữ Có; không có thì giữ tối đa `hold_s` giây. Tham số trong
   `configs/pipeline.yaml`; `hold_conf`, `hold_iou` chọn trên val (ảnh) theo độ chính xác hộp điểm thấp gần hộp đúng.
 - App và `05_run_video` vẽ hộp đã giữ (nét đứt, ghi "giữ") thay vì để hộp tắt.
+- Sửa trước khi chạy (25/11/2026): val là ảnh rời, không có chuỗi khung nên không chọn được `hold_conf`, `hold_iou` trên
+  val. Đặt theo mức đã có, không chỉnh: `hold_conf` = `tracker.track_low_thresh` 0,10 (ý tưởng ghép hộp điểm thấp với đối
+  tượng đang theo dõi của ByteTrack; cũng là mức thấp nhất detector trả về), `hold_iou` = `calibration.match_iou` 0,5.
+  `hold_s` dùng lại `compliance.have_hold_s` (mũ 1,0; áo 1,0; găng 1,5; kính 2,0; ủng 1,5 — đều ≤ 2 s). Hộp điểm thấp
+  khớp vị trí nhớ thì làm mới thời điểm nhớ (là bằng chứng); không có thì giữ Có tối đa `hold_s`. Không giữ khi bộ phân
+  loại chắc không có PPE (phiếu neg), khi phủ quyết C2/M1 hay mâu thuẫn C2 (bằng chứng âm thắng).
 - **Tiêu chí F2**: trên video3-6 (05h): tổng số lần đổi trạng thái mỗi phút (mọi PPE) giảm ≥ 80% so với hiện tại; V1, V2 như
   F1 không xấu đi; Event F1 A→E (06) không giảm; thời gian giữ tối đa `hold_s` ≤ 2 s (tháo PPE thật thì báo chậm tối đa
   2 s, bảo đảm bằng thiết kế, có unit test).
@@ -102,3 +108,10 @@ mắt cá), `k_wrist` 2,393 (672 găng có khuỷu, cổ tay). Mẫu: ủng 32 �
 Xem từng ca (`scratchpad`, không lưu): các ca xấu đi đều từ **một ảnh** (`construction_ppe__image1256`): ba người đứng sát,
 chân đan nhau, hộp ủng nhãn là chiếc ủng bị che một phần nằm giữa người giữa và người phải; pose của người giữa đặt mắt cá
 gần chiếc ủng đó. Không thử lần 3 trên val này (sẽ thành chỉnh theo một ảnh). Chờ người dùng quyết định.
+
+**Ngoại lệ (người dùng quyết định 25/11/2026):** chấp nhận đánh đổi của lần 2 cho ủng (val không đạt (c), (d) do một ảnh).
+Điều kiện còn lại giữ nguyên: hồi quy video3-6 (V1, V2 cho ủng, găng). V1 hoặc V2 xấu đi thì không bật.
+
+**Hồi quy video3-6** (`06b evaluate`, `outputs/results/close_eval/stepF1close/`): mọi khung, mọi PPE, mọi sự kiện **giống
+hệt** cấu hình trước (không ai trong video3-6 bị cắt ở mép trên) → V1, V2 đạt. **Bật** `association.ankle_anchor` trong
+`configs/pipeline.yaml` (25/11/2026, ngoại lệ người dùng).

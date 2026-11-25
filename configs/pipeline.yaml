@@ -187,6 +187,13 @@ association:
   # 6 -> 26/28, V3b 1 -> 1. Hồi quy 13 video (stepF): kính báo thiếu oan 114 -> 54, độ chính xác 0,906 -> 0,924.
   # F2 (áo theo vai, edge_frac) và F3 (găng dự phòng theo vùng) không đạt V3b: tắt, ghi vào Giới hạn.
   eye_anchor: {kp_conf: 0.5, k_eye: 1.776}
+  # F1 tầm gần (docs/experiments/2026-11-25_close_range_fixes.md; bật 25/11/2026 theo NGOẠI LỆ người dùng duyệt): ủng là ứng
+  # viên của người khi gối và mắt cá cùng bên >= kp_conf và tâm ủng cách mắt cá <= k_ankle x ống chân (gối - mắt cá), chỉ
+  # khi mép trên hộp người <= edge_px (người bị khung cắt, chỉ thấy phần dưới); hợp với vùng chân cũ. k_ankle chọn trên val
+  # (05a --assoc-close-edge, phân vị cao 72 ủng val_new); edge_px = keypoint_gate.helmet.edge_px. Val: người chỉ thấy phần
+  # dưới 45% ghép đúng 18 -> 70 / 73, nhưng (c) sai người +1, (d) V3b +1 ở hai mức cắt (cùng một ảnh ba người chân đan nhau)
+  # -> không đạt tiêu chí khóa; người dùng chọn ngoại lệ. Hồi quy video3-6 (close_eval/stepF1close): không đổi khung nào.
+  ankle_anchor: {kp_conf: 0.5, k_ankle: 0.634, edge_px: 4}
 
 compliance:
   # Vùng đủ quan sát (công thức 3.7): v >= tau_in, o <= tau_occ, diện tích vùng trong ảnh >= area_min_px.
