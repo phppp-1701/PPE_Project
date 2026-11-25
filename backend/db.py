@@ -33,6 +33,9 @@ def get_db():
     conn = sqlite3.connect(str(DB_PATH))
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
+    # nhiều camera ghi sự kiện đồng thời: WAL + busy_timeout để không văng "database is locked"
+    conn.execute("PRAGMA journal_mode = WAL")
+    conn.execute("PRAGMA busy_timeout = 5000")
     return conn
 
 
@@ -148,14 +151,23 @@ def init_db():
     conn.close()
 
 
-def ensure_source(source_id, name, source_type, required_ppe):
-    """Tạo nguồn (vd. webcam của chế độ trực tiếp) kèm chính sách phiên bản 1 nếu chưa có; có rồi thì giữ nguyên."""
+def ensure_source(source_id, name, source_type, required_ppe, rtsp_url=None):
+    """Tạo nguồn (vd. webcam của chế độ trực tiếp) kèm chính sách phiên bản 1 nếu chưa có; có rồi thì giữ nguyên.
+    `rtsp_url`: URL stream cho camera IP thêm từ dashboard (khác NULL thì lưu vào bảng sources)."""
     conn = get_db()
     now = datetime.now().isoformat()
     conn.execute("INSERT OR IGNORE INTO sources (source_id, name, source_type, rtsp_url, is_active, created_at) "
-                 "VALUES (?, ?, ?, NULL, 1, ?)", (source_id, name, source_type, now))
+                 "VALUES (?, ?, ?, ?, 1, ?)", (source_id, name, source_type, rtsp_url, now))
     conn.execute("INSERT OR IGNORE INTO ppe_policies (source_id, version, required_ppe, created_at) VALUES (?, 1, ?, ?)",
                  (source_id, json.dumps(list(required_ppe)), now))
+    conn.commit()
+    conn.close()
+
+
+def rename_source(source_id, name):
+    """Đặt lại tên nguồn = tên khu vực trong xưởng (hiện trong tile, feed sự kiện, thống kê)."""
+    conn = get_db()
+    conn.execute("UPDATE sources SET name = ? WHERE source_id = ?", (name, source_id))
     conn.commit()
     conn.close()
 

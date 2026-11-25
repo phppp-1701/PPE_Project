@@ -1,10 +1,28 @@
 # Chế độ camera trực tiếp (backend/live.py, demo trên laptop). Tham số vận hành, KHÔNG phải ngưỡng nhận diện:
 # nhận diện dùng nguyên configs/pipeline.yaml. Đặt 16/11/2026 theo phần cứng (webcam laptop), không chọn trên val.
 
-source_id: cam0            # nguồn trong database; chính sách PPE bắt buộc đọc theo nguồn này
-source_name: Webcam laptop
-camera_index: 0            # chỉ số webcam của OpenCV (0 = webcam mặc định)
-backend: dshow             # dshow (Windows, mở nhanh) hoặc any (OpenCV tự chọn)
+source_id: cam0            # nguồn mặc định trong database; chính sách PPE bắt buộc đọc theo nguồn này
+source_name: Fofu FF-8120WP (IP camera)
+# Camera IP Fofu qua bridge MJPEG (protocol MIPC/Vimtag, không RTSP):
+#   chạy bridge trước:  python scripts/fofu_bridge.py   (mặc định port 8077)
+#   stream:             http://127.0.0.1:8077/stream.mjpg   (~15 fps, 1280x720)
+# Muốn quay lại webcam laptop: chọn webcam{n} trong danh sách chọn camera của dashboard
+camera_index: "http://127.0.0.1:8077/stream.mjpg"
+backend: any               # URL stream: dùng CAP_FFMPEG, không cần dshow
+
+# Số camera chạy pipeline PPE đồng thời (tính 19/11/2026): model YOLO dùng chung giữa các
+# camera (src/ppe/model_cache.py) nên VRAM không nhân theo số cam, chỉ GPU compute chia đều:
+# 1 cam ~21fps, 2 cam ~10-12fps/cam, 4 cam ~5fps/cam. Người dùng chọn cam trong dashboard,
+# vượt max_parallel sẽ bị từ chối với thông báo.
+max_parallel: 4
+
+# Cổng UDP nghe quảng cáo camera trong mạng LAN ("Quét camera trong mạng"):
+# scripts/laptop_cam_server.py phát UDP tới port này mỗi 2 giây kèm URL stream.
+discovery_port: 50010
+
+# Tự động thêm camera vừa được phát hiện trong LAN vào danh sách chọn (urlcam{n}).
+# true: laptop khác chạy laptop_cam_server là app tự thấy sau vài giây, khỏi bấm gì.
+auto_add_discovered: true
 width: 1280                # độ phân giải xin webcam; webcam không hỗ trợ thì dùng độ phân giải gần nhất
 height: 720
 
