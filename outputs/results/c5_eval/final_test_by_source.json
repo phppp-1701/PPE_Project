@@ -1,0 +1,170 @@
+{
+ "split": "test",
+ "note": "nhãn máy, có kiểm định mẫu của người; không bootstrap, chỉ để đối chiếu",
+ "runs": {
+  "c6_ft": {
+   "person|chv": {
+    "subset": "ppe4",
+    "gt": 534,
+    "map50": 0.9279
+   },
+   "person|construction_ppe": {
+    "subset": "ppe4",
+    "gt": 367,
+    "map50": 0.8913
+   },
+   "person|sh17": {
+    "subset": "ppe4",
+    "gt": 2133,
+    "map50": 0.9306
+   },
+   "helmet|chv": {
+    "subset": "ppe4",
+    "gt": 496,
+    "map50": 0.9428
+   },
+   "helmet|construction_ppe": {
+    "subset": "ppe4",
+    "gt": 259,
+    "map50": 0.871
+   },
+   "helmet|sh17": {
+    "subset": "ppe4",
+    "gt": 139,
+    "map50": 0.5397
+   },
+   "vest|chv": {
+    "subset": "ppe4",
+    "gt": 278,
+    "map50": 0.8845
+   },
+   "vest|construction_ppe": {
+    "subset": "ppe4",
+    "gt": 244,
+    "map50": 0.8544
+   },
+   "vest|sh17": {
+    "subset": "ppe4",
+    "gt": 75,
+    "map50": 0.5165
+   },
+   "gloves|chv": {
+    "subset": "ppe4",
+    "gt": 230,
+    "map50": 0.6061
+   },
+   "gloves|construction_ppe": {
+    "subset": "ppe4",
+    "gt": 216,
+    "map50": 0.8485
+   },
+   "gloves|sh17": {
+    "subset": "ppe4",
+    "gt": 418,
+    "map50": 0.6376
+   },
+   "goggles|chvg": {
+    "subset": "goggles_all",
+    "gt": 125,
+    "map50": 0.7879
+   },
+   "goggles|sh17": {
+    "subset": "goggles_all",
+    "gt": 34,
+    "map50": 0.6798
+   },
+   "boots|construction_ppe": {
+    "subset": "new",
+    "gt": 18,
+    "map50": 0.8158
+   },
+   "boots|sh17": {
+    "subset": "new",
+    "gt": 74,
+    "map50": 0.4851
+   }
+  },
+  "c6_ft_zoom": {
+   "person|chv": {
+    "subset": "ppe4",
+    "gt": 534,
+    "map50": 0.9279
+   },
+   "person|construction_ppe": {
+    "subset": "ppe4",
+    "gt": 367,
+    "map50": 0.8913
+   },
+   "person|sh17": {
+    "subset": "ppe4",
+    "gt": 2133,
+    "map50": 0.9306
+   },
+   "helmet|chv": {
+    "subset": "ppe4",
+    "gt": 496,
+    "map50": 0.9428
+   },
+   "helmet|construction_ppe": {
+    "subset": "ppe4",
+    "gt": 259,
+    "map50": 0.871
+   },
+   "helmet|sh17": {
+    "subset": "ppe4",
+    "gt": 139,
+    "map50": 0.5397
+   },
+   "vest|chv": {
+    "subset": "ppe4",
+    "gt": 278,
+    "map50": 0.8845
+   },
+   "vest|construction_ppe": {
+    "subset": "ppe4",
+    "gt": 244,
+    "map50": 0.8544
+   },
+   "vest|sh17": {
+    "subset": "ppe4",
+    "gt": 75,
+    "map50": 0.5165
+   },
+   "gloves|chv": {
+    "subset": "ppe4",
+    "gt": 230,
+    "map50": 0.6117
+   },
+   "gloves|construction_ppe": {
+    "subset": "ppe4",
+    "gt": 216,
+    "map50": 0.855
+   },
+   "gloves|sh17": {
+    "subset": "ppe4",
+    "gt": 418,
+    "map50": 0.7003
+   },
+   "goggles|chvg": {
+    "subset": "goggles_all",
+    "gt": 125,
+    "map50": 0.8471
+   },
+   "goggles|sh17": {
+    "subset": "goggles_all",
+    "gt": 34,
+    "map50": 0.6486
+   },
+   "boots|construction_ppe": {
+    "subset": "new",
+    "gt": 18,
+    "map50": 0.8171
+   },
+   "boots|sh17": {
+    "subset": "new",
+    "gt": 74,
+    "map50": 0.5488
+   }
+  }
+ }
+}
