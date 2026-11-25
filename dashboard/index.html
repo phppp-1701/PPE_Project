@@ -3,816 +3,901 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hệ Thống Giám Sát Trang Bị Bảo Hộ Lao Động (PPE-6)</title>
+  <title>PPE Monitor — Hệ thống Giám sát Trang bị Bảo hộ Lao động</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --card-border: #334155;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --primary: #3b82f6;
-      --primary-hover: #2563eb;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --purple: #8b5cf6;
-      --cyan: #06b6d4;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
-      color: var(--text-main);
-      padding: 24px;
-      line-height: 1.5;
-    }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--card-border);
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-    .header-title h1 {
-      font-size: 24px;
-      font-weight: 700;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .badge-ppe6 {
-      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-      color: #fff;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 999px;
-      letter-spacing: 0.5px;
-    }
-    .header-title p {
-      font-size: 14px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .status-pill {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: var(--success);
-      padding: 6px 14px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 500;
-    }
-    .dot {
-      width: 8px;
-      height: 8px;
-      background: var(--success);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--success);
-    }
-    .btn {
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .btn:hover { background: var(--primary-hover); }
-    .btn-secondary {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      color: var(--text-main);
-    }
-    .btn-secondary:hover { background: #273549; }
-
-    /* KPI Cards */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-    .kpi-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 18px;
-      position: relative;
-      overflow: hidden;
-    }
-    .kpi-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; width: 4px; height: 100%;
-    }
-    .kpi-total::before { background: var(--primary); }
-    .kpi-active::before { background: var(--danger); }
-    .kpi-pending::before { background: var(--warning); }
-    .kpi-closed::before { background: var(--success); }
-    .kpi-title {
-      font-size: 13px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-    }
-    .kpi-value {
-      font-size: 32px;
-      font-weight: 700;
-      color: #fff;
-      margin: 8px 0 4px 0;
-    }
-    .kpi-desc {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    /* Section Grid */
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 24px;
-      margin-bottom: 24px;
-    }
-    @media (max-width: 1024px) {
-      .dashboard-grid { grid-template-columns: 1fr; }
-    }
-
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 20px;
-    }
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-    .card-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    /* Progress bars for PPE classes */
-    .ppe-bars {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .ppe-bar-item {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .ppe-bar-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-    }
-    .ppe-bar-label span:first-child { font-weight: 500; }
-    .ppe-bar-track {
-      width: 100%;
-      height: 8px;
-      background: #0f172a;
-      border-radius: 999px;
-      overflow: hidden;
-    }
-    .ppe-bar-fill {
-      height: 100%;
-      border-radius: 999px;
-      transition: width 0.4s ease;
-    }
-    .fill-helmet { background: #f97316; }
-    .fill-vest { background: #eab308; }
-    .fill-gloves { background: #ec4899; }
-    .fill-goggles { background: #06b6d4; }
-    .fill-boots { background: #3b82f6; }
-
-    /* Camera trực tiếp */
-    .live-view {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      background: #020617;
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .live-view img { width: 100%; height: 100%; object-fit: contain; display: none; }
-    .live-view.on img { display: block; }
-    .live-view.on .live-placeholder { display: none; }
-    .live-placeholder { color: var(--text-muted); font-size: 14px; text-align: center; padding: 16px; }
-    .live-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-    .live-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px 18px;
-      margin-top: 12px;
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-    .live-meta b { color: var(--text-main); font-weight: 600; }
-    .live-state { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: #334155; color: var(--text-muted); }
-    .live-state.running { background: rgba(16, 185, 129, 0.15); color: var(--success); }
-    .live-state.starting, .live-state.stopping { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
-    .live-state.error { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
-    .live-error { margin-top: 8px; font-size: 13px; color: var(--danger); }
-    .btn-danger { background: var(--danger); }
-    .btn-danger:hover { background: #dc2626; }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .policy-note { font-size: 12px; color: var(--text-muted); margin-top: 10px; min-height: 16px; }
-
-    /* Policy Form */
-    .policy-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 0;
-      border-bottom: 1px solid #273549;
-    }
-    .policy-item:last-child { border-bottom: none; }
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 44px;
-      height: 24px;
-    }
-    .switch input { opacity: 0; width: 0; height: 0; }
-    .slider {
-      position: absolute; cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #334155;
-      transition: .3s;
-      border-radius: 24px;
-    }
-    .slider:before {
-      position: absolute; content: "";
-      height: 18px; width: 18px;
-      left: 3px; bottom: 3px;
-      background-color: white;
-      transition: .3s;
-      border-radius: 50%;
-    }
-    input:checked + .slider { background-color: var(--primary); }
-    input:checked + .slider:before { transform: translateX(20px); }
-
-    /* Filters */
-    .filters {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
-    }
-    .select-input {
-      background: #0f172a;
-      border: 1px solid var(--card-border);
-      color: #fff;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      outline: none;
-    }
-    .select-input:focus { border-color: var(--primary); }
-
-    /* Table */
-    .table-container {
-      overflow-x: auto;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 14px;
-    }
-    th {
-      background: #0f172a;
-      padding: 12px 14px;
-      color: var(--text-muted);
-      font-weight: 600;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      border-bottom: 1px solid var(--card-border);
-    }
-    td {
-      padding: 14px;
-      border-bottom: 1px solid #273549;
-      vertical-align: middle;
-    }
-    tr:hover td {
-      background: rgba(255, 255, 255, 0.02);
-    }
-
-    /* Badges */
-    .badge {
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      margin-right: 4px;
-    }
-    .badge-state-active {
-      background: rgba(239, 68, 68, 0.2);
-      color: #f87171;
-      border: 1px solid rgba(239, 68, 68, 0.4);
-    }
-    .badge-state-pending {
-      background: rgba(245, 158, 11, 0.2);
-      color: #fbbf24;
-      border: 1px solid rgba(245, 158, 11, 0.4);
-    }
-    .badge-state-closed {
-      background: rgba(16, 185, 129, 0.2);
-      color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.4);
-    }
-    .badge-ppe-helmet { background: rgba(249, 115, 22, 0.2); color: #fb923c; }
-    .badge-ppe-vest { background: rgba(234, 179, 8, 0.2); color: #fde047; }
-    .badge-ppe-gloves { background: rgba(236, 72, 153, 0.2); color: #f472b6; }
-    .badge-ppe-goggles { background: rgba(6, 182, 212, 0.2); color: #67e8f9; }
-    .badge-ppe-boots { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
-
-    /* Modal */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.75);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      backdrop-filter: blur(4px);
-      padding: 20px;
-    }
-    .modal {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      width: 100%;
-      max-width: 980px;
-      max-height: 92vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-    }
-    .modal-header {
-      padding: 16px 24px;
-      border-bottom: 1px solid var(--card-border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #162032;
-    }
-    .modal-header h3 { font-size: 18px; font-weight: 600; }
-    .close-btn {
-      background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer;
-    }
-    .close-btn:hover { color: #fff; }
-    .modal-body {
-      padding: 20px 24px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .evidence-img-container {
-      width: 100%;
-      background: #000;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid var(--card-border);
-      text-align: center;
-      position: relative;
-      min-height: 250px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .evidence-img-container img {
-      max-width: 100%;
-      max-height: 480px;
-      object-fit: contain;
-      display: inline-block;
-    }
-    .current-frame-info {
-      margin-top: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 13px;
-      color: #94a3b8;
-      background: #0f172a;
-      padding: 6px 12px;
-      border-radius: 6px;
-      border: 1px solid #1e293b;
-    }
-    /* Frame ribbon */
-    .frames-ribbon {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding: 6px 2px;
-    }
-    .frame-btn {
-      background: #0f172a;
-      border: 1px solid #334155;
-      color: #cbd5e1;
-      padding: 6px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      white-space: nowrap;
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s;
-    }
-    .frame-btn:hover {
-      border-color: #60a5fa;
-      background: #1e293b;
-    }
-    .frame-btn.active {
-      background: #2563eb;
-      border-color: #3b82f6;
-      color: #fff;
-      font-weight: 600;
-      box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
-    }
-    /* Modal 2 columns */
-    .modal-grid-2col {
-      display: grid;
-      grid-template-columns: 1fr 1.15fr;
-      gap: 18px;
-    }
-    .timeline {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      border-left: 2px solid var(--card-border);
-      padding-left: 16px;
-      margin-left: 8px;
-    }
-    .timeline-item {
-      position: relative;
-    }
-    .timeline-item::before {
-      content: '';
-      position: absolute;
-      left: -21px; top: 4px;
-      width: 8px; height: 8px;
-      background: var(--primary);
-      border-radius: 50%;
-    }
-    .timeline-time {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    .timeline-content {
-      font-size: 13px;
-      margin-top: 2px;
-    }
-    /* Feedback section */
-    .feedback-card {
-      background: #131d2e;
-      border: 1px solid #23344d;
-      border-radius: 12px;
-      padding: 16px;
-    }
-    .feedback-type-group {
-      display: flex;
-      gap: 10px;
-    }
-    .fb-radio-label {
-      cursor: pointer;
-    }
-    .fb-radio-label input {
-      display: none;
-    }
-    .fb-badge {
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      display: inline-block;
-      font-weight: 500;
-      border: 1px solid #334155;
-      background: #0f172a;
-      color: #cbd5e1;
-      transition: all 0.2s;
-    }
-    .fb-radio-label input:checked + .fb-badge-correct {
-      background: rgba(16, 185, 129, 0.2);
-      border-color: #10b981;
-      color: #34d399;
-      font-weight: 600;
-    }
-    .fb-radio-label input:checked + .fb-badge-false {
-      background: rgba(239, 68, 68, 0.2);
-      border-color: #ef4444;
-      color: #f87171;
-      font-weight: 600;
-    }
-    .textarea-input {
-      width: 100%;
-      background: #0f172a;
-      border: 1px solid #334155;
-      color: #fff;
-      border-radius: 8px;
-      padding: 8px 12px;
-      font-size: 13px;
-      outline: none;
-      font-family: inherit;
-      resize: vertical;
-      box-sizing: border-box;
-    }
-    .textarea-input:focus {
-      border-color: var(--primary);
-    }
-  </style>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+  <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
 
-  <!-- HEADER -->
-  <div class="header">
-    <div class="header-title">
-      <h1>HỆ THỐNG GIÁM SÁT PPE-6 <span class="badge-ppe6">6 LỚP HOÀN CHỈNH</span></h1>
-      <p>Khóa luận tốt nghiệp: Nhận diện & Giám sát tuân thủ trang bị bảo hộ lao động thời gian thực qua Camera</p>
-    </div>
-    <div class="header-actions">
-      <div class="status-pill">
-        <span class="dot"></span>
-        <span>Hệ thống trực tuyến</span>
+  <div class="app-shell">
+    <!-- ==================== 1. THANH ĐIỀU HƯỚNG CHỨC NĂNG BÊN TRÁI ==================== -->
+    <aside class="sidebar">
+      <div>
+        <div class="brand-box">
+          <div class="brand-mark">P6</div>
+          <div class="brand-text">
+            <span class="brand-name">PPE MONITOR</span>
+            <span class="brand-sub">Industrial Safety VMS</span>
+          </div>
+        </div>
+
+        <div class="nav-section-label">Chức năng chính</div>
+        <ul class="nav-list">
+          <li>
+            <button class="nav-btn active" data-view="monitor" onclick="window.switchView('monitor')">
+              <span class="nav-btn-left">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <rect x="2" y="4" width="15" height="14" rx="2"></rect>
+                  <path d="M17 9l5-3v10l-5-3z"></path>
+                </svg>
+                <span>Giám sát trực tiếp</span>
+              </span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-btn" data-view="events" onclick="window.switchView('events')">
+              <span class="nav-btn-left">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"></path>
+                  <rect x="9" y="3" width="6" height="4" rx="1"></rect>
+                  <path d="M9 12h6M9 16h4"></path>
+                </svg>
+                <span>Nhật ký vi phạm</span>
+              </span>
+              <span class="nav-badge mono" id="nav-active-badge">0</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-btn" data-view="policy" onclick="window.switchView('policy')">
+              <span class="nav-btn-left">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 3l8 4v5c0 5.25-3.5 9.75-8 11-4.5-1.25-8-5.75-8-11V7l8-4z"></path>
+                  <path d="M9 12l2 2 4-4"></path>
+                </svg>
+                <span>Quy định PPE</span>
+              </span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-btn" data-view="stats" onclick="window.switchView('stats')">
+              <span class="nav-btn-left">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M18 20V10M12 20V4M6 20v-6"></path>
+                </svg>
+                <span>Thống kê</span>
+              </span>
+            </button>
+          </li>
+        </ul>
+
+        <div class="nav-section-label">Hệ thống &amp; Tài liệu</div>
+        <ul class="nav-list">
+          <li>
+            <button class="nav-btn" data-view="settings" onclick="window.switchView('settings')">
+              <span class="nav-btn-left">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9c.26.6.77 1.02 1.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"></path>
+                </svg>
+                <span>Cài đặt</span>
+              </span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-btn" data-view="help" onclick="window.switchView('help')">
+              <span class="nav-btn-left">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"></path>
+                </svg>
+                <span>Trợ giúp &amp; Giới thiệu</span>
+              </span>
+              <span class="nav-badge mono">F1</span>
+            </button>
+          </li>
+        </ul>
       </div>
-      <button class="btn btn-secondary" onclick="fetchData()">
-        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-        Làm mới
-      </button>
-    </div>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-footer-row">
+          <span>Phiên bản</span>
+          <strong class="mono" id="sidebar-version" style="color: var(--text-secondary);">v1.0.0</strong>
+        </div>
+        <div class="sidebar-footer-row">
+          <span>Mô hình</span>
+          <span class="mono" id="sidebar-model">YOLO11s PPE-6</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ==================== 2. KHÔNG GIAN LÀM VIỆC CHÍNH ==================== -->
+    <main class="main-area">
+      <!-- Thanh tiêu đề trên cùng -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1 class="view-title" id="topbar-title">Giám sát trực tiếp</h1>
+          <span class="view-subtitle" id="topbar-subtitle">Trung tâm phát hiện vi phạm PPE thời gian thực qua Camera &amp; Tệp Video</span>
+        </div>
+        <div class="topbar-right">
+          <span class="badge badge-neutral" id="live-state">Đang dừng</span>
+          <button class="btn btn-sm" onclick="window.fetchAllData()" title="Làm mới dữ liệu sự kiện và thống kê">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M23 4v6h-6M1 20v-6h6"></path>
+              <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"></path>
+            </svg>
+            <span>Làm mới</span>
+          </button>
+          <button class="btn btn-sm" onclick="window.toggleAppFullscreen()" title="Bật / Tắt chế độ toàn màn hình (F11)">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"></path>
+            </svg>
+            <span>Toàn màn hình</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- ==================== VIEW 1: GIÁM SÁT TRỰC TIẾP (DETECTION CENTER) ==================== -->
+      <section class="view-pane active" id="view-monitor">
+        <!-- Thanh công cụ điều khiển nguồn & tác vụ nhanh -->
+        <div class="monitor-toolbar">
+          <div class="toolbar-group">
+            <span class="toolbar-label">Nguồn phát:</span>
+            <div class="segmented-switch">
+              <button class="seg-btn active" id="seg-src-camera" onclick="window.switchSourceMode('camera')">Webcam</button>
+              <button class="seg-btn" id="seg-src-file" onclick="window.switchSourceMode('file')">Tệp Video</button>
+            </div>
+
+            <!-- Tùy chọn khi chọn Webcam: danh sách checkbox chọn camera theo dõi -->
+            <div class="quick-policy-wrap" id="mon-camera-picker-wrap">
+              <button class="btn" onclick="window.toggleCameraPicker(event)" title="Chọn camera cần theo dõi (chọn được nhiều camera cùng lúc)">
+                <span id="mon-camera-summary">Chọn camera: 0/0</span>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg>
+              </button>
+
+              <div class="quick-policy-drawer" id="mon-camera-picker">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <strong style="font-size: 12.5px; color: #fff; text-transform: uppercase;">Chọn camera theo dõi</strong>
+                  <button class="btn-icon-help" onclick="window.openHelpModal('policy')" title="Giải thích danh sách camera">!</button>
+                </div>
+                <div id="mon-camera-list">
+                  <div class="dock-empty">Đang dò danh sách camera…</div>
+                </div>
+
+                <div style="border-top: 1px solid var(--border-main); margin-top: 8px; padding-top: 8px;">
+                  <div style="display: flex; gap: 6px; align-items: center;">
+                    <button class="btn btn-sm" onclick="window.discoverLanCams()" id="mon-discover-btn" title="Tìm camera trong mạng LAN (laptop/điện thoại đang phát stream)">
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="13" height="13"><path d="M21 21l-4.35-4.35"></path><circle cx="11" cy="11" r="8"></circle></svg>
+                      Quét camera trong mạng
+                    </button>
+                  </div>
+                  <div id="mon-discovered-list" style="margin-top: 6px;"></div>
+                </div>
+
+                <div style="border-top: 1px solid var(--border-main); margin-top: 8px; padding-top: 8px;">
+                  <strong style="font-size: 11.5px; color: var(--text-secondary);">THÊM CAMERA BẰNG URL (iPhone app, laptop khác)</strong>
+                  <div style="display: flex; flex-direction: column; gap: 5px; margin-top: 6px;">
+                    <input class="select-control" id="cam-url-name" placeholder="Tên hiển thị (vd: iPhone góc xưởng)" style="font-size: 12px;">
+                    <input class="select-control mono" id="cam-url-value" placeholder="http://192.168.1.x:4747/video hoặc rtsp://…" style="font-size: 12px;">
+                    <button class="btn btn-sm btn-primary" onclick="window.addCameraUrl()">Thêm camera</button>
+                  </div>
+                  <div id="cam-url-note" style="font-size: 11px; color: var(--text-muted); margin-top: 4px;"></div>
+                </div>
+
+                <div id="mon-camera-note" style="font-size: 11.5px; color: var(--text-muted);"></div>
+              </div>
+            </div>
+
+            <!-- Tùy chọn khi chọn Tệp Video -->
+            <div class="file-picker-box" id="mon-file-controls" style="display: none;">
+              <button class="btn" onclick="window.pickVideoFile()">Chọn tệp…</button>
+              <div class="file-path-display mono" id="mon-file-display" title="Chưa chọn tệp video">Chưa chọn tệp (.mp4, .avi)</div>
+              <select class="select-control" id="mon-playback-mode" title="Chế độ tốc độ xử lý video">
+                <option value="realtime">Tốc độ: Thời gian thực</option>
+                <option value="fast">Tốc độ: Nhanh nhất có thể</option>
+              </select>
+            </div>
+
+            <div class="status-sep"></div>
+
+            <!-- Cụm nút Điều khiển phát -->
+            <button class="btn btn-primary" id="live-start" onclick="window.startLive()">
+              <svg fill="currentColor" stroke="none" viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>
+              <span>Bật theo dõi</span>
+            </button>
+            <button class="btn" id="live-pause" onclick="window.togglePauseLive()" style="display: none;" disabled>
+              <span>Tạm dừng</span>
+            </button>
+            <button class="btn btn-danger" id="live-stop" onclick="window.stopLive()" disabled>
+              <svg fill="currentColor" stroke="none" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12"></rect></svg>
+              <span>Dừng tất cả</span>
+            </button>
+          </div>
+
+          <!-- Cụm Tùy chọn nhanh bên phải -->
+          <div class="toolbar-group">
+            <button class="btn" id="mon-sound-btn" onclick="window.toggleSoundQuick()" title="Bật / Tắt tiếng bíp khi có sự kiện vi phạm mới">
+              Âm báo: Tắt
+            </button>
+
+            <!-- Ngăn chỉnh nhanh Quy định PPE ngay trên màn hình Giám sát -->
+            <div class="quick-policy-wrap" id="quick-policy-wrap">
+              <button class="btn" onclick="window.toggleQuickPolicyDrawer(event)" title="Thiết lập nhanh trang bị PPE bắt buộc">
+                <span id="quick-policy-summary">Quy định PPE: 5/5</span>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg>
+              </button>
+
+              <div class="quick-policy-drawer" id="quick-policy-drawer">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <strong style="font-size: 12.5px; color: #fff; text-transform: uppercase;">Thiết lập nhanh PPE bắt buộc</strong>
+                  <button class="btn-icon-help" onclick="window.openHelpModal('policy')" title="Giải thích quy định PPE">!</button>
+                </div>
+                <div class="preset-pills" id="quick-preset-buttons"></div>
+                <div>
+                  <div class="quick-ppe-row">
+                    <span><strong class="mono">[M]</strong> Mũ bảo hộ</span>
+                    <label class="switch"><input type="checkbox" id="qpol-helmet" checked onchange="window.onPolicyCheckboxToggle('helmet', true)"><span class="slider"></span></label>
+                  </div>
+                  <div class="quick-ppe-row">
+                    <span><strong class="mono">[A]</strong> Áo phản quang</span>
+                    <label class="switch"><input type="checkbox" id="qpol-vest" checked onchange="window.onPolicyCheckboxToggle('vest', true)"><span class="slider"></span></label>
+                  </div>
+                  <div class="quick-ppe-row">
+                    <span><strong class="mono">[G]</strong> Găng tay (xét từng tay)</span>
+                    <label class="switch"><input type="checkbox" id="qpol-gloves" checked onchange="window.onPolicyCheckboxToggle('gloves', true)"><span class="slider"></span></label>
+                  </div>
+                  <div class="quick-ppe-row">
+                    <span><strong class="mono">[K]</strong> Kính bảo hộ (trừ kính cận)</span>
+                    <label class="switch"><input type="checkbox" id="qpol-goggles" checked onchange="window.onPolicyCheckboxToggle('goggles', true)"><span class="slider"></span></label>
+                  </div>
+                  <div class="quick-ppe-row">
+                    <span><strong class="mono">[U]</strong> Ủng / Giày bảo hộ</span>
+                    <label class="switch"><input type="checkbox" id="qpol-boots" checked onchange="window.onPolicyCheckboxToggle('boots', true)"><span class="slider"></span></label>
+                  </div>
+                </div>
+                <div id="quick-policy-note" style="font-size: 11.5px; color: var(--text-muted);"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Không gian 2 cột: Khung hình nhận diện (Trái) & Bảng kiểm tra Admin (Phải) -->
+        <div class="monitor-workspace">
+          <!-- Cột Trái: Khung hình Video, Tiến độ & Chú giải -->
+          <div class="stage-column">
+            <div class="stage-error-banner" id="live-error-banner">
+              <span id="live-error"></span>
+              <button class="btn btn-sm" onclick="window.switchView('help')">Hướng dẫn xử lý</button>
+            </div>
+
+            <!-- Lưới tile: mỗi camera được theo dõi một ô (tái dùng pattern video-stage) -->
+            <div class="live-tiles" id="live-tiles">
+              <div class="stage-placeholder" id="live-placeholder">
+                <div class="stage-empty-icon">
+                  <svg width="26" height="26" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
+                    <path d="M23 7l-7 5 7 5V7z"></path>
+                    <rect x="1" y="5" width="15" height="14" rx="2"></rect>
+                  </svg>
+                </div>
+                <div class="stage-placeholder-title" id="stage-placeholder-title">Sẵn sàng giám sát</div>
+                <div class="stage-placeholder-desc" id="stage-placeholder-desc">
+                  Tick chọn camera cần theo dõi (chọn được nhiều camera cùng lúc — camera IP, webcam, điện thoại), kiểm tra quy định PPE bắt buộc rồi bật theo dõi.
+                </div>
+                <button class="btn btn-primary" onclick="window.quickStartLive()">Bật theo dõi ngay</button>
+              </div>
+            </div>
+
+            <!-- Thanh tiến độ khi phát Tệp Video -->
+            <div class="video-progress-bar" id="video-progress-bar">
+              <span class="mono" id="video-progress-time">00:00.0 / 00:00.0</span>
+              <div class="video-progress-track">
+                <div class="video-progress-fill" id="video-progress-fill"></div>
+              </div>
+              <span class="mono" id="video-progress-frames" style="color: var(--text-muted);">Khung 0 / 0</span>
+            </div>
+
+            <!-- Thanh chú giải kỹ thuật dưới khung hình -->
+            <div class="legend-bar">
+              <div class="legend-group">
+                <strong style="color: var(--text-secondary);">Màu trạng thái:</strong>
+                <span class="legend-item"><span class="legend-swatch swatch-have"></span> Đạt (Có)</span>
+                <span class="legend-item"><span class="legend-swatch swatch-missing"></span> Vi phạm (Thiếu)</span>
+                <span class="legend-item"><span class="legend-swatch swatch-unknown"></span> Chưa xác định (Khuất/Xa)</span>
+                <span class="legend-item"><span class="legend-swatch swatch-person-init"></span> Mới vào khung</span>
+                <span class="legend-item"><span class="legend-swatch swatch-lost"></span> Tạm mất dấu</span>
+              </div>
+              <div class="legend-group">
+                <strong style="color: var(--text-secondary);">Ký hiệu PPE:</strong>
+                <span class="legend-item"><span class="legend-code mono">M</span> Mũ</span>
+                <span class="legend-item"><span class="legend-code mono">A</span> Áo</span>
+                <span class="legend-item"><span class="legend-code mono">G</span> Găng</span>
+                <span class="legend-item"><span class="legend-code mono">K</span> Kính</span>
+                <span class="legend-item"><span class="legend-code mono">U</span> Ủng</span>
+                <button class="btn-icon-help" onclick="window.openHelpModal('legend')" title="Xem giải thích chi tiết quy ước hiển thị">!</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cột Phải: Bảng tác chiến Admin (Đối tượng trong khung & Sự kiện trong phiên) -->
+          <aside class="inspector-dock">
+            <!-- Khối 1: Danh sách người đang trong khung hình -->
+            <div class="dock-section dock-section-persons">
+              <div class="dock-header">
+                <div class="dock-title">
+                  <span>Đối tượng trong khung hình</span>
+                  <span class="badge badge-info mono" id="inspector-persons-count">00</span>
+                </div>
+                <button class="btn-icon-help" onclick="window.openHelpModal('inspector')" title="Giải thích bảng Đối tượng trong khung hình">!</button>
+              </div>
+              <div class="dock-body" id="inspector-persons-list">
+                <div class="dock-empty">Nguồn phát đang dừng. Bấm "Bắt đầu" để theo dõi trạng thái PPE của từng người trong khung hình.</div>
+              </div>
+            </div>
+
+            <!-- Khối 2: Luồng cảnh báo mới nhất trong phiên -->
+            <div class="dock-section dock-section-alerts">
+              <div class="dock-header">
+                <div class="dock-title">
+                  <span>Sự kiện vi phạm gần nhất</span>
+                  <span class="badge badge-neutral mono" id="inspector-alerts-count">00</span>
+                </div>
+                <button class="btn btn-sm" onclick="window.switchView('events')">Xem tất cả</button>
+              </div>
+              <div class="dock-body" id="inspector-alerts-list">
+                <div class="dock-empty">Chưa có sự kiện vi phạm nào.</div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW 2: NHẬT KÝ VI PHẠM & MINH CHỨNG ==================== -->
+      <section class="view-pane" id="view-events">
+        <div class="view-scroll" style="overflow: hidden;">
+          <!-- Bộ lọc đa chiều & Xuất dữ liệu -->
+          <div class="filter-bar">
+            <div class="filter-inputs">
+              <select class="select-control" id="filter-session" onchange="window.onManualSessionFilterChange()">
+                <option value="">Tất cả các phiên</option>
+                <option value="live">Phiên trực tiếp gần nhất</option>
+              </select>
+              <select class="select-control" id="filter-source" onchange="window.renderEventsTable()">
+                <option value="">Tất cả nguồn phát</option>
+              </select>
+              <select class="select-control" id="filter-state" onchange="window.renderEventsTable()">
+                <option value="">Tất cả trạng thái</option>
+                <option value="active">Đang vi phạm (Active)</option>
+                <option value="pending_observation">Chờ quan sát (Pending)</option>
+                <option value="closed">Đã đóng (Closed)</option>
+              </select>
+              <select class="select-control" id="filter-ppe" onchange="window.renderEventsTable()">
+                <option value="">Tất cả trang bị thiếu</option>
+                <option value="helmet">[M] Mũ bảo hộ</option>
+                <option value="vest">[A] Áo phản quang</option>
+                <option value="gloves">[G] Găng tay</option>
+                <option value="goggles">[K] Kính bảo hộ</option>
+                <option value="boots">[U] Ủng bảo hộ</option>
+              </select>
+              <input type="date" class="input-control" id="filter-date-from" onchange="window.renderEventsTable()" onclick="window.openDatePicker(this)" title="Từ ngày">
+              <input type="date" class="input-control" id="filter-date-to" onchange="window.renderEventsTable()" onclick="window.openDatePicker(this)" title="Đến ngày">
+              <input type="text" class="input-control" id="filter-q" placeholder="Tìm ID người, mã phiên…" oninput="window.renderEventsTable()" style="width: 165px;">
+              <button class="btn btn-sm" onclick="window.resetEventFilters()">Xóa lọc</button>
+            </div>
+
+            <div class="filter-inputs">
+              <button class="btn" onclick="window.openEvidenceFolder()" title="Mở thư mục lưu toàn bộ ảnh minh chứng trong ổ đĩa">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"></path></svg>
+                <span>Mở thư mục minh chứng</span>
+              </button>
+              <button class="btn" onclick="window.exportEvents('csv')" title="Xuất danh sách đang lọc ra tệp CSV chuẩn tiếng Việt (Ctrl+E)">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>
+                <span>Xuất CSV</span>
+              </button>
+              <button class="btn btn-primary" onclick="window.exportEvents('zip')" title="Xuất gói ZIP gồm bảng CSV và toàn bộ ảnh minh chứng">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>
+                <span>Xuất CSV + Ảnh (ZIP)</span>
+              </button>
+              <button class="btn-icon-help" onclick="window.openHelpModal('export')" title="Giải thích chức năng xuất dữ liệu">!</button>
+            </div>
+          </div>
+
+          <!-- Bảng dữ liệu sự kiện -->
+          <div class="table-panel">
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Ảnh minh chứng</th>
+                    <th>Thời điểm &amp; Thời lượng</th>
+                    <th>Nguồn / Phiên giám sát</th>
+                    <th>Đối tượng</th>
+                    <th>Trang bị thiếu</th>
+                    <th>Trạng thái</th>
+                    <th>Lý do đóng</th>
+                    <th>Đánh giá</th>
+                    <th>Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody id="events-tbody">
+                  <tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 32px;">Đang tải dữ liệu sự kiện…</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-footer">
+              <span class="mono" id="events-page-info">Hiển thị 0–0 / 0 sự kiện</span>
+              <div style="display: flex; gap: 6px;">
+                <button class="btn btn-sm" id="events-prev-btn" onclick="window.changeEventsPage(-1)" disabled>Trang trước</button>
+                <button class="btn btn-sm" id="events-next-btn" onclick="window.changeEventsPage(1)" disabled>Trang sau</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW 3: QUY ĐỊNH PPE THEO NGUỒN ==================== -->
+      <section class="view-pane" id="view-policy">
+        <div class="view-scroll">
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span>Cấu hình quy định PPE bắt buộc theo nguồn phát</span>
+              </div>
+              <button class="btn-icon-help" onclick="window.openHelpModal('policy')">!</button>
+            </div>
+            <div class="panel-body" style="display: flex; flex-direction: column; gap: 14px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <label class="form-label" for="policy-source">Chọn nguồn cấu hình:</label>
+                  <select class="select-control" id="policy-source" style="min-width: 280px;" onchange="window.loadPolicy()"></select>
+                </div>
+                <div class="preset-pills" id="main-preset-buttons"></div>
+              </div>
+
+              <div style="border: 1px solid var(--border-main); border-radius: var(--radius-sm); background: var(--bg-panel-alt);">
+                <div class="policy-table-row" style="background: #101726; font-size: 11.5px; font-weight: 600; text-transform: uppercase; color: var(--text-muted);">
+                  <span>Mã</span>
+                  <span>Trang bị bảo hộ</span>
+                  <span>Vùng cơ thể &amp; Quy tắc kiểm định của hệ thống</span>
+                  <span>Trạng thái</span>
+                  <span style="text-align: right;">Bật/Tắt</span>
+                </div>
+
+                <div class="policy-table-row">
+                  <span class="legend-code mono" style="text-align: center;">M</span>
+                  <strong>Mũ bảo hộ (Helmet)</strong>
+                  <span style="color: var(--text-muted); font-size: 12.5px;">Vùng đầu · Bộ phân loại C2 phủ quyết mũ vải/mũ thường khi công nhân nhìn thẳng vào camera.</span>
+                  <span id="pol-status-helmet"><span class="badge badge-ok">Bắt buộc</span></span>
+                  <div style="text-align: right;">
+                    <label class="switch"><input type="checkbox" id="pol-helmet" checked onchange="window.onPolicyCheckboxToggle('helmet', false)"><span class="slider"></span></label>
+                  </div>
+                </div>
+
+                <div class="policy-table-row">
+                  <span class="legend-code mono" style="text-align: center;">A</span>
+                  <strong>Áo phản quang (Vest)</strong>
+                  <span style="color: var(--text-muted); font-size: 12.5px;">Vùng thân trên (vai – hông) · Kiểm tra áo bảo hộ có dải phản quang che phủ phần thân.</span>
+                  <span id="pol-status-vest"><span class="badge badge-ok">Bắt buộc</span></span>
+                  <div style="text-align: right;">
+                    <label class="switch"><input type="checkbox" id="pol-vest" checked onchange="window.onPolicyCheckboxToggle('vest', false)"><span class="slider"></span></label>
+                  </div>
+                </div>
+
+                <div class="policy-table-row">
+                  <span class="legend-code mono" style="text-align: center;">G</span>
+                  <strong>Găng tay bảo hộ (Gloves)</strong>
+                  <span style="color: var(--text-muted); font-size: 12.5px;">Hai cổ tay · Xét độc lập tay trái và tay phải khi cổ tay nhìn rõ; thiếu 1 bên vẫn tính vi phạm.</span>
+                  <span id="pol-status-gloves"><span class="badge badge-ok">Bắt buộc</span></span>
+                  <div style="text-align: right;">
+                    <label class="switch"><input type="checkbox" id="pol-gloves" checked onchange="window.onPolicyCheckboxToggle('gloves', false)"><span class="slider"></span></label>
+                  </div>
+                </div>
+
+                <div class="policy-table-row">
+                  <span class="legend-code mono" style="text-align: center;">K</span>
+                  <strong>Kính bảo hộ (Goggles)</strong>
+                  <span style="color: var(--text-muted); font-size: 12.5px;">Vùng mặt · Chỉ tính kính bảo hộ lao động; kính cận và kính râm thường bị bộ phân loại bác bỏ.</span>
+                  <span id="pol-status-goggles"><span class="badge badge-ok">Bắt buộc</span></span>
+                  <div style="text-align: right;">
+                    <label class="switch"><input type="checkbox" id="pol-goggles" checked onchange="window.onPolicyCheckboxToggle('goggles', false)"><span class="slider"></span></label>
+                  </div>
+                </div>
+
+                <div class="policy-table-row">
+                  <span class="legend-code mono" style="text-align: center;">U</span>
+                  <strong>Ủng / Giày bảo hộ (Boots)</strong>
+                  <span style="color: var(--text-muted); font-size: 12.5px;">Hai cổ chân · Chỉ tính ủng/giày bảo hộ nhìn rõ; dép và giày vải thường bị bộ phân loại M1 bác bỏ.</span>
+                  <span id="pol-status-boots"><span class="badge badge-ok">Bắt buộc</span></span>
+                  <div style="text-align: right;">
+                    <label class="switch"><input type="checkbox" id="pol-boots" checked onchange="window.onPolicyCheckboxToggle('boots', false)"><span class="slider"></span></label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mono" id="policy-note" style="font-size: 12px; color: var(--accent-light);"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW 4: THỐNG KÊ & PHÂN TÍCH ==================== -->
+      <section class="view-pane" id="view-stats">
+        <div class="view-scroll">
+          <!-- 5 Thẻ chỉ số KPI -->
+          <div class="kpi-row">
+            <div class="kpi-box kpi-accent">
+              <div class="kpi-label">Tổng đợt vi phạm</div>
+              <div class="kpi-number mono" id="kpi-total">0</div>
+              <div class="kpi-sub">Toàn bộ sự kiện đã ghi nhận</div>
+            </div>
+            <div class="kpi-box kpi-danger">
+              <div class="kpi-label">Đang vi phạm (Active)</div>
+              <div class="kpi-number mono" id="kpi-active" style="color: #f87171;">0</div>
+              <div class="kpi-sub">Đang diễn ra trong phiên mở</div>
+            </div>
+            <div class="kpi-box kpi-warn">
+              <div class="kpi-label">Chờ quan sát (Pending)</div>
+              <div class="kpi-number mono" id="kpi-pending" style="color: #fbbf24;">0</div>
+              <div class="kpi-sub">Đối tượng tạm thời bị che khuất</div>
+            </div>
+            <div class="kpi-box kpi-ok">
+              <div class="kpi-label">Đã khắc phục / Đóng</div>
+              <div class="kpi-number mono" id="kpi-closed" style="color: #4ade80;">0</div>
+              <div class="kpi-sub">Đã trang bị đủ hoặc kết thúc phiên</div>
+            </div>
+            <div class="kpi-box">
+              <div class="kpi-label">Tỷ lệ báo sai (Feedback)</div>
+              <div class="kpi-number mono" id="kpi-false-rate">0.0%</div>
+              <div class="kpi-sub" id="kpi-false-sub">Chưa có đánh giá</div>
+            </div>
+          </div>
+
+          <div class="grid-2col">
+            <!-- Biểu đồ phân bố theo 5 loại PPE -->
+            <div class="panel">
+              <div class="panel-header">
+                <div class="panel-title">Tần suất vi phạm theo loại trang bị bảo hộ</div>
+              </div>
+              <div class="panel-body">
+                <div class="bar-list" id="ppe-bars-container"></div>
+              </div>
+            </div>
+
+            <!-- Phân bố sự kiện theo nguồn phát -->
+            <div class="panel">
+              <div class="panel-header">
+                <div class="panel-title">Thống kê sự kiện theo nguồn phát</div>
+              </div>
+              <div class="panel-body" style="padding: 0;">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Mã nguồn phát</th>
+                      <th>Số lượng sự kiện</th>
+                      <th>Tỷ trọng</th>
+                    </tr>
+                  </thead>
+                  <tbody id="stats-by-source-tbody">
+                    <tr><td colspan="3" style="text-align: center; color: var(--text-dim); padding: 18px;">Đang tải…</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW 5: CÀI ĐẶT HỆ THỐNG ==================== -->
+      <section class="view-pane" id="view-settings">
+        <div class="view-scroll">
+          <div class="grid-2col">
+            <!-- Cột Trái: Cấu hình vận hành -->
+            <div class="panel">
+              <div class="panel-header">
+                <div class="panel-title">Cấu hình vận hành ứng dụng</div>
+                <button class="btn-icon-help" onclick="window.openHelpModal('device')">!</button>
+              </div>
+              <div class="panel-body">
+                <div class="form-row">
+                  <div>
+                    <div class="form-label">Webcam mặc định</div>
+                    <div class="form-hint">Thiết bị ưu tiên mở khi khởi động chế độ Camera</div>
+                  </div>
+                  <select class="select-control" id="set-camera-index">
+                    <option value="0">Webcam 0</option>
+                  </select>
+                </div>
+
+                <div class="form-row">
+                  <div>
+                    <div class="form-label">Độ phân giải yêu cầu</div>
+                    <div class="form-hint">Độ phân giải khung hình lấy từ Webcam</div>
+                  </div>
+                  <select class="select-control" id="set-camera-res">
+                    <option value="1280x720">1280 x 720 (HD 720p — Khuyến nghị)</option>
+                    <option value="1920x1080">1920 x 1080 (Full HD 1080p)</option>
+                  </select>
+                </div>
+
+                <div class="form-row">
+                  <div>
+                    <div class="form-label">Thiết bị suy luận AI</div>
+                    <div class="form-hint">Áp dụng cho phiên giám sát kế tiếp</div>
+                  </div>
+                  <select class="select-control" id="set-device">
+                    <option value="auto">Tự động (Ưu tiên GPU NVIDIA CUDA, dự phòng CPU)</option>
+                    <option value="cuda">GPU NVIDIA (CUDA)</option>
+                    <option value="cpu">Chỉ dùng CPU (Chậm hơn)</option>
+                  </select>
+                </div>
+
+                <div class="form-row">
+                  <div>
+                    <div class="form-label">Âm báo sự kiện mới</div>
+                    <div class="form-hint">Phát âm báo ngắn khi xác nhận vi phạm mới</div>
+                  </div>
+                  <div>
+                    <label class="switch"><input type="checkbox" id="set-sound-enabled"><span class="slider"></span></label>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div>
+                    <div class="form-label">Chu kỳ lưu trữ (Ngày)</div>
+                    <div class="form-hint">Dùng khi dọn dẹp các sự kiện đã đóng cũ</div>
+                  </div>
+                  <div style="display: flex; gap: 8px; align-items: center;">
+                    <input type="number" class="input-control mono" id="set-keep-days" value="30" min="1" max="365" style="width: 90px;">
+                    <button class="btn btn-danger" onclick="window.runCleanupOldData()">Xóa dữ liệu cũ…</button>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div>
+                    <div class="form-label">Thư mục dữ liệu người dùng</div>
+                    <div class="form-hint">Chứa SQLite DB, ảnh minh chứng, tệp xuất và log</div>
+                  </div>
+                  <div style="display: flex; gap: 8px;">
+                    <input type="text" class="input-control mono" id="set-data-dir" readonly style="flex: 1;">
+                    <button class="btn" onclick="window.openDataFolder()">Mở thư mục</button>
+                  </div>
+                </div>
+
+                <div style="margin-top: 14px; display: flex; justify-content: flex-end; gap: 8px;">
+                  <button class="btn btn-primary" onclick="window.saveSystemSettings()">Lưu cài đặt hệ thống</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cột Phải: Thông số Mô hình & Chẩn đoán kỹ thuật (Chỉ đọc) -->
+            <div class="panel">
+              <div class="panel-header">
+                <div class="panel-title">Thông số mô hình &amp; Ngưỡng nhận diện (Chỉ đọc)</div>
+              </div>
+              <div class="panel-body">
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">
+                  Các tham số dưới đây được cố định từ tập xác thực (configs/pipeline.yaml) để đảm bảo tính toàn vẹn của số liệu đánh giá trong báo cáo khóa luận.
+                </p>
+
+                <div class="form-row">
+                  <span class="form-label">Phần cứng đang hoạt động</span>
+                  <span class="mono" id="sys-gpu-info">—</span>
+                </div>
+                <div class="form-row">
+                  <span class="form-label">Tệp trọng số Detector</span>
+                  <span class="mono" id="sys-det-weights" style="word-break: break-all;">—</span>
+                </div>
+                <div class="form-row">
+                  <span class="form-label">Mã kiểm tra SHA-256</span>
+                  <span class="mono" id="sys-det-sha">—</span>
+                </div>
+                <div class="form-row">
+                  <span class="form-label">Ngưỡng phát hiện (Detector)</span>
+                  <span class="mono" id="sys-det-params">—</span>
+                </div>
+                <div class="form-row">
+                  <span class="form-label">Cửa sổ xác nhận thời gian</span>
+                  <span class="mono" id="sys-temporal-params">—</span>
+                </div>
+                <div class="form-row">
+                  <span class="form-label">Điều kiện quan sát (Compliance)</span>
+                  <span class="mono" id="sys-comp-params">—</span>
+                </div>
+
+                <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+                  <div class="form-hint">Xuất gói thông tin kỹ thuật &amp; log (không chứa ảnh/video) để phục vụ kiểm tra lỗi:</div>
+                  <button class="btn" onclick="window.saveDiagnosticBundle()">Lưu gói chẩn đoán (.zip)</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW 6: TRỢ GIÚP & GIỚI THIỆU (F1) ==================== -->
+      <section class="view-pane" id="view-help">
+        <div class="view-scroll">
+          <div class="filter-bar">
+            <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+              <strong style="color: var(--text-secondary); white-space: nowrap;">Tra cứu tài liệu hướng dẫn:</strong>
+              <input type="text" class="input-control" id="help-search-input" placeholder="Nhập từ khóa (ví dụ: kính cận, màu sắc, xuất CSV, GPU, webcam)…" oninput="window.filterHelpTopics()" style="flex: 1;">
+            </div>
+          </div>
+
+          <div class="grid-2col">
+            <!-- Mục 1: Quy trình vận hành 4 bước -->
+            <div class="panel help-section-card">
+              <div class="panel-header"><div class="panel-title">1. Hướng dẫn vận hành nhanh (4 bước)</div></div>
+              <div class="panel-body" style="display: flex; flex-direction: column; gap: 8px; color: var(--text-secondary);">
+                <p><strong>Bước 1 — Chọn nguồn phát:</strong> Tại màn hình <em>Giám sát trực tiếp</em>, chọn <strong>Webcam</strong> hoặc <strong>Tệp Video</strong> (.mp4, .avi, .mov).</p>
+                <p><strong>Bước 2 — Thiết lập PPE bắt buộc:</strong> Bấm nút <strong>Quy định PPE</strong> trên thanh công cụ để chọn mẫu nhanh (Công trường, Hàn/mài, Kho bãi) hoặc gạt từng trang bị cần kiểm tra.</p>
+                <p><strong>Bước 3 — Bắt đầu giám sát:</strong> Bấm <strong>Bắt đầu</strong> (hoặc phím <code>Space</code>). Quan sát luồng video bên trái và bảng <em>Đối tượng trong khung hình</em> bên phải.</p>
+                <p><strong>Bước 4 — Xử lý &amp; Xuất báo cáo:</strong> Bấm <strong>Chi tiết</strong> trên sự kiện để xem ảnh minh chứng theo mốc thời gian, gửi phản hồi nếu cảnh báo sai, hoặc sang mục <em>Nhật ký vi phạm</em> để <strong>Xuất CSV / ZIP</strong>.</p>
+              </div>
+            </div>
+
+            <!-- Mục 2: Phím tắt bàn phím -->
+            <div class="panel help-section-card">
+              <div class="panel-header"><div class="panel-title">2. Phím tắt bàn phím</div></div>
+              <div class="panel-body" style="display: flex; flex-direction: column; gap: 8px; color: var(--text-secondary);">
+                <p><code class="legend-code mono">Space</code> : Bắt đầu nguồn phát hoặc Tạm dừng / Tiếp tục khi đang phát tệp video.</p>
+                <p><code class="legend-code mono"> Trái / Phải </code> : Chuyển mốc thời gian trước / sau khi đang mở cửa sổ Chi tiết minh chứng.</p>
+                <p><code class="legend-code mono">Esc</code> : Đóng cửa sổ Chi tiết minh chứng hoặc hộp thoại trợ giúp.</p>
+                <p><code class="legend-code mono">Ctrl + E</code> : Xuất nhanh danh sách sự kiện đang lọc ra tệp CSV.</p>
+                <p><code class="legend-code mono">F1</code> : Mở màn hình Trợ giúp &amp; Giới thiệu.</p>
+                <p><code class="legend-code mono">F11</code> : Chuyển đổi chế độ Toàn màn hình (Fullscreen).</p>
+              </div>
+            </div>
+
+            <!-- Mục 3: Câu hỏi thường gặp (FAQ) -->
+            <div class="panel help-section-card">
+              <div class="panel-header"><div class="panel-title">3. Câu hỏi thường gặp (FAQ)</div></div>
+              <div class="panel-body" style="display: flex; flex-direction: column; gap: 10px; color: var(--text-secondary);">
+                <div>
+                  <strong>• Vì sao người đeo kính cận hoặc đi giày vải thường vẫn bị báo Thiếu?</strong>
+                  <p style="color: var(--text-muted); font-size: 12.5px;">Theo quy tắc an toàn, kính cận/kính râm không phải kính bảo hộ (goggles) và giày vải/dép không phải ủng bảo hộ (boots). Bộ phân loại bộ phận của hệ thống tự động bác bỏ các vật dụng thông thường này.</p>
+                </div>
+                <div>
+                  <strong>• Vì sao người ở xa hoặc quay lưng lại hiện trạng thái "Khuất / Chưa rõ"?</strong>
+                  <p style="color: var(--text-muted); font-size: 12.5px;">Để tránh phạt oan (False Positive), hệ thống chỉ kết luận "Thiếu" khi vùng cơ thể đủ kích thước (area_min_px), nằm trọn trong khung hình và không bị che khuất.</p>
+                </div>
+                <div>
+                  <strong>• Vì sao cảnh báo không nổ ngay lập tức ở khung hình đầu tiên?</strong>
+                  <p style="color: var(--text-muted); font-size: 12.5px;">Hệ thống áp dụng cửa sổ xác nhận theo thời gian (T_on) để lọc nhiễu che khuất thoáng qua trước khi mở sự kiện vi phạm chính thức.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mục 4: Giới hạn hệ thống & Quyền riêng tư -->
+            <div class="panel help-section-card">
+              <div class="panel-header"><div class="panel-title">4. Giới hạn hệ thống, Dữ liệu &amp; Giấy phép</div></div>
+              <div class="panel-body" style="display: flex; flex-direction: column; gap: 8px; color: var(--text-secondary);">
+                <p><strong>Quyền riêng tư (NFR-04):</strong> Toàn bộ dữ liệu (SQLite, ảnh minh chứng) chỉ lưu cục bộ trên máy tính người dùng, không gửi qua Internet. Mã <code>Người #ID</code> chỉ là mã theo dõi tạm thời của ByteTrack trong từng phiên, không nhận diện khuôn mặt hay lưu danh tính cá nhân.</p>
+                <p><strong>Điều kiện hoạt động tốt nhất:</strong> Camera góc nhìn ngang hoặc chéo từ trên xuống, độ phân giải tối thiểu 720p, đủ ánh sáng, khoảng cách quan sát khuyến nghị từ 2m – 12m.</p>
+                <p><strong>Thông tin đề tài &amp; Giấy phép:</strong> Khóa luận tốt nghiệp — Hệ thống Nhận diện và Giám sát Tuân thủ Trang bị Bảo hộ Lao động 6 lớp (PPE-6). Sử dụng Ultralytics YOLO11 (AGPL-3.0), PyTorch, OpenCV, FastAPI và pywebview. Dữ liệu huấn luyện/đánh giá: SH17, CHV, Construction-PPE, Pictor-PPE.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ==================== 3. THANH TRẠNG THÁI DƯỚI ĐÁY (BOTTOM STATUS BAR) ==================== -->
+    <footer class="statusbar">
+      <div class="statusbar-group">
+        <div class="status-item">
+          <span class="status-dot" id="sb-dot"></span>
+          <span>Nguồn: <strong id="sb-state">Sẵn sàng</strong></span>
+        </div>
+        <div class="status-sep"></div>
+        <div class="status-item">
+          <span>Tốc độ: <strong class="mono" id="sb-fps">— FPS</strong></span>
+        </div>
+        <div class="status-sep"></div>
+        <div class="status-item">
+          <span>Thiết bị: <strong class="mono" id="sb-device">Đang kiểm tra…</strong></span>
+        </div>
+        <div class="status-sep"></div>
+        <div class="status-item">
+          <span>Phiên: <strong class="mono" id="sb-session">Chưa mở phiên</strong></span>
+        </div>
+      </div>
+
+      <div class="statusbar-group">
+        <div class="status-item">
+          <span>Vi phạm đang mở: <strong class="mono" id="sb-active-events">0</strong></span>
+        </div>
+        <div class="status-sep"></div>
+        <div class="status-item">
+          <span>Lưu trữ: <strong class="mono" id="sb-disk">—</strong></span>
+        </div>
+        <div class="status-sep"></div>
+        <div class="status-item mono" id="sb-clock">--:--:-- --/--/----</div>
+      </div>
+    </footer>
   </div>
 
-  <!-- KPI CARDS -->
-  <div class="kpi-grid">
-    <div class="kpi-card kpi-total">
-      <div class="kpi-title">Tổng đợt vi phạm</div>
-      <div class="kpi-value" id="kpi-total">0</div>
-      <div class="kpi-desc">Tổng số sự kiện đã ghi nhận</div>
-    </div>
-    <div class="kpi-card kpi-active">
-      <div class="kpi-title">Đang vi phạm (Active)</div>
-      <div class="kpi-value" id="kpi-active" style="color: var(--danger);">0</div>
-      <div class="kpi-desc">Cần cảnh báo / xử lý tức thời</div>
-    </div>
-    <div class="kpi-card kpi-pending">
-      <div class="kpi-title">Chờ quan sát (Pending)</div>
-      <div class="kpi-value" id="kpi-pending" style="color: var(--warning);">0</div>
-      <div class="kpi-desc">Tạm mất dấu hoặc che khuất</div>
-    </div>
-    <div class="kpi-card kpi-closed">
-      <div class="kpi-title">Đã khắc phục / Đóng</div>
-      <div class="kpi-value" id="kpi-closed" style="color: var(--success);">0</div>
-      <div class="kpi-desc">Đã bổ sung PPE hoặc rời cảnh</div>
-    </div>
-  </div>
-
-  <!-- DASHBOARD GRID: CAMERA TRỰC TIẾP & POLICY -->
-  <div class="dashboard-grid">
-    <!-- Camera trực tiếp (backend/live.py) -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">Camera trực tiếp <span class="live-state" id="live-state">Đang tắt</span></div>
-        <div class="live-actions">
-          <button class="btn" id="live-start" onclick="startLive()">Bắt đầu</button>
-          <button class="btn btn-danger" id="live-stop" onclick="stopLive()" disabled>Dừng</button>
-        </div>
-      </div>
-      <div class="live-view" id="live-view">
-        <img id="live-img" alt="Hình camera đã nhận diện">
-        <div class="live-placeholder" id="live-placeholder">Camera đang tắt. Bấm "Bắt đầu" để mở webcam.</div>
-      </div>
-      <div class="live-meta">
-        <span>FPS xử lý / camera: <b id="live-fps">—</b></span>
-        <span>Người trong khung: <b id="live-persons">—</b></span>
-        <span>PPE đang kiểm: <b id="live-required">—</b></span>
-        <span>Chính sách: <b id="live-policy">—</b></span>
-        <span>Phiên: <b id="live-session">—</b></span>
-      </div>
-      <div class="live-error" id="live-error"></div>
-    </div>
-
-    <!-- Cấu hình chính sách nguồn -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">Quy định PPE bắt buộc cho nguồn</div>
-      </div>
-      <select class="select-input" id="policy-source" style="width: 100%; margin-bottom: 8px;" onchange="loadPolicy()"></select>
-      <div id="policy-container">
-        <div class="policy-item">
-          <span>Mũ bảo hộ (Helmet)</span>
-          <label class="switch"><input type="checkbox" id="pol-helmet" checked onchange="schedulePolicySave()"><span class="slider"></span></label>
-        </div>
-        <div class="policy-item">
-          <span>Áo phản quang (Vest)</span>
-          <label class="switch"><input type="checkbox" id="pol-vest" checked onchange="schedulePolicySave()"><span class="slider"></span></label>
-        </div>
-        <div class="policy-item">
-          <span>Găng tay bảo hộ (Gloves)</span>
-          <label class="switch"><input type="checkbox" id="pol-gloves" checked onchange="schedulePolicySave()"><span class="slider"></span></label>
-        </div>
-        <div class="policy-item">
-          <span>Kính bảo hộ (Goggles)</span>
-          <label class="switch"><input type="checkbox" id="pol-goggles" checked onchange="schedulePolicySave()"><span class="slider"></span></label>
-        </div>
-        <div class="policy-item">
-          <span>Giày / Ủng bảo hộ (Boots)</span>
-          <label class="switch"><input type="checkbox" id="pol-boots" checked onchange="schedulePolicySave()"><span class="slider"></span></label>
-        </div>
-      </div>
-      <div class="policy-note" id="policy-note"></div>
-    </div>
-  </div>
-
-  <!-- Phân bố vi phạm theo 5 trang bị -->
-  <div class="card" style="margin-bottom: 24px;">
-    <div class="card-header">
-      <div class="card-title">Thống kê vi phạm theo từng loại trang bị bảo hộ</div>
-    </div>
-    <div class="ppe-bars" id="ppe-bars-container">
-      <!-- JS fill -->
-    </div>
-  </div>
-
-  <!-- EVENTS TABLE -->
-  <div class="card">
-    <div class="card-header">
-      <div class="card-title">Danh sách sự kiện vi phạm thời gian thực</div>
-    </div>
-
-    <!-- Filters -->
-    <div class="filters">
-      <select class="select-input" id="filter-session" onchange="sessionFilterTouched = true; renderEvents()">
-        <option value="live">Phiên camera gần nhất</option>
-        <option value="">Mọi phiên (cả video)</option>
-      </select>
-      <select class="select-input" id="filter-source" onchange="renderEvents()">
-        <option value="">Tất cả nguồn camera</option>
-        <!-- JS điền từ /api/sources -->
-      </select>
-      <select class="select-input" id="filter-state" onchange="renderEvents()">
-        <option value="">Tất cả trạng thái</option>
-        <option value="active">Đang vi phạm (Active)</option>
-        <option value="pending_observation">Chờ quan sát (Pending)</option>
-        <option value="closed">Đã đóng (Closed)</option>
-      </select>
-      <select class="select-input" id="filter-ppe" onchange="renderEvents()">
-        <option value="">Tất cả loại PPE</option>
-        <option value="helmet">Mũ bảo hộ</option>
-        <option value="vest">Áo phản quang</option>
-        <option value="gloves">Găng tay</option>
-        <option value="goggles">Kính bảo hộ</option>
-        <option value="boots">Ủng bảo hộ</option>
-      </select>
-    </div>
-
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Ảnh vi phạm</th>
-            <th>Thời điểm</th>
-            <th>Nguồn / Phiên</th>
-            <th>Mã người (Track ID)</th>
-            <th>Trang bị thiếu</th>
-            <th>Trạng thái</th>
-            <th>Lý do đóng</th>
-            <th>Thao tác</th>
-          </tr>
-        </thead>
-        <tbody id="events-tbody">
-          <tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 30px;">Đang tải dữ liệu...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- EVIDENCE & TIMELINE MODAL -->
-  <div class="modal-overlay" id="event-modal">
-    <div class="modal">
+  <!-- ==================== MODAL 1: CHI TIẾT SỰ KIỆN & ĐÁNH GIÁ ==================== -->
+  <div class="modal-backdrop" id="event-modal">
+    <div class="modal-dialog">
       <div class="modal-header">
         <div>
-          <h3 id="modal-title">Chi tiết minh chứng vi phạm</h3>
-          <p id="modal-subtitle" style="font-size: 13px; color: var(--text-muted); margin-top: 2px;"></p>
+          <h3 id="modal-title" style="font-size: 15px; font-weight: 600; color: #fff;">Chi tiết minh chứng vi phạm</h3>
+          <div class="mono" id="modal-subtitle" style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;"></div>
         </div>
-        <button class="close-btn" onclick="closeModal()">&times;</button>
+        <button class="btn btn-sm" onclick="window.closeModal()">Đóng (Esc)</button>
       </div>
+
       <div class="modal-body">
-        <!-- FRAME SELECTOR RIBBON -->
-        <div style="background: #0f172a; padding: 10px 14px; border-radius: 8px; border: 1px solid #1e293b;">
+        <!-- Dải chọn mốc thời gian -->
+        <div style="background: var(--bg-input); padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-main);">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <span style="font-size: 13px; font-weight: 600; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.5px;">
-              📸 Khung hình tại từng thời điểm vi phạm:
+            <span style="font-size: 11.5px; font-weight: 600; text-transform: uppercase; color: var(--text-secondary);">
+              Khung hình minh chứng theo mốc thời gian:
             </span>
             <div style="display: flex; gap: 6px;">
-              <button class="btn btn-secondary" style="padding: 2px 10px; font-size: 12px;" onclick="stepFrame(-1)">◀ Mốc trước</button>
-              <button class="btn btn-secondary" style="padding: 2px 10px; font-size: 12px;" onclick="stepFrame(1)">Mốc sau ▶</button>
+              <button class="btn btn-sm" onclick="window.stepFrame(-1)">Mốc trước</button>
+              <button class="btn btn-sm" onclick="window.stepFrame(1)">Mốc sau</button>
             </div>
           </div>
           <div class="frames-ribbon" id="modal-frames-ribbon"></div>
         </div>
 
-        <!-- MAIN IMAGE CONTAINER -->
+        <!-- Khung hiển thị ảnh lớn -->
         <div>
-          <div class="evidence-img-container" id="modal-img-wrap">
-            <div style="padding: 40px; color: var(--text-muted);">Đang tải ảnh minh chứng...</div>
-          </div>
-          <div id="current-frame-info" class="current-frame-info"></div>
+          <div class="evidence-viewer" id="modal-img-wrap"></div>
+          <div id="current-frame-info" style="margin-top: 6px; padding: 7px 12px; background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center; font-size: 12.5px;"></div>
         </div>
 
-        <!-- TWO COLUMNS: TIMELINE & FEEDBACK -->
-        <div class="modal-grid-2col">
-          <!-- Left: Timeline -->
-          <div>
-            <h4 style="font-size: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
-              <span>⏱ Dòng thời gian sự kiện (Timeline)</span>
-            </h4>
-            <div class="timeline" id="modal-timeline"></div>
+        <!-- 2 cột: Dòng thời gian (Trái) & Đánh giá của Giám sát viên (Phải) -->
+        <div class="grid-2col">
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">Dòng thời gian sự kiện (Timeline)</div></div>
+            <div class="panel-body">
+              <div class="timeline-list" id="modal-timeline"></div>
+            </div>
           </div>
 
-          <!-- Right: Feedback Form -->
-          <div class="feedback-card">
-            <h4 style="font-size: 15px; margin-bottom: 10px; color: #60a5fa; display: flex; align-items: center; gap: 8px;">
-              <span>📝 Góp ý & Chỉnh sửa của Giám sát viên</span>
-            </h4>
-            <div class="feedback-form">
-              <div style="margin-bottom: 12px;">
-                <label style="font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 6px;">Đánh giá cảnh báo này:</label>
-                <div class="feedback-type-group">
-                  <label class="fb-radio-label">
-                    <input type="radio" name="fb_type" value="correct" checked onchange="toggleFalseAlarmSection()">
-                    <span class="fb-badge fb-badge-correct">🟢 Cảnh báo đúng</span>
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">Đánh giá &amp; Phản hồi của Giám sát viên</div></div>
+            <div class="panel-body" style="display: flex; flex-direction: column; gap: 10px;">
+              <div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">Kết luận kiểm tra thực tế:</div>
+                <div style="display: flex; gap: 14px;">
+                  <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+                    <input type="radio" name="fb_type" value="correct" checked onchange="window.toggleFalseAlarmSection()">
+                    <span class="badge badge-ok">Cảnh báo đúng</span>
                   </label>
-                  <label class="fb-radio-label">
-                    <input type="radio" name="fb_type" value="false_alarm" onchange="toggleFalseAlarmSection()">
-                    <span class="fb-badge fb-badge-false">🔴 Cảnh báo sai (phạt oan)</span>
+                  <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+                    <input type="radio" name="fb_type" value="false_alarm" onchange="window.toggleFalseAlarmSection()">
+                    <span class="badge badge-danger">Cảnh báo sai (Phạt nhầm)</span>
                   </label>
                 </div>
               </div>
 
-              <!-- False alarm PPE checkboxes -->
-              <div id="false-alarm-items-wrap" style="display: none; margin-bottom: 12px; background: rgba(239,68,68,0.08); padding: 10px; border-radius: 8px; border: 1px solid rgba(239,68,68,0.2);">
-                <label style="font-size: 12px; color: #fca5a5; display: block; margin-bottom: 6px; font-weight: 600;">
-                  Trang bị công nhân THỰC TẾ CÓ MANG nhưng bị phạt nhầm:
-                </label>
-                <div style="display: flex; gap: 12px; flex-wrap: wrap; font-size: 13px;">
-                  <label><input type="checkbox" id="fa-helmet"> Mũ</label>
-                  <label><input type="checkbox" id="fa-vest"> Áo</label>
-                  <label><input type="checkbox" id="fa-gloves"> Găng</label>
-                  <label><input type="checkbox" id="fa-goggles"> Kính</label>
-                  <label><input type="checkbox" id="fa-boots"> Ủng</label>
+              <div id="false-alarm-items-wrap" style="display: none; padding: 9px 10px; background: var(--status-danger-bg); border: 1px solid var(--status-danger-border); border-radius: var(--radius-sm);">
+                <div style="font-size: 11.5px; color: #fca5a5; font-weight: 600; margin-bottom: 6px;">
+                  Chọn trang bị thực tế công nhân CÓ MANG nhưng bị báo thiếu nhầm:
+                </div>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap; font-size: 12.5px;">
+                  <label><input type="checkbox" id="fa-helmet"> [M] Mũ</label>
+                  <label><input type="checkbox" id="fa-vest"> [A] Áo</label>
+                  <label><input type="checkbox" id="fa-gloves"> [G] Găng</label>
+                  <label><input type="checkbox" id="fa-goggles"> [K] Kính</label>
+                  <label><input type="checkbox" id="fa-boots"> [U] Ủng</label>
                 </div>
               </div>
 
-              <div style="margin-bottom: 12px;">
-                <label style="font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 6px;">Ý kiến đóng góp / Lý do chỉnh sửa:</label>
-                <textarea id="fb-notes" class="textarea-input" placeholder="Góp ý ví dụ: Người này đang bê đá nên khuất tay, thực tế có mang găng..." rows="3"></textarea>
+              <div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Ghi chú kiểm tra:</div>
+                <textarea id="fb-notes" class="input-control" style="width: 100%; height: 62px; padding: 8px; resize: vertical;" placeholder="Nhập ghi chú (ví dụ: Bị vật cản che khuất cổ tay tạm thời)…"></textarea>
               </div>
 
-              <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="submitFeedback()">
-                💾 Lưu góp ý & Điều chỉnh
-              </button>
+              <button class="btn btn-primary" onclick="window.submitFeedback()">Lưu đánh giá sự kiện</button>
 
-              <div id="fb-history-wrap" style="margin-top: 14px; border-top: 1px solid #334155; padding-top: 10px;">
-                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600;">Lịch sử góp ý của bạn:</div>
-                <div id="fb-history-list" style="max-height: 140px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;"></div>
+              <div style="margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--border-subtle);">
+                <div style="font-size: 11.5px; color: var(--text-muted); font-weight: 600; margin-bottom: 6px;">Lịch sử đánh giá:</div>
+                <div id="fb-history-list" style="max-height: 120px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;"></div>
               </div>
             </div>
           </div>
@@ -821,490 +906,23 @@
     </div>
   </div>
 
-  <script>
-    const API_BASE = (window.location.protocol.startsWith('http')) ? window.location.origin : 'http://127.0.0.1:8000';
-    let allEvents = [];
-    let currentEventData = null;
-    let currentFrameIdx = 0;
+  <!-- ==================== MODAL 2: HỘP THOẠI TRỢ GIÚP NGỮ CẢNH (!) ==================== -->
+  <div class="modal-backdrop" id="help-popover-modal">
+    <div class="modal-dialog" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3 id="help-popover-title" style="font-size: 14px; font-weight: 600; color: #fff;">Giải thích chức năng</h3>
+        <button class="btn btn-sm" onclick="window.closeHelpModal()">Đóng</button>
+      </div>
+      <div class="modal-body" id="help-popover-body" style="font-size: 13px; line-height: 1.55;"></div>
+      <div style="padding: 10px 18px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: flex-end; gap: 8px;">
+        <button class="btn btn-sm" onclick="window.closeHelpModal(); window.switchView('help');">Mở toàn bộ Trợ giúp (F1)</button>
+      </div>
+    </div>
+  </div>
 
-    const PPE_LABELS = {
-      helmet: "Mũ bảo hộ",
-      vest: "Áo phản quang",
-      gloves: "Găng tay",
-      goggles: "Kính bảo hộ",
-      boots: "Ủng bảo hộ"
-    };
+  <!-- Vùng hiển thị thông báo nổi (Toast) -->
+  <div class="toast-container" id="toast-container"></div>
 
-    async function fetchData() {
-      try {
-        const [statsRes, eventsRes] = await Promise.all([
-          fetch(`${API_BASE}/api/stats`).then(r => r.json()),
-          fetch(`${API_BASE}/api/events?limit=200`).then(r => r.json())
-        ]);
-
-        // Update KPIs
-        document.getElementById('kpi-total').textContent = statsRes.total_events;
-        document.getElementById('kpi-active').textContent = statsRes.active_events;
-        document.getElementById('kpi-pending').textContent = statsRes.pending_events;
-        document.getElementById('kpi-closed').textContent = statsRes.closed_events;
-
-        // Update PPE distribution bars
-        const maxViolation = Math.max(...Object.values(statsRes.ppe_violations), 1);
-        const barsContainer = document.getElementById('ppe-bars-container');
-        barsContainer.innerHTML = '';
-        for (const [ppe, count] of Object.entries(statsRes.ppe_violations)) {
-          const pct = Math.round((count / maxViolation) * 100);
-          barsContainer.innerHTML += `
-            <div class="ppe-bar-item">
-              <div class="ppe-bar-label">
-                <span>${PPE_LABELS[ppe] || ppe}</span>
-                <span style="color: var(--text-muted); font-weight: 600;">${count} lượt vi phạm</span>
-              </div>
-              <div class="ppe-bar-track">
-                <div class="ppe-bar-fill fill-${ppe}" style="width: ${pct}%;"></div>
-              </div>
-            </div>
-          `;
-        }
-
-        allEvents = eventsRes.events;
-        renderEvents();
-      } catch (err) {
-        console.error("Lỗi tải dữ liệu:", err);
-      }
-    }
-
-    function renderEvents() {
-      const srcFilter = document.getElementById('filter-source').value;
-      const stateFilter = document.getElementById('filter-state').value;
-      const ppeFilter = document.getElementById('filter-ppe').value;
-      const sessionFilter = document.getElementById('filter-session').value;
-
-      const filtered = allEvents.filter(ev => {
-        // "Phiên camera gần nhất": chỉ sự kiện từ lúc bấm Bắt đầu của phiên camera đang chạy (hoặc vừa dừng)
-        if (sessionFilter === 'live' && ev.session_id !== liveSessionId) return false;
-        if (srcFilter && ev.source_id !== srcFilter) return false;
-        if (stateFilter && ev.event_state !== stateFilter) return false;
-        if (ppeFilter && !ev.missing_items.includes(ppeFilter)) return false;
-        return true;
-      });
-
-      const tbody = document.getElementById('events-tbody');
-      if (!filtered.length) {
-        const emptyText = sessionFilter === 'live'
-          ? (liveSessionId ? `Chưa có vi phạm nào trong phiên camera ${liveSessionId}` : 'Chưa có phiên camera nào, bấm "Bắt đầu" ở ô Camera trực tiếp')
-          : 'Không có sự kiện vi phạm phù hợp với bộ lọc';
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 30px;">${emptyText}</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = filtered.map(ev => {
-        let stateBadge = '';
-        if (ev.event_state === 'active') stateBadge = `<span class="badge badge-state-active">Đang vi phạm</span>`;
-        else if (ev.event_state === 'pending_observation') stateBadge = `<span class="badge badge-state-pending">Chờ quan sát</span>`;
-        else stateBadge = `<span class="badge badge-state-closed">Đã đóng</span>`;
-
-        // missing_items rỗng nhưng sự kiện chưa đóng (spec: đóng "khắc phục" khi mọi PPE bắt buộc được xác nhận Có;
-        // PPE chưa nhìn thấy thì chưa xác minh): ghi rõ thay vì để trống.
-        const ppeBadges = ev.missing_items.length
-          ? ev.missing_items.map(it => `<span class="badge badge-ppe-${it}">${PPE_LABELS[it] || it}</span>`).join(' ')
-          : `<span class="badge badge-state-pending">Đã khắc phục mục thiếu, chờ xác minh trang bị còn lại</span>`;
-
-        const closeText = ev.close_reason === 'recovered' ? 'Khắc phục hoàn toàn'
-                        : ev.close_reason === 'session_ended_unverified' ? 'Hết phiên (chưa xác minh)'
-                        : ev.close_reason === 'policy_changed' ? 'Đổi quy định PPE'
-                        : (ev.close_reason || '—');
-
-        const thumbUrl = ev.thumbnail_url 
-          ? (ev.thumbnail_url.startsWith('http') ? ev.thumbnail_url : `${API_BASE}${ev.thumbnail_url}`)
-          : '';
-        const thumbHtml = thumbUrl 
-          ? `<img src="${thumbUrl}" alt="Ảnh vi phạm" style="width: 76px; height: 48px; object-fit: cover; border-radius: 6px; border: 1px solid #334155; cursor: pointer; display: block;" onclick="viewEvent('${ev.event_id}')" title="Bấm để xem chi tiết theo mốc thời gian">`
-          : '<span style="color: var(--text-muted); font-size: 11px;">Chưa có ảnh</span>';
-
-        return `
-          <tr>
-            <td style="width: 86px; padding: 8px;">${thumbHtml}</td>
-            <td><div style="font-weight: 600;">${fmtClock(ev.system_time)}</div>
-                <div style="color: var(--text-muted); font-size: 12px;">giây ${ev.confirmed_at.toFixed(1)} của phiên</div></td>
-            <td><div style="font-size: 13px;">${ev.source_id}</div>
-                <div style="color: var(--text-muted); font-size: 11px;">${ev.session_id}</div></td>
-            <td><strong style="color: #60a5fa;">ID ${ev.track_id}</strong></td>
-            <td>${ppeBadges || '<span style="color: var(--text-muted);">Không</span>'}</td>
-            <td>${stateBadge}</td>
-            <td style="color: var(--text-muted); font-size: 13px;">${closeText}</td>
-            <td>
-              <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="viewEvent('${ev.event_id}')">
-                Xem minh chứng
-              </button>
-            </td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    async function viewEvent(eventId) {
-      try {
-        const res = await fetch(`${API_BASE}/api/events/${eventId}`);
-        const data = await res.json();
-
-        // Đảm bảo data.frames luôn có dữ liệu đầy đủ
-        let rawFrames = (data.frames && data.frames.length > 0) ? data.frames : [];
-        if (rawFrames.length === 0 && data.evidence && data.evidence.length > 0) {
-          rawFrames = data.evidence.map((ev, i) => ({
-            index: i,
-            t: ev.t,
-            label: `Mốc ${typeof ev.t === 'number' ? ev.t.toFixed(2) : ev.t}s: Xác nhận vi phạm`,
-            url: ev.url,
-            missing_items: data.missing_items || []
-          }));
-        }
-        data.frames = rawFrames;
-        currentEventData = data;
-
-        document.getElementById('modal-title').textContent = `Chi tiết vi phạm - Người ID ${data.track_id}`;
-        document.getElementById('modal-subtitle').textContent = `Nguồn: ${data.source_id} | Phiên: ${data.session_id} | Khoảng thời gian: ${data.start_time.toFixed(2)}s - ${(data.end_time || data.last_seen_time).toFixed(2)}s`;
-
-        // Reset feedback form
-        document.querySelector('input[name="fb_type"][value="correct"]').checked = true;
-        toggleFalseAlarmSection();
-        document.getElementById('fb-notes').value = '';
-        ['helmet', 'vest', 'gloves', 'goggles', 'boots'].forEach(p => {
-          const el = document.getElementById(`fa-${p}`);
-          if (el) el.checked = false;
-        });
-
-        // Render frames ribbon
-        const ribbon = document.getElementById('modal-frames-ribbon');
-        const frames = data.frames;
-        
-        if (frames.length > 0) {
-          ribbon.innerHTML = frames.map((f, idx) => {
-            const tVal = (typeof f.t === 'number') ? f.t.toFixed(2) : f.t;
-            const itemsCnt = f.missing_items ? f.missing_items.length : 0;
-            return `
-              <button class="frame-btn ${idx === 0 ? 'active' : ''}" id="frame-btn-${idx}" onclick="selectFrame(${idx})">
-                <span>⏱ ${tVal}s</span>
-                <span style="background: rgba(239,68,68,0.25); color: #f87171; padding: 1px 6px; border-radius: 4px; font-size: 11px;">Thiếu ${itemsCnt}</span>
-              </button>
-            `;
-          }).join('');
-          currentFrameIdx = 0;
-          selectFrame(0);
-        } else {
-          ribbon.innerHTML = `<span style="color: var(--text-muted); font-size: 12px;">Không có khung hình</span>`;
-          document.getElementById('modal-img-wrap').innerHTML = `<div style="padding: 40px; color: var(--text-muted);">Không có ảnh minh chứng</div>`;
-          document.getElementById('current-frame-info').textContent = '';
-        }
-
-        // Render Timeline
-        const timeline = document.getElementById('modal-timeline');
-        timeline.innerHTML = data.history.map(h => {
-          const itemsText = h.missing_items.map(i => PPE_LABELS[i] || i).join(', ') || 'Không còn mục thiếu (chờ xác minh trang bị chưa nhìn thấy)';
-          return `
-            <div class="timeline-item">
-              <div class="timeline-time">Mốc t = ${h.t.toFixed(2)}s (${h.change_type})</div>
-              <div class="timeline-content">Trang bị thiếu: <strong>${itemsText}</strong></div>
-            </div>
-          `;
-        }).join('');
-
-        // Render Feedback History
-        renderFeedbackHistory(data.feedbacks || []);
-
-        document.getElementById('event-modal').style.display = 'flex';
-      } catch (err) {
-        alert("Lỗi tải chi tiết sự kiện: " + err);
-      }
-    }
-
-    function selectFrame(idx) {
-      if (!currentEventData || !currentEventData.frames || !currentEventData.frames[idx]) return;
-      currentFrameIdx = idx;
-
-      // Update active button
-      document.querySelectorAll('.frame-btn').forEach((btn, i) => {
-        btn.classList.toggle('active', i === idx);
-      });
-
-      const frame = currentEventData.frames[idx];
-      const imgWrap = document.getElementById('modal-img-wrap');
-      const infoWrap = document.getElementById('current-frame-info');
-
-      if (frame && frame.url) {
-        const fullUrl = frame.url.startsWith('http') ? frame.url : `${API_BASE}${frame.url}`;
-        imgWrap.innerHTML = `<img src="${fullUrl}" alt="${frame.label}" style="max-height: 480px; width: 100%; object-fit: contain; cursor: zoom-in;" onclick="window.open(this.src, '_blank')" title="Bấm để mở ảnh gốc kích thước đầy đủ (Zoom)">`;
-      } else {
-        imgWrap.innerHTML = `<div style="padding: 40px; color: var(--text-muted);">Không tìm thấy tệp ảnh cho mốc này</div>`;
-      }
-
-      const ppeBadges = (frame.missing_items && frame.missing_items.length > 0)
-        ? frame.missing_items.map(i => `<span class="badge badge-ppe-${i}">${PPE_LABELS[i] || i}</span>`).join(' ')
-        : '<span style="color: #34d399; font-weight: 600;">Đủ trang bị</span>';
-
-      infoWrap.innerHTML = `
-        <div><strong>${frame.label}</strong></div>
-        <div>Trang bị thiếu tại mốc này: ${ppeBadges}</div>
-      `;
-    }
-
-    function stepFrame(delta) {
-      if (!currentEventData || !currentEventData.frames) return;
-      const count = currentEventData.frames.length;
-      if (count === 0) return;
-      let nextIdx = currentFrameIdx + delta;
-      if (nextIdx < 0) nextIdx = 0;
-      if (nextIdx >= count) nextIdx = count - 1;
-      selectFrame(nextIdx);
-    }
-
-    function toggleFalseAlarmSection() {
-      const isFalseAlarm = document.querySelector('input[name="fb_type"]:checked').value === 'false_alarm';
-      document.getElementById('false-alarm-items-wrap').style.display = isFalseAlarm ? 'block' : 'none';
-    }
-
-    async function submitFeedback() {
-      if (!currentEventData) return;
-      const fbType = document.querySelector('input[name="fb_type"]:checked').value;
-      const notes = document.getElementById('fb-notes').value.trim();
-      const falseAlarmItems = [];
-      if (fbType === 'false_alarm') {
-        ['helmet', 'vest', 'gloves', 'goggles', 'boots'].forEach(p => {
-          if (document.getElementById(`fa-${p}`) && document.getElementById(`fa-${p}`).checked) {
-            falseAlarmItems.push(p);
-          }
-        });
-      }
-
-      try {
-        const resp = await fetch(`${API_BASE}/api/events/${currentEventData.event_id}/feedback`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            feedback_type: fbType,
-            false_alarm_items: falseAlarmItems,
-            notes: notes
-          })
-        });
-        const resData = await resp.json();
-        showToast("✅ " + resData.message);
-
-        // Reload current event details to refresh feedback list
-        const refreshed = await fetch(`${API_BASE}/api/events/${currentEventData.event_id}`).then(r => r.json());
-        currentEventData.feedbacks = refreshed.feedbacks;
-        renderFeedbackHistory(refreshed.feedbacks || []);
-        document.getElementById('fb-notes').value = '';
-      } catch (err) {
-        showToast("❌ Lỗi lưu góp ý: " + err, "error");
-      }
-    }
-
-    function showToast(msg, type = 'success') {
-      let toast = document.getElementById('toast-notification');
-      if (!toast) {
-        toast = document.createElement('div');
-        toast.id = 'toast-notification';
-        toast.style.cssText = 'position: fixed; bottom: 24px; right: 24px; background: #1e293b; color: #fff; border: 1px solid #3b82f6; border-radius: 8px; padding: 12px 20px; font-size: 14px; font-weight: 500; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; gap: 10px; transition: all 0.3s ease;';
-        document.body.appendChild(toast);
-      }
-      toast.style.borderColor = (type === 'error') ? '#ef4444' : '#10b981';
-      toast.textContent = msg;
-      toast.style.opacity = '1';
-      toast.style.transform = 'translateY(0)';
-      setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateY(10px)';
-      }, 3000);
-    }
-
-    // Keyboard navigation (Arrow keys and ESC)
-    document.addEventListener('keydown', (e) => {
-      const modal = document.getElementById('event-modal');
-      if (modal && modal.style.display === 'flex') {
-        if (e.key === 'ArrowLeft') stepFrame(-1);
-        else if (e.key === 'ArrowRight') stepFrame(1);
-        else if (e.key === 'Escape') closeModal();
-      }
-    });
-
-    function renderFeedbackHistory(feedbacks) {
-      const container = document.getElementById('fb-history-list');
-      if (!feedbacks || feedbacks.length === 0) {
-        container.innerHTML = `<span style="color: var(--text-muted); font-size: 12px;">Chưa có góp ý nào cho sự kiện này.</span>`;
-        return;
-      }
-      container.innerHTML = feedbacks.map(f => {
-        const typeBadge = f.feedback_type === 'correct'
-          ? `<span style="color: #34d399; font-weight: 600;">🟢 Cảnh báo đúng</span>`
-          : `<span style="color: #f87171; font-weight: 600;">🔴 Cảnh báo sai</span>`;
-        const items = (f.false_alarm_items && f.false_alarm_items.length > 0)
-          ? `(Phạt nhầm: ${f.false_alarm_items.map(p => PPE_LABELS[p] || p).join(', ')})`
-          : '';
-        const timeStr = f.system_time ? f.system_time.replace('T', ' ').substring(0, 19) : '';
-        return `
-          <div style="background: #0f172a; padding: 6px 10px; border-radius: 6px; font-size: 12px; border: 1px solid #1e293b;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
-              <div>${typeBadge} <span style="color: #fbbf24;">${items}</span></div>
-              <span style="color: var(--text-muted); font-size: 11px;">${timeStr}</span>
-            </div>
-            ${f.notes ? `<div style="color: #cbd5e1; font-style: italic;">"${f.notes}"</div>` : ''}
-          </div>
-        `;
-      }).join('');
-    }
-
-    function closeModal() {
-      document.getElementById('event-modal').style.display = 'none';
-    }
-
-    const PPE_KEYS = ['helmet', 'vest', 'gloves', 'goggles', 'boots'];
-    let liveSourceId = null;
-    let liveSessionId;                 // phiên camera đang chạy hoặc vừa dừng (bộ lọc "Phiên camera gần nhất"); undefined = chưa hỏi
-    let sessionFilterTouched = false;  // người dùng tự chọn bộ lọc phiên thì không tự đổi nữa
-
-    // Giờ hệ thống của sự kiện (ISO, giờ máy) -> "19:51:48 16/11"
-    function fmtClock(iso) {
-      if (!iso) return '—';
-      const d = new Date(iso);
-      if (isNaN(d)) return iso;
-      const p = n => String(n).padStart(2, '0');
-      return `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())} ${p(d.getDate())}/${p(d.getMonth() + 1)}`;
-    }
-
-    // ===== Nguồn và chính sách PPE =====
-    async function loadSources() {
-      try {
-        const sources = await fetch(`${API_BASE}/api/sources`).then(r => r.json());
-        const polSel = document.getElementById('policy-source');
-        const filSel = document.getElementById('filter-source');
-        const keep = polSel.value;
-        polSel.innerHTML = sources.map(s => `<option value="${s.source_id}">${s.name} (${s.source_id})</option>`).join('');
-        filSel.innerHTML = `<option value="">Tất cả nguồn camera</option>` +
-          sources.map(s => `<option value="${s.source_id}">${s.name}</option>`).join('');
-        // Mặc định chọn nguồn webcam (nếu có) để bật/tắt PPE cho camera trực tiếp
-        const cam = sources.find(s => s.source_type === 'camera');
-        polSel.value = keep || (cam ? cam.source_id : (sources[0] && sources[0].source_id));
-        await loadPolicy();
-      } catch (err) {
-        console.error("Lỗi tải danh sách nguồn:", err);
-      }
-    }
-
-    async function loadPolicy() {
-      const src = document.getElementById('policy-source').value;
-      if (!src) return;
-      const pol = await fetch(`${API_BASE}/api/sources/${encodeURIComponent(src)}/policy`).then(r => r.json());
-      PPE_KEYS.forEach(p => { document.getElementById(`pol-${p}`).checked = pol.required_ppe.includes(p); });
-      document.getElementById('policy-note').textContent = `Phiên bản ${pol.version} của nguồn ${src}. Gạt công tắc là áp dụng ngay.`;
-    }
-
-    // Gạt công tắc là lưu ngay; gạt nhiều công tắc liền nhau (trong 0,6 s) chỉ tạo một phiên bản chính sách
-    let policyTimer = null;
-    function schedulePolicySave() {
-      document.getElementById('policy-note').textContent = 'Đang lưu…';
-      clearTimeout(policyTimer);
-      policyTimer = setTimeout(savePolicy, 600);
-    }
-
-    async function savePolicy() {
-      const src = document.getElementById('policy-source').value;
-      const items = PPE_KEYS.filter(p => document.getElementById(`pol-${p}`).checked);
-      const note = document.getElementById('policy-note');
-      try {
-        const res = await fetch(`${API_BASE}/api/sources/${encodeURIComponent(src)}/policy`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ required_ppe: items })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || res.status);
-        note.textContent = data.applied_live
-          ? `Đã lưu phiên bản ${data.version}, áp dụng ngay cho camera đang chạy (sự kiện đang mở được đóng: "Đổi quy định PPE").`
-          : `Đã lưu phiên bản ${data.version} cho nguồn ${src}.`;
-        pollLive();
-      } catch (err) {
-        note.textContent = "Lỗi lưu quy định: " + err.message;
-      }
-    }
-
-    // ===== Camera trực tiếp =====
-    const LIVE_TEXT = { idle: 'Đang tắt', starting: 'Đang khởi động…', running: 'Đang chạy', stopping: 'Đang dừng…', error: 'Lỗi' };
-
-    async function startLive() {
-      document.getElementById('live-start').disabled = true;
-      document.getElementById('live-error').textContent = '';
-      try {
-        const res = await fetch(`${API_BASE}/api/live/start`, { method: 'POST' });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || res.status);
-      } catch (err) {
-        document.getElementById('live-error').textContent = "Không bắt đầu được: " + err.message;
-      }
-      pollLive();
-    }
-
-    async function stopLive() {
-      document.getElementById('live-stop').disabled = true;
-      try { await fetch(`${API_BASE}/api/live/stop`, { method: 'POST' }); } catch (err) { console.error(err); }
-      pollLive();
-      fetchData();
-    }
-
-    async function pollLive() {
-      let s;
-      try { s = await fetch(`${API_BASE}/api/live/status`).then(r => r.json()); }
-      catch (err) { return; }
-      liveSourceId = s.source_id;
-      const active = s.state === 'starting' || s.state === 'running';
-      if (s.session_id !== liveSessionId) {
-        const isNew = !!s.session_id && active;
-        liveSessionId = s.session_id;
-        const sel = document.getElementById('filter-session');
-        if (isNew) { sel.value = 'live'; sessionFilterTouched = false; }      // bấm Bắt đầu: xem lịch sử của phiên mới
-        else if (!liveSessionId && !sessionFilterTouched) sel.value = '';    // chưa có phiên camera: xem mọi phiên
-        renderEvents();
-      }
-      const badge = document.getElementById('live-state');
-      badge.textContent = LIVE_TEXT[s.state] || s.state;
-      badge.className = `live-state ${s.state}`;
-      document.getElementById('live-start').disabled = active || s.state === 'stopping';
-      document.getElementById('live-stop').disabled = !active;
-      document.getElementById('live-fps').textContent = s.state === 'running' ? `${s.fps.toFixed(1)} / ${s.camera_fps.toFixed(1)}` : '—';
-      document.getElementById('live-persons').textContent = s.state === 'running' ? s.persons : '—';
-      document.getElementById('live-required').textContent = s.session_id
-        ? (s.required_ppe.length ? s.required_ppe.map(p => PPE_LABELS[p] || p).join(', ') : '(không kiểm món nào)') : '—';
-      document.getElementById('live-policy').textContent = s.policy_version ? `${s.source_id} v${s.policy_version}` : '—';
-      document.getElementById('live-session').textContent = s.session_id || '—';
-      if (s.error) document.getElementById('live-error').textContent = s.error;
-      else if (active) document.getElementById('live-error').textContent = '';
-
-      const view = document.getElementById('live-view');
-      const img = document.getElementById('live-img');
-      img.onerror = () => { delete img.dataset.session; };   // luồng ảnh đứt: lần hỏi trạng thái sau sẽ nối lại
-      const ph = document.getElementById('live-placeholder');
-      if (s.state === 'running') {
-        if (!img.dataset.session || img.dataset.session !== s.session_id) {
-          img.dataset.session = s.session_id;
-          img.src = `${API_BASE}/api/live/stream?session=${encodeURIComponent(s.session_id)}`;
-        }
-        view.classList.add('on');
-      } else {
-        if (img.dataset.session) { img.removeAttribute('src'); delete img.dataset.session; }
-        view.classList.remove('on');
-        ph.textContent = s.state === 'starting' ? 'Đang nạp mô hình và mở webcam (vài giây)…'
-                       : s.state === 'error' ? 'Camera lỗi, xem thông báo bên dưới.'
-                       : 'Camera đang tắt. Bấm "Bắt đầu" để mở webcam.';
-      }
-    }
-
-    // Tải dữ liệu, tự làm mới: sự kiện 3 giây, trạng thái camera 1 giây
-    loadSources();
-    fetchData();
-    pollLive();
-    setInterval(fetchData, 3000);
-    setInterval(pollLive, 1000);
-  </script>
-
+  <script type="module" src="js/settings.js"></script>
 </body>
 </html>
-
