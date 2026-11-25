@@ -50,6 +50,14 @@
 | `07_benchmark_pipeline.py` | Đo hiệu năng chuỗi xử lý đầy đủ (stage full, không vẽ, không ghi video) của nhiều cấu hình trên cùng video, mỗi lượt một tiến trình, đổi chiều thứ tự mỗi lượt lặp: latency mỗi khung (TB, P50, P95), FPS, GPU util và VRAM (nvidia-smi lấy mẫu), VRAM PyTorch. Ghi `benchmark.json`, `benchmark.md`. Chỉ dùng video phát triển (3-6) | 5 |
 | `08_report_figures.ipynb` | Notebook vẽ biểu đồ cho báo cáo (RQ1–RQ4, dữ liệu) **chỉ từ file số liệu có trong git** (`outputs/results/**/*.json`, `results.csv`, `frames.csv`), lưu PNG ở `outputs/figures/`; ô thiếu số liệu thì bỏ qua. Chạy: VS Code (Jupyter) hoặc `jupyter notebook`, kernel `.venv`, Run All (cần `ipykernel` hoặc `notebook`, chưa có trong requirements). Thêm bản mới: sửa `RUNS` | báo cáo |
 
+## Camera IP Fofu (công cụ demo Live, ngoài chuỗi xử lý)
+
+| File | Dùng để |
+|---|---|
+| `fofu_bridge.py` | Bridge camera IP Fofu FF-8120WP/B → MJPEG cho chế độ Live: login protocol CACS của camera (Diffie-Hellman + DES, dùng md5(password) đã lưu từ web UI) → nhận stream RTMP H.264 (port 7010, ~15fps 1280x720) → phát lại raw MJPEG tại `http://127.0.0.1:8077/stream.mjpg`. Tự re-login khi stream đứt. Chạy bằng `run_fofu_bridge.bat` ở thư mục gốc **trước khi** mở Live; cần `mipc-camera-client==0.1.3` trong Python toàn cục (chưa có thì `pip install mipc-camera-client==0.1.3`). `--token p1` đổi sang stream phụ 640x360 nếu máy yếu. Xem trạng thái: `http://127.0.0.1:8077/status` |
+| `laptop_cam_server.py` | Biến webcam của **laptop bất kỳ trong cùng WiFi** thành camera cho app PPE: phát MJPEG `http://<IP>:8078/stream.mjpg` + quảng cáo UDP mỗi 2 giây (port 50010) để app PPE **tự phát hiện và tự thêm** vào danh sách chọn (auto_add_discovered trong configs/live.yaml). Máy đó chỉ cần Python 3 + `pip install opencv-python` (không cần project PPE). Tham số: `--name` đặt tên hiển thị, `--camera` chọn webcam, `--port` đổi cổng |
+| `fofu_sync_time.py` | Đồng bộ đồng hồ camera Fofu = giờ máy tính (camera mất giờ khi mất điện/reset, làm sai ngày trên ảnh minh chứng). Chạy: `python scripts/fofu_sync_time.py` — cần `mipc-camera-client==0.1.3` như bridge |
+
 Các file sẽ được viết dần khi làm tới bước tương ứng.
 
 ## Đã chuyển sang nhánh lưu trữ (16/11/2026)
