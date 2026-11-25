@@ -115,3 +115,21 @@ gần chiếc ủng đó. Không thử lần 3 trên val này (sẽ thành chỉ
 **Hồi quy video3-6** (`06b evaluate`, `outputs/results/close_eval/stepF1close/`): mọi khung, mọi PPE, mọi sự kiện **giống
 hệt** cấu hình trước (không ai trong video3-6 bị cắt ở mép trên) → V1, V2 đạt. **Bật** `association.ankle_anchor` trong
 `configs/pipeline.yaml` (25/11/2026, ngoại lệ người dùng).
+
+### F2 (25/11/2026): không đạt, chưa bật
+
+Chạy `outputs/results/close_eval/stepF2/run_all.sh`: cấu hình hiện tại (đã có F1 ủng) `pipeline_base.yaml` so với
+`pipeline_F2.yaml` (thêm `compliance.ppe_memory: {hold_conf: 0.10, hold_iou: 0.5}`), video3-6.
+
+- **Nhấp nháy** (05h, `flicker_base/`, `flicker_F2/`): đổi trạng thái mỗi phút (mọi PPE, có trọng số theo thời lượng)
+  42,9 → 31,6, **giảm 26,5% < 80%** → không đạt. Theo loại: Có↔Chưa xác định 276 → 139 lần (−50%, đúng hiện tượng "hộp
+  hiện rồi tắt"); Thiếu↔Chưa xác định 241 → 235 (F2 không nhắm tới: bộ phận lúc thấy lúc không khi người không có PPE);
+  Thiếu→Có 16 → 16; Có→Thiếu 0 → 2. Mất Có ngắn < 1 s: 120 → 58; hộp màu tắt: 150 → 80.
+- **Hồi quy video3-6** (`dev36/`, nhãn người), khung Có đúng / Báo Có sai (V1) / Báo thiếu oan (V2):
+  mũ 2.914 → 2.970 / 23 → **34** / 13 → 13; áo 2.430 → 2.524 / 3 → **33** / 48 → 48; găng 686 → 753 / 1 → 1 / 0 → 0;
+  kính 357 → 367 / 0 → 0 / 0 → 0; ủng 318 → **651** / 0 → 0 / 61 → 61. Với ủng, găng (phạm vi V1, V2 ghi ở F1) đạt; nhưng
+  mũ, áo báo Có sai tăng (giữ Có sau khi hộp thuộc người khác đi ngang, hoặc hộp điểm thấp của người khác trùng vị trí nhớ
+  — giả thuyết, chưa kiểm từng ca).
+- **Event F1 A→E** (`ablation_base.json`, `ablation_F2.json`): giống hệt (E 0,9565, 7 cảnh báo, 0 sai, trễ 1,405 s): giữ chỉ
+  trong `have_hold_s`, khoảng mà bản cũ đã không cho báo Thiếu.
+- Theo quy tắc: không bật. Chờ người dùng quyết định.

@@ -59,6 +59,7 @@ class Pipeline:
         if self.stage >= 2:
             out["assoc"] = timed("association", self.associator, out["tracks"], out["ppe"], frame.shape)
         if self.stage >= 3:
+            self.compliance.weak = getattr(self.detector, "weak", [])   # F2: hộp PPE điểm thấp của khung này
             out["states"] = timed("compliance", self.compliance, out["tracks"], out["assoc"], frame.shape, self.required, t)
         if self.stage >= 4:
             def temporal_and_events():

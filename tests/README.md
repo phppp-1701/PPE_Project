@@ -21,3 +21,5 @@ Các bài kiểm tra cho code trong `src/ppe`, ví dụ: thiếu mũ liên tục
 `test_c9_decide.py`: C9 (`scripts/04n_c9_decide.py`): đủ ba điều kiện thì đạt; găng tăng dưới 0,03 thì không đạt; tụt đúng 0,02 vẫn đạt, quá 0,02 thì không đạt; mỗi lớp lấy đúng tập con (ủng tập ppe4 không tính).
 
 `test_close_anchor.py`: F1 tầm gần (2026-11-25): ủng của người chỉ thấy cẳng chân được gán nhờ mắt cá, xa mắt cá hoặc mắt cá không rõ thì không; găng có cổ tay dưới `pose.wrist_conf` được gán theo thang cẳng tay thành Có, tay kia Chưa xác định, không găng thì không suy ra Thiếu; tắt hai khóa thì như cũ.
+
+`test_ppe_memory.py`: F2 nhớ PPE (2026-11-25): không bật thì như cũ; mất hộp thì giữ Có theo thời gian đúng `have_hold_s` rồi mới báo Thiếu (giữ không làm mới mốc, báo chậm tối đa `have_hold_s`); hộp điểm thấp trùng vị trí nhớ làm mới bộ nhớ, hộp ở chỗ khác thì không; người khác không thừa hưởng bộ nhớ.

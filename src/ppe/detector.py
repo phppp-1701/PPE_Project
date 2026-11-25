@@ -70,7 +70,14 @@ class Detector:
         if self.zoom_model is not None:   # lần dò đầu (và mỗi cỡ lô mới) mất khoảng 1,8 giây: khởi động trước, dò từng ảnh
             self._zoom_predict(np.zeros((self.zoom["imgsz"], self.zoom["imgsz"], 3), dtype=np.uint8), 0.5)
         self.frame_idx = -1
-        bad = {c: n for c, n in self.names.items() if self.model.names.get(c) != n}
+        # F2 (2026-11-25_close_range_fixes): hộp PPE điểm thấp (hold_conf <= điểm < ngưỡng lớp) cho bước nhớ PPE.
+        mem = (cfg.get("compliance") or {}).get("ppe_memory")
+        self.hold_conf = mem["hold_conf"] if mem else None
+        if self.hold_conf is not None:
+            assert self.hold_conf >= self.predict_conf or self.source == "crop", \
+                "compliance.ppe_memory.hold_conf phải >= mức dò thấp nhất của detector"
+        self.weak = []
+        bad ={c: n for c, n in self.names.items() if self.model.names.get(c) != n}
         assert not bad, f"lớp của mô hình {self.model.names} khác cấu hình {bad}"
 
     def _boxes(self, r, offset=(0, 0)):
@@ -164,6 +171,7 @@ class Detector:
         r = self.model.predict(frame, imgsz=self.imgsz, conf=self.predict_conf, iou=self.nms_iou,
                                device=self.device, verbose=False)[0]
         persons, ppe = [], []
+        self.weak = []
         for c, xyxy, s in self._boxes(r):
             name = self.names.get(c)
             if name is None:
@@ -173,6 +181,8 @@ class Detector:
                     persons.append(Det(c, xyxy, s))
             elif self.source != "crop" and s >= self.conf[name]:
                 ppe.append(Det(c, xyxy, s))
+            elif self.source != "crop" and self.hold_conf is not None and s >= self.hold_conf:
+                self.weak.append(Det(c, xyxy, s))
         confident = [p for p in persons if p.conf >= self.conf["person"]]
         if self.source == "crop":
             ppe = self._crop_ppe(frame, confident)

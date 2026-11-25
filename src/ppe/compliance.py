@@ -19,6 +19,12 @@ from .association import SIDES, region_box, valid_wrist, wrist_box
 GRID = 100   # số ô tối đa mỗi chiều khi tính diện tích bị người khác che (xấp xỉ, đủ cho tỉ lệ)
 
 
+def _iou(a, b):
+    i = box_area(intersect(a, b))
+    u = box_area(a) + box_area(b) - i
+    return i / u if u > 0 else 0.0
+
+
 def occluded_fraction(r, others):
     """Tỉ lệ diện tích vùng r nằm trong hợp các hộp người khác (o trong công thức 3.6)."""
     if not others or box_area(r) <= 0:
@@ -89,6 +95,35 @@ class Compliance:
         # Bước M1 (kế hoạch 2026-11-16_post_holdout_fixes mục 2): {t_veto}; mọi chân có ảnh cắt đều 1 - p >= t_veto ->
         # bỏ hộp ủng của detector (dép, giày thường). Vắng -> như bản cuối.
         self.veto_boots = ((self.part or {}).get("veto_boots") or None) if self.part else None
+        # F2 (2026-11-25_close_range_fixes): nhớ PPE theo (người, PPE, bên). {hold_conf, hold_iou}; vắng -> như cũ.
+        self.mem_cfg = (cfg.get("compliance") or {}).get("ppe_memory")
+        self.mem = {}           # (track_id, ppe, bên) -> (t lần cuối có bằng chứng hộp, hộp)
+        self.weak = []          # hộp PPE điểm thấp của khung hiện tại (Detector.weak), người gọi gán trước mỗi khung
+
+    def _hold(self, name, key, blocked):
+        """F2: (kiểu giữ "weak"/"time", hộp) nếu (người, PPE, bên) vừa có bằng chứng hộp trong have_hold_s giây và không
+        bị bằng chứng âm chặn; None nếu không giữ. "weak": hộp điểm thấp cùng lớp trùng vị trí nhớ (IoU >= hold_iou), làm
+        mới thời điểm nhớ; "time": không có hộp, giữ tới hết have_hold_s (không làm mới)."""
+        if not self.mem_cfg or self.now is None or blocked or key not in self.mem:
+            return None
+        t0, box = self.mem[key]
+        if self.now - t0 > self.hold_s.get(name, 0):
+            return None
+        cls = self.ppe[name]["cls"]
+        w = [d for d in self.weak if d.cls == cls and _iou(d.xyxy, box) >= self.mem_cfg["hold_iou"]]
+        if w:
+            best = max(w, key=lambda d: d.conf)
+            self.mem[key] = (self.now, np.asarray(best.xyxy, dtype=float))
+            return "weak", self.mem[key][1]
+        return "time", box
+
+    def _remember(self, key, assoc, track_id, name, side):
+        """F2: ghi hộp gán (điểm cao nhất) của (người, PPE, bên) đang Có nhờ hộp detector."""
+        if not self.mem_cfg or self.now is None:
+            return
+        ds = assoc.owned.get(track_id, {}).get((name, side)) or []
+        if ds:
+            self.mem[key] = (self.now, np.asarray(max(ds, key=lambda d: d.conf).xyxy, dtype=float))
 
     def back_view(self, track):
         """Bước D: quay lưng ở khung này, hoặc đã quay lưng trong back_view.hold_s giây gần nhất (cùng track)."""
@@ -174,12 +209,20 @@ class Compliance:
                 if w is not None and w[2] >= self.part["kp_conf"] and (name, side) in track.extra.get("parts", {}):
                     q = w
             if q is None:
+                key = (track.track_id, name, side)
                 if (self.gloves_fallback and track.confident
                         and assoc.owned.get(track.track_id, {}).get((name, side))):
                     if self.now is not None:
-                        self.last_have[(track.track_id, name, side)] = self.now
+                        self.last_have[key] = self.now
+                    self._remember(key, assoc, track.track_id, name, side)
                     return HAVE, dict(v=0.0, o=0.0, area=0, observable=False, has=True, contested=False, vote=None,
                                       c2=None, fallback=True)
+                hold = self._hold(name, key, not track.confident) if not assoc.owned.get(track.track_id, {}).get((name, side)) else None
+                if hold:                     # F2: cổ tay vừa tụt dưới ngưỡng, găng vừa thấy -> giữ Có
+                    if hold[0] == "weak":    # giữ theo thời gian không làm mới mốc: báo chậm tối đa have_hold_s
+                        self.last_have[key] = self.now
+                    return HAVE, dict(v=0.0, o=0.0, area=0, observable=False, has=False, contested=False, vote=None,
+                                      c2=None, held=hold[0], held_box=hold[1])
                 return UNKNOWN, dict(v=0.0, o=0.0, area=0, observable=False, has=False, contested=False)
             r = wrist_box(track.xyxy, q, self.pose)
         else:
@@ -248,16 +291,25 @@ class Compliance:
                        and not no_missing)
         if conflict:
             have = missing = False          # bước C2: detector và bộ phân loại mâu thuẫn -> Chưa xác định
+        held = None
+        if not have and not has:
+            # F2: vừa có bằng chứng hộp -> giữ Có; bằng chứng âm (phiếu neg, phủ quyết, mâu thuẫn) chặn việc giữ
+            held = self._hold(name, key, not track.confident or vote == "neg" or c2 is not None or conflict)
+            if held:
+                have, missing = True, False
         if have:
             state = HAVE
-            if self.now is not None:
-                self.last_have[key] = self.now
+            if self.now is not None and not (held and held[0] == "time"):
+                self.last_have[key] = self.now     # F2: giữ theo thời gian không làm mới mốc (trễ tối đa have_hold_s)
+            if has:
+                self._remember(key, assoc, track.track_id, name, side)
         elif missing:
             state = MISSING
         else:
             state = UNKNOWN
+        extra = dict(held=held[0], held_box=held[1]) if held else {}
         return state, dict(v=round(v, 3), o=round(o, 3), area=round(visible), observable=observable,
-                           has=has, contested=contested, vote=vote, c2=c2)
+                           has=has, contested=contested, vote=vote, c2=c2, **extra)
 
     now = None
 

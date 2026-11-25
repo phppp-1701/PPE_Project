@@ -169,6 +169,18 @@ def pl_regions(out, cfg, shape):
     return res
 
 
+def held_boxes(out):
+    """F2 (2026-11-25_close_range_fixes): [(track_id, ppe, bên, hộp, kiểu)] của món đang Có nhờ nhớ PPE (không có hộp gán ở
+    khung này). kiểu "weak": có hộp điểm thấp trùng vị trí nhớ; "time": giữ theo thời gian (tối đa have_hold_s)."""
+    res = []
+    for tid, per in out.get("states", {}).items():
+        for name, v in per.items():
+            for side, (state, d) in v["sides"].items():
+                if state == HAVE and d.get("held"):
+                    res.append((tid, name, side, d["held_box"], d["held"]))
+    return res
+
+
 def display_check(out, cfg, shape):
     """Kiểm nhất quán giữa hình vẽ và trạng thái (dùng cho kiểm tự động): trả về danh sách vi phạm
     ("hop_mau_khong_co", ...) hộp có màu PPE mà món đó của người không phải Có;
@@ -186,6 +198,7 @@ def display_check(out, cfg, shape):
         if not have:
             bad.append(("hop_mau_khong_co", tid, own[0][1] if own else None, own[0][2] if own else None))
     pl = {(t, n, s) for t, n, s, _ in pl_regions(out, cfg, shape)}
+    pl |= {(t, n, s) for t, n, s, _, _ in held_boxes(out)}       # F2: hộp giữ (nét đứt) là bằng chứng đã vẽ
     for tid, per in out.get("states", {}).items():
         for nm, v in per.items():
             for side, (state, _) in v["sides"].items():
@@ -241,6 +254,12 @@ def draw(frame, out, cfg, draw_regions):
         x1, y1, x2, y2 = d.xyxy.astype(int)
         cv2.rectangle(img, (x1, y1), (x2, y2), c, t_ppe if colored or tid is not None else 1)
         tag(img, label, x1, y2, c, scale=s * 0.75, above=False)
+
+    # F2: món đang Có nhờ nhớ PPE: vẽ hộp nhớ nét đứt màu PPE, nhãn "(giu)" để hộp không tắt khi điểm tụt dưới ngưỡng.
+    for tid, name, _, b, _kind in held_boxes(out):
+        c = PPE_COLOR.get(name, LOST_COLOR)
+        dashed_rect(img, b, c, t_ppe, dash=6)
+        tag(img, f"{TAG.get(name, name)}>{tid} (giu)", int(b[0]), int(b[3]), c, scale=s * 0.75, above=False)
 
     # Bằng chứng của bộ phân loại (bước A, 14/11/2026): nét đứt, nhãn "(PL)". Chỉ vẽ, không đổi dữ liệu kết quả.
     for _, name, _, b in pl_regions(out, cfg, img.shape):

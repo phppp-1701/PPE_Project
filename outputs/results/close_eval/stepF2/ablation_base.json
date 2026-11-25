@@ -1,0 +1,242 @@
+{
+  "summary": [
+    {
+      "stage": "A",
+      "name": "A: YOLO11s thuần (Có/Thiếu theo khung)",
+      "total_alerts": 4881,
+      "tp": 11,
+      "fp_false": 2156,
+      "fp_dup": 2714,
+      "fn": 1,
+      "precision": 0.0023,
+      "recall": 0.9167,
+      "f1": 0.0045,
+      "mean_latency_s": 0.008
+    },
+    {
+      "stage": "B",
+      "name": "B: A + Vùng cơ thể/Pose & Chưa xác định",
+      "total_alerts": 2228,
+      "tp": 11,
+      "fp_false": 438,
+      "fp_dup": 1779,
+      "fn": 1,
+      "precision": 0.0049,
+      "recall": 0.9167,
+      "f1": 0.0098,
+      "mean_latency_s": 2.733
+    },
+    {
+      "stage": "C",
+      "name": "C: B + ByteTrack theo dõi quỹ đạo",
+      "total_alerts": 2133,
+      "tp": 10,
+      "fp_false": 350,
+      "fp_dup": 1773,
+      "fn": 2,
+      "precision": 0.0047,
+      "recall": 0.8333,
+      "f1": 0.0093,
+      "mean_latency_s": 3.067
+    },
+    {
+      "stage": "D",
+      "name": "D: C + Cửa sổ thời gian (T_on=5s, T_off=2s)",
+      "total_alerts": 1915,
+      "tp": 10,
+      "fp_false": 335,
+      "fp_dup": 1570,
+      "fn": 2,
+      "precision": 0.0052,
+      "recall": 0.8333,
+      "f1": 0.0104,
+      "mean_latency_s": 1.859
+    },
+    {
+      "stage": "E",
+      "name": "E: D + Vòng đời sự kiện EventManager (Toàn luồng)",
+      "total_alerts": 7,
+      "tp": 11,
+      "fp_false": 0,
+      "fp_dup": 0,
+      "fn": 1,
+      "precision": 1.0,
+      "recall": 0.9167,
+      "f1": 0.9565,
+      "mean_latency_s": 1.405
+    }
+  ],
+  "by_video": {
+    "video4": {
+      "A": {
+        "total_alerts": 2654,
+        "tp": 3,
+        "fp_false": 1604,
+        "fp_dup": 1047,
+        "fn": 1,
+        "precision": 0.0011,
+        "recall": 0.75,
+        "f1": 0.0023,
+        "mean_latency_s": 0.0
+      },
+      "B": {
+        "total_alerts": 817,
+        "tp": 3,
+        "fp_false": 371,
+        "fp_dup": 443,
+        "fn": 1,
+        "precision": 0.0037,
+        "recall": 0.75,
+        "f1": 0.0073,
+        "mean_latency_s": 2.733
+      },
+      "C": {
+        "total_alerts": 773,
+        "tp": 2,
+        "fp_false": 350,
+        "fp_dup": 421,
+        "fn": 2,
+        "precision": 0.0026,
+        "recall": 0.5,
+        "f1": 0.0051,
+        "mean_latency_s": 3.067
+      },
+      "D": {
+        "total_alerts": 667,
+        "tp": 2,
+        "fp_false": 335,
+        "fp_dup": 330,
+        "fn": 2,
+        "precision": 0.003,
+        "recall": 0.5,
+        "f1": 0.006,
+        "mean_latency_s": 4.55
+      },
+      "E": {
+        "total_alerts": 3,
+        "tp": 3,
+        "fp_false": 0,
+        "fp_dup": 0,
+        "fn": 1,
+        "precision": 1.0,
+        "recall": 0.75,
+        "f1": 0.8571,
+        "mean_latency_s": 3.189
+      }
+    },
+    "video5": {
+      "A": {
+        "total_alerts": 986,
+        "tp": 4,
+        "fp_false": 137,
+        "fp_dup": 845,
+        "fn": 0,
+        "precision": 0.0041,
+        "recall": 1.0,
+        "f1": 0.0081,
+        "mean_latency_s": 0.008
+      },
+      "B": {
+        "total_alerts": 583,
+        "tp": 4,
+        "fp_false": 64,
+        "fp_dup": 515,
+        "fn": 0,
+        "precision": 0.0069,
+        "recall": 1.0,
+        "f1": 0.0136,
+        "mean_latency_s": 0.0
+      },
+      "C": {
+        "total_alerts": 536,
+        "tp": 4,
+        "fp_false": 0,
+        "fp_dup": 532,
+        "fn": 0,
+        "precision": 0.0075,
+        "recall": 1.0,
+        "f1": 0.0148,
+        "mean_latency_s": 0.0
+      },
+      "D": {
+        "total_alerts": 480,
+        "tp": 4,
+        "fp_false": 0,
+        "fp_dup": 476,
+        "fn": 0,
+        "precision": 0.0083,
+        "recall": 1.0,
+        "f1": 0.0165,
+        "mean_latency_s": 0.467
+      },
+      "E": {
+        "total_alerts": 2,
+        "tp": 4,
+        "fp_false": 0,
+        "fp_dup": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "mean_latency_s": 0.467
+      }
+    },
+    "video6": {
+      "A": {
+        "total_alerts": 1241,
+        "tp": 4,
+        "fp_false": 415,
+        "fp_dup": 822,
+        "fn": 0,
+        "precision": 0.0032,
+        "recall": 1.0,
+        "f1": 0.0064,
+        "mean_latency_s": 0.0
+      },
+      "B": {
+        "total_alerts": 828,
+        "tp": 4,
+        "fp_false": 3,
+        "fp_dup": 821,
+        "fn": 0,
+        "precision": 0.0048,
+        "recall": 1.0,
+        "f1": 0.0096,
+        "mean_latency_s": 0.0
+      },
+      "C": {
+        "total_alerts": 824,
+        "tp": 4,
+        "fp_false": 0,
+        "fp_dup": 820,
+        "fn": 0,
+        "precision": 0.0049,
+        "recall": 1.0,
+        "f1": 0.0097,
+        "mean_latency_s": 0.0
+      },
+      "D": {
+        "total_alerts": 768,
+        "tp": 4,
+        "fp_false": 0,
+        "fp_dup": 764,
+        "fn": 0,
+        "precision": 0.0052,
+        "recall": 1.0,
+        "f1": 0.0104,
+        "mean_latency_s": 0.56
+      },
+      "E": {
+        "total_alerts": 2,
+        "tp": 4,
+        "fp_false": 0,
+        "fp_dup": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "mean_latency_s": 0.56
+      }
+    }
+  }
+}

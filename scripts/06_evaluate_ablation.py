@@ -9,6 +9,7 @@ Chạy trên các video kiểm thử (video4, video5, video6) với đầy đủ
 
 Cách chạy:
     python scripts/06_evaluate_ablation.py
+    python scripts/06_evaluate_ablation.py --config path/to/pipeline.yaml --out path/to/ablation.json   # cấu hình khác
 """
 
 import argparse
@@ -124,6 +125,7 @@ def run_ablation_for_video(video_path, cfg, gt_events):
             "shape": frame.shape,
             "persons": persons,
             "ppe": ppe_dets,
+            "weak": list(getattr(detector, "weak", [])),   # F2: hộp PPE điểm thấp
             "frame": frame,
         })
         frame_idx += 1
@@ -157,6 +159,7 @@ def run_ablation_for_video(video_path, cfg, gt_events):
         if pose_est and f["frame"] is not None:
             pose_and_parts(f["frame"], tracks_b)
         assoc = associator_b(tracks_b, f["ppe"])
+        compliance_b.weak = f["weak"]
         states = compliance_b(tracks_b, assoc, f["shape"], required_ppe)
         for tr in tracks_b:
             gt_track = match_person_to_gt_track(tr.xyxy, video_name, f["idx"])
@@ -176,6 +179,7 @@ def run_ablation_for_video(video_path, cfg, gt_events):
         if pose_est and f["frame"] is not None:
             pose_and_parts(f["frame"], tracks_c)
         assoc = associator_b(tracks_c, f["ppe"])
+        comp_c.weak = f["weak"]
         states = comp_c(tracks_c, assoc, f["shape"], required_ppe, t)   # có track: bật giữ trạng thái Có
         for tr in tracks_c:
             if not tr.confident:
@@ -198,6 +202,7 @@ def run_ablation_for_video(video_path, cfg, gt_events):
         if pose_est and f["frame"] is not None:
             pose_and_parts(f["frame"], tracks_d)
         assoc = associator_b(tracks_d, f["ppe"])
+        comp_d.weak = f["weak"]
         states = comp_d(tracks_d, assoc, f["shape"], required_ppe, t)   # có track: bật giữ trạng thái Có
         for tr in tracks_d:
             if not tr.confident:
@@ -222,6 +227,7 @@ def run_ablation_for_video(video_path, cfg, gt_events):
         if pose_est and f["frame"] is not None:
             pose_and_parts(f["frame"], tracks_e)
         assoc = associator_b(tracks_e, f["ppe"])
+        comp_e.weak = f["weak"]
         states = comp_e(tracks_e, assoc, f["shape"], required_ppe, t)   # có track: bật giữ trạng thái Có
         for tr in tracks_e:
             st = states[tr.track_id]
@@ -338,7 +344,12 @@ def evaluate_events_e(events, gt_events, video_name):
 
 
 def main():
-    cfg = load_config()
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--config", help="file cấu hình khác (mặc định configs/pipeline.yaml)")
+    ap.add_argument("--out", help="file kết quả (mặc định outputs/results/ablation/ablation_results.json)")
+    args = ap.parse_args()
+    sys.stdout.reconfigure(encoding="utf-8")
+    cfg = load_config(args.config) if args.config else load_config()
     videos = ["video4", "video5", "video6"]
     summary_by_config = defaultdict(lambda: defaultdict(int))
     latencies_by_config = defaultdict(list)
@@ -398,7 +409,8 @@ def main():
 
     out_dir = ROOT / "outputs" / "results" / "ablation"
     out_dir.mkdir(parents=True, exist_ok=True)
-    out_file = out_dir / "ablation_results.json"
+    out_file = Path(args.out) if args.out else out_dir / "ablation_results.json"
+    out_file.parent.mkdir(parents=True, exist_ok=True)
     out_file.write_text(json.dumps({"summary": summary_table, "by_video": all_video_results}, indent=2, ensure_ascii=False), encoding="utf-8")
 
     print("\n" + "=" * 90)

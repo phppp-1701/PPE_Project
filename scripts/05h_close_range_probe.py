@@ -22,6 +22,7 @@ Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
     python scripts/05h_close_range_probe.py data/videos/video18.mp4 data/videos/video19.mp4 ...
     python scripts/05h_close_range_probe.py --ids 18-27            # video18..video27
     python scripts/05h_close_range_probe.py --ids 21 --max-frames 100 --no-video
+    python scripts/05h_close_range_probe.py --ids 3-6 --config X.yaml --out outputs/results/close_probe/f2   # cấu hình khác
 
 Ghi outputs/results/close_probe/<video>/: annotated.mp4 (như 05_run_video), detail.csv (mỗi người, PPE, bên, khung),
 summary.json; và outputs/results/close_probe/summary.json, summary.md (gộp các video đã chạy lần này).
@@ -118,7 +119,9 @@ def probe(video, args):
     w, h = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     od = OUT / video.stem
     od.mkdir(parents=True, exist_ok=True)
-    pipe, stage, missing = RUN.build("full", "probe", f"probe_{video.stem}", None)
+    from ppe import load_config
+    pipe, stage, missing = RUN.build("full", "probe", f"probe_{video.stem}", None,
+                                     load_config(args.config) if args.config else None)
     cfg = pipe.cfg
     det = pipe.detector
     pc = cfg.get("part_cls") or {}
@@ -165,7 +168,7 @@ def probe(video, args):
                 for side in sides:
                     st, d = out["states"][tr.track_id][name]["sides"][side]
                     why = "" if st == HAVE else reason(cfg, name, side, tr, box, out, low, veto)
-                    on = int(colored[(tr.track_id, name)] > 0 and st == HAVE)
+                    on = int((colored[(tr.track_id, name)] > 0 or bool(d.get("held"))) and st == HAVE)
                     if why:
                         reasons[name][why] += 1
                     series[(tr.track_id, name, side)].append((i, st, on))
@@ -212,7 +215,7 @@ def probe(video, args):
     late = sum(1 for tid, f0 in first_seen.items() if f0 > fps)   # ID sinh sau giây đầu (người mới vào hoặc đổi ID)
     pct = (lambda a, q: round(float(np.percentile(a, q)), 3) if a else None)
     s = dict(video=video.name, frames=i, fps=round(fps, 2), resolution=[w, h], pipeline_fps=round(i / elapsed, 2),
-             weights=cfg["detector"]["weights"], zoom=cfg["detector"].get("zoom", {}).get("enabled"),
+             config=args.config or "configs/pipeline.yaml", weights=cfg["detector"]["weights"], zoom=cfg["detector"].get("zoom", {}).get("enabled"),
              low_conf=args.low_conf, short_gap_s=args.short_gap,
              tracking=dict(so_id=len(life), id_sinh_sau_giay_dau=late,
                            tuoi_id_khung=dict(sorted(life.items())),
@@ -263,9 +266,14 @@ def main():
     ap.add_argument("--max-frames", type=int)
     ap.add_argument("--no-video", action="store_true")
     ap.add_argument("--low-conf", type=float, default=0.02, help="ngưỡng dò điểm thấp (chỉ để phân loại lý do)")
+    ap.add_argument("--config", help="file cấu hình khác (mặc định configs/pipeline.yaml)")
+    ap.add_argument("--out", help="thư mục kết quả (mặc định outputs/results/close_probe)")
     ap.add_argument("--short-gap", type=float, default=1.0, help="đoạn mất Có ngắn hơn mức này (giây) là mất ngắn")
     args = ap.parse_args()
     sys.stdout.reconfigure(encoding="utf-8")
+    global OUT
+    if args.out:
+        OUT = Path(args.out)
     vids = [Path(v) for v in args.videos]
     if args.ids:
         a, _, b = args.ids.partition("-")
