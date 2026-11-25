@@ -260,3 +260,20 @@ goggles 1.945 → 2.766, các lớp khác và val như bản 4. Gói `parts_v6_p
 p95 video cao nhất 100,9 → 113,6 ± 15,6 ms (dao động lớn giữa các lượt). Các bước thêm (association, compliance) < 0,1 ms.
 Số tuyệt đối thấp hơn lần đo 20/11 (20,2 FPS) cho **cùng** cấu hình `before` → do trạng thái máy khác nhau giữa hai ngày;
 so sánh trong cùng lượt đo cho thấy đợt sửa không làm chậm. Số cho báo cáo lấy ở lượt đo cuối (kế hoạch đánh giá cuối).
+
+### B1 kết quả (26/11/2026): không đạt (3), không bật
+
+Train trên Kaggle (người dùng chạy, `04g`, `yolo11n_cls_parts_v6`, hsv_h 0,1, 60 epoch): top-1 val 11 lớp 0,8408; trọng số
+`outputs/train/yolo11n_cls_parts_v6/weights/best.pt` (chỉ trên máy), SHA-256
+`30c7ab37af146fdf5b13c0401e09e5e02f385a01004efbef69d6292d317a2709`; zip người dùng tải `results (14).zip` SHA-256
+`a0645c29b43624044560f0bb1d7da7d4c0d0b6f5e3299e772075d0695833ccbe`.
+
+- (2) `05e --weights v6` (`val_select_v6.json`): mắt chọn s 4,0 (bản 3: 2,0), độ chính xác cân bằng 0,873 (bản 3: 0,837);
+  t_pos 0,87, t_neg 0,50 với độ chính xác phiếu neg **0,990 ≥ 0,97 → đạt**.
+- (1) `05e --goggles-veto-conf --weights v6 --t-neg 0.5 --eye-s 4.0` (`goggles_veto_conf_val_v6.json`): kính thật bị phủ
+  quyết 11 → **5** (≤ 5), hộp sai bị phủ quyết 12 → **10** (≥ 10) → **đạt**.
+- (3) hồi quy (`close_eval/stepB1/`): video11 (kính cận, nhãn máy) kính **báo Có sai 0 → 115 khung**, sự kiện thiếu kính
+  biến mất → **không đạt**; video3-6: kính Có đúng 367 → 237 (video5: 152 khung Có → Chưa xác định), báo Có sai 0 → 0.
+- Kết luận: không bật bản 6, giữ bản 3 cho kính. Bản 6 bớt phủ quyết kính màu nhưng nhận kính cận là kính bảo hộ — đúng lỗi
+  mà phủ quyết được thêm để chặn (13/11/2026); bỏ sót vi phạm thật nặng hơn báo nhầm người đã mang đủ. Không thử chỉnh
+  hình học hay ngưỡng theo video11 (video kiem_thu_gan, không dùng để chọn).

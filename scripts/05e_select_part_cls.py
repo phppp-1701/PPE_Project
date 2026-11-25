@@ -706,6 +706,8 @@ def main():
     ap.add_argument("--helmet-veto2", action="store_true", help="bước C2: hai mức, thêm mũ CHV val (helmet_veto2_val.json)")
     ap.add_argument("--boots-veto", action="store_true", help="bước M1: bác bỏ hộp ủng (boots_veto_val.json)")
     ap.add_argument("--goggles-veto-conf", action="store_true", help="F3: veto_max_conf cho kính (goggles_veto_conf_val.json)")
+    ap.add_argument("--t-neg", type=float, default=None, help="--goggles-veto-conf: t_neg kính thay cấu hình (B1)")
+    ap.add_argument("--eye-s", type=float, default=None, help="--goggles-veto-conf: cạnh ảnh cắt mắt thay cấu hình (B1)")
     ap.add_argument("--helmet-backview", nargs="+", metavar="WEIGHTS",
                     help="bước M2: V-B1..3 cho các trọng số (cái đầu là mốc, vd bản 4 rồi bản 5) -> helmet_backview_val.json")
     ap.add_argument("--helmet-check", nargs="+", metavar="WEIGHTS",
@@ -719,7 +721,14 @@ def main():
         boots_veto_eval(cfg, "boots_veto_val.json")
         return
     if args.goggles_veto_conf:
-        goggles_veto_conf_eval(cfg, "goggles_veto_conf_val.json")
+        # B1: --weights / --t-neg chấm bộ phân loại kính khác (vd bản 6) theo đúng cách đã đo bản 3
+        if args.weights:
+            cfg["part_cls"].setdefault("weights_by_ppe", {})["goggles"] = args.weights
+        if args.t_neg is not None:
+            cfg["part_cls"]["thresholds"]["goggles"]["t_neg"] = args.t_neg
+        if args.eye_s is not None:
+            cfg["part_cls"]["geometry"]["eye"]["s"] = args.eye_s
+        goggles_veto_conf_eval(cfg, args.out if args.out != "val_select.json" else "goggles_veto_conf_val.json")
         return
     if args.helmet_check:
         # --out đặt tên khác để không ghi đè kết quả cũ (helmet_check_v5.json là mốc bản 4 đã lưu)
