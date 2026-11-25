@@ -219,6 +219,13 @@ compliance:
   back_view: {kp_conf: 0.3, min_sep: 0.05, face_strong: 0.9, hold_s: 1.0}
   # Vừa thấy Có trong khoảng này (giây) thì PPE mất vài khung không bị kết luận Thiếu (Chưa xác định). Claude đặt.
   have_hold_s: {helmet: 1.0, vest: 1.0, gloves: 1.5, goggles: 2.0, boots: 1.5}
+  # F2 nhớ PPE (docs/experiments/2026-11-25_close_range_fixes.md; bật 25/11/2026 theo NGOẠI LỆ người dùng, chỉ găng, kính,
+  # ủng). Món vừa có hộp gán: hộp cùng lớp điểm >= hold_conf trùng vị trí nhớ (IoU >= hold_iou) làm mới bộ nhớ; không có thì
+  # giữ Có tối đa have_hold_s (báo chậm tối đa 1,5-2 s). Phiếu neg, phủ quyết, mâu thuẫn chặn việc giữ. hold_conf =
+  # tracker.track_low_thresh, hold_iou = calibration.match_iou (đặt, không chỉnh). Video3-6 (close_eval/stepF2): không đạt
+  # mốc nhấp nháy -80% (mọi món -26,5%; Có<->Chưa xác định -50%), mũ/áo báo Có sai tăng (23 -> 34, 3 -> 33) nên không bật cho
+  # mũ, áo; găng, kính, ủng: Có sai, Thiếu oan không đổi, Có đúng găng 686 -> 753, kính 357 -> 367, ủng 318 -> 651.
+  ppe_memory: {hold_conf: 0.10, hold_iou: 0.5, ppe: [gloves, goggles, boots]}
 
 temporal:
   # Cửa sổ theo giây (spec 5.4); chọn trên video chỉnh tham số (video2..video6).

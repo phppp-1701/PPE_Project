@@ -100,11 +100,15 @@ class Compliance:
         self.mem = {}           # (track_id, ppe, bên) -> (t lần cuối có bằng chứng hộp, hộp)
         self.weak = []          # hộp PPE điểm thấp của khung hiện tại (Detector.weak), người gọi gán trước mỗi khung
 
+    def _mem_on(self, name):
+        """F2 có áp dụng cho món này không: `ppe_memory.ppe` (danh sách) vắng = mọi món."""
+        return bool(self.mem_cfg) and name in (self.mem_cfg.get("ppe") or self.ppe)
+
     def _hold(self, name, key, blocked):
         """F2: (kiểu giữ "weak"/"time", hộp) nếu (người, PPE, bên) vừa có bằng chứng hộp trong have_hold_s giây và không
         bị bằng chứng âm chặn; None nếu không giữ. "weak": hộp điểm thấp cùng lớp trùng vị trí nhớ (IoU >= hold_iou), làm
         mới thời điểm nhớ; "time": không có hộp, giữ tới hết have_hold_s (không làm mới)."""
-        if not self.mem_cfg or self.now is None or blocked or key not in self.mem:
+        if not self._mem_on(name) or self.now is None or blocked or key not in self.mem:
             return None
         t0, box = self.mem[key]
         if self.now - t0 > self.hold_s.get(name, 0):
@@ -119,7 +123,7 @@ class Compliance:
 
     def _remember(self, key, assoc, track_id, name, side):
         """F2: ghi hộp gán (điểm cao nhất) của (người, PPE, bên) đang Có nhờ hộp detector."""
-        if not self.mem_cfg or self.now is None:
+        if not self._mem_on(name) or self.now is None:
             return
         ds = assoc.owned.get(track_id, {}).get((name, side)) or []
         if ds:

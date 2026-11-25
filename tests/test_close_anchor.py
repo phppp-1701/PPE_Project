@@ -39,6 +39,8 @@ def _arm(wrist=0.6, elbow=0.9):
 
 def _cfg(test_cfg, ankle=False, wrist=False):
     cfg = _six(copy.deepcopy(test_cfg))
+    cfg["association"].pop("ankle_anchor", None)        # cấu hình thật đã bật F1 ủng: bài kiểm thử tự bật
+    cfg["association"].pop("wrist_anchor", None)
     cfg["pose"]["wrist_conf"] = 0.8
     if ankle:
         cfg["association"]["ankle_anchor"] = {"kp_conf": 0.5, "k_ankle": 0.6}

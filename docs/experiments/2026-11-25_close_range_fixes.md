@@ -133,3 +133,7 @@ Chạy `outputs/results/close_eval/stepF2/run_all.sh`: cấu hình hiện tại 
 - **Event F1 A→E** (`ablation_base.json`, `ablation_F2.json`): giống hệt (E 0,9565, 7 cảnh báo, 0 sai, trễ 1,405 s): giữ chỉ
   trong `have_hold_s`, khoảng mà bản cũ đã không cho báo Thiếu.
 - Theo quy tắc: không bật. Chờ người dùng quyết định.
+
+**Ngoại lệ F2 (người dùng quyết định 25/11/2026):** bật F2 **chỉ cho găng, kính, ủng** (`ppe_memory.ppe`), dù không đạt mốc
+nhấp nháy −80%. Ba món này trên video3-6 không tăng báo Có sai hay Thiếu oan; bộ nhớ mỗi (người, món, bên) độc lập nên số đo
+ở trên của ba món giữ nguyên khi tắt mũ, áo. Mũ, áo giữ như cũ (vì báo Có sai tăng).

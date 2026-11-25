@@ -217,14 +217,21 @@ def test_gate_ankles_not_visible_boots_unknown(test_cfg):
 
 
 def test_have_hold_short_dropout_not_missing(test_cfg):
-    """Vừa thấy Có kính, mất phát hiện 1 khung sau đó không thành Thiếu; quá thời gian giữ thì thành Thiếu."""
-    cfg = _six(test_cfg)
-    comp, assoc = Compliance(cfg), Associator(cfg)
-    p = _kps(person(1, 100, 100, 300, 700))
-    g = det(4, 170, 130, 230, 160)
-    assert comp([p], assoc([p], [g]), FRAME, None, 0.0)[1]["goggles"]["state"] == HAVE
-    assert comp([p], assoc([p], []), FRAME, None, 0.5)[1]["goggles"]["state"] == UNKNOWN
-    assert comp([p], assoc([p], []), FRAME, None, 5.0)[1]["goggles"]["state"] == MISSING
+    """Vừa thấy Có kính, mất phát hiện 1 khung sau đó không thành Thiếu; quá thời gian giữ thì thành Thiếu.
+    Không có F2: trong thời gian giữ là Chưa xác định; có F2 (ppe_memory, cấu hình thật bật cho kính): vẫn Có."""
+    import copy
+    for mem, mid in ((False, UNKNOWN), (True, HAVE)):
+        cfg = _six(copy.deepcopy(test_cfg))
+        if not mem:
+            cfg["compliance"].pop("ppe_memory", None)
+        else:
+            cfg["compliance"]["ppe_memory"] = {"hold_conf": 0.1, "hold_iou": 0.5}
+        comp, assoc = Compliance(cfg), Associator(cfg)
+        p = _kps(person(1, 100, 100, 300, 700))
+        g = det(4, 170, 130, 230, 160)
+        assert comp([p], assoc([p], [g]), FRAME, None, 0.0)[1]["goggles"]["state"] == HAVE
+        assert comp([p], assoc([p], []), FRAME, None, 0.5)[1]["goggles"]["state"] == mid
+        assert comp([p], assoc([p], []), FRAME, None, 5.0)[1]["goggles"]["state"] == MISSING
 
 
 def _parts(test_cfg, fallback=True):

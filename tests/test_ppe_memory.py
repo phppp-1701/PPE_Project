@@ -19,6 +19,7 @@ def _cfg(test_cfg, mem=True):
     cfg = copy.deepcopy(test_cfg)
     cfg["required_ppe"] = ["vest"]
     cfg["compliance"]["have_hold_s"] = {"helmet": 1.0, "vest": 1.0, "gloves": 1.5}
+    cfg["compliance"].pop("ppe_memory", None)           # cấu hình thật đã bật F2 cho găng, kính, ủng
     if mem:
         cfg["compliance"]["ppe_memory"] = {"hold_conf": 0.10, "hold_iou": 0.5}
     return cfg
@@ -76,3 +77,13 @@ def test_memory_is_per_track(test_cfg):
     a = Associator(cfg)([p2], [])
     comp.weak = []
     assert comp([p2], a, FRAME, t=0.5)[2]["vest"]["state"] == MISSING   # người khác không thừa hưởng bộ nhớ
+
+
+def test_memory_only_for_listed_ppe(test_cfg):
+    """ppe_memory.ppe: chỉ các món trong danh sách được giữ (người dùng chọn găng, kính, ủng ngày 25/11/2026)."""
+    cfg = _cfg(test_cfg)
+    cfg["compliance"]["ppe_memory"]["ppe"] = ["gloves"]
+    comp = Compliance(cfg)
+    assert _step(cfg, comp, 0.0, [VEST])["state"] == HAVE
+    r = _step(cfg, comp, 0.5)
+    assert r["state"] != HAVE and not r["sides"][None][1].get("held")   # áo không trong danh sách: như cũ
