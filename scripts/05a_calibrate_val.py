@@ -1252,7 +1252,7 @@ def assoc_pose_eval(cfg):
     print("Ghi", (OUT / "assoc_pose.json").relative_to(ROOT), "(chưa ghi cấu hình)")
 
 
-def assoc_close_eval(cfg, edge_gate=False):
+def assoc_close_eval(cfg, edge_gate=False, gloves2=False, gloves3=False):
     """Bước F1 tầm gần (docs/experiments/2026-11-25_close_range_fixes.md): ủng theo mắt cá (ankle_anchor), găng theo cổ
     tay thang cẳng tay (wrist_anchor). Chỉ val: ủng val_new (6 lớp), găng ppe4 val. Người, PPE nhãn thật làm phát hiện;
     pose như pipeline. Tham số: k = phân vị cao (region_coverage) của khoảng cách tâm PPE - khớp đầu chi / độ dài chi
@@ -1360,14 +1360,21 @@ def assoc_close_eval(cfg, edge_gate=False):
                 if not k:
                     continue
                 cx, cy = d.center
-                rr = [math.hypot(cx - k[e][0], cy - k[e][1]) / math.hypot(k[e][0] - k[j][0], k[e][1] - k[j][1])
-                      for e, j in LIMB[n] if k[e][2] >= kc and k[j][2] >= kc
-                      and math.hypot(k[e][0] - k[j][0], k[e][1] - k[j][1]) >= 1]
+                def scale(e, j):
+                    s = math.hypot(k[e][0] - k[j][0], k[e][1] - k[j][1])
+                    if gloves2 and n == "gloves" and k[e - 4][2] >= kc:       # A1: max(cẳng tay, bắp tay)
+                        s = max(s, math.hypot(k[j][0] - k[e - 4][0], k[j][1] - k[e - 4][1]))
+                    return s
+                rr = [math.hypot(cx - k[e][0], cy - k[e][1]) / scale(e, j)
+                      for e, j in LIMB[n] if k[e][2] >= kc and k[j][2] >= kc and scale(e, j) >= 1]
                 if rr:
                     ratios[n].append(min(rr))
     params = dict(ankle_anchor=dict(kp_conf=kc, k_ankle=round(float(np.percentile(ratios["boots"], hi)), 3)),
                   wrist_anchor=dict(kp_conf=kc, k_wrist=round(float(np.percentile(ratios["gloves"], hi)), 3)))
-    if edge_gate:   # F1 lần 2 (kế hoạch): chỉ neo ủng khi hộp người chạm mép trên; găng bỏ
+    if gloves2:     # A1 lần 2 (kế hoạch): chỉ găng, thang max(cẳng tay, bắp tay), người chạm mép bất kỳ
+        params = dict(wrist_anchor=dict(params["wrist_anchor"], scale="arm_max",
+                                        edge_px=cfg["compliance"]["keypoint_gate"]["helmet"]["edge_px"], exclusive=gloves3))
+    elif edge_gate:   # F1 lần 2 (kế hoạch): chỉ neo ủng khi hộp người chạm mép trên; găng bỏ
         params = dict(ankle_anchor=dict(params["ankle_anchor"], edge_px=cfg["compliance"]["keypoint_gate"]["helmet"]["edge_px"]))
     print("tham số:", params, {n: len(v) for n, v in ratios.items()}, flush=True)
 
@@ -1440,7 +1447,7 @@ def assoc_close_eval(cfg, edge_gate=False):
                mau=dict(anh={n: len(v) for n, v in full.items()}, cat={n: {str(f): len(x) for f, x in v.items()} for n, v in cut.items()},
                         ti_le_tinh_k={n: len(v) for n, v in ratios.items()}),
                tham_so=params, ket_qua=result, dat=verdict)
-    name = "assoc_close_edge.json" if edge_gate else "assoc_close.json"
+    name = "assoc_close_gloves3.json" if gloves3 else "assoc_close_gloves2.json" if gloves2 else ("assoc_close_edge.json" if edge_gate else "assoc_close.json")
     (OUT / name).write_text(json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8")
     print("kết luận:", verdict)
     print("Ghi", (OUT / name).relative_to(ROOT), "(chưa ghi cấu hình)")
@@ -1457,10 +1464,13 @@ def main():
     ap.add_argument("--assoc-pose", action="store_true", help="bước F: vùng theo khung xương cho kính, áo, găng")
     ap.add_argument("--assoc-close", action="store_true", help="bước F1 tầm gần: ủng theo mắt cá, găng theo cổ tay")
     ap.add_argument("--assoc-close-edge", action="store_true", help="F1 lần 2: chỉ ủng, neo khi người chạm mép trên")
+    ap.add_argument("--assoc-close-gloves2", action="store_true", help="A1: găng, thang max(cẳng tay, bắp tay), người chạm mép")
+    ap.add_argument("--assoc-close-gloves3", action="store_true", help="A1 lần 3: như gloves2 + cổ tay gần nhất, trong hộp người")
     ap.add_argument("--rerun", action="store_true", help="dự đoán lại thay vì dùng cache")
     args = ap.parse_args()
     if not (args.regions or args.conf or args.crop or args.pose or args.torso or args.torso_strict or args.assoc_pose
-            or args.assoc_close or args.assoc_close_edge):
+            or args.assoc_close or args.assoc_close_edge or args.assoc_close_gloves2
+            or args.assoc_close_gloves3):
         ap.error("chọn --regions, --conf, --crop, --pose, --torso, --torso-strict và/hoặc --assoc-pose")
     cfg = load_config()
     if args.regions:
@@ -1482,6 +1492,10 @@ def main():
         assoc_close_eval(cfg)
     if args.assoc_close_edge:
         assoc_close_eval(cfg, edge_gate=True)
+    if args.assoc_close_gloves2:
+        assoc_close_eval(cfg, gloves2=True)
+    if args.assoc_close_gloves3:
+        assoc_close_eval(cfg, gloves2=True, gloves3=True)
 
 
 if __name__ == "__main__":

@@ -159,6 +159,31 @@ def limb_anchor_distance(track, c, end, joint, kp_conf, k):
     return r if r <= 1 else None
 
 
+def arm_anchor_distance(track, c, wi, kp_conf, k):
+    """A1 (2026-11-25): như limb_anchor_distance cho cổ tay wi (9/10) nhưng thang s = max(cẳng tay, bắp tay): khuỷu = wi - 2,
+    vai = wi - 4 (bắp tay chỉ tính khi vai >= kp_conf). Đỡ bị co ngắn khi cẳng tay chĩa về camera."""
+    kps = getattr(track, "extra", {}).get("kps")
+    ei, si = wi - 2, wi - 4
+    if not kps or kps[wi][2] < kp_conf or kps[ei][2] < kp_conf:
+        return None
+    s = math.hypot(kps[wi][0] - kps[ei][0], kps[wi][1] - kps[ei][1])
+    if kps[si][2] >= kp_conf:
+        s = max(s, math.hypot(kps[ei][0] - kps[si][0], kps[ei][1] - kps[si][1]))
+    if s < 1.0:
+        return None
+    r = math.hypot(c[0] - kps[wi][0], c[1] - kps[wi][1]) / (s * k)
+    return r if r <= 1 else None
+
+
+def touches_edge(xyxy, frame_shape, edge_px):
+    """Hộp người chạm một mép bất kỳ của khung (trong edge_px). frame_shape None: chỉ xét mép trên, mép trái."""
+    if xyxy[0] <= edge_px or xyxy[1] <= edge_px:
+        return True
+    if frame_shape is None:
+        return False
+    return xyxy[2] >= frame_shape[1] - edge_px or xyxy[3] >= frame_shape[0] - edge_px
+
+
 def wrist_index(track, side):
     """Chỉ số COCO (9 hoặc 10) của cổ tay mang tên `side` (left/right theo ảnh, pose.py sắp theo x); None nếu không có."""
     kps = getattr(track, "extra", {}).get("kps")
@@ -206,6 +231,7 @@ class Associator:
         # Bước F1 tầm gần (kế hoạch 2026-11-25_close_range_fixes): ủng theo mắt cá, găng theo cổ tay (thang theo chi).
         self.ankle_anchor = (require(cfg, "association", "ankle_anchor")
                              if self.pose and cfg["association"].get("ankle_anchor") is not None else None)
+        self.inside_margin = (cfg.get("calibration") or {}).get("inside_margin", 0.1)
         self.wrist_anchor = (require(cfg, "association", "wrist_anchor")
                              if self.pose and cfg["association"].get("wrist_anchor") is not None else None)
 
@@ -213,6 +239,27 @@ class Associator:
         """Khoảng cách tối đa: 1 (biên elip) khi dùng cổ tay, còn lại `max_distance` (3.4)."""
         p = self.ppe[name]
         return 1.0 if self.pose and p["sides"] and p["region"] == "hands" else self.max_distance[name]
+
+    def _exclusive_ok(self, t, wi, c, tracks):
+        """A1 lần 3 (wrist_anchor.exclusive): cổ tay wi của t gần tâm găng c nhất trong mọi cổ tay (>= kp_conf) của mọi
+        người, và c nằm trong hộp người t nới inside_margin."""
+        m = self.inside_margin
+        x1, y1, x2, y2 = t.xyxy
+        mw, mh = m * (x2 - x1), m * (y2 - y1)
+        if not (x1 - mw <= c[0] <= x2 + mw and y1 - mh <= c[1] <= y2 + mh):
+            return False
+        kc = self.wrist_anchor["kp_conf"]
+        best = None
+        for o in tracks:
+            k = getattr(o, "extra", {}).get("kps")
+            if not k:
+                continue
+            for j in (9, 10):
+                if k[j][2] >= kc:
+                    d = math.hypot(c[0] - k[j][0], c[1] - k[j][1])
+                    if best is None or d < best[0]:
+                        best = (d, o.track_id, j)
+        return best is not None and best[1] == t.track_id and best[2] == wi
 
     def candidates(self, name, det, tracks, frame_shape=None):
         """[(d, track_id, side)] của các vùng chứa tâm PPE, sắp theo d tăng dần. frame_shape (H, W, ...) chỉ dùng
@@ -228,8 +275,15 @@ class Associator:
                     vals = []
                     if q is not None and (v := ellipse_value(c, t.xyxy, q, self.pose)) <= 1:
                         vals.append(v)
-                    if self.wrist_anchor and (wi := wrist_index(t, side)) is not None:   # F1 tầm gần: thang cẳng tay
-                        a = limb_anchor_distance(t, c, wi, wi - 2, self.wrist_anchor["kp_conf"], self.wrist_anchor["k_wrist"])
+                    wa = self.wrist_anchor
+                    if (wa and (wi := wrist_index(t, side)) is not None
+                            and ("edge_px" not in wa or touches_edge(t.xyxy, frame_shape, wa["edge_px"]))):
+                        if wa.get("scale") == "arm_max":                     # A1 lần 2: thang max(cẳng tay, bắp tay)
+                            a = arm_anchor_distance(t, c, wi, wa["kp_conf"], wa["k_wrist"])
+                        else:                                                # F1 lần 1: thang cẳng tay
+                            a = limb_anchor_distance(t, c, wi, wi - 2, wa["kp_conf"], wa["k_wrist"])
+                        if a is not None and wa.get("exclusive") and not self._exclusive_ok(t, wi, c, tracks):
+                            a = None                                         # A1 lần 3: không phải cổ tay gần nhất
                         if a is not None:
                             vals.append(a)
                     if vals:

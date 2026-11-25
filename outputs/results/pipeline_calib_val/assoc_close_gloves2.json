@@ -1,0 +1,172 @@
+{
+  "ho_so": {
+    "thoi_diem": "2026-11-25T15:58:09",
+    "commit_nen": "c2f88cc7d6b014e4029ad1f38919414f2800de83",
+    "file_dang_sua": [
+      "M docs/experiments/2026-11-25_close_range_fixes.md",
+      " M scripts/05_run_video.py",
+      " M scripts/05a_calibrate_val.py",
+      " M src/ppe/association.py",
+      " M src/ppe/pipeline.py",
+      "?? outputs/results/close_eval/stepF2/flicker_F2/video3/",
+      "?? outputs/results/close_eval/stepF2/flicker_F2/video4/",
+      "?? outputs/results/close_eval/stepF2/flicker_F2/video5/",
+      "?? outputs/results/close_eval/stepF2/flicker_F2/video6/",
+      "?? outputs/results/close_eval/stepF2/flicker_base/video3/",
+      "?? outputs/results/close_eval/stepF2/flicker_base/video4/",
+      "?? outputs/results/close_eval/stepF2/flicker_base/video5/",
+      "?? outputs/results/close_eval/stepF2/flicker_base/video6/",
+      "?? scripts/05i_select_display_hold.py",
+      "?? src/ppe/display.py",
+      "?? tests/test_display.py"
+    ],
+    "sha256": {
+      "pose_weights": "869e83fcdffdc7371fa4e34cd8e51c838cc729571d1635e5141e3075e9319dc0"
+    },
+    "ghi_chu": "Val: ppe4 val (găng), val_new (ủng). Không dùng test, holdout, video."
+  },
+  "thiet_lap": {
+    "coverage": 0.95,
+    "cuts": {
+      "boots": {
+        "kieu": "tren",
+        "muc": [
+          0.6,
+          0.45,
+          0.3
+        ]
+      },
+      "gloves": {
+        "kieu": "duoi",
+        "muc": [
+          0.55,
+          0.65,
+          0.75
+        ]
+      }
+    },
+    "kp_conf": 0.5,
+    "inside_margin": 0.1
+  },
+  "mau": {
+    "anh": {
+      "boots": 32,
+      "gloves": 379
+    },
+    "cat": {
+      "boots": {
+        "0.6": 39,
+        "0.45": 39,
+        "0.3": 39
+      },
+      "gloves": {
+        "0.55": 190,
+        "0.65": 335,
+        "0.75": 367
+      }
+    },
+    "ti_le_tinh_k": {
+      "boots": 72,
+      "gloves": 672
+    }
+  },
+  "tham_so": {
+    "wrist_anchor": {
+      "kp_conf": 0.5,
+      "k_wrist": 1.745,
+      "scale": "arm_max",
+      "edge_px": 4
+    }
+  },
+  "ket_qua": {
+    "wrist_anchor": {
+      "ban_chinh": {
+        "du": {
+          "n": 706,
+          "dung": 567,
+          "sai_nguoi": 3,
+          "khong_ghep": 136,
+          "V3b_n": 312,
+          "V3b_gan_nham": 15,
+          "ti_le_dung": 0.8031
+        },
+        "0.55": {
+          "n": 250,
+          "dung": 115,
+          "sai_nguoi": 1,
+          "khong_ghep": 134,
+          "V3b_n": 117,
+          "V3b_gan_nham": 4,
+          "ti_le_dung": 0.46
+        },
+        "0.65": {
+          "n": 485,
+          "dung": 262,
+          "sai_nguoi": 2,
+          "khong_ghep": 221,
+          "V3b_n": 208,
+          "V3b_gan_nham": 9,
+          "ti_le_dung": 0.5402
+        },
+        "0.75": {
+          "n": 561,
+          "dung": 382,
+          "sai_nguoi": 2,
+          "khong_ghep": 177,
+          "V3b_n": 239,
+          "V3b_gan_nham": 11,
+          "ti_le_dung": 0.6809
+        }
+      },
+      "wrist_anchor": {
+        "du": {
+          "n": 706,
+          "dung": 605,
+          "sai_nguoi": 9,
+          "khong_ghep": 92,
+          "V3b_n": 312,
+          "V3b_gan_nham": 33,
+          "ti_le_dung": 0.8569
+        },
+        "0.55": {
+          "n": 250,
+          "dung": 197,
+          "sai_nguoi": 5,
+          "khong_ghep": 48,
+          "V3b_n": 117,
+          "V3b_gan_nham": 15,
+          "ti_le_dung": 0.788
+        },
+        "0.65": {
+          "n": 485,
+          "dung": 424,
+          "sai_nguoi": 7,
+          "khong_ghep": 54,
+          "V3b_n": 208,
+          "V3b_gan_nham": 37,
+          "ti_le_dung": 0.8742
+        },
+        "0.75": {
+          "n": 561,
+          "dung": 504,
+          "sai_nguoi": 7,
+          "khong_ghep": 50,
+          "V3b_n": 239,
+          "V3b_gan_nham": 46,
+          "ti_le_dung": 0.8984
+        }
+      },
+      "kieu_cat": "duoi",
+      "tieu_chi": {
+        "a_du_khong_giam": true,
+        "b_cat_tang_it_nhat_mot_muc": true,
+        "c_sai_nguoi_khong_tang": false,
+        "d_V3b_khong_tang": false
+      },
+      "dat": false
+    }
+  },
+  "dat": {
+    "wrist_anchor": false
+  }
+}

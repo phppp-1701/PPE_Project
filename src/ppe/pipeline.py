@@ -11,6 +11,7 @@ from . import ROOT, load_config
 from .association import Associator
 from .compliance import Compliance
 from .detector import Detector
+from .display import DisplaySmoother
 from .events import EventManager
 from .parts import PartClassifier
 from .pose import PoseEstimator
@@ -33,6 +34,8 @@ class Pipeline:
         self.parts = PartClassifier(self.cfg, ROOT) if use_parts else None
         self.associator = Associator(self.cfg) if self.stage >= 2 else None
         self.compliance = Compliance(self.cfg) if self.stage >= 3 else None
+        hold = (self.cfg.get("display") or {}).get("hold_s")          # A2: chỉ để vẽ
+        self.display = DisplaySmoother(hold) if self.stage >= 3 and hold is not None else None
         if self.stage >= 4:
             self.temporal = TemporalConfirmer(self.cfg)
             self.events = EventManager(source_id, session_id, self.required,
@@ -61,6 +64,8 @@ class Pipeline:
         if self.stage >= 3:
             self.compliance.weak = getattr(self.detector, "weak", [])   # F2: hộp PPE điểm thấp của khung này
             out["states"] = timed("compliance", self.compliance, out["tracks"], out["assoc"], frame.shape, self.required, t)
+            if self.display is not None:
+                out["display"] = self.display(t, out["states"])     # A2: trạng thái để vẽ, không dùng cho sự kiện
         if self.stage >= 4:
             def temporal_and_events():
                 checks_all = {}

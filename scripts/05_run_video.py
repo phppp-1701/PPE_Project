@@ -223,7 +223,8 @@ def draw(frame, out, cfg, draw_regions):
     states = out.get("states", {})
     for t in out.get("tracks", []):
         st = states.get(t.track_id, {})
-        overall = [v["state"] for v in st.values()]
+        disp0 = out.get("display", {}).get(t.track_id, {})
+        overall = [disp0.get(n, v["state"]) for n, v in st.items()]
         if not st:
             color = PERSON_COLOR
         elif MISSING in overall:
@@ -238,8 +239,10 @@ def draw(frame, out, cfg, draw_regions):
             dashed_rect(img, t.xyxy, color, t_ppe)
         x, y = int(t.xyxy[0]), int(t.xyxy[1])
         x += tag(img, f"ID {t.track_id}", x, y, color, scale=s)
+        disp = out.get("display", {}).get(t.track_id, {})  # A2: trạng thái đã làm mượt (chỉ để vẽ) nếu bật display.hold_s
         for name, v in st.items():                       # ô trạng thái: M/A/G, nền theo trạng thái
-            x += tag(img, SHORT.get(name, name[0].upper()), x, y, STATE_COLOR.get(v["state"], UNKNOWN_COLOR), scale=s)
+            x += tag(img, SHORT.get(name, name[0].upper()), x, y, STATE_COLOR.get(disp.get(name, v["state"]), UNKNOWN_COLOR),
+                     scale=s)
         if draw_regions and "assoc" in out:
             for name, p in cfg["ppe"].items():
                 reg = cfg["association"]["regions"][p["region"]]

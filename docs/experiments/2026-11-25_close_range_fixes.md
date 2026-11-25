@@ -183,3 +183,37 @@ Mục Giới hạn của báo cáo vẫn giữ những điểm thật sự chưa
   bị phủ quyết giảm ≥ 50% (11 → ≤ 5) và hộp sai bị phủ quyết giảm không quá 2 (12 → ≥ 10); (2) val ảnh cắt mắt (05e chọn
   ngưỡng như bản 3): độ chính xác phiếu neg ≥ `precision_target.neg` 0,97; (3) hồi quy video3-6 và video11: kính báo Có sai
   không tăng.
+
+### A1 — găng của người bị khung cắt, lần 2 (ghi trước khi chạy)
+
+- `association.wrist_anchor` thêm hai khóa: `scale: arm_max` — thang s = max(cẳng tay khuỷu-cổ tay, bắp tay vai-khuỷu) thay
+  cho chỉ cẳng tay (lần 1 hỏng vì cẳng tay chĩa về camera bị ngắn → `k_wrist` 2,39, vùng neo lấn sang người bên cạnh);
+  `edge_px` — chỉ neo khi hộp người chạm **một mép bất kỳ** của khung trong `edge_px` (= `keypoint_gate.helmet.edge_px`, 4 px).
+  Cần cổ tay, khuỷu ≥ `kp_conf`; bắp tay dùng khi vai ≥ `kp_conf`. `k_wrist` tự chọn như lần 1 (phân vị cao, ảnh đủ ppe4 val).
+- Tiêu chí như F1: (a)-(d) trên val (`05a --assoc-close-gloves2`, cắt mép dưới 55/65/75%), rồi hồi quy video3-6 (V1, V2).
+
+### A2 — làm mượt hiển thị trạng thái (ghi trước khi chạy)
+
+- Phần nhấp nháy F2 không xử lý (Thiếu↔Chưa xác định 235 lần trên video3-6) là bộ phận lúc thấy lúc không. Sửa ở **lớp hiển
+  thị** (`src/ppe/display.py`, khóa `display.hold_s`): ô trạng thái từng PPE trên người hiện trạng thái chắc chắn gần nhất (Có
+  hoặc Thiếu) thêm tối đa `hold_s` giây khi khung hiện tại là Chưa xác định; Có↔Thiếu đổi ngay. **Không** đổi trạng thái
+  từng khung, cửa sổ thời gian, sự kiện, chỉ số (unit test kiểm).
+- `hold_s` chọn trên video3-6 (video chỉnh tham số) bằng 05h: giá trị nhỏ nhất trong [0,5; 1,0; 1,5; 2,0] làm số lần đổi
+  trạng thái **hiển thị** mỗi phút (mọi PPE, cấu hình hiện tại) giảm ≥ 80% so với trạng thái từng khung; không giá trị nào đạt
+  thì báo, không tự nới lưới.
+
+**A1 lần 2 (25/11/2026): không đạt.** `assoc_close_gloves2.json`, `k_wrist` 1,745 (thang max(cẳng tay, bắp tay)). Ảnh đủ:
+đúng 567 → 605 / 706, sai người 3 → 9, V3b 15 → 33; cắt 55%: 115 → 197, sai 1 → 5, V3b 4 → 15; 65%: 262 → 424, sai 2 → 7,
+V3b 9 → 37; 75%: 382 → 504, sai 2 → 7, V3b 11 → 46. Thang mới giảm V3b so với lần 1 (71 → 33) nhưng (c), (d) vẫn không đạt.
+
+### A1 lần 3 (ghi trước khi chạy)
+
+Như lần 2, thêm hai điều kiện chặn gán sang người khác (khóa `wrist_anchor.exclusive: true`): (i) cổ tay neo phải là cổ tay
+**gần tâm găng nhất** trong mọi cổ tay (≥ `kp_conf`) của mọi người ở khung; (ii) tâm găng nằm trong hộp người nới
+`calibration.inside_margin` (10%). `k_wrist` giữ cách chọn như lần 2. Tiêu chí như cũ. Không đạt thì dừng A1 (không thử lần 4).
+
+**A1 lần 3 (25/11/2026): không đạt (d).** `assoc_close_gloves3.json`. Ảnh đủ: đúng 567 → 602 / 706, sai người 3 → **3**, V3b
+15 → 32; 55%: 115 → 198, sai 1 → 1, V3b 4 → 14; 65%: 262 → 422, sai 2 → 2, V3b 9 → 37; 75%: 382 → 501, sai 2 → 2, V3b
+11 → 47. (a), (b), (c) đạt; (d) không. V3b giả lập chủ găng **không được phát hiện** (bỏ chủ, nới hộp người gần nhất bao
+găng): khi đó cổ tay gần nhất còn lại là của người bên cạnh. Hậu quả nếu bật: tay người bên cạnh có thể bị báo Có găng khi
+chủ găng bị detector bỏ sót (không bao giờ dẫn tới Thiếu). Dừng A1 theo kế hoạch; chờ người dùng quyết định.
