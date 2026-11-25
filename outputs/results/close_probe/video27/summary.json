@@ -1,0 +1,103 @@
+{
+ "video": "video27.mp4",
+ "frames": 193,
+ "fps": 25.0,
+ "resolution": [
+  1920,
+  1080
+ ],
+ "pipeline_fps": 11.49,
+ "weights": "outputs/train/yolo11s_ppe6_c6_ft/weights/best.pt",
+ "zoom": true,
+ "low_conf": 0.02,
+ "short_gap_s": 1.0,
+ "tracking": {
+  "so_id": 1,
+  "id_sinh_sau_giay_dau": 0,
+  "tuoi_id_khung": {
+   "1": 193
+  },
+  "nguoi_detector_khong_co_track": 0,
+  "ty_le_cao_track_tren_detector": {
+   "p10": 0.999,
+   "p50": 1.0,
+   "p90": 1.001
+  },
+  "ty_le_hop_detector_nam_trong_track": {
+   "p10": 0.974,
+   "p50": 0.999
+  }
+ },
+ "ppe": {
+  "helmet": {
+   "khung_bo_phan": 193,
+   "co": 0.0,
+   "thieu": 0.0,
+   "cxd": 1.0,
+   "doi_trang_thai_moi_phut": 0.0,
+   "mat_ngan": 0,
+   "hop_mau_tat": 0,
+   "hop_mau_tat_moi_phut": 0.0,
+   "ly_do": {
+    "khong_quan_sat": 193
+   }
+  },
+  "vest": {
+   "khung_bo_phan": 193,
+   "co": 0.0,
+   "thieu": 1.0,
+   "cxd": 0.0,
+   "doi_trang_thai_moi_phut": 0.0,
+   "mat_ngan": 0,
+   "hop_mau_tat": 0,
+   "hop_mau_tat_moi_phut": 0.0,
+   "ly_do": {
+    "khong_co_hop": 193
+   }
+  },
+  "gloves": {
+   "khung_bo_phan": 386,
+   "co": 0.0,
+   "thieu": 0.368,
+   "cxd": 0.632,
+   "doi_trang_thai_moi_phut": 493.5,
+   "mat_ngan": 0,
+   "hop_mau_tat": 0,
+   "hop_mau_tat_moi_phut": 0.0,
+   "ly_do": {
+    "khong_quan_sat": 244,
+    "khong_co_hop": 142
+   }
+  },
+  "goggles": {
+   "khung_bo_phan": 193,
+   "co": 0.0,
+   "thieu": 0.0,
+   "cxd": 1.0,
+   "doi_trang_thai_moi_phut": 0.0,
+   "mat_ngan": 0,
+   "hop_mau_tat": 0,
+   "hop_mau_tat_moi_phut": 0.0,
+   "ly_do": {
+    "khong_quan_sat": 193
+   }
+  },
+  "boots": {
+   "khung_bo_phan": 193,
+   "co": 0.0,
+   "thieu": 0.492,
+   "cxd": 0.508,
+   "doi_trang_thai_moi_phut": 513.0,
+   "mat_ngan": 0,
+   "hop_mau_tat": 0,
+   "hop_mau_tat_moi_phut": 0.0,
+   "ly_do": {
+    "diem_duoi_nguong": 112,
+    "hop_bi_loai_outside": 37,
+    "khong_co_hop": 24,
+    "khong_quan_sat": 20
+   }
+  }
+ },
+ "note": "khong co nhan; chi de tim diem yeu, khong chon tham so"
+}

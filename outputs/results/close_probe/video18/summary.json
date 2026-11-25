@@ -1,0 +1,124 @@
+{
+ "video": "video18.mp4",
+ "frames": 516,
+ "fps": 50.0,
+ "resolution": [
+  1920,
+  1080
+ ],
+ "pipeline_fps": 8.25,
+ "weights": "outputs/train/yolo11s_ppe6_c6_ft/weights/best.pt",
+ "zoom": true,
+ "low_conf": 0.02,
+ "short_gap_s": 1.0,
+ "tracking": {
+  "so_id": 6,
+  "id_sinh_sau_giay_dau": 3,
+  "tuoi_id_khung": {
+   "1": 516,
+   "2": 516,
+   "3": 346,
+   "4": 121,
+   "5": 10,
+   "6": 28
+  },
+  "nguoi_detector_khong_co_track": 20,
+  "ty_le_cao_track_tren_detector": {
+   "p10": 0.982,
+   "p50": 1.001,
+   "p90": 1.023
+  },
+  "ty_le_hop_detector_nam_trong_track": {
+   "p10": 0.907,
+   "p50": 0.994
+  }
+ },
+ "ppe": {
+  "helmet": {
+   "khung_bo_phan": 1491,
+   "co": 0.508,
+   "thieu": 0.01,
+   "cxd": 0.482,
+   "doi_trang_thai_moi_phut": 291.8,
+   "mat_ngan": 64,
+   "hop_mau_tat": 74,
+   "hop_mau_tat_moi_phut": 148.9,
+   "ly_do": {
+    "khong_co_hop": 234,
+    "khong_quan_sat": 192,
+    "hop_chua_ket_luan": 157,
+    "diem_duoi_nguong": 142,
+    "hop_bi_loai_outside": 9
+   }
+  },
+  "vest": {
+   "khung_bo_phan": 1491,
+   "co": 0.003,
+   "thieu": 0.681,
+   "cxd": 0.317,
+   "doi_trang_thai_moi_phut": 203.2,
+   "mat_ngan": 3,
+   "hop_mau_tat": 4,
+   "hop_mau_tat_moi_phut": 8.0,
+   "ly_do": {
+    "khong_co_hop": 999,
+    "khong_quan_sat": 434,
+    "diem_duoi_nguong": 53,
+    "hop_bi_loai_outside": 1
+   }
+  },
+  "gloves": {
+   "khung_bo_phan": 2982,
+   "co": 0.251,
+   "thieu": 0.001,
+   "cxd": 0.749,
+   "doi_trang_thai_moi_phut": 514.1,
+   "mat_ngan": 250,
+   "hop_mau_tat": 254,
+   "hop_mau_tat_moi_phut": 255.5,
+   "ly_do": {
+    "diem_duoi_nguong": 1207,
+    "khong_quan_sat": 821,
+    "khong_co_hop": 130,
+    "hop_chua_ket_luan": 53,
+    "hop_bi_loai_outside": 24
+   }
+  },
+  "goggles": {
+   "khung_bo_phan": 1491,
+   "co": 0.003,
+   "thieu": 0.123,
+   "cxd": 0.874,
+   "doi_trang_thai_moi_phut": 269.6,
+   "mat_ngan": 2,
+   "hop_mau_tat": 3,
+   "hop_mau_tat_moi_phut": 6.0,
+   "ly_do": {
+    "khong_quan_sat": 1168,
+    "khong_co_hop": 212,
+    "diem_duoi_nguong": 97,
+    "hop_bi_bac_bo": 8,
+    "hop_chua_ket_luan": 1
+   }
+  },
+  "boots": {
+   "khung_bo_phan": 1491,
+   "co": 0.348,
+   "thieu": 0.282,
+   "cxd": 0.37,
+   "doi_trang_thai_moi_phut": 195.2,
+   "mat_ngan": 3,
+   "hop_mau_tat": 6,
+   "hop_mau_tat_moi_phut": 12.1,
+   "ly_do": {
+    "khong_quan_sat": 519,
+    "khong_co_hop": 420,
+    "hop_chua_ket_luan": 14,
+    "diem_duoi_nguong": 9,
+    "hop_bi_bac_bo": 6,
+    "hop_bi_loai_outside": 4
+   }
+  }
+ },
+ "note": "khong co nhan; chi de tim diem yeu, khong chon tham so"
+}
