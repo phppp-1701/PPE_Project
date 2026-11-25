@@ -571,6 +571,90 @@ def boots_veto_eval(cfg, out_name):
     print("Ghi", out.relative_to(ROOT))
 
 
+def goggles_veto_conf_eval(cfg, out_name):
+    """F3 (docs/experiments/2026-11-25_close_range_fixes.md): chọn part_cls.veto_max_conf cho kính trên val. Không đụng test,
+    Pictor, holdout, video. Ảnh val tập goggles_all của C5 eval (val_new + CHVG val; nhãn máy có kiểm định mẫu của người).
+    Detector như pipeline (có zoom), người = hộp người đạt conf, pose + bộ phân loại + Associator như pipeline. Hộp kính gán
+    cho người mà phiếu là neg (1 - p >= t_neg) = bị phủ quyết; đúng nếu IoU >= 0,5 với hộp kính nhãn (ảnh có vùng ignore:
+    hộp trùng vùng ignore kính bỏ qua). veto_max_conf = conf lớn nhất của hộp sai bị phủ quyết, làm tròn lên 0,01."""
+    import datetime
+    import math
+
+    from ppe import Track
+    from ppe.association import Associator
+    from ppe.detector import Detector
+    from ppe.parts import PartClassifier
+
+    ev = ROOT / "data" / "ppe6" / "c5" / "eval"
+    files = json.loads((ev / "files.json").read_text(encoding="utf-8"))["val"]
+    names = sorted(set(files["new_class_files"]) | set(files.get("chvg_files", [])))
+    ignore = defaultdict(list)
+    import csv
+    for r in csv.DictReader((ev / "ignore.csv").open(encoding="utf-8")):
+        if r["split"] == "val" and int(r["cls"]) == 4:
+            ignore[r["file"]].append(tuple(float(r[k]) for k in ("cx", "cy", "w", "h")))
+    det, pose, parts, assoc = Detector(cfg, ROOT), PoseEstimator(cfg, ROOT), PartClassifier(cfg, ROOT), Associator(cfg)
+    t_neg = cfg["part_cls"]["thresholds"]["goggles"]["t_neg"]
+    gcls = cfg["ppe"]["goggles"]["cls"]
+
+    def iou(a, b):
+        i = max(0.0, min(a[2], b[2]) - max(a[0], b[0])) * max(0.0, min(a[3], b[3]) - max(a[1], b[1]))
+        return i / ((a[2] - a[0]) * (a[3] - a[1]) + (b[2] - b[0]) * (b[3] - b[1]) - i + 1e-9)
+
+    rows = []
+    for n, name in enumerate(names, 1):
+        img = ev / "val" / "images" / name
+        im = cv2.imdecode(np.fromfile(str(img), dtype=np.uint8), cv2.IMREAD_COLOR)
+        if im is None:
+            continue
+        h, w = im.shape[:2]
+        lab = (ev / "val" / "labels" / name).with_suffix(".txt")
+        gt = []
+        for line in (lab.read_text(encoding="utf-8").splitlines() if lab.exists() else []):
+            c, cx, cy, bw, bh = line.split()[:5]
+            if int(c) == gcls:
+                cx, cy, bw, bh = map(float, (cx, cy, bw, bh))
+                gt.append(((cx - bw / 2) * w, (cy - bh / 2) * h, (cx + bw / 2) * w, (cy + bh / 2) * h))
+        ig = [((cx - bw / 2) * w, (cy - bh / 2) * h, (cx + bw / 2) * w, (cy + bh / 2) * h) for cx, cy, bw, bh in ignore[name]]
+        det.frame_idx = -1                    # zoom chạy mọi ảnh (every_n_frames tính từ 0)
+        persons, ppe = det(im)
+        tracks = [Track(i, p.xyxy.copy(), p.conf, True) for i, p in enumerate(persons) if p.conf >= cfg["detector"]["conf"]["person"]]
+        if not tracks:
+            continue
+        pose(im, tracks)
+        parts(im, tracks)
+        a = assoc(tracks, ppe, im.shape)
+        by_id = {t.track_id: t for t in tracks}
+        for tid, items in a.owned.items():
+            for d in items.get(("goggles", None), []):
+                p = by_id[tid].extra.get("parts", {}).get(("goggles", None))
+                if p is None:
+                    continue
+                best = max((iou(d.xyxy, g) for g in gt), default=0.0)
+                if best < 0.5 and any(iou(d.xyxy, g) >= 0.5 for g in ig):
+                    continue
+                rows.append(dict(file=name, conf=round(float(d.conf), 4), p=round(float(p), 4), veto=bool(1 - p >= t_neg),
+                                 dung=bool(best >= 0.5)))
+        if n % 100 == 0 or n == len(names):
+            print(f"  ảnh {n}/{len(names)}", flush=True)
+    vt = [r for r in rows if r["veto"] and r["dung"]]       # kính thật bị phủ quyết (nhầm)
+    vf = [r for r in rows if r["veto"] and not r["dung"]]   # hộp sai bị phủ quyết (đúng)
+    c = math.ceil(max((r["conf"] for r in vf), default=0.0) * 100 + 1e-9) / 100 if vf else None
+    released = [r for r in vt if c is not None and r["conf"] >= c]
+    res = dict(ngay=datetime.datetime.now().isoformat(timespec="seconds"), tap="C5 eval val goggles_all (val_new + CHVG val)",
+               anh=len(names), hop_kinh_gan=len(rows), hop_dung=sum(r["dung"] for r in rows),
+               phu_quyet_kinh_that=len(vt), phu_quyet_hop_sai=len(vf), veto_max_conf=c,
+               kinh_that_duoc_tha=len(released), phu_quyet_kinh_that_sau=len(vt) - len(released),
+               dat_tieu_chi_val=bool(released), chi_tiet=rows,
+               ghi_chu="nhãn máy, có kiểm định mẫu của người; quy tắc chọn ghi trong kế hoạch trước khi chạy")
+    out = OUT_DIR / out_name
+    out.write_text(json.dumps(res, ensure_ascii=False, indent=1), encoding="utf-8")
+    print({k: v for k, v in res.items() if k != "chi_tiet"})
+    print("conf hộp sai bị phủ quyết:", sorted(r["conf"] for r in vf))
+    print("conf kính thật bị phủ quyết:", sorted(r["conf"] for r in vt))
+    print("Ghi", out.relative_to(ROOT))
+
+
 def helmet_check_eval(cfg, weights_list, out_name):
     """Bước M2, chỉ báo cáo (kế hoạch 2026-11-16_post_holdout_fixes mục 3b): tập kiểm riêng parts_v5_check (15% ảnh CC0,
     SHWD; nhãn gốc bộ công khai; ảnh cắt kiểu val). Theo tầng lớp × nhìn từ sau × tối: tỉ lệ 1 - p >= t_neg (cho là không
@@ -621,6 +705,7 @@ def main():
     ap.add_argument("--helmet-veto", action="store_true", help="bước C, D: V-C1, V-C2, kiểm quay lưng (helmet_veto_val.json)")
     ap.add_argument("--helmet-veto2", action="store_true", help="bước C2: hai mức, thêm mũ CHV val (helmet_veto2_val.json)")
     ap.add_argument("--boots-veto", action="store_true", help="bước M1: bác bỏ hộp ủng (boots_veto_val.json)")
+    ap.add_argument("--goggles-veto-conf", action="store_true", help="F3: veto_max_conf cho kính (goggles_veto_conf_val.json)")
     ap.add_argument("--helmet-backview", nargs="+", metavar="WEIGHTS",
                     help="bước M2: V-B1..3 cho các trọng số (cái đầu là mốc, vd bản 4 rồi bản 5) -> helmet_backview_val.json")
     ap.add_argument("--helmet-check", nargs="+", metavar="WEIGHTS",
@@ -632,6 +717,9 @@ def main():
     cfg = load_config()
     if args.boots_veto:
         boots_veto_eval(cfg, "boots_veto_val.json")
+        return
+    if args.goggles_veto_conf:
+        goggles_veto_conf_eval(cfg, "goggles_veto_conf_val.json")
         return
     if args.helmet_check:
         # --out đặt tên khác để không ghi đè kết quả cũ (helmet_check_v5.json là mốc bản 4 đã lưu)

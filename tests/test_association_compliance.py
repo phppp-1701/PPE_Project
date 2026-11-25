@@ -339,6 +339,19 @@ def test_parts_veto_goggles(test_cfg):
     assert s[1]["goggles"]["state"] == MISSING
 
 
+def test_parts_veto_goggles_skipped_for_sure_box(test_cfg):
+    """F3 (2026-11-25): hộp kính có conf >= part_cls.veto_max_conf thì không bị phủ quyết; dưới mức thì vẫn phủ quyết."""
+    cfg = _parts(test_cfg)
+    cfg["part_cls"]["veto"] = ["goggles"]
+    cfg["part_cls"]["veto_max_conf"] = {"goggles": 0.6}
+    p = _kps(person(1, 100, 100, 300, 700))
+    p.extra["parts"] = {("goggles", None): 0.02}
+    _, s = run(cfg, [p], [det(4, 170, 130, 230, 160, conf=0.7)])
+    assert s[1]["goggles"]["state"] == HAVE
+    _, s = run(cfg, [p], [det(4, 170, 130, 230, 160, conf=0.5)])
+    assert s[1]["goggles"]["state"] == MISSING
+
+
 def test_parts_min_person_px_uses_old_rule_for_small_people(test_cfg):
     """Người thấp hơn min_person_px: bỏ qua bộ phân loại, dùng luật cũ (không hộp kính -> Thiếu)."""
     cfg = _parts(test_cfg)

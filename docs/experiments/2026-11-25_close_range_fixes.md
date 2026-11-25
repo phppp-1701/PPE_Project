@@ -63,6 +63,11 @@ Thêm ứng viên (hợp với vùng cũ, như bước F1 kính theo mắt 16/11
 - Bộ phân loại chỉ bác bỏ hộp kính khi điểm detector của hộp < `veto_max_conf` (chọn trên val).
 - **Tiêu chí F3**: trên val (kính val_new + CHVG): số kính thật bị bác bỏ giảm; trên video3-6 và video11 (kính cận, lý do
   bật phủ quyết 13/11/2026): kính báo Có sai không tăng.
+- Cách chọn (ghi 25/11/2026, trước khi chạy; `05e --goggles-veto-conf`): ảnh val tập `goggles_all` (C5 eval, val_new + CHVG
+  val), chạy detector như pipeline (có zoom), người = hộp người detector đạt conf, pose + bộ phân loại như pipeline, ghép
+  bằng Associator. Hộp kính gán cho người mà phiếu bộ phân loại là neg = hộp bị phủ quyết; đúng nếu IoU ≥ 0,5 với hộp kính
+  nhãn, sai nếu không. `veto_max_conf` = conf lớn nhất của hộp **sai** bị phủ quyết, làm tròn lên 0,01 → trên val không bỏ
+  ca phủ quyết đúng nào, chỉ thả kính thật có conf cao hơn mọi hộp sai.
 
 ## Quy tắc
 
@@ -137,3 +142,12 @@ Chạy `outputs/results/close_eval/stepF2/run_all.sh`: cấu hình hiện tại 
 **Ngoại lệ F2 (người dùng quyết định 25/11/2026):** bật F2 **chỉ cho găng, kính, ủng** (`ppe_memory.ppe`), dù không đạt mốc
 nhấp nháy −80%. Ba món này trên video3-6 không tăng báo Có sai hay Thiếu oan; bộ nhớ mỗi (người, món, bên) độc lập nên số đo
 ở trên của ba món giữ nguyên khi tắt mũ, áo. Mũ, áo giữ như cũ (vì báo Có sai tăng).
+
+### F3 (25/11/2026): không đạt, không bật
+
+`05e --goggles-veto-conf` → `outputs/results/parts_cls/goggles_veto_conf_val.json`. 1.094 ảnh val goggles_all; 142 hộp kính
+gán cho người (116 khớp nhãn). Bộ phân loại phủ quyết 23 hộp: **11 kính thật** (conf 0,21-0,80) và 12 hộp sai (conf
+0,15-0,7995). Quy tắc cho `veto_max_conf` = 0,80 (hộp sai cao nhất 0,7995) → không thả được kính thật nào → tiêu chí "kính
+thật bị bác bỏ giảm" không đạt. Conf của detector không tách được hai nhóm. Code (`part_cls.veto_max_conf`) giữ, không bật.
+Ghi nhận: trên val này phủ quyết kính bỏ đúng 12 và bỏ nhầm 11 (nhãn máy có kiểm định mẫu); lý do bật phủ quyết (13/11/2026)
+là kính cận trên video11. Đưa vào Giới hạn: kính bảo hộ màu (vàng, ôm mặt) có thể bị nhận là kính thường.
