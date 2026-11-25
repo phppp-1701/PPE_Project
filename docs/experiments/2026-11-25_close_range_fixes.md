@@ -166,3 +166,20 @@ Tỉ lệ khung Có / Thiếu, đổi trạng thái mỗi phút:
   giữ Có tạo thêm đổi Có↔Chưa xác định).
 - Chưa sửa: kính vàng video21 vẫn bị phủ quyết (F3 không đạt); giày bảo hộ video27 (người quỳ) vẫn Thiếu 0,49 và nhảy
   ~500 lần/phút; mũ cứu hỏa video23 bị phủ quyết (ca biên).
+
+## Đợt 2 (người dùng yêu cầu 25/11/2026: "sửa cho được, không ghi giới hạn"; làm song song)
+
+Mục Giới hạn của báo cáo vẫn giữ những điểm thật sự chưa sửa được (trung thực học thuật), nhưng cố thu hẹp tối đa.
+
+### B1 — bộ phân loại kính bản 6 (kính bảo hộ màu, người không đội mũ)
+
+- Chẩn đoán (xem bằng mắt 120 ảnh cắt mỗi lớp của `data/ppe6/parts/train`): lớp `goggles` gần như toàn kính trong, người đội
+  mũ, cảnh công trường (khoảng 3/120 kính vàng); lớp `ordinary_glasses` là chân dung, văn phòng, có kính râm tròng tối. Bộ
+  phân loại dễ học lối tắt "tròng có màu / không mũ → kính thường" (giả thuyết, khớp video21).
+- Dữ liệu thêm: bộ Roboflow Universe công khai (CC BY 4.0 hoặc Public Domain) có người **đang đeo** kính bảo hộ, có kính màu;
+  người dùng tải như các bộ trước. Ảnh cắt mắt tạo như 03y (pose, `match_anchor`), **chỉ vào train**; nhãn máy, người kiểm
+  định mẫu theo quy trình đã có.
+- **Tiêu chí B1** (khóa trước khi train): (1) val `goggles_all` (như F3, `05e --goggles-veto-conf` với trọng số mới): kính thật
+  bị phủ quyết giảm ≥ 50% (11 → ≤ 5) và hộp sai bị phủ quyết giảm không quá 2 (12 → ≥ 10); (2) val ảnh cắt mắt (05e chọn
+  ngưỡng như bản 3): độ chính xác phiếu neg ≥ `precision_target.neg` 0,97; (3) hồi quy video3-6 và video11: kính báo Có sai
+  không tăng.
