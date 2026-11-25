@@ -1252,13 +1252,14 @@ def assoc_pose_eval(cfg):
     print("Ghi", (OUT / "assoc_pose.json").relative_to(ROOT), "(chưa ghi cấu hình)")
 
 
-def assoc_close_eval(cfg):
+def assoc_close_eval(cfg, edge_gate=False):
     """Bước F1 tầm gần (docs/experiments/2026-11-25_close_range_fixes.md): ủng theo mắt cá (ankle_anchor), găng theo cổ
     tay thang cẳng tay (wrist_anchor). Chỉ val: ủng val_new (6 lớp), găng ppe4 val. Người, PPE nhãn thật làm phát hiện;
     pose như pipeline. Tham số: k = phân vị cao (region_coverage) của khoảng cách tâm PPE - khớp đầu chi / độ dài chi
     (gối - mắt cá, khuỷu - cổ tay), lấy khớp gần hơn trong hai bên, ảnh đủ. Cảnh: ảnh đủ; ủng cắt mép trên giữ phần dưới
     60/45/30% người chủ; găng cắt mép dưới 55/65/75% (như bước F). Tiêu chí (a)-(d) trong kế hoạch.
-    Ghi outputs/results/pipeline_calib_val/assoc_close.json; không sửa cấu hình."""
+    edge_gate (--assoc-close-edge, F1 lần 2): chỉ ủng, neo khi hộp người chạm mép trên (edge_px = keypoint_gate.helmet).
+    Ghi outputs/results/pipeline_calib_val/assoc_close.json (lần 2: assoc_close_edge.json); không sửa cấu hình."""
     import copy
     import datetime
     import hashlib
@@ -1366,11 +1367,13 @@ def assoc_close_eval(cfg):
                     ratios[n].append(min(rr))
     params = dict(ankle_anchor=dict(kp_conf=kc, k_ankle=round(float(np.percentile(ratios["boots"], hi)), 3)),
                   wrist_anchor=dict(kp_conf=kc, k_wrist=round(float(np.percentile(ratios["gloves"], hi)), 3)))
+    if edge_gate:   # F1 lần 2 (kế hoạch): chỉ neo ủng khi hộp người chạm mép trên; găng bỏ
+        params = dict(ankle_anchor=dict(params["ankle_anchor"], edge_px=cfg["compliance"]["keypoint_gate"]["helmet"]["edge_px"]))
     print("tham số:", params, {n: len(v) for n, v in ratios.items()}, flush=True)
 
     A0 = Associator(cfg)
     var = {}
-    for key, ppe_name in (("ankle_anchor", "boots"), ("wrist_anchor", "gloves")):
+    for key, ppe_name in [x for x in (("ankle_anchor", "boots"), ("wrist_anchor", "gloves")) if x[0] in params]:
         c = copy.deepcopy(cfg)
         c["association"][key] = params[key]
         var[key] = (ppe_name, Associator(c))
@@ -1437,9 +1440,10 @@ def assoc_close_eval(cfg):
                mau=dict(anh={n: len(v) for n, v in full.items()}, cat={n: {str(f): len(x) for f, x in v.items()} for n, v in cut.items()},
                         ti_le_tinh_k={n: len(v) for n, v in ratios.items()}),
                tham_so=params, ket_qua=result, dat=verdict)
-    (OUT / "assoc_close.json").write_text(json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8")
+    name = "assoc_close_edge.json" if edge_gate else "assoc_close.json"
+    (OUT / name).write_text(json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8")
     print("kết luận:", verdict)
-    print("Ghi", (OUT / "assoc_close.json").relative_to(ROOT), "(chưa ghi cấu hình)")
+    print("Ghi", (OUT / name).relative_to(ROOT), "(chưa ghi cấu hình)")
 
 
 def main():
@@ -1452,10 +1456,11 @@ def main():
     ap.add_argument("--torso-strict", action="store_true", help="vùng thân theo khung xương bản chặt cho áo (bước B2)")
     ap.add_argument("--assoc-pose", action="store_true", help="bước F: vùng theo khung xương cho kính, áo, găng")
     ap.add_argument("--assoc-close", action="store_true", help="bước F1 tầm gần: ủng theo mắt cá, găng theo cổ tay")
+    ap.add_argument("--assoc-close-edge", action="store_true", help="F1 lần 2: chỉ ủng, neo khi người chạm mép trên")
     ap.add_argument("--rerun", action="store_true", help="dự đoán lại thay vì dùng cache")
     args = ap.parse_args()
     if not (args.regions or args.conf or args.crop or args.pose or args.torso or args.torso_strict or args.assoc_pose
-            or args.assoc_close):
+            or args.assoc_close or args.assoc_close_edge):
         ap.error("chọn --regions, --conf, --crop, --pose, --torso, --torso-strict và/hoặc --assoc-pose")
     cfg = load_config()
     if args.regions:
@@ -1475,6 +1480,8 @@ def main():
         assoc_pose_eval(cfg)
     if args.assoc_close:
         assoc_close_eval(cfg)
+    if args.assoc_close_edge:
+        assoc_close_eval(cfg, edge_gate=True)
 
 
 if __name__ == "__main__":

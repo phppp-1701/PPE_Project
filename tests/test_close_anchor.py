@@ -3,6 +3,8 @@
 k_ankle, k_wrist ở đây là giá trị thử để kiểm logic, không phải tham số chọn trên val.
 """
 
+import copy
+
 from conftest import det, person
 from test_association_compliance import _six
 
@@ -36,7 +38,7 @@ def _arm(wrist=0.6, elbow=0.9):
 
 
 def _cfg(test_cfg, ankle=False, wrist=False):
-    cfg = _six(test_cfg)
+    cfg = _six(copy.deepcopy(test_cfg))
     cfg["pose"]["wrist_conf"] = 0.8
     if ankle:
         cfg["association"]["ankle_anchor"] = {"kp_conf": 0.5, "k_ankle": 0.6}
@@ -63,6 +65,18 @@ def test_limb_anchor_distance_scale_and_gate():
 def test_boot_of_legs_only_person_assigned_by_ankle(test_cfg):
     assert not _owned(_cfg(test_cfg), _legs(), [BOOT], "boots")
     assert _owned(_cfg(test_cfg, ankle=True), _legs(), [BOOT], "boots")
+
+
+def test_boot_anchor_edge_gate(test_cfg):
+    """Lần 2: có edge_px thì chỉ neo khi mép trên hộp người chạm mép trên khung."""
+    cfg = _cfg(test_cfg, ankle=True)
+    cfg["association"]["ankle_anchor"]["edge_px"] = 4
+    assert not _owned(cfg, _legs(), [BOOT], "boots")              # hộp người y1 = 100: không bị cắt -> như cũ
+    p = _legs()
+    p.xyxy[1] = 0.0                                               # người bị cắt ở mép trên: hộp (100, 0, 300, 400)
+    boot = (5, 140, 240, 200, 360)                                # tâm y 300 = 0,75 chiều cao hộp < feet.y0 0,8
+    assert not _owned(_cfg(test_cfg), p, [boot], "boots")         # vùng cũ loại
+    assert _owned(cfg, p, [boot], "boots")                        # neo mắt cá nhận
 
 
 def test_boot_far_from_ankle_not_assigned(test_cfg):

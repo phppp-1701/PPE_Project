@@ -264,8 +264,9 @@ class Associator:
                     if de is not None:
                         de *= self.max_distance[name]
                         d = de if d is None else min(d, de)
-                if self.ankle_anchor and name == "boots" and side is None:                         # F1 tầm gần
-                    aa = self.ankle_anchor
+                aa = self.ankle_anchor
+                if aa and name == "boots" and side is None and ("edge_px" not in aa or t.xyxy[1] <= aa["edge_px"]):
+                    # F1 tầm gần; lần 2: chỉ khi hộp người chạm mép trên khung (người bị cắt, chỉ thấy phần dưới)
                     ds = [x for end, joint in ((15, 13), (16, 14))
                           if (x := limb_anchor_distance(t, c, end, joint, aa["kp_conf"], aa["k_ankle"])) is not None]
                     if ds:

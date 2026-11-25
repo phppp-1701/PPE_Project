@@ -87,3 +87,18 @@ mắt cá), `k_wrist` 2,393 (672 găng có khuỷu, cổ tay). Mẫu: ủng 32 �
 - Găng: (c), (d) không đạt rõ (V3b 15 → 71 ở ảnh đủ). `k_wrist` 2,393 lớn: cẳng tay chĩa về camera bị ngắn lại trong ảnh
   (thang s nhỏ) nên tỉ lệ khoảng cách / s phình ra, vùng neo quá rộng và lấn sang người đứng gần.
 - Theo quy tắc của kế hoạch: không bật món nào; chưa chạy hồi quy video3-6. Chờ người dùng quyết định.
+
+### F1 lần 2 cho ủng (người dùng chọn 25/11/2026; ghi trước khi chạy)
+
+- Chỉ ủng; găng bỏ khỏi F1 (chuyển sang F2). Neo mắt cá như lần 1 (cùng `k_ankle` tự chọn), thêm **cổng người bị cắt**:
+  chỉ dùng neo khi mép trên hộp người ≤ `edge_px` (người bị khung cắt phía trên, chỉ thấy phần dưới — đúng ca lỗi video25,
+  video26). `edge_px` = `compliance.keypoint_gate.helmet.edge_px` (4 px, mức đã dùng để nhận "đầu chạm mép trên"), không
+  thêm tham số mới. Người không chạm mép trên: gán như hiện tại.
+- Tiêu chí giữ nguyên (a)-(d) và hồi quy video3-6 (V1, V2). Không đạt thì không bật, ghi Giới hạn.
+
+**Kết quả lần 2 (25/11/2026): không đạt.** `assoc_close_edge.json`. Ảnh đủ: ghép đúng 64 → 65 / 72, sai người 0 → 0, V3b
+7 → 7 (cổng làm người không bị cắt gần như giữ nguyên). Các mức cắt như lần 1: 60%: đúng 40 → 72, sai người 0 → 1, V3b
+4 → 5; 45%: 18 → 70, V3b 3 → 4; 30%: 9 → 40, V3b 1 → 1. (c), (d) không đạt.
+Xem từng ca (`scratchpad`, không lưu): các ca xấu đi đều từ **một ảnh** (`construction_ppe__image1256`): ba người đứng sát,
+chân đan nhau, hộp ủng nhãn là chiếc ủng bị che một phần nằm giữa người giữa và người phải; pose của người giữa đặt mắt cá
+gần chiếc ủng đó. Không thử lần 3 trên val này (sẽ thành chỉnh theo một ảnh). Chờ người dùng quyết định.
