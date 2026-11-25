@@ -234,6 +234,13 @@ parts:
     # gốc không mũ); mỗi nguồn <= cap_src phần ảnh thêm; kiểm mũ / không mũ mỗi tầng trong ratio_ok. small_px, cap_src, g:
     # Claude đề xuất, chạy thử trên kho lần đầu, người dùng duyệt g = 1.
     balance: {dark_v: 90, small_px: 48, g: 1.0, cap_src: 0.6, ratio_ok: [0.8, 1.25]}
+  v6:
+    # B1 (docs/experiments/2026-11-25_close_range_fixes.md, 25/11/2026): bản 4 + ảnh cắt kính bảo hộ từ bộ Roboflow
+    # (goggles_sg, goggles_safety, goggles_workplace) chỉ vào train/goggles (scripts/03zf_parts_v6_goggles.py).
+    base_from: data/ppe6/parts
+    out: data/ppe6/parts_v6
+    pack: data/ppe6/variants/kaggle/parts_v6_pack.zip
+    dedup_hamming: 6                  # như v5
   seed: 13
   context: 1.6              # bản 1, và ảnh cắt theo hộp của val
   min_px: 24
@@ -247,8 +254,10 @@ parts:
         trunc: {prob: 0.3, keep: [0.35, 0.7]}}   # áo: giữ phần trên của ảnh cắt (người sát camera); Claude đặt
   train:
     model: yolo11n-cls.pt
-    run_name: yolo11n_cls_parts_v5   # bản 1: yolo11n_cls_parts, bản 2, 3, 4: yolo11n_cls_parts_v2, _v3, _v4
-    args: {imgsz: 160, epochs: 60, patience: 15, batch: 128, seed: 0, deterministic: true, workers: 4, fliplr: 0.5, degrees: 0}
+    run_name: yolo11n_cls_parts_v6   # bản 1: yolo11n_cls_parts, bản 2, 3, 4, 5: yolo11n_cls_parts_v2, _v3, _v4, _v5
+    # Bản 6 (B1): như bản 4, thêm hsv_h 0.1 (mặc định 0.015) để không dựa vào màu tròng kính; ghi trong kế hoạch trước khi train.
+    args: {imgsz: 160, epochs: 60, patience: 15, batch: 128, seed: 0, deterministic: true, workers: 4, fliplr: 0.5, degrees: 0,
+           hsv_h: 0.1}
 
 error_analysis:
   # Phân tích lỗi detector trên val (scripts/04h_error_analysis.py, kế hoạch 2026-11-16_c5_detector_plan.md bước A).

@@ -246,3 +246,9 @@ Người dùng tải 5 bộ Roboflow (CC BY 4.0, xuất YOLOv8, không tăng cư
   pHash) bị bỏ. Ảnh cắt như bản 5: theo hộp (xê dịch) và theo keypoint (`match_anchor` mắt), tăng cường như `parts.aug`.
 - Train bản 6 (YOLO11n-cls, như bản 4, `04g`), thêm tăng cường đổi sắc độ `hsv_h` 0,1 (mặc định 0,015) để mô hình không dựa
   vào màu tròng. Chỉ dùng cho kính (`weights_by_ppe.goggles`); găng, mũ, ủng giữ trọng số cũ. Tiêu chí B1 như đã khóa ở trên.
+
+**B1 dữ liệu (25/11/2026).** Tờ kiểm: `outputs/results/parts_cls/b1_review/` (người dùng chấp nhận gợi ý của máy cho tờ 1:
+giữ 25/37 hộp; bỏ bộ PPEs). `03zf` → `data/ppe6/parts_v6`: thêm 821 ảnh cắt vào train/goggles (goggles_sg 402 hộp + 374
+keypoint, goggles_safety 17 + 16, goggles_workplace 6 + 6; bỏ 1 ảnh gần trùng ảnh đánh giá, 3 ảnh gần trùng nhau); train
+goggles 1.945 → 2.766, các lớp khác và val như bản 4. Gói `parts_v6_pack.zip` 644.143.829 byte, SHA-256
+`83c08ea7bb02bb6b2d33432268baf179a1b221d2feb4d154687448ba629d4f32`. Chờ người dùng train trên Kaggle (`yolo11n_cls_parts_v6`).

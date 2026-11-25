@@ -1,0 +1,48 @@
+{
+ "ngay": "2026-11-25",
+ "base": "data/ppe6/parts",
+ "them": 821,
+ "chi_tiet": {
+  "them_goggles_safety_box": 17,
+  "them_goggles_safety_kp": 16,
+  "kp_khong_ghep": 15,
+  "them_goggles_sg_box": 402,
+  "them_goggles_sg_kp": 374,
+  "kp_qua_nho_hoac_mep": 15,
+  "bo_gan_trung_anh_danh_gia": 1,
+  "bo_gan_trung_nguon_moi": 3,
+  "box_qua_nho_hoac_mep": 1,
+  "them_goggles_workplace_box": 6,
+  "them_goggles_workplace_kp": 6
+ },
+ "anh_danh_gia_so_sanh": 4060,
+ "so_anh": {
+  "train": {
+   "bare_hand": 7993,
+   "glove": 7834,
+   "goggles": 2766,
+   "helmet": 5627,
+   "no_eyewear": 7998,
+   "no_helmet": 7964,
+   "no_vest": 7992,
+   "not_safety_foot": 2605,
+   "ordinary_glasses": 1693,
+   "safety_boot": 4638,
+   "vest": 5001
+  },
+  "val": {
+   "bare_hand": 2898,
+   "glove": 509,
+   "goggles": 57,
+   "helmet": 331,
+   "no_eyewear": 1340,
+   "no_helmet": 2027,
+   "no_vest": 2471,
+   "not_safety_foot": 278,
+   "ordinary_glasses": 202,
+   "safety_boot": 71,
+   "vest": 189
+  }
+ },
+ "ghi_chu": "Chỉ thêm train/goggles; val như bản 4. Nhãn: nhãn gốc bộ dữ liệu (goggles_sg, người dùng kiểm định mẫu) và hộp người dùng giữ (goggles_safety, goggles_workplace)."
+}
