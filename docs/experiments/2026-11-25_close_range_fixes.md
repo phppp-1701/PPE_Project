@@ -232,3 +232,17 @@ nhận "changed" và "live". Giao diện trình duyệt chưa kiểm bằng mắ
 **A1 ngoại lệ (người dùng quyết định 25/11/2026) và hồi quy video3-6** (`close_eval/stepA1/dev36`): găng Có đúng 753 → 754,
 báo Có sai 1 → 1, Thiếu oan 0 → 0; mũ, áo, kính, ủng, sự kiện không đổi; video4 có 31 khung nhãn Chưa xác định thành Có.
 V1, V2 đạt → **bật** `association.wrist_anchor` (lần 3) trong `configs/pipeline.yaml`.
+
+### B1 — dữ liệu và cách train (ghi 25/11/2026, trước khi tạo dữ liệu)
+
+Người dùng tải 5 bộ Roboflow (CC BY 4.0, xuất YOLOv8, không tăng cường). Xem bằng mắt mẫu hộp kính mỗi bộ:
+- `goggles_sg` (Safety Goggles, lớp `eyes_with_goggles`, 405 hộp): ảnh đa dạng, nhiều người không đội mũ, chủ yếu kính trong → dùng.
+- `goggles_ppes` (PPEs, lớp `goggles`, 3.346 hộp): camera phòng thí nghiệm, vài người lặp lại, không mũ → dùng sau khi bỏ ảnh
+  gần trùng (pHash, `dedup_hamming` như bản 5) và giới hạn `max_ppes` hộp.
+- `goggles_safety` (Safety, lớp `Safety Glasses`, 29 hộp) và `goggles_workplace` (PPE Dataset for Workplace, lớp `Glass`, 8
+  hộp): có kính màu nhưng nhãn lẫn kính thường → **người dùng kiểm từng hộp** (tờ ảnh), chỉ giữ hộp người đánh dấu là kính BH.
+- Safety Glasses (ảnh sản phẩm, không người đeo): bỏ.
+- Chỉ thêm lớp `goggles` vào **train**; val giữ nguyên bản 4 (so sánh được với bản 3). Ảnh gần trùng ảnh đánh giá (val, test,
+  pHash) bị bỏ. Ảnh cắt như bản 5: theo hộp (xê dịch) và theo keypoint (`match_anchor` mắt), tăng cường như `parts.aug`.
+- Train bản 6 (YOLO11n-cls, như bản 4, `04g`), thêm tăng cường đổi sắc độ `hsv_h` 0,1 (mặc định 0,015) để mô hình không dựa
+  vào màu tròng. Chỉ dùng cho kính (`weights_by_ppe.goggles`); găng, mũ, ủng giữ trọng số cũ. Tiêu chí B1 như đã khóa ở trên.
