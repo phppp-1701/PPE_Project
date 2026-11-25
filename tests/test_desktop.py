@@ -329,7 +329,9 @@ def test_video_file_sequential_playback_and_export_apis(tmp_path, monkeypatch):
         pipeline_factory=lambda s, sess, emit: RecordingPipe(s, sess, emit),
         draw_factory=lambda: (lambda f, o, c: f),
     )
-    monkeypatch.setattr(app_mod, "LIVE", cam)
+    from backend.video_file import sanitize_video_source_id
+    vid_src_id = sanitize_video_source_id(vid_path)
+    monkeypatch.setattr(app_mod, "_LIVES", {vid_src_id: cam})
 
     with TestClient(app_mod.app) as c:
         # 1. Kiểm tra giao diện Dashboard & các module JS/CSS tĩnh

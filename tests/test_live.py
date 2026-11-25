@@ -249,11 +249,11 @@ def test_live_camera_failure_sets_error():
     sessions = []
     cap = FakeCap(fail_after=5)
     cam, _ = make_live(on_session=lambda k, info: sessions.append((k, info)), cap=cap)
-    cam.start(["helmet"], 1)
+    cam.start(["helmet"], 1, camera_index=0)
     assert wait_for(lambda: cam.state == "error", timeout=10)
     assert "Webcam" in cam.status()["error"] and cap.released
     assert sessions[-1][0] == "end" and sessions[-1][1]["error"]
-    cam.start(["helmet"], 1)                                 # mở lại được sau lỗi
+    cam.start(["helmet"], 1, camera_index=0)                  # mở lại được sau lỗi
     cam.stop()
 
 
@@ -277,7 +277,7 @@ def client(tmp_path, monkeypatch):
     import backend.db as db_mod
     monkeypatch.setattr(db_mod, "DB_PATH", tmp_path / "ppe.db")
     cam, holder = make_live(app_mod._live_event, app_mod._live_session)
-    monkeypatch.setattr(app_mod, "LIVE", cam)
+    monkeypatch.setattr(app_mod, "_LIVES", {cam.source_id: cam})
     with TestClient(app_mod.app) as c:
         yield c, cam, holder, db_mod
     cam.stop()

@@ -140,11 +140,12 @@ class Detector:
     def _zoom_predict(self, img, conf):
         """Một ảnh vuông mỗi lần (lô cỡ 1 cố định): đo 20/11/2026, lô 2 ảnh mất gần bằng hai lần lô 1 ảnh, còn mỗi cỡ lô
         mới làm lần dò đó chậm khoảng 1,8 giây."""
-        return locked_predict(
-            self._zoom_lock, self.zoom_model, img,
-            imgsz=self.zoom["imgsz"], conf=conf, iou=self.nms_iou, device=self.device,
-            verbose=False, quantize=16 if self.zoom["half"] else None,
-        )[0]
+        kw = dict(imgsz=self.zoom["imgsz"], conf=conf, iou=self.nms_iou, device=self.device,
+                  verbose=False, quantize=16 if self.zoom["half"] else None)
+        lock = getattr(self, "_zoom_lock", None)
+        if lock is not None:
+            return locked_predict(lock, self.zoom_model, img, **kw)[0]
+        return self.zoom_model.predict(img, **kw)[0]
 
     def _zoom_ppe(self, frame, persons, ppe):
         """C9: dò lại lớp `zoom.classes` trên ảnh cắt của người lớn, gộp với `ppe` (đã lọc conf) bằng NMS theo lớp."""
