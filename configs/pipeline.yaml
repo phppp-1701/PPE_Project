@@ -194,6 +194,12 @@ association:
   # dưới 45% ghép đúng 18 -> 70 / 73, nhưng (c) sai người +1, (d) V3b +1 ở hai mức cắt (cùng một ảnh ba người chân đan nhau)
   # -> không đạt tiêu chí khóa; người dùng chọn ngoại lệ. Hồi quy video3-6 (close_eval/stepF1close): không đổi khung nào.
   ankle_anchor: {kp_conf: 0.5, k_ankle: 0.634, edge_px: 4}
+  # A1 (2026-11-25_close_range_fixes; bật 25/11/2026 theo NGOẠI LỆ người dùng): găng của người chạm mép khung là ứng viên của
+  # cổ tay (>= kp_conf, khuỷu >= kp_conf) khi tâm găng cách cổ tay <= k_wrist x max(cẳng tay, bắp tay), cổ tay đó gần găng
+  # nhất trong mọi người và tâm găng trong hộp người nới inside_margin (exclusive); chỉ dẫn tới Có cho tay đó. k_wrist chọn
+  # trên ppe4 val (05a --assoc-close-gloves3). Val: (a)-(c) đạt (sai người 3 -> 3), (d) V3b 15 -> 32 không đạt (chủ găng bị
+  # bỏ sót thì găng có thể sang người cạnh). Hồi quy video3-6 (close_eval/stepA1): găng Có sai 1 -> 1, Thiếu oan 0 -> 0.
+  wrist_anchor: {kp_conf: 0.5, k_wrist: 1.745, scale: arm_max, edge_px: 4, exclusive: true}
 
 compliance:
   # Vùng đủ quan sát (công thức 3.7): v >= tau_in, o <= tau_occ, diện tích vùng trong ảnh >= area_min_px.

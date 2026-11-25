@@ -228,3 +228,7 @@ Người dùng đồng ý cài `websockets==15.0.1` (khóa trong `requirements.t
 đẩy "changed" khi dữ liệu đổi và trạng thái camera mỗi giây; `dashboard/index.html` nhận qua WebSocket, mất kết nối thì hỏi
 định kỳ như cũ. Kiểm: `tests/test_live.py::test_ws_pushes_changes_and_live_status`; chạy uvicorn thật, client `websockets`
 nhận "changed" và "live". Giao diện trình duyệt chưa kiểm bằng mắt.
+
+**A1 ngoại lệ (người dùng quyết định 25/11/2026) và hồi quy video3-6** (`close_eval/stepA1/dev36`): găng Có đúng 753 → 754,
+báo Có sai 1 → 1, Thiếu oan 0 → 0; mũ, áo, kính, ủng, sự kiện không đổi; video4 có 31 khung nhãn Chưa xác định thành Có.
+V1, V2 đạt → **bật** `association.wrist_anchor` (lần 3) trong `configs/pipeline.yaml`.
