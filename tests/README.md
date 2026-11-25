@@ -19,3 +19,5 @@ Các bài kiểm tra cho code trong `src/ppe`, ví dụ: thiếu mũ liên tục
 `test_crop_pass.py`: C9 (`scripts/04m_crop_pass.py`): cách tính tp trùng `match_predictions` của Ultralytics trên dữ liệu ngẫu nhiên, NMS, gộp hộp crop chỉ cho lớp trong `classes`, cắt vùng người và đổi toạ độ; `detector.zoom` của `src/ppe/detector.py` với mô hình giả (đổi toạ độ, nhân `conf_scale`, lọc conf, NMS với PPE cả khung).
 
 `test_c9_decide.py`: C9 (`scripts/04n_c9_decide.py`): đủ ba điều kiện thì đạt; găng tăng dưới 0,03 thì không đạt; tụt đúng 0,02 vẫn đạt, quá 0,02 thì không đạt; mỗi lớp lấy đúng tập con (ủng tập ppe4 không tính).
+
+`test_close_anchor.py`: F1 tầm gần (2026-11-25): ủng của người chỉ thấy cẳng chân được gán nhờ mắt cá, xa mắt cá hoặc mắt cá không rõ thì không; găng có cổ tay dưới `pose.wrist_conf` được gán theo thang cẳng tay thành Có, tay kia Chưa xác định, không găng thì không suy ra Thiếu; tắt hai khóa thì như cũ.

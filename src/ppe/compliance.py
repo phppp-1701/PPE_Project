@@ -83,6 +83,8 @@ class Compliance:
         self.back_last = {}     # track_id -> t lần cuối quay lưng
         # Bước F3: găng ghép dự phòng theo vùng tay khi cổ tay không hợp lệ -> có hộp gán thì Có (không bao giờ suy Thiếu)
         self.gloves_fallback = bool(self.pose and (cfg.get("association") or {}).get("gloves_region_fallback"))
+        # Bước F1 tầm gần (2026-11-25): găng gán theo cổ tay thang cẳng tay khi cổ tay < pose.wrist_conf -> chỉ dẫn tới Có
+        self.gloves_fallback = self.gloves_fallback or bool(self.pose and (cfg.get("association") or {}).get("wrist_anchor"))
         self._back = {}         # track_id -> quay lưng ở khung đang xét (tính một lần mỗi khung)
         # Bước M1 (kế hoạch 2026-11-16_post_holdout_fixes mục 2): {t_veto}; mọi chân có ảnh cắt đều 1 - p >= t_veto ->
         # bỏ hộp ủng của detector (dép, giày thường). Vắng -> như bản cuối.

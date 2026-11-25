@@ -8,6 +8,7 @@ Cách chạy (từ thư mục gốc project, đã kích hoạt .venv):
     python scripts/05a_calibrate_val.py --torso       # vùng thân theo khung xương cho áo (bước B), ghép đúng người
     python scripts/05a_calibrate_val.py --torso-strict  # bước B2: tham số torso_strict, V1-V4, chẩn đoán G5
     python scripts/05a_calibrate_val.py --assoc-pose  # bước F: kính theo mắt, áo theo vai, găng dự phòng (assoc_pose.json)
+    python scripts/05a_calibrate_val.py --assoc-close # F1 tầm gần: ủng theo mắt cá, găng theo cổ tay (assoc_close.json)
     (dự đoán được lưu cache; --rerun để dự đoán lại)
 
 Tham số đầu vào: configs/pipeline.yaml (detector, ppe, calibration). Chỉ in và ghi đề xuất vào
@@ -1251,6 +1252,196 @@ def assoc_pose_eval(cfg):
     print("Ghi", (OUT / "assoc_pose.json").relative_to(ROOT), "(chưa ghi cấu hình)")
 
 
+def assoc_close_eval(cfg):
+    """Bước F1 tầm gần (docs/experiments/2026-11-25_close_range_fixes.md): ủng theo mắt cá (ankle_anchor), găng theo cổ
+    tay thang cẳng tay (wrist_anchor). Chỉ val: ủng val_new (6 lớp), găng ppe4 val. Người, PPE nhãn thật làm phát hiện;
+    pose như pipeline. Tham số: k = phân vị cao (region_coverage) của khoảng cách tâm PPE - khớp đầu chi / độ dài chi
+    (gối - mắt cá, khuỷu - cổ tay), lấy khớp gần hơn trong hai bên, ảnh đủ. Cảnh: ảnh đủ; ủng cắt mép trên giữ phần dưới
+    60/45/30% người chủ; găng cắt mép dưới 55/65/75% (như bước F). Tiêu chí (a)-(d) trong kế hoạch.
+    Ghi outputs/results/pipeline_calib_val/assoc_close.json; không sửa cấu hình."""
+    import copy
+    import datetime
+    import hashlib
+    import math
+    import subprocess
+
+    import cv2
+
+    from ppe import Det, Track
+    from ppe.association import Associator
+    from ppe.pose import PoseEstimator
+
+    sys.stdout.reconfigure(encoding="utf-8")
+    cal = cfg["calibration"]
+    cov, margin = cal["region_coverage"], cal["inside_margin"]
+    hi = (1 + cov) / 2 * 100
+    kc = cfg["part_cls"]["kp_conf"]
+    P = cfg["person_cls"]
+    CLS = {n: cfg["ppe"][n]["cls"] for n in ("gloves", "boots")}
+    NAME = {v: k for k, v in CLS.items()}
+    LIMB = {"boots": ((15, 13), (16, 14)), "gloves": ((9, 7), (10, 8))}     # (đầu chi, khớp gần)
+    CUTS = {"boots": ("tren", (0.60, 0.45, 0.30)), "gloves": ("duoi", (0.55, 0.65, 0.75))}
+    pose = PoseEstimator(cfg, ROOT)
+
+    def owner(c, persons):
+        own = [i for i, q in enumerate(persons)
+               if q[0] - margin * (q[2] - q[0]) <= c[0] <= q[2] + margin * (q[2] - q[0])
+               and q[1] - margin * (q[3] - q[1]) <= c[1] <= q[3] + margin * (q[3] - q[1])]
+        return own[0] if len(own) == 1 else None
+
+    def make(stem, im, persons, boxes, only_owner=None):
+        tracks = [Track(i, q.copy(), 1.0, True) for i, q in enumerate(persons)]
+        if tracks:
+            pose(im, tracks)
+        dets = [Det(CLS[n], b.copy(), 1.0) for n, b in boxes]
+        own = [owner(((b[0] + b[2]) / 2, (b[1] + b[3]) / 2), persons) for _, b in boxes]
+        if only_owner is not None:
+            own = [o if o == only_owner else None for o in own]
+        return dict(stem=stem, tracks=tracks, dets=dets, names=[n for n, _ in boxes], own=own, shape=im.shape)
+
+    def cut_scene(stem, im, persons, boxes, own0, o, ppe_name, mode, frac):
+        """mode "duoi": giữ phần trên tới frac chiều cao người chủ; "tren": giữ phần dưới frac chiều cao người chủ."""
+        h = im.shape[0]
+        q = persons[o]
+        if mode == "duoi":
+            y0, y1 = 0, int(q[1] + frac * (q[3] - q[1]))
+        else:
+            y0, y1 = int(q[3] - frac * (q[3] - q[1])), h
+        if y1 - y0 < 8 or (mode == "duoi" and y1 >= h - 2) or (mode == "tren" and y0 <= 2):
+            return None
+        vis = lambda b: (min(b[3], y1) - max(b[1], y0)) / max(b[3] - b[1], 1e-6)
+        if not any(n == ppe_name and ow == o and vis(b) >= 0.7 for (n, b), ow in zip(boxes, own0)):
+            return None
+        sh = np.array([0, y0, 0, y0])
+        clip = lambda b: np.array([b[0], max(b[1], y0), b[2], min(b[3], y1)]) - sh
+        ps = [(i, clip(p)) for i, p in enumerate(persons) if min(p[3], y1) - max(p[1], y0) > 2]
+        oi = [k for k, (i, _) in enumerate(ps) if i == o]
+        if not oi:
+            return None
+        bs = [(n, clip(b)) for (n, b), ow in zip(boxes, own0) if vis(b) >= (0.7 if (n == ppe_name and ow == o) else 0.3)]
+        return make(stem, im[y0:y1].copy(), [p for _, p in ps], bs, only_owner=oi[0])
+
+    # 1. Cảnh: ủng val_new, găng ppe4 val
+    srcs = [(f.stem, next(iter((DATASET / "images" / "val").glob(f.stem + ".*"))), read_labels(f), "gloves")
+            for f in sorted((DATASET / "labels" / "val").glob("*.txt"))
+            if any(r[0] == CLS["gloves"] for r in read_labels(f))]
+    srcs += [(img.stem, img, read_labels(lab), "boots") for img, lab in val_new_items()
+             if any(r[0] == CLS["boots"] for r in read_labels(lab))]
+    full = {"boots": [], "gloves": []}
+    cut = {n: {f: [] for f in CUTS[n][1]} for n in CUTS}
+    for n_img, (stem, img, lab, ppe_name) in enumerate(srcs, 1):
+        im = cv2.imread(str(img))
+        h, w = im.shape[:2]
+        sc = np.array([w, h, w, h])
+        persons = [to_xyxy(*r[1:]) * sc for r in lab if r[0] == P]
+        boxes = [(ppe_name, to_xyxy(*r[1:]) * sc) for r in lab if r[0] == CLS[ppe_name]]
+        if not persons or not boxes:
+            continue
+        sc0 = make(stem, im, persons, boxes)
+        full[ppe_name].append(sc0)
+        mode, fracs = CUTS[ppe_name]
+        for o in sorted({x for x in sc0["own"] if x is not None}):
+            for frac in fracs:
+                s = cut_scene(stem, im, persons, boxes, sc0["own"], o, ppe_name, mode, frac)
+                if s is not None:
+                    cut[ppe_name][frac].append(s)
+        if n_img % 100 == 0 or n_img == len(srcs):
+            print(f"  cảnh {n_img}/{len(srcs)}", flush=True)
+    print("val:", {n: len(v) for n, v in full.items()}, "ca cắt:", {n: {f: len(x) for f, x in v.items()} for n, v in cut.items()},
+          flush=True)
+
+    # 2. Tham số trên ảnh đủ
+    ratios = {"boots": [], "gloves": []}
+    for n in ratios:
+        for s in full[n]:
+            for d, o in zip(s["dets"], s["own"]):
+                k = s["tracks"][o].extra.get("kps") if o is not None else None
+                if not k:
+                    continue
+                cx, cy = d.center
+                rr = [math.hypot(cx - k[e][0], cy - k[e][1]) / math.hypot(k[e][0] - k[j][0], k[e][1] - k[j][1])
+                      for e, j in LIMB[n] if k[e][2] >= kc and k[j][2] >= kc
+                      and math.hypot(k[e][0] - k[j][0], k[e][1] - k[j][1]) >= 1]
+                if rr:
+                    ratios[n].append(min(rr))
+    params = dict(ankle_anchor=dict(kp_conf=kc, k_ankle=round(float(np.percentile(ratios["boots"], hi)), 3)),
+                  wrist_anchor=dict(kp_conf=kc, k_wrist=round(float(np.percentile(ratios["gloves"], hi)), 3)))
+    print("tham số:", params, {n: len(v) for n, v in ratios.items()}, flush=True)
+
+    A0 = Associator(cfg)
+    var = {}
+    for key, ppe_name in (("ankle_anchor", "boots"), ("wrist_anchor", "gloves")):
+        c = copy.deepcopy(cfg)
+        c["association"][key] = params[key]
+        var[key] = (ppe_name, Associator(c))
+
+    def where(a, sc, tracks):
+        res = a(tracks, sc["dets"], sc["shape"])
+        return {id(x): tid for tid, items in res.owned.items() for ds in items.values() for x in ds}
+
+    def score(a, scenes, ppe_name):
+        x = dict(n=0, dung=0, sai_nguoi=0, khong_ghep=0, V3b_n=0, V3b_gan_nham=0)
+        for sc in scenes:
+            idx = [i for i, (n, o) in enumerate(zip(sc["names"], sc["own"])) if n == ppe_name and o is not None]
+            if not idx:
+                continue
+            wh = where(a, sc, sc["tracks"])
+            for i in idx:
+                t = wh.get(id(sc["dets"][i]))
+                o = sc["own"][i]
+                x["n"] += 1
+                x["dung" if t == o else ("khong_ghep" if t is None else "sai_nguoi")] += 1
+                others = [tr for tr in sc["tracks"] if tr.track_id != o]
+                if not others:
+                    continue
+                cx, cy = sc["dets"][i].center
+                near_ = min(others, key=lambda tr: math.hypot((tr.xyxy[0] + tr.xyxy[2]) / 2 - cx, (tr.xyxy[1] + tr.xyxy[3]) / 2 - cy))
+                b = sc["dets"][i].xyxy
+                big = Track(near_.track_id, np.array([min(near_.xyxy[0], b[0]), min(near_.xyxy[1], b[1]),
+                                                      max(near_.xyxy[2], b[2]), max(near_.xyxy[3], b[3])]),
+                            1.0, True, dict(near_.extra))
+                rest = [big if tr is near_ else tr for tr in others]
+                x["V3b_n"] += 1
+                x["V3b_gan_nham"] += int(where(a, sc, rest).get(id(sc["dets"][i])) == near_.track_id)
+        x["ti_le_dung"] = round(x["dung"] / max(x["n"], 1), 4)
+        return x
+
+    result, verdict = {}, {}
+    for key, (ppe_name, a) in var.items():
+        r = {"ban_chinh": {}, key: {}}
+        for lvl, scenes in [("du", full[ppe_name])] + [(str(f), cut[ppe_name][f]) for f in CUTS[ppe_name][1]]:
+            r["ban_chinh"][lvl] = score(A0, scenes, ppe_name)
+            r[key][lvl] = score(a, scenes, ppe_name)
+        b0, b1 = r["ban_chinh"], r[key]
+        cuts = [str(f) for f in CUTS[ppe_name][1]]
+        ck = dict(
+            a_du_khong_giam=b1["du"]["dung"] >= b0["du"]["dung"],
+            b_cat_tang_it_nhat_mot_muc=any(b1[f]["dung"] > b0[f]["dung"] for f in cuts),
+            c_sai_nguoi_khong_tang=all(b1[l]["sai_nguoi"] <= b0[l]["sai_nguoi"] for l in b0),
+            d_V3b_khong_tang=all(b1[l]["V3b_gan_nham"] <= b0[l]["V3b_gan_nham"] for l in b0))
+        r["kieu_cat"], r["tieu_chi"], r["dat"] = CUTS[ppe_name][0], ck, all(ck.values())
+        result[key] = r
+        verdict[key] = r["dat"]
+        print(key, ppe_name, json.dumps({l: dict(dung=(b0[l]["dung"], b1[l]["dung"]), n=b0[l]["n"],
+                                                 sai_nguoi=(b0[l]["sai_nguoi"], b1[l]["sai_nguoi"]),
+                                                 V3b=(b0[l]["V3b_gan_nham"], b1[l]["V3b_gan_nham"])) for l in b0}), ck, flush=True)
+
+    git = lambda *a: subprocess.run(["git", *a], cwd=ROOT, capture_output=True, text=True).stdout.strip()
+    sha = lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+    res = dict(ho_so=dict(thoi_diem=datetime.datetime.now().isoformat(timespec="seconds"), commit_nen=git("rev-parse", "HEAD"),
+                          file_dang_sua=git("status", "--porcelain").splitlines(),
+                          sha256=dict(pose_weights=sha(ROOT / cfg["pose"]["weights"])),
+                          ghi_chu="Val: ppe4 val (găng), val_new (ủng). Không dùng test, holdout, video."),
+               thiet_lap=dict(coverage=cov, cuts={n: dict(kieu=m, muc=list(f)) for n, (m, f) in CUTS.items()},
+                              kp_conf=kc, inside_margin=margin),
+               mau=dict(anh={n: len(v) for n, v in full.items()}, cat={n: {str(f): len(x) for f, x in v.items()} for n, v in cut.items()},
+                        ti_le_tinh_k={n: len(v) for n, v in ratios.items()}),
+               tham_so=params, ket_qua=result, dat=verdict)
+    (OUT / "assoc_close.json").write_text(json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8")
+    print("kết luận:", verdict)
+    print("Ghi", (OUT / "assoc_close.json").relative_to(ROOT), "(chưa ghi cấu hình)")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--regions", action="store_true")
@@ -1260,9 +1451,11 @@ def main():
     ap.add_argument("--torso", action="store_true", help="vùng thân theo khung xương cho áo (bước B)")
     ap.add_argument("--torso-strict", action="store_true", help="vùng thân theo khung xương bản chặt cho áo (bước B2)")
     ap.add_argument("--assoc-pose", action="store_true", help="bước F: vùng theo khung xương cho kính, áo, găng")
+    ap.add_argument("--assoc-close", action="store_true", help="bước F1 tầm gần: ủng theo mắt cá, găng theo cổ tay")
     ap.add_argument("--rerun", action="store_true", help="dự đoán lại thay vì dùng cache")
     args = ap.parse_args()
-    if not (args.regions or args.conf or args.crop or args.pose or args.torso or args.torso_strict or args.assoc_pose):
+    if not (args.regions or args.conf or args.crop or args.pose or args.torso or args.torso_strict or args.assoc_pose
+            or args.assoc_close):
         ap.error("chọn --regions, --conf, --crop, --pose, --torso, --torso-strict và/hoặc --assoc-pose")
     cfg = load_config()
     if args.regions:
@@ -1280,6 +1473,8 @@ def main():
         torso_strict_eval(cfg)
     if args.assoc_pose:
         assoc_pose_eval(cfg)
+    if args.assoc_close:
+        assoc_close_eval(cfg)
 
 
 if __name__ == "__main__":

@@ -145,6 +145,29 @@ def eye_anchor_distance(track, c, ea):
     return r if r <= 1 else None
 
 
+def limb_anchor_distance(track, c, end, joint, kp_conf, k):
+    """Bước F1 tầm gần (2026-11-25): khoảng cách từ c tới điểm khớp `end` chia cho (độ dài đoạn joint-end × k) nếu <= 1,
+    ngược lại None. Ủng: end = mắt cá, joint = gối (ống chân); găng: end = cổ tay, joint = khuỷu (cẳng tay).
+    Cần hai điểm >= kp_conf và đoạn dài >= 1 px. Thang theo chi, không theo hộp người, nên đúng cả khi người bị khung cắt."""
+    kps = getattr(track, "extra", {}).get("kps")
+    if not kps or kps[end][2] < kp_conf or kps[joint][2] < kp_conf:
+        return None
+    s = math.hypot(kps[end][0] - kps[joint][0], kps[end][1] - kps[joint][1])
+    if s < 1.0:
+        return None
+    r = math.hypot(c[0] - kps[end][0], c[1] - kps[end][1]) / (s * k)
+    return r if r <= 1 else None
+
+
+def wrist_index(track, side):
+    """Chỉ số COCO (9 hoặc 10) của cổ tay mang tên `side` (left/right theo ảnh, pose.py sắp theo x); None nếu không có."""
+    kps = getattr(track, "extra", {}).get("kps")
+    q = getattr(track, "extra", {}).get("wrists", {}).get(side)
+    if not kps or q is None:
+        return None
+    return min((9, 10), key=lambda i: math.hypot(kps[i][0] - q[0], kps[i][1] - q[1]))
+
+
 def norm_distance(c, track_xyxy, rbox):
     """Khoảng cách chuẩn hóa (3.4) từ tâm PPE c tới tâm vùng rbox."""
     w, h = track_xyxy[2] - track_xyxy[0], track_xyxy[3] - track_xyxy[1]
@@ -180,6 +203,11 @@ class Associator:
         self.eye_anchor = (require(cfg, "association", "eye_anchor")
                            if self.pose and cfg["association"].get("eye_anchor") is not None else None)
         self.gloves_fallback = bool(self.pose and cfg["association"].get("gloves_region_fallback"))
+        # Bước F1 tầm gần (kế hoạch 2026-11-25_close_range_fixes): ủng theo mắt cá, găng theo cổ tay (thang theo chi).
+        self.ankle_anchor = (require(cfg, "association", "ankle_anchor")
+                             if self.pose and cfg["association"].get("ankle_anchor") is not None else None)
+        self.wrist_anchor = (require(cfg, "association", "wrist_anchor")
+                             if self.pose and cfg["association"].get("wrist_anchor") is not None else None)
 
     def limit(self, name):
         """Khoảng cách tối đa: 1 (biên elip) khi dùng cổ tay, còn lại `max_distance` (3.4)."""
@@ -197,11 +225,17 @@ class Associator:
             for side in (SIDES if p["sides"] else (None,)):
                 if self.pose and p["sides"] and p["region"] == "hands":
                     q = valid_wrist(t, side, self.pose)
-                    if q is not None:
-                        if (v := ellipse_value(c, t.xyxy, q, self.pose)) <= 1:
-                            out.append((v, t.track_id, side))
+                    vals = []
+                    if q is not None and (v := ellipse_value(c, t.xyxy, q, self.pose)) <= 1:
+                        vals.append(v)
+                    if self.wrist_anchor and (wi := wrist_index(t, side)) is not None:   # F1 tầm gần: thang cẳng tay
+                        a = limb_anchor_distance(t, c, wi, wi - 2, self.wrist_anchor["kp_conf"], self.wrist_anchor["k_wrist"])
+                        if a is not None:
+                            vals.append(a)
+                    if vals:
+                        out.append((min(vals), t.track_id, side))
                         continue
-                    if not self.gloves_fallback:
+                    if q is not None or not self.gloves_fallback:
                         continue
                     # Bước F3: cổ tay bên này không hợp lệ -> nửa vùng tay cũ; khoảng cách quy về thang elip (1 = giới hạn)
                     r = region_box(t.xyxy, reg, side)
@@ -230,6 +264,13 @@ class Associator:
                     if de is not None:
                         de *= self.max_distance[name]
                         d = de if d is None else min(d, de)
+                if self.ankle_anchor and name == "boots" and side is None:                         # F1 tầm gần
+                    aa = self.ankle_anchor
+                    ds = [x for end, joint in ((15, 13), (16, 14))
+                          if (x := limb_anchor_distance(t, c, end, joint, aa["kp_conf"], aa["k_ankle"])) is not None]
+                    if ds:
+                        da = min(ds) * self.max_distance[name]
+                        d = da if d is None else min(d, da)
                 if d is not None:
                     out.append((d, t.track_id, side))
         return sorted(out, key=lambda x: x[0])
