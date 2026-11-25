@@ -277,3 +277,6 @@ Train trên Kaggle (người dùng chạy, `04g`, `yolo11n_cls_parts_v6`, hsv_h 
 - Kết luận: không bật bản 6, giữ bản 3 cho kính. Bản 6 bớt phủ quyết kính màu nhưng nhận kính cận là kính bảo hộ — đúng lỗi
   mà phủ quyết được thêm để chặn (13/11/2026); bỏ sót vi phạm thật nặng hơn báo nhầm người đã mang đủ. Không thử chỉnh
   hình học hay ngưỡng theo video11 (video kiem_thu_gan, không dùng để chọn).
+
+**Quyết định (người dùng, 26/11/2026):** giữ bộ phân loại kính bản 3; cho phép chạy tập test của detector c6_ft đúng một lần.
+Cấu hình đóng băng cho đánh giá cuối = `configs/pipeline.yaml` ở commit đóng băng (F1, F2, A1, A2 bật; kính bản 3).
