@@ -9,6 +9,7 @@ Mỗi file ứng với một bước xử lý:
 | `tracker.py` | Chạy ByteTrack cho hộp người |
 | `pose.py` | Tìm cổ tay bằng YOLO11n-pose trên ảnh cắt từng người (bật/tắt ở `configs/pipeline.yaml` mục `pose`) |
 | `parts.py` | Bước kiểm tra thứ hai cho găng, ủng, kính: cắt ảnh tay, chân, mắt theo keypoint, phân loại bằng YOLO11n-cls (bật ở mục `part_cls`) |
+| `model_cache.py` | Cache model YOLO dùng chung giữa các camera khi chạy nhiều nguồn đồng thời: load một bản theo đường dẫn trọng số, predict khoá theo model. Không đổi kết quả nhận diện |
 | `association.py` | Gán mũ, áo, găng cho đúng người theo vùng cơ thể |
 | `compliance.py` | Kết luận Có / Thiếu / Chưa xác định |
 | `temporal.py` | Cửa sổ thời gian xác nhận vi phạm, khắc phục |

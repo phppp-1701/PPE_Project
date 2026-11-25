@@ -230,6 +230,12 @@ temporal:
 
 events:
   evidence_dir: outputs/evidence     # ảnh minh chứng: <evidence_dir>/<session_id>/<event_id>_<n>.jpg
+  # Chu kỳ chụp minh chứng (đặt 19/11/2026, theo chuẩn hệ thống giám sát PPE thương mại):
+  # chụp ngay khi xác nhận vi phạm, sau đó chỉ chụp lại mỗi evidence_interval_s giây
+  # trong khi vi phạm còn tiếp diễn (KHÔNG chụp từng khung / từng món PPE nhấp nháy),
+  # và không quá evidence_max ảnh cho một sự kiện để tránh phình ổ đĩa.
+  evidence_interval_s: 3.0
+  evidence_max: 6
 
 calibration:
   # Dùng bởi 05a_calibrate_val.py (chỉ trên val, không đụng test).

@@ -12,6 +12,8 @@ import math
 
 import numpy as np
 
+from .model_cache import get_model, predict as locked_predict
+
 # Lớp có PPE và các lớp không có PPE của từng bộ phận (tên lớp của bộ phân loại, do 03y tạo)
 PART_CLASSES = {
     "gloves": ("glove", ("bare_hand",)),
@@ -134,12 +136,15 @@ class PartClassifier:
             self.use.add("boots")       # bước M1: ảnh cắt chân chỉ để phủ quyết hộp ủng (không dùng làm phiếu Có / Thiếu)
         by = self.c.get("weights_by_ppe") or {}
         self.path_of = {ppe: by.get(ppe, self.c["weights"]) for ppe in PART_CLASSES}
-        self.models = {w: YOLO(root / w) for w in {self.path_of[p] for p in self.use}}
+        # model dùng chung giữa các camera (cache theo trọng số) — xem model_cache.py
+        self.models = {w: get_model(lambda w=w: YOLO(root / w), root / w)
+                       for w in {self.path_of[p] for p in self.use}}
 
     def classify(self, crops, weights):
         if not crops:
             return []
-        rs = self.models[weights].predict(crops, imgsz=self.c["imgsz"], device=self.device, verbose=False)
+        model, lock = self.models[weights]
+        rs = locked_predict(lock, model, crops, imgsz=self.c["imgsz"], device=self.device, verbose=False)
         return [r.probs.data.cpu().numpy() for r in rs]
 
     def __call__(self, frame, tracks):
@@ -157,7 +162,7 @@ class PartClassifier:
                 if crop is not None:
                     groups.setdefault(self.path_of[ppe], []).append((t, ppe, side, crop))
         for w, items in groups.items():
-            names = self.models[w].names
+            names = self.models[w][0].names
             for (t, ppe, side, _), pr in zip(items, self.classify([x[3] for x in items], w)):
                 t.extra["parts"][(ppe, side)] = ppe_prob(pr, names, ppe)
 

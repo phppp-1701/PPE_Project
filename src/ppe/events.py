@@ -5,6 +5,7 @@ Mỗi (source_id, session_id, track_id) có tối đa một sự kiện đang m�
 """
 
 import copy
+import time
 import uuid
 from pathlib import Path
 
@@ -12,12 +13,20 @@ ACTIVE, PENDING, CLOSED = "active", "pending_observation", "closed"
 
 
 class EventManager:
-    def __init__(self, source_id, session_id, required_ppe, evidence_dir=None, policy_version=1, on_change=None):
+    def __init__(self, source_id, session_id, required_ppe, evidence_dir=None, policy_version=1, on_change=None,
+                 evidence_interval_s=0.0, evidence_max=0):
         self.source_id, self.session_id = source_id, session_id
         self.required = list(required_ppe)
-        self.evidence_dir = Path(evidence_dir) / session_id if evidence_dir else None
+        self.evidence_dir = Path(evidence_dir) if evidence_dir else None
+        # cấu trúc lưu: <evidence_dir>/<YYYY-MM-DD>/<session_id>/<event_id>_<n>.jpg
+        # (tách theo ngày trước, phiên sau — duyệt lịch sử vi phạm dễ, tên thư mục tự giải thích)
         self.policy_version = policy_version
         self.on_change = on_change              # hàm nhận (loại thay đổi, bản sao sự kiện), vd. ghi file / gửi backend
+        # Chu kỳ chụp minh chứng (theo chuẩn hệ thống giám sát): chụp ngay khi phát hiện,
+        # sau đó chỉ chụp lại mỗi evidence_interval_s giây và tối đa evidence_max ảnh/sự kiện.
+        # 0 = giữ hành vi cũ (chụp lúc phát hiện và khi thiếu món PPE mới).
+        self.evidence_interval_s = float(evidence_interval_s)
+        self.evidence_max = int(evidence_max)
         self.open = {}                          # track_id -> sự kiện đang mở
         self.closed = []
 
@@ -27,20 +36,33 @@ class EventManager:
             self.on_change(kind, copy.deepcopy(ev))
 
     def _evidence(self, ev, frame, box, t):
-        """Lưu tệp trước, rồi mới ghi đường dẫn vào sự kiện (spec mục 6)."""
+        """Lưu tệp trước, rồi mới ghi đường dẫn vào sự kiện (spec mục 6).
+
+        Chu kỳ theo cấu hình (mục events trong configs/pipeline.yaml): ảnh đầu tiên chụp
+        ngay khi phát hiện vi phạm; các ảnh sau chỉ chụp khi đủ evidence_interval_s giây
+        kể từ lần chụp trước và không vượt evidence_max ảnh cho một sự kiện."""
         if frame is None or self.evidence_dir is None:
+            return
+        if self.evidence_max and len(ev["evidence_refs"]) >= self.evidence_max:
+            return
+        last_t = ev.get("_last_evidence_t")
+        if last_t is not None and self.evidence_interval_s > 0 and t - last_t < self.evidence_interval_s:
             return
         import cv2
 
         img = frame.copy()
         x1, y1, x2, y2 = [int(v) for v in box]
-        cv2.rectangle(img, (x1, y1), (x2, y2), (0, 0, 255), 3)
+        cv2.rectangle(img, (x1, y1), (x2, y2), (0, 0, 255), 4)
         cv2.putText(img, f"ID {ev['track_id']} thieu: {','.join(ev['missing_items'])}", (x1, max(20, y1 - 8)),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
         self.evidence_dir.mkdir(parents=True, exist_ok=True)
-        path = self.evidence_dir / f"{ev['event_id']}_{len(ev['evidence_refs'])}.jpg"
+        day_dir = self.evidence_dir / time.strftime("%Y-%m-%d")
+        target_dir = day_dir / self.session_id
+        target_dir.mkdir(parents=True, exist_ok=True)
+        path = target_dir / f"{ev['event_id']}_{len(ev['evidence_refs'])}.jpg"
         if cv2.imwrite(str(path), img):
             ev["evidence_refs"].append({"t": t, "path": str(path)})
+            ev["_last_evidence_t"] = t
 
     def update(self, t, track_id, checks, frame=None, box=None):
         """checks: {ppe: temporal.Check} của người này ở thời điểm t (chỉ gọi khi người có mặt ở khung)."""

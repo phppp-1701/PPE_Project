@@ -36,7 +36,9 @@ class Pipeline:
         if self.stage >= 4:
             self.temporal = TemporalConfirmer(self.cfg)
             self.events = EventManager(source_id, session_id, self.required,
-                                       ROOT / self.cfg["events"]["evidence_dir"], on_change=on_event)
+                                       ROOT / self.cfg["events"]["evidence_dir"], on_change=on_event,
+                                       evidence_interval_s=self.cfg["events"].get("evidence_interval_s", 0.0),
+                                       evidence_max=self.cfg["events"].get("evidence_max", 0))
 
     def process(self, frame, t):
         """Xử lý một khung ở thời điểm t (giây). Trả về dict kết quả của các bước đã chạy và thời gian từng bước."""

@@ -16,6 +16,13 @@ lớp `zoom.classes` nhân conf với `conf_scale`, lọc theo `detector.conf`, 
 import numpy as np
 
 from . import Det, require
+from .model_cache import get_model, predict as locked_predict
+
+
+def _load_yolo(path):
+    from ultralytics import YOLO
+
+    return YOLO(path)
 
 
 def letterbox_square(img, size):
@@ -40,8 +47,6 @@ def unletterbox(xyxy, r, dx, dy, ox, oy):
 
 class Detector:
     def __init__(self, cfg, root):
-        from ultralytics import YOLO
-
         d = cfg["detector"]
         self.conf = require(cfg, "detector", "conf")
         self.nms_iou = require(cfg, "detector", "nms_iou")
@@ -63,15 +68,24 @@ class Detector:
             self.predict_conf = self.person_min       # khung đầy đủ: chỉ cần người
         else:
             self.predict_conf = min([self.person_min] + [self.conf[n] for n in self.names.values()])
-        self.model = YOLO(root / d["weights"])
+        # model dùng chung giữa các camera (cache theo trọng số) — xem model_cache.py
+        self.model, self._model_lock = get_model(lambda: _load_yolo(root / d["weights"]), root / d["weights"])
         # Bản mô hình riêng cho zoom: một đối tượng YOLO đổi qua lại cỡ ảnh / FP16 giữa hai lần gọi thì Ultralytics dựng lại
         # bộ suy luận mỗi lần (đo 20/11/2026 trên video4: 240 ms/khung với FP16, 60 ms/khung với FP32).
-        self.zoom_model = YOLO(root / d["weights"]) if self.zoom is not None else None
-        if self.zoom_model is not None:   # lần dò đầu (và mỗi cỡ lô mới) mất khoảng 1,8 giây: khởi động trước, dò từng ảnh
+        if self.zoom is not None:
+            self.zoom_model, self._zoom_lock = get_model(
+                lambda: _load_yolo(root / d["weights"]), f"{root / d['weights']}#zoom"
+            )
+            # lần dò đầu (và mỗi cỡ lô mới) mất khoảng 1,8 giây: khởi động trước, dò từng ảnh
             self._zoom_predict(np.zeros((self.zoom["imgsz"], self.zoom["imgsz"], 3), dtype=np.uint8), 0.5)
+        else:
+            self.zoom_model, self._zoom_lock = None, None
         self.frame_idx = -1
         bad = {c: n for c, n in self.names.items() if self.model.names.get(c) != n}
         assert not bad, f"lớp của mô hình {self.model.names} khác cấu hình {bad}"
+
+    def _predict(self, *args, **kwargs):
+        return locked_predict(self._model_lock, self.model, *args, **kwargs)
 
     def _boxes(self, r, offset=(0, 0)):
         b = r.boxes.cpu().numpy()
@@ -96,8 +110,8 @@ class Detector:
         if not crops:
             return []
         min_conf = min(self.crop_conf[n] for n in self.crop_conf)
-        res = self.model.predict(crops, imgsz=self.crop["imgsz"], conf=min_conf, iou=self.nms_iou,
-                                 device=self.device, verbose=False)
+        res = self._predict(crops, imgsz=self.crop["imgsz"], conf=min_conf, iou=self.nms_iou,
+                            device=self.device, verbose=False)
         dets = [x for off, r in zip(offs, res) for x in self._boxes(r, off) if x[0] != self.person_cls]
         if not dets:
             return []
@@ -126,8 +140,11 @@ class Detector:
     def _zoom_predict(self, img, conf):
         """Một ảnh vuông mỗi lần (lô cỡ 1 cố định): đo 20/11/2026, lô 2 ảnh mất gần bằng hai lần lô 1 ảnh, còn mỗi cỡ lô
         mới làm lần dò đó chậm khoảng 1,8 giây."""
-        return self.zoom_model.predict(img, imgsz=self.zoom["imgsz"], conf=conf, iou=self.nms_iou, device=self.device,
-                                       verbose=False, quantize=16 if self.zoom["half"] else None)[0]
+        return locked_predict(
+            self._zoom_lock, self.zoom_model, img,
+            imgsz=self.zoom["imgsz"], conf=conf, iou=self.nms_iou, device=self.device,
+            verbose=False, quantize=16 if self.zoom["half"] else None,
+        )[0]
 
     def _zoom_ppe(self, frame, persons, ppe):
         """C9: dò lại lớp `zoom.classes` trên ảnh cắt của người lớn, gộp với `ppe` (đã lọc conf) bằng NMS theo lớp."""
@@ -161,8 +178,8 @@ class Detector:
 
     def __call__(self, frame):
         """(danh sách hộp người kể cả conf thấp, danh sách hộp PPE đã lọc theo conf từng lớp)."""
-        r = self.model.predict(frame, imgsz=self.imgsz, conf=self.predict_conf, iou=self.nms_iou,
-                               device=self.device, verbose=False)[0]
+        r = self._predict(frame, imgsz=self.imgsz, conf=self.predict_conf, iou=self.nms_iou,
+                          device=self.device, verbose=False)[0]
         persons, ppe = [], []
         for c, xyxy, s in self._boxes(r):
             name = self.names.get(c)

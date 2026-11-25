@@ -6,6 +6,8 @@ Chạy theo lô trên ảnh cắt từng người rồi ghi cổ tay vào track.
 
 import numpy as np
 
+from .model_cache import get_model, predict as locked_predict
+
 LEFT_WRIST, RIGHT_WRIST = 9, 10    # chỉ số điểm khớp COCO
 LEFT_ANKLE, RIGHT_ANKLE = 15, 16
 
@@ -17,7 +19,8 @@ class PoseEstimator:
         p = cfg["pose"]
         self.margin, self.imgsz, self.conf = p["margin"], p["imgsz"], p["conf"]
         self.device = cfg["detector"]["device"]
-        self.model = YOLO(root / p["weights"])
+        # model dùng chung giữa các camera (cache theo trọng số) — xem model_cache.py
+        self.model, self._model_lock = get_model(lambda: YOLO(root / p["weights"]), root / p["weights"])
 
     def __call__(self, frame, tracks):
         h, w = frame.shape[:2]
@@ -31,7 +34,8 @@ class PoseEstimator:
                 kept.append((t, a, b, c - a))
         if not crops:
             return
-        results = self.model.predict(crops, imgsz=self.imgsz, conf=self.conf, device=self.device, verbose=False)
+        results = locked_predict(self._model_lock, self.model, crops, imgsz=self.imgsz,
+                                 conf=self.conf, device=self.device, verbose=False)
         for (t, ox, oy, cw), r in zip(kept, results):
             if r.keypoints is None or not len(r.keypoints.data):
                 continue

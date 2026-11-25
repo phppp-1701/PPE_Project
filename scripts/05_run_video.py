@@ -36,16 +36,17 @@ from ppe.parts import part_boxes  # noqa: E402
 from ppe.pipeline import STAGES, Pipeline  # noqa: E402
 
 # Màu (BGR). Người: khung dày, màu theo trạng thái; PPE: khung mảnh hơn, mỗi loại một màu, có nhãn chữ.
-STATE_COLOR = {HAVE: (0, 200, 0), MISSING: (0, 0, 255)}      # Có: xanh lá, Thiếu: đỏ
+# 21/11/2026: đậm hóa theo yêu cầu demo — viền dày +2px so với bản trước, màu nâng độ bão hòa.
+STATE_COLOR = {HAVE: (0, 255, 0), MISSING: (0, 0, 255)}      # Có: xanh lá đậm, Thiếu: đỏ
 UNKNOWN_COLOR = (230, 230, 230)                               # Chưa xác định: trắng
 PERSON_COLOR = (255, 140, 0)                                  # người khi chưa có trạng thái (bước < comply): xanh dương
 LOST_COLOR = (160, 160, 160)                                  # quỹ đạo mất tạm: xám, nét đứt
 PPE_COLOR = {
-    "helmet": (0, 165, 255),    # cam
+    "helmet": (0, 140, 255),    # cam đậm
     "vest": (0, 255, 255),      # vàng
     "gloves": (255, 0, 255),    # tím
     "goggles": (255, 255, 0),   # xanh lơ
-    "boots": (255, 180, 0),     # xanh biển sáng
+    "boots": (255, 200, 0),     # xanh biển sáng
 }
 TAG = {"helmet": "Mu", "vest": "Ao", "gloves": "Gang", "goggles": "Kinh", "boots": "Ung"}
 SHORT = {"helmet": "M", "vest": "A", "gloves": "G", "goggles": "K", "boots": "U"}
@@ -198,13 +199,13 @@ def draw(frame, out, cfg, draw_regions):
     img = frame
     h = img.shape[0]
     s = max(0.45, h / 1080 * 0.7)                       # cỡ chữ theo độ phân giải
-    t_person = max(2, round(h / 360))                   # khung người dày hơn khung PPE
-    t_ppe = max(1, t_person - 1)
+    t_person = max(4, round(h / 360) + 2)               # khung người dày (+2px theo yêu cầu 21/11/2026)
+    t_ppe = max(3, t_person - 1)                        # khung PPE dày hơn 1 cấp, tối thiểu 3px
     name_of = {p["cls"]: n for n, p in cfg["ppe"].items()}
     status = box_status(out, cfg)
 
     for tid, b in out.get("lost", []):                 # người mất tạm: ByteTrack vẫn giữ ID, khung này không có quan sát
-        dashed_rect(img, b, LOST_COLOR, 1)
+        dashed_rect(img, b, LOST_COLOR, max(2, t_ppe - 1))
         tag(img, f"ID {tid} (mat)", int(b[0]), int(b[1]), LOST_COLOR, scale=s * 0.8)
 
     states = out.get("states", {})
@@ -239,7 +240,8 @@ def draw(frame, out, cfg, draw_regions):
         colored = kind in ("co", "phat_hien")
         c = PPE_COLOR.get(name, LOST_COLOR) if colored else LOST_COLOR
         x1, y1, x2, y2 = d.xyxy.astype(int)
-        cv2.rectangle(img, (x1, y1), (x2, y2), c, t_ppe if colored or tid is not None else 1)
+        thick = (t_ppe + 2 if name == "boots" else t_ppe) if (colored or tid is not None) else (2 if name == "boots" else 1)
+        cv2.rectangle(img, (x1, y1), (x2, y2), c, thick)
         tag(img, label, x1, y2, c, scale=s * 0.75, above=False)
 
     # Bằng chứng của bộ phân loại (bước A, 14/11/2026): nét đứt, nhãn "(PL)". Chỉ vẽ, không đổi dữ liệu kết quả.
