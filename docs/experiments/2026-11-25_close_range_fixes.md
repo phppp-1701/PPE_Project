@@ -217,3 +217,7 @@ Như lần 2, thêm hai điều kiện chặn gán sang người khác (khóa `w
 11 → 47. (a), (b), (c) đạt; (d) không. V3b giả lập chủ găng **không được phát hiện** (bỏ chủ, nới hộp người gần nhất bao
 găng): khi đó cổ tay gần nhất còn lại là của người bên cạnh. Hậu quả nếu bật: tay người bên cạnh có thể bị báo Có găng khi
 chủ găng bị detector bỏ sót (không bao giờ dẫn tới Thiếu). Dừng A1 theo kế hoạch; chờ người dùng quyết định.
+
+**A2 (25/11/2026): đạt, bật.** `05i` trên `close_eval/stepA2/states_current` (05h, cấu hình hiện tại F1 + F2, video3-6):
+đổi trạng thái từng khung (mỗi PPE của mỗi người) 28,49 lần/phút; hiển thị với hold_s 0,5 / 1,0 / 1,5 / 2,0: 8,11 / 5,89 /
+5,31 / 5,31 (giảm 71,5 / 79,3 / 81,4 / 81,4%) → chọn **1,5 s**. `display.hold_s: 1.5` trong `configs/pipeline.yaml`.

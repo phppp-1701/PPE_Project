@@ -11,6 +11,7 @@ Mỗi file ứng với một bước xử lý:
 | `parts.py` | Bước kiểm tra thứ hai cho găng, ủng, kính: cắt ảnh tay, chân, mắt theo keypoint, phân loại bằng YOLO11n-cls (bật ở mục `part_cls`) |
 | `association.py` | Gán mũ, áo, găng cho đúng người theo vùng cơ thể |
 | `compliance.py` | Kết luận Có / Thiếu / Chưa xác định |
+| `display.py` | Lớp hiển thị (A2, 25/11/2026): làm mượt ô trạng thái PPE vẽ trên người (`display.hold_s`); chỉ để vẽ, không đổi kết quả |
 | `temporal.py` | Cửa sổ thời gian xác nhận vi phạm, khắc phục |
 | `events.py` | Mở, cập nhật, đóng sự kiện cảnh báo |
 | `pipeline.py` | Nối các bước trên thành một luồng; `set_required` đổi PPE bắt buộc khi đang chạy (camera trực tiếp): đóng sự kiện đang mở với lý do `policy_changed`, đếm lại từ đầu |

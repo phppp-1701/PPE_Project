@@ -1,0 +1,30 @@
+{
+ "videos": [
+  "video3",
+  "video4",
+  "video5",
+  "video6"
+ ],
+ "phut_nguoi_ppe": 10.35,
+ "doi_tung_khung_moi_phut": 28.49,
+ "luoi": {
+  "0.5": {
+   "doi_hien_thi_moi_phut": 8.11,
+   "giam": 0.7153
+  },
+  "1.0": {
+   "doi_hien_thi_moi_phut": 5.89,
+   "giam": 0.7932
+  },
+  "1.5": {
+   "doi_hien_thi_moi_phut": 5.31,
+   "giam": 0.8136
+  },
+  "2.0": {
+   "doi_hien_thi_moi_phut": 5.31,
+   "giam": 0.8136
+  }
+ },
+ "muc_tieu": 0.8,
+ "chon": 1.5
+}

@@ -242,6 +242,13 @@ temporal:
   # sự kiện video 3-6; 0.5 (lớn nhất) A-E E 0,957 không đổi, D 0,0100 -> 0,0103.
   min_valid_frac_on: 0.5
 
+display:
+  # A2 (docs/experiments/2026-11-25_close_range_fixes.md): CHỈ ĐỂ VẼ (src/ppe/display.py). Ô trạng thái PPE trên người hiện
+  # trạng thái chắc chắn gần nhất (Có/Thiếu) thêm tối đa hold_s giây khi khung hiện tại là Chưa xác định. Không đổi trạng thái
+  # từng khung, sự kiện, chỉ số. Chọn 25/11/2026 trên video3-6 (05i, lưới 0,5/1,0/1,5/2,0; nhỏ nhất đạt giảm >= 80%): đổi
+  # trạng thái hiển thị 28,5 -> 5,3 lần/phút (-81,4%); 1,0 s: -79,3%.
+  hold_s: 1.5
+
 events:
   evidence_dir: outputs/evidence     # ảnh minh chứng: <evidence_dir>/<session_id>/<event_id>_<n>.jpg
 
