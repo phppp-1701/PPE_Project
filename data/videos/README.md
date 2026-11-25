@@ -7,4 +7,8 @@
 - Nhãn CVAT của từng video đặt cùng tên với video, ví dụ `video2_cvat.zip` (quy tắc gán: `docs/video_labeling.md`). Từ 16/11/2026 các ZIP nhãn chỉ giữ trên máy, không đưa lên git (bản cũ còn trong lịch sử git).
 - Video không bao giờ được dùng để huấn luyện YOLO.
 - File video không đưa lên git (chỉ `README.md` và `video_sources.csv`).
+- `kiem_thu_gan` đợt 2 (video18-27, 25/11/2026): người dùng giao tìm điểm yếu khi quan sát tầm gần, kiểm duy trì PPE
+  qua các khung và tracking. Pexels, đã loại cùng buổi quay với video 3-17 và `holdout/`; 4K hạ về 1920 cạnh dài (giữ
+  FPS). Có cả trường hợp biên: chỉ thấy chân (video25-27), mũ cứu hỏa (video23), tấm chắn mặt (video20). Chỉ đo, không
+  chỉnh tham số, không train.
 - `holdout/`: tập video quay gần độc lập, niêm phong (14/11/2026), chỉ dùng một lần cho đánh giá cuối; quy tắc, tiêu chí chọn, nhãn, manifest: `holdout/README.md`.
