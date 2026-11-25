@@ -356,7 +356,8 @@ class BackendServer:
 
     @property
     def base_url(self) -> str:
-        return f"http://{self.host}:{self.port}"
+        host = "127.0.0.1" if self.host in ("0.0.0.0", "::") else self.host
+        return f"http://{host}:{self.port}"
 
     def start(self, focus_callback=None) -> None:
         import uvicorn
@@ -408,7 +409,7 @@ class BackendServer:
         try:
             import backend.app as app_mod
 
-            return bool(app_mod.LIVE.is_active())
+            return bool(app_mod.any_live_running())
         except Exception:
             return False
 
@@ -416,7 +417,7 @@ class BackendServer:
         try:
             import backend.app as app_mod
 
-            app_mod.LIVE.stop(timeout=min(5.0, float(timeout_s)))
+            app_mod.stop_all_lives()
         except Exception as exc:
             LOGGER.warning("Lỗi khi dừng LiveCamera lúc thoát: %s", exc)
 
@@ -502,6 +503,28 @@ class DesktopBridge:
         out = create_diagnostic_zip(Path(chosen), self._cfg)
         return str(out)
 
+    def export_from_url(self, export_url: str, default_filename: str = "ppe_events.csv", kind: str = "csv") -> str | None:
+        """Mở hộp thoại lưu tệp của Windows, tải dữ liệu từ API nội bộ và lưu vào đường dẫn đã chọn."""
+        chosen = self.save_file(default_filename, kind=kind)
+        if not chosen:
+            return None
+        target = Path(chosen)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        with urllib.request.urlopen(export_url, timeout=30.0) as resp:
+            data = resp.read()
+        target.write_bytes(data)
+        return str(target)
+
+    def toggle_fullscreen(self) -> bool:
+        """Chuyển đổi chế độ toàn màn hình (Fullscreen F11) của cửa sổ ứng dụng."""
+        if self._window is None:
+            return False
+        try:
+            self._window.toggle_fullscreen()
+            return True
+        except Exception:
+            return False
+
 
 def _install_exception_hooks(cfg: dict[str, Any]) -> None:
     """Ghi log mọi lỗi chưa bắt và hiện hộp thoại kèm tùy chọn lưu gói chẩn đoán."""
@@ -535,11 +558,18 @@ def _install_exception_hooks(cfg: dict[str, Any]) -> None:
     )
 
 
-def run_desktop_app(auto_close_ms: int = 0, check_only: bool = False) -> int:
+def run_desktop_app(
+    auto_close_ms: int = 0,
+    check_only: bool = False,
+    host: str | None = None,
+    port: int | None = None,
+) -> int:
     """Chạy ứng dụng desktop PPE Monitor. Trả về mã thoát (0 = thành công)."""
     cfg = load_desktop_config()
     app_cfg = cfg.get("app") or {}
     srv_cfg = cfg.get("server") or {}
+    effective_host = str(host or srv_cfg.get("host") or "127.0.0.1")
+    effective_port = int(port if port is not None else (srv_cfg.get("port") or 0))
     version = str(app_cfg.get("version") or APP_VERSION)
     base_title = str(app_cfg.get("title") or f"{APP_NAME} — Giám sát Trang bị Bảo hộ Lao động")
     window_title = f"{base_title} v{version}"
@@ -571,8 +601,8 @@ def run_desktop_app(auto_close_ms: int = 0, check_only: bool = False) -> int:
         # 3. Nếu chạy kiểm thử không giao diện (`--check-only`), khởi động backend rồi tắt sạch
         if check_only:
             backend = BackendServer(
-                host=str(srv_cfg.get("host") or "127.0.0.1"),
-                port=int(srv_cfg.get("port") or 0),
+                host=effective_host,
+                port=effective_port,
             )
             guard.write_info(backend.port, window_title)
             backend.start()
@@ -629,8 +659,8 @@ def run_desktop_app(auto_close_ms: int = 0, check_only: bool = False) -> int:
         bridge.attach_window(window)
 
         backend = BackendServer(
-            host=str(srv_cfg.get("host") or "127.0.0.1"),
-            port=int(srv_cfg.get("port") or 0),
+            host=effective_host,
+            port=effective_port,
         )
         guard.write_info(backend.port, window_title)
 
@@ -755,12 +785,29 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         action="store_true",
         help="Chỉ kiểm tra khởi tạo đường dẫn, khóa phiên bản và máy chủ nền (không mở cửa sổ GUI)",
     )
+    parser.add_argument(
+        "--host",
+        type=str,
+        default=None,
+        help="Địa chỉ IP lắng nghe (ví dụ 0.0.0.0 để cho phép truy cập từ TV Box trong mạng LAN)",
+    )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=None,
+        help="Cổng dịch vụ cố định (ví dụ 8080)",
+    )
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
-    return run_desktop_app(auto_close_ms=args.auto_close_ms, check_only=args.check_only)
+    return run_desktop_app(
+        auto_close_ms=args.auto_close_ms,
+        check_only=args.check_only,
+        host=args.host,
+        port=args.port,
+    )
 
 
 if __name__ == "__main__":

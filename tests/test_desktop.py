@@ -241,3 +241,151 @@ def test_rotating_logs_and_diagnostic_zip_exclude_media(tmp_path, monkeypatch):
         loaded_eff = yaml.safe_load(zf.read("desktop_effective.yaml").decode("utf-8"))
         assert loaded_eff["app"]["name"] == "PPE Monitor"
 
+
+def test_summarize_persons_in_frame_inspector():
+    """Bảng Đối tượng trong khung hình (Admin Inspector) phân loại đúng trạng thái từng người và từng PPE."""
+    from types import SimpleNamespace
+    from backend.live import summarize_persons_in_frame
+
+    tr1 = SimpleNamespace(track_id=4, confident=True)
+    tr2 = SimpleNamespace(track_id=7, confident=True)
+    out = {
+        "tracks": [tr1, tr2],
+        "lost": [(9, [0, 0, 10, 10])],
+        "states": {
+            4: {
+                "helmet": {"state": "have"},
+                "vest": {"state": "have"},
+                "gloves": {"state": "missing"},
+                "boots": {"state": "have"},
+            },
+            7: {
+                "helmet": {"state": "have"},
+                "vest": {"state": "have"},
+                "gloves": {"state": "have"},
+                "boots": {"state": "have"},
+            },
+        },
+        "checks": {
+            4: {"gloves": SimpleNamespace(missing_confirmed=True)},
+            7: {},
+        },
+    }
+    open_ev = {4: {"event_id": "ev_04", "event_state": "active", "missing_items": ["gloves"]}}
+    summary = summarize_persons_in_frame(out, ["helmet", "vest", "gloves", "boots"], open_ev)
+
+    assert len(summary) == 3
+    # Người đang vi phạm được ưu tiên xếp đầu danh sách
+    assert summary[0]["track_id"] == 4
+    assert summary[0]["status"] == "violation"
+    assert summary[0]["items"]["gloves"] == "missing"
+    assert summary[0]["items"]["goggles"] == "unchecked"
+    assert summary[0]["confirmed_missing"] == ["gloves"]
+    assert summary[0]["event_id"] == "ev_04"
+
+    p7 = next(x for x in summary if x["track_id"] == 7)
+    assert p7["status"] == "compliant"
+    assert p7["items"]["helmet"] == "have"
+
+    p9 = next(x for x in summary if x["track_id"] == 9)
+    assert p9["status"] == "lost"
+
+
+def test_video_file_sequential_playback_and_export_apis(tmp_path, monkeypatch):
+    """Kiểm thử chạy nguồn tệp video tuần tự (pause/resume, thời gian theo khung) và các API xuất CSV/ZIP, cài đặt, hệ thống."""
+    import cv2
+    import numpy as np
+    from fastapi.testclient import TestClient
+    import backend.app as app_mod
+    import backend.db as db_mod
+    from backend.live import LiveCamera, load_live_config
+    from tests.test_live import FakePipe, wait_for
+
+    monkeypatch.setenv("PPE_DESKTOP_MODE", "1")
+    monkeypatch.setenv("PPE_DATA_DIR", str(tmp_path / "app_data"))
+    ensure_user_dirs()
+    db_mod.configure_db_path(get_db_path())
+
+    # Tạo một tệp video ngắn 12 khung bằng OpenCV trong thư mục tạm
+    vid_path = tmp_path / "sample_worksite.mp4"
+    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+    writer = cv2.VideoWriter(str(vid_path), fourcc, 10.0, (160, 120))
+    for i in range(12):
+        writer.write(np.full((120, 160, 3), i * 15, dtype=np.uint8))
+    writer.release()
+    assert vid_path.exists()
+
+    seen_timestamps = []
+
+    class RecordingPipe(FakePipe):
+        def process(self, frame, t):
+            seen_timestamps.append(round(t, 3))
+            return super().process(frame, t)
+
+    cam = LiveCamera(
+        load_live_config(),
+        on_event=app_mod._live_event,
+        on_session=app_mod._live_session,
+        pipeline_factory=lambda s, sess, emit: RecordingPipe(s, sess, emit),
+        draw_factory=lambda: (lambda f, o, c: f),
+    )
+    monkeypatch.setattr(app_mod, "LIVE", cam)
+
+    with TestClient(app_mod.app) as c:
+        # 1. Kiểm tra giao diện Dashboard & các module JS/CSS tĩnh
+        for asset in (
+            "/dashboard/index.html",
+            "/dashboard/css/app.css",
+            "/dashboard/js/api.js",
+            "/dashboard/js/monitor.js",
+            "/dashboard/js/events.js",
+            "/dashboard/js/settings.js",
+        ):
+            r_asset = c.get(asset)
+            assert r_asset.status_code == 200
+
+        # 2. Kiểm tra API /api/system và /api/settings
+        sys_res = c.get("/api/system").json()
+        assert sys_res["app_name"] == "PPE Monitor"
+        assert "model" in sys_res and "storage" in sys_res
+
+        put_res = c.put("/api/settings", json={"alerts": {"sound_enabled": True}, "retention": {"keep_days": 14}}).json()
+        assert put_res["settings"]["alerts"]["sound_enabled"] is True
+        assert put_res["settings"]["retention"]["keep_days"] == 14
+
+        # 3. Chạy tệp video ở chế độ nhanh (fast) và kiểm tra thời gian theo khung t = idx / fps
+        st = c.post("/api/live/start", json={"source": "file", "path": str(vid_path), "mode": "fast"}).json()
+        assert st["source_type"] == "file"
+        assert wait_for(lambda: cam.state == "idle" and cam.frames == 12, timeout=5.0)
+
+        # Không bỏ khung nào, thời gian khớp chính xác 0.0, 0.1, 0.2, ..., 1.1s
+        assert len(seen_timestamps) == 12
+        assert seen_timestamps[:4] == [0.0, 0.1, 0.2, 0.3]
+
+        # Sự kiện tạo ra từ tệp video đã được lưu vào SQLite
+        ev_list = c.get("/api/events").json()
+        assert ev_list["total"] >= 1
+        ev_id = ev_list["events"][0]["event_id"]
+
+        # Gửi đánh giá giám sát viên có tiếng Việt
+        fb_res = c.post(
+            f"/api/events/{ev_id}/feedback",
+            json={"feedback_type": "false_alarm", "false_alarm_items": ["helmet"], "notes": "Đội mũ khuất bóng râm"},
+        )
+        assert fb_res.status_code == 200
+
+        # 4. Xuất CSV (UTF-8 có BOM) và ZIP
+        csv_resp = c.get("/api/export/events.csv")
+        assert csv_resp.status_code == 200
+        raw_csv = csv_resp.content
+        assert raw_csv.startswith(b"\xef\xbb\xbf")  # UTF-8 BOM cho Excel
+        csv_text = raw_csv.decode("utf-8-sig")
+        assert ev_id in csv_text and "Đội mũ khuất bóng râm" in csv_text
+
+        zip_resp = c.get("/api/export/events.zip")
+        assert zip_resp.status_code == 200
+        import io
+        with zipfile.ZipFile(io.BytesIO(zip_resp.content), "r") as zf:
+            assert "events.csv" in zf.namelist()
+
+

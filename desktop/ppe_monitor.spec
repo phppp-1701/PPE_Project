@@ -54,6 +54,7 @@ hiddenimports = [
     "backend.app",
     "backend.db",
     "backend.live",
+    "backend.video_file",
     "desktop",
     "desktop.paths",
     "uvicorn.logging",
