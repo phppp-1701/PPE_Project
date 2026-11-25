@@ -331,3 +331,26 @@ def test_api_events_sorted_by_system_time(client):
     c.post("/api/events", json=dict(base, event_id="moi", source_id="cam0", session_id="c1", confirmed_at=3.0,
                                     system_time="2026-11-16T20:00:00"))
     assert [e["event_id"] for e in c.get("/api/events").json()["events"]] == ["moi", "cu"]
+
+
+def test_ws_pushes_changes_and_live_status(client):
+    """A3 (25/11/2026): /ws gửi "changed" khi có ghi dữ liệu và "live" (trạng thái camera) định kỳ."""
+    c, cam, holder, db_mod = client
+    with c.websocket_connect("/ws") as ws:
+        first = ws.receive_json()
+        assert first["type"] == "changed"
+        v0 = first["version"]
+        got = {"live": False, "changed": False}
+        r = c.put(f"/api/sources/{cam.source_id}/policy", json={"required_ppe": ["helmet"]})
+        assert r.status_code == 200
+        for _ in range(40):
+            m = ws.receive_json()
+            if m["type"] == "live":
+                got["live"] = True
+                assert "state" in m["status"]
+            elif m["type"] == "changed" and m["version"] > v0:
+                got["changed"] = True
+                assert "policy" in m["kind"]
+            if all(got.values()):
+                break
+        assert all(got.values())

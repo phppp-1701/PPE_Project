@@ -17,6 +17,8 @@ regex==2025.11.3
 # Backend (FastAPI) và test API: đã có trong .venv từ bước 4 (backend) nhưng chưa ghi vào đây; ghi lại 18/11/2026 khi thêm CI
 fastapi==0.162.5
 uvicorn==0.54.0
+# WebSocket cho dashboard (A3, người dùng đồng ý cài 25/11/2026): uvicorn cần gói này để phục vụ /ws
+websockets==15.0.1
 httpx==0.28.1
 pyyaml==6.0.3
 # Vẽ biểu đồ báo cáo (scripts/08_report_figures.ipynb); đã có trong .venv (requirements-lock.txt), ghi lại 18/11/2026

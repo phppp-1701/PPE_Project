@@ -6,7 +6,7 @@ HTML/CSS/JS (`index.html`, không cần build), backend phục vụ ở `http://
   số người, PPE đang kiểm, phiên bản chính sách. Trạng thái hỏi lại mỗi giây.
 - **Quy định PPE bắt buộc**: chọn nguồn (mặc định nguồn webcam `cam0`), công tắc đọc chính sách hiện tại của nguồn;
   Lưu tạo phiên bản mới, áp dụng ngay nếu nguồn đang chạy camera.
-- Thống kê vi phạm theo PPE, danh sách cảnh báo (tự làm mới 3 giây), chi tiết sự kiện với ảnh minh chứng theo mốc
+- Thống kê vi phạm theo PPE, danh sách cảnh báo (cập nhật ngay qua WebSocket `/ws` từ 25/11/2026; mất kết nối thì tự hỏi định kỳ 3 giây như cũ), chi tiết sự kiện với ảnh minh chứng theo mốc
   thời gian, phản hồi của giám sát viên. Danh sách xếp theo giờ hệ thống lúc tạo sự kiện (mới nhất trước); cột Thời điểm
   ghi giờ thật và giây trong phiên. Lọc theo phiên ("Phiên camera gần nhất" tự chọn khi bấm Bắt đầu, hoặc "Mọi phiên"),
   nguồn, trạng thái, PPE.

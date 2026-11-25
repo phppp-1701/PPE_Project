@@ -221,3 +221,10 @@ chủ găng bị detector bỏ sót (không bao giờ dẫn tới Thiếu). Dừ
 **A2 (25/11/2026): đạt, bật.** `05i` trên `close_eval/stepA2/states_current` (05h, cấu hình hiện tại F1 + F2, video3-6):
 đổi trạng thái từng khung (mỗi PPE của mỗi người) 28,49 lần/phút; hiển thị với hold_s 0,5 / 1,0 / 1,5 / 2,0: 8,11 / 5,89 /
 5,31 / 5,31 (giảm 71,5 / 79,3 / 81,4 / 81,4%) → chọn **1,5 s**. `display.hold_s: 1.5` trong `configs/pipeline.yaml`.
+
+### A3 — dashboard qua WebSocket (25/11/2026): xong
+
+Người dùng đồng ý cài `websockets==15.0.1` (khóa trong `requirements.txt`, `requirements-lock.txt`). `backend/app.py`: `/ws`
+đẩy "changed" khi dữ liệu đổi và trạng thái camera mỗi giây; `dashboard/index.html` nhận qua WebSocket, mất kết nối thì hỏi
+định kỳ như cũ. Kiểm: `tests/test_live.py::test_ws_pushes_changes_and_live_status`; chạy uvicorn thật, client `websockets`
+nhận "changed" và "live". Giao diện trình duyệt chưa kiểm bằng mắt.

@@ -1,12 +1,15 @@
 """FastAPI Backend cho Hệ thống giám sát vi phạm PPE 6 lớp (docs/spec.md mục 6, Bảng 3.8)."""
 
+import asyncio
 import json
 import os
+import threading
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any, List, Optional
 
-from fastapi import Body, FastAPI, HTTPException, Query
+from fastapi import Body, FastAPI, HTTPException, Query, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, RedirectResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -33,6 +36,49 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# === THÔNG BÁO THAY ĐỔI QUA WEBSOCKET (A3, 25/11/2026; spec: Python, FastAPI, SQLite, WebSocket) ===
+# Mỗi thay đổi dữ liệu (tạo/sửa sự kiện, phản hồi, chính sách, sự kiện từ camera) tăng số phiên bản; /ws đẩy ngay
+# {"type": "changed", "version", "kind"} để dashboard tải lại, và trạng thái camera mỗi giây {"type": "live", "status"}.
+_CHANGE = {"version": 0, "kind": None}
+_change_lock = threading.Lock()
+WS_TICK_S = 0.2          # chu kỳ kiểm tra thay đổi trong vòng /ws (giây)
+WS_LIVE_S = 1.0          # chu kỳ gửi trạng thái camera (giây), như cách hỏi định kỳ cũ
+
+
+def notify_change(kind):
+    with _change_lock:
+        _CHANGE["version"] += 1
+        _CHANGE["kind"] = kind
+
+
+@app.middleware("http")
+async def _notify_on_write(request: Request, call_next):
+    """Yêu cầu ghi (POST/PUT/PATCH/DELETE vào /api) thành công -> báo thay đổi cho các kết nối /ws."""
+    resp = await call_next(request)
+    if request.method in ("POST", "PUT", "PATCH", "DELETE") and request.url.path.startswith("/api") and resp.status_code < 400:
+        notify_change(request.url.path)
+    return resp
+
+
+@app.websocket("/ws")
+async def ws_updates(websocket: WebSocket):
+    await websocket.accept()
+    last, last_live = -1, 0.0
+    try:
+        while True:
+            v = _CHANGE["version"]
+            if v != last:
+                await websocket.send_json({"type": "changed", "version": v, "kind": _CHANGE["kind"]})
+                last = v
+            now = time.monotonic()
+            if now - last_live >= WS_LIVE_S:
+                await websocket.send_json({"type": "live", "status": LIVE.status()})
+                last_live = now
+            await asyncio.sleep(WS_TICK_S)
+    except (WebSocketDisconnect, RuntimeError):
+        pass
 
 
 @app.on_event("startup")
@@ -562,6 +608,7 @@ def _live_event(kind, ev):
     _sent_refs[eid] = len(refs)
     if kind == "closed":
         _sent_refs.pop(eid, None)
+    notify_change(f"live:{kind}")        # sự kiện camera ghi thẳng vào database, không qua HTTP
 
 
 def _live_session(kind, info):

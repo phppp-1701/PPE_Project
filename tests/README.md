@@ -25,3 +25,5 @@ Các bài kiểm tra cho code trong `src/ppe`, ví dụ: thiếu mũ liên tục
 `test_ppe_memory.py`: F2 nhớ PPE (2026-11-25): không bật thì như cũ; mất hộp thì giữ Có theo thời gian đúng `have_hold_s` rồi mới báo Thiếu (giữ không làm mới mốc, báo chậm tối đa `have_hold_s`); hộp điểm thấp trùng vị trí nhớ làm mới bộ nhớ, hộp ở chỗ khác thì không; người khác không thừa hưởng bộ nhớ.
 
 `test_display.py`: A2 lớp hiển thị (2026-11-25): Chưa xác định hiện trạng thái chắc chắn gần nhất trong `hold_s`, quá hạn thì Chưa xác định; Có/Thiếu đổi ngay; không sửa trạng thái đầu vào; mỗi người một bộ nhớ.
+
+`test_live.py` thêm `test_ws_pushes_changes_and_live_status`: A3, `/ws` gửi "changed" khi đổi chính sách và "live" định kỳ.

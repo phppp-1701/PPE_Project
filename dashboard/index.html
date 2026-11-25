@@ -1250,10 +1250,12 @@
       fetchData();
     }
 
-    async function pollLive() {
-      let s;
-      try { s = await fetch(`${API_BASE}/api/live/status`).then(r => r.json()); }
-      catch (err) { return; }
+    async function pollLive(given) {
+      let s = given;
+      if (!s) {
+        try { s = await fetch(`${API_BASE}/api/live/status`).then(r => r.json()); }
+        catch (err) { return; }
+      }
       liveSourceId = s.source_id;
       const active = s.state === 'starting' || s.state === 'running';
       if (s.session_id !== liveSessionId) {
@@ -1297,12 +1299,29 @@
       }
     }
 
-    // Tải dữ liệu, tự làm mới: sự kiện 3 giây, trạng thái camera 1 giây
+    // Cập nhật: WebSocket /ws đẩy "changed" (tải lại sự kiện ngay) và "live" (trạng thái camera mỗi giây).
+    // Dự phòng khi WebSocket mất kết nối: hỏi định kỳ như cũ (sự kiện 3 giây, camera 1 giây); khi đang nối thì 30 giây.
+    let wsOpen = false, lastPoll = 0, lastLive = 0;
+    function connectWs() {
+      const url = (API_BASE || window.location.origin).replace(/^http/, 'ws') + '/ws';
+      let ws;
+      try { ws = new WebSocket(url); } catch (err) { setTimeout(connectWs, 3000); return; }
+      ws.onopen = () => { wsOpen = true; };
+      ws.onmessage = (m) => {
+        let msg;
+        try { msg = JSON.parse(m.data); } catch (err) { return; }
+        if (msg.type === 'changed') { lastPoll = Date.now(); fetchData(); }
+        else if (msg.type === 'live') { lastLive = Date.now(); pollLive(msg.status); }
+      };
+      ws.onclose = () => { wsOpen = false; setTimeout(connectWs, 3000); };
+      ws.onerror = () => { try { ws.close(); } catch (err) {} };
+    }
     loadSources();
     fetchData();
     pollLive();
-    setInterval(fetchData, 3000);
-    setInterval(pollLive, 1000);
+    connectWs();
+    setInterval(() => { if (!wsOpen || Date.now() - lastPoll > 30000) { lastPoll = Date.now(); fetchData(); } }, 3000);
+    setInterval(() => { if (!wsOpen || Date.now() - lastLive > 3000) { lastLive = Date.now(); pollLive(); } }, 1000);
   </script>
 
 </body>

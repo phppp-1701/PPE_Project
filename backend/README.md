@@ -33,3 +33,10 @@ cửa sổ thời gian đếm lại từ đầu theo danh sách mới, sự ki�
 
 Giới hạn: một webcam (một nguồn trực tiếp) mỗi lần; video webcam không được lưu, chỉ ảnh minh chứng của sự kiện
 (`outputs/evidence/<phiên>/`). Kết quả trên webcam chỉ để trình diễn, không dùng làm số đánh giá và không dùng để train.
+
+## WebSocket `/ws` (A3, 25/11/2026)
+
+Kết nối `ws://<máy>:8000/ws`. Server đẩy `{"type": "changed", "version", "kind"}` mỗi khi dữ liệu đổi (POST/PUT/PATCH vào
+`/api`, sự kiện từ camera trực tiếp) và `{"type": "live", "status"}` (như `/api/live/status`) mỗi giây. Dashboard nhận
+"changed" thì tải lại sự kiện; mất kết nối thì tự quay về hỏi định kỳ. Cần gói `websockets==15.0.1` (requirements.txt).
+
