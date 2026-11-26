@@ -37,4 +37,5 @@ Demo camera trực tiếp (webcam laptop, dashboard, bật tắt PPE bắt buộ
 - [x] Bước 5: video kiểm thử và thực nghiệm — đợt sửa tầm gần (`docs/experiments/2026-11-25_close_range_fixes.md`)
 - [x] Bước 6 (phần kỹ thuật): đóng băng cấu hình `28ad782`, đánh giá cuối 26/11 (test chạy một lần, Pictor, ablation,
   holdout kiểm tra sau sửa, FR) — `docs/experiments/2026-11-25_final_evaluation_plan.md`, `outputs/results/close_eval/final2/`
-- [ ] Bước 6: viết báo cáo (người dùng); gộp `exp/ppe6` vào `main` khi người dùng đồng ý
+- [x] Gộp `exp/ppe6` vào `main` (fast-forward, người dùng đồng ý 26/11/2026)
+- [ ] Bước 6: viết báo cáo (người dùng)
