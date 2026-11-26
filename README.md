@@ -31,7 +31,10 @@ Demo camera trực tiếp (webcam laptop, dashboard, bật tắt PPE bắt buộ
 - [x] Bước 0: cài môi trường (Python, PyTorch GPU, Ultralytics)
 - [x] Bước 1: chuẩn bị dữ liệu ảnh (26/10 - 08/11)
 - [x] Bước 2: huấn luyện YOLO11s (02/11 - 12/11) — chọn r2 (`imgsz` 960), xem `docs/experiments/2026-11-03_yolo11s_r2.md`
-- [ ] Bước 3: chuỗi xử lý video (09/11 - 19/11)
-- [ ] Bước 4: API và dashboard (09/11 - 19/11)
-- [ ] Bước 5: video kiểm thử và thực nghiệm (16/11 - 24/11)
-- [ ] Bước 6: hoàn thiện (24/11 - 30/11)
+- [x] Bước 3: chuỗi xử lý video — detector c6_ft + zoom, ByteTrack, pose, bộ phân loại bộ phận, gán PPE, ba trạng thái,
+  cửa sổ thời gian, sự kiện (`configs/pipeline.yaml`)
+- [x] Bước 4: API (FastAPI, SQLite, WebSocket `/ws`) và dashboard; camera trực tiếp
+- [x] Bước 5: video kiểm thử và thực nghiệm — đợt sửa tầm gần (`docs/experiments/2026-11-25_close_range_fixes.md`)
+- [x] Bước 6 (phần kỹ thuật): đóng băng cấu hình `28ad782`, đánh giá cuối 26/11 (test chạy một lần, Pictor, ablation,
+  holdout kiểm tra sau sửa, FR) — `docs/experiments/2026-11-25_final_evaluation_plan.md`, `outputs/results/close_eval/final2/`
+- [ ] Bước 6: viết báo cáo (người dùng); gộp `exp/ppe6` vào `main` khi người dùng đồng ý
