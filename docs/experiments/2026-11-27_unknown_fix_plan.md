@@ -322,3 +322,11 @@ không tăng.
 
 S2: toàn bộ +14 ủng báo oan là một đoạn 15 khung liên tiếp (video3 khung 89-103, một người, ~0,5 s), sự kiện không đổi;
 video4 ủng CXĐ → Có đúng +23. **S3** (ghi trước khi chạy): S2 + phân loại N=3; cùng tiêu chí.
+
+### Kết quả lượt 4 (28/11/2026; `stepS/benchmark_S3`, `round4/dev36`)
+
+- **S3**: FPS gồm giải mã video4 15,46 / video5 17,17 / video6 18,05 → (1) **đạt**. Video3-6: kính Có đúng 367 → 387,
+  găng 754 → 758, ủng Có đúng 651 → 661, mũ báo thiếu oan 11 → 12 (trong mức); **ủng báo thiếu oan 61 → 75** (cùng đoạn
+  0,5 s video3 khung 89-103) → (2) **không đạt**. Sự kiện: số sự kiện giống; video3 #1 khác mốc trong `missing_history`.
+  Chờ người dùng quyết định ngoại lệ.
+- **A1**: găng Thiếu đúng 1.676 → 1.578 (−4,7% > 2%) → không đạt, không bật.
