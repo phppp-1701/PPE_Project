@@ -38,4 +38,8 @@ Demo camera trực tiếp (webcam laptop, dashboard, bật tắt PPE bắt buộ
 - [x] Bước 6 (phần kỹ thuật): đóng băng cấu hình `28ad782`, đánh giá cuối 26/11 (test chạy một lần, Pictor, ablation,
   holdout kiểm tra sau sửa, FR) — `docs/experiments/2026-11-25_final_evaluation_plan.md`, `outputs/results/close_eval/final2/`
 - [x] Gộp `exp/ppe6` vào `main` (fast-forward, người dùng đồng ý 26/11/2026)
+- [x] Đợt tối ưu 27-28/11 (người dùng giao): áo theo vai, mũ zoom, bộ phân loại đầu bản 5, phủ quyết mũ theo mặt, nối
+  sự kiện, găng một tay chắc chắn, tốc độ cảnh gần (ngoại lệ); sửa lỗi chấm sự kiện E; tập video độc lập có nhãn sự kiện
+  `data/videos/event_eval/`. Cấu hình cuối 4, kết quả `outputs/results/close_eval/final5/`; tổng kết
+  `docs/experiments/2026-11-28_tong_ket.md`. Các commit này ở `exp/ppe6`, chưa gộp lại `main`.
 - [ ] Bước 6: viết báo cáo (người dùng)
