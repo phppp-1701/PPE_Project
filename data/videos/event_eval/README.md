@@ -1,0 +1,33 @@
+# event_eval: tập video độc lập có nhãn sự kiện (RQ3, H3)
+
+Người dùng giao 27/11/2026: kiểm H3 trên video độc lập có nhãn sự kiện do người gán. Không có bộ công khai nào có nhãn
+sự kiện vi phạm PPE theo người (đã tìm 27/11/2026), nên tự tạo.
+
+## Quy tắc (ghi trước khi tải)
+
+- Chỉ dùng để đo **một lần** cho cấu hình cuối. Không dùng để chọn ngưỡng, sửa logic, huấn luyện.
+- **Không chạy hệ thống** (bất kỳ phiên bản nào) trên các video này, không xem dự đoán, cho tới khi nhãn sự kiện của
+  người dùng xong và được niêm phong (`manifest.json`: sha256 video và nhãn).
+- Nhãn sự kiện do **người dùng** gán bằng `tools/event_label.html` (Claude không gán, không sửa nhãn). Trạng thái nhãn:
+  `human_labeled`.
+- Video không lên Git; nguồn, giấy phép, sha256 trong `sources.csv`.
+
+## Tiêu chí chọn video (ghi trước khi tải, 27/11/2026)
+
+1. Nguồn Pexels (Pexels License). Cảnh quay thật, một cảnh liền, không cắt ghép, dài khoảng 8-40 giây.
+2. **Không cùng buổi quay** với mọi video đã dùng (video1-27, holdout h1-h9, cam0): loại các loạt mã 8486xxx-8488xxx,
+   8963xxx-8965xxx, 6473xxx-6474xxx, 8987xxx, 9431xxx, 19832xxx, 5423xxx, 5434xxx, 3224xxxx, 5100xxx, 846xxxx-847xxxx,
+   4077xxxx, 14185xxx, 27917xxx, 30172xxx, 40481xxx, 8818xxx, 6046xxx, 5846xxx, 9373xxx, 7100xxx, 9894xxx, 34289xxx,
+   37654xxx, 5972xxx. Mỗi loạt mã mới chọn tối đa 1 video.
+3. Có người lao động đủ lớn để người nhìn đánh giá được ít nhất hai loại PPE (mũ, áo phản quang, găng, kính, ủng).
+4. Có **ít nhất một trường hợp thiếu PPE** nhìn rõ (để có sự kiện), và ưu tiên video có cả người đủ PPE (để đo cảnh
+   báo sai). Đa dạng: trong nhà, ngoài trời, 1-4 người, gần và trung bình.
+5. Chọn theo nội dung khung hình gốc (Claude xem 3 khung mỗi video), **không theo dự đoán của hệ thống**.
+6. 8-12 video. Không đủ thì dừng và báo cáo.
+
+## Nhãn sự kiện
+
+Mỗi sự kiện: một người, một món PPE bắt buộc, khoảng thời gian [bắt đầu, kết thúc] người đó thiếu món đó liên tục và
+nhìn thấy được. Người được đánh dấu bằng một cú bấm vào người ở khung bắt đầu (tọa độ dùng để ghép với người của hệ
+thống). PPE bắt buộc của từng video do người dùng chọn khi gán (theo bối cảnh, ví dụ mũ + áo ở công trường).
+Quy tắc chi tiết ở đầu trang `tools/event_label.html`.

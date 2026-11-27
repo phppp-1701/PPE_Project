@@ -220,7 +220,10 @@ def run_ablation_for_video(video_path, cfg, gt_events):
     comp_e = Compliance(cfg)
     temporal_e = TemporalConfirmer(cfg)
     events_created = []
-    event_mgr = EventManager("video", video_name, required_ppe, on_change=lambda kind, ev: events_created.append(ev) if kind == "created" else None)
+    cur = {}        # hộp người đang được update: sự kiện "created" phát ra trong update() của chính người này
+    event_mgr = EventManager("video", video_name, required_ppe,
+                             on_change=lambda kind, ev: events_created.append((ev, cur.get("box"), cur.get("idx")))
+                             if kind == "created" else None)
     for f in cached_frames:
         t = f["t"]
         tracks_e = tracker_e.update(f["persons"], f["frame"])
@@ -232,24 +235,20 @@ def run_ablation_for_video(video_path, cfg, gt_events):
         for tr in tracks_e:
             st = states[tr.track_id]
             checks = {p: temporal_e.update(t, tr.track_id, p, st[p]["state"]) for p in required_ppe}
+            cur["box"], cur["idx"] = tr.xyxy.copy(), f["idx"]
             event_mgr.update(t, tr.track_id, checks, f["frame"], tr.xyxy)
         event_mgr.absent(t, {tr.track_id for tr in tracks_e})
     event_mgr.end_session(cached_frames[-1]["t"])
 
+    # Sửa 27/11/2026: E chấm bằng cùng hàm với A-D (khớp người - PPE - khoảng thời gian, Thuật toán 3.7). Trước đây
+    # evaluate_events_e chỉ so món PPE, không xét người và thời gian (chấm dễ hơn A-D); giữ hàm cũ chỉ để đối chiếu.
     alerts_e = []
-    for ev in events_created:
-        gt_track = match_person_to_gt_track(
-            [0, 0, 0, 0], video_name, 0
-        )  # sẽ map theo ev['track_id'] hoặc thời điểm
+    for ev, box, idx in events_created:
+        gt_track = match_person_to_gt_track(box, video_name, idx)
         for item in ev["missing_items"]:
-            alerts_e.append({
-                "t": ev["confirmed_at"],
-                "track_id": ev["track_id"],
-                "ppe": item,
-                "is_event": True,
-            })
-    # Với E, map track_id sang GT track bằng cách quan sát track_id phổ biến
-    results["E"] = evaluate_events_e(events_created, gt_events, video_name)
+            alerts_e.append({"t": ev["confirmed_at"], "gt_track": gt_track, "track_id": ev["track_id"], "ppe": item})
+    results["E"] = evaluate_alerts(alerts_e, gt_events)
+    results["E_old_scoring"] = evaluate_events_e([ev for ev, _, _ in events_created], gt_events, video_name)
 
     return results
 
