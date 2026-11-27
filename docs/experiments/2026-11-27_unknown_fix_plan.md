@@ -81,3 +81,32 @@ người 0,67. 79 áo V2 ghép đúng (video4, 5): rộng áo / sw 1,46-2,90 (p5
 
 V3: như V2, chỉ dùng vùng theo vai khi rộng hộp áo >= `s_min` x sw, `s_min` 1,116 = cổng cỡ áo G5 của B2 chọn trên val
 15/11/2026 (`pipeline_calib_val/torso_strict.json`). Không chọn ngưỡng mới. Tiêu chí: như V2 (1-5), video3-6.
+
+## Kết quả V3 (27/11/2026)
+
+**Video3-6** (`stepV/dev36_V3`, tiêu chí khóa): áo Có đúng 2.430 → 2.505, Có→CXĐ 114 → 39, báo Có sai 3 → 3, báo thiếu
+oan 48 → 48; mũ, găng, kính, ủng, sự kiện giống hệt; Có mới trên người không nhãn 0. **Đạt cả 5** → bật trong
+`configs/pipeline.yaml` (27/11/2026).
+
+**Holdout — kiểm tra sau sửa, KHÔNG còn mù** (`close_eval/final3/holdout_check`, nhãn máy hai lượt chưa người kiểm định;
+số chính thức vẫn 16/11): chỉ áo đổi.
+
+| Áo, 8 video | final2 | final3 (V3) |
+|---|---|---|
+| Có đúng / 1.565 | 743 | **1.061** |
+| Thiếu đúng / 809 | 778 | 778 |
+| Báo thiếu oan | 351 | **119** |
+| Báo Có sai | 2 | 2 |
+| Có → CXĐ | 457 | 371 |
+| Độ đúng (Có đúng + Thiếu đúng) / (nhãn Có + Thiếu) | 0,641 | **0,775** |
+| Coverage trên khung nhãn Có/Thiếu | 0,789 | **0,826** |
+| Đúng khi đã kết luận | 0,812 | **0,938** |
+
+Sự kiện: 7/8 video giống; h4 bớt một sự kiện thiếu áo của người 1 (nhãn Có áo cả video; báo thiếu oan h4 232 → 0).
+Có mới trên người không nhãn 0.
+
+**kiem_thu_gan 9-17** (chỉ đo, `close_eval/final3/kiem_thu_gan`): áo Có đúng 1.237 → 1.311, báo thiếu oan 466 → 420,
+Có sai 0 → 0, CXĐ 213 → 185; video15 bớt một sự kiện thiếu áo báo oan (báo thiếu oan 48 → 2); video15 có 4 khung Có áo
+mới trên người không có nhãn (chưa xem). Các PPE khác giống hệt.
+
+Chưa đo lại tốc độ (V3 chỉ thêm phép so hình học cho áo, không thêm mô hình). Mũ: ghi Hạn chế (gốc ở detector).
