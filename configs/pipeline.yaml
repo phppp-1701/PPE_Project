@@ -187,6 +187,10 @@ association:
   # 6 -> 26/28, V3b 1 -> 1. Hồi quy 13 video (stepF): kính báo thiếu oan 114 -> 54, độ chính xác 0,906 -> 0,924.
   # F2 (áo theo vai, edge_frac) và F3 (găng dự phòng theo vùng) không đạt V3b: tắt, ghi vào Giới hạn.
   eye_anchor: {kp_conf: 0.5, k_eye: 1.776}
+  # Bước V3 (docs/experiments/2026-11-27_unknown_fix_plan.md; bật 27/11/2026, đạt tiêu chí khóa trên video3-6): vùng thân
+  # đặt theo hai vai khi hộp người bị tay dang kéo rộng; kx, s_min = tham số B2/F2 chọn trên val 15-16/11/2026.
+  # Video3-6: áo Có đúng 2.430 -> 2.505, Có->CXĐ 114 -> 39, báo Có sai 3 -> 3, các PPE khác và sự kiện không đổi.
+  torso_shift: {kp_conf: 0.5, kx: 1.259, s_min: 1.116}
   # F1 tầm gần (docs/experiments/2026-11-25_close_range_fixes.md; bật 25/11/2026 theo NGOẠI LỆ người dùng duyệt): ủng là ứng
   # viên của người khi gối và mắt cá cùng bên >= kp_conf và tâm ủng cách mắt cá <= k_ankle x ống chân (gối - mắt cá), chỉ
   # khi mép trên hộp người <= edge_px (người bị khung cắt, chỉ thấy phần dưới); hợp với vùng chân cũ. k_ankle chọn trên val
