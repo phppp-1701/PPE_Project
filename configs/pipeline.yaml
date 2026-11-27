@@ -99,7 +99,7 @@ part_cls:
   # (mục "Ngoại lệ bản 4 cho mũ"). Bản trước (mũ theo luật cũ): commit 0645f53.
   weights_by_ppe:
     gloves: outputs/train/yolo11n_cls_parts_v2/weights/best.pt
-    helmet: outputs/train/yolo11n_cls_parts_v4/weights/best.pt
+    helmet: outputs/train/yolo11n_cls_parts_v5/weights/best.pt   # M2' (28/11/2026): bản 5, giữ luật D
     boots: outputs/train/yolo11n_cls_parts_v4/weights/best.pt   # bước M1: chọn trên val (05e --boots-veto)
   imgsz: 160                # như lúc train (configs/ppe6.yaml parts.train)
   min_px: 24                # cạnh ảnh cắt tối thiểu, như parts.min_px lúc tạo dữ liệu train
@@ -138,7 +138,7 @@ part_cls:
     foot: {k: 0.0, s: 1.6}
     eye: {s: 2.0}
     torso: {s: 2.0, h: 1.6}     # 14/11: 05e có thêm người CHV val (279 áo / 1.159 không áo), độ chính xác cân bằng 0,941
-    head: {k: 0.2, s: 1.3}      # bản 4, 05e trên val (val_select_v4.json): độ chính xác cân bằng 0,956 (1.014 ảnh cắt, 118 mũ)
+    head: {k: 0.2, s: 1.0}      # M2' (28/11/2026): bản 5, 05e trên val (val_select_v5.json); bản 4: s 1.3
   # găng: t_pos 0,99 (độ chính xác 0,955, độ nhạy 0,444), t_neg 0,50 (0,974; 0,937).
   # kính: t_pos 0,74 (0,95; 0,679, 20 ảnh cắt), t_neg 0,50 (0,988; 0,996).
   # áo: không t_pos đạt 0,95 (val 68 áo / 977 không áo) -> bộ phân loại không tự kết luận Có áo; t_neg 0,50 (0,990; 0,980).
@@ -148,7 +148,7 @@ part_cls:
     gloves: {t_pos: null, t_neg: 0.50}
     goggles: {t_pos: 0.74, t_neg: 0.50}
     # Mũ bản 4 (val_select_v4.json): t_pos 0,91 (độ chính xác 0,951, độ nhạy 0,822), t_neg 0,50 (0,991; 0,980).
-    helmet: {t_pos: 0.91, t_neg: 0.50}
+    helmet: {t_pos: 0.94, t_neg: 0.50}   # M2': bản 5 (val_select_v5.json); bản 4: t_pos 0.91
     # Áo bản 3 không đạt trên video 3-6 (bỏ sót video3 11 -> 76) -> không dùng:
     # vest: {t_pos: null, t_neg: 0.50}
 

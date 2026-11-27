@@ -173,3 +173,16 @@ Không chọn trên video.
 
 Tiêu chí (khóa): (1) val: V-B2, V-B3 bản 5 đạt (đã đo 16/11: đạt); (2) video3-6 (06b, nhãn người, nền hiện tại M1+V3):
 mũ báo Có sai không tăng, báo thiếu oan không tăng, mũ Có đúng không giảm; PPE khác không đổi; số sự kiện không tăng.
+
+### Kết quả M2' (28/11/2026): đạt, bật
+
+Val: ngưỡng bản 5 `val_select_v5.json` (mũ t_pos 0,94, t_neg 0,50; đầu s 1,0); C2 chọn lại với bản 5
+(`helmet_veto2_val_v5.json`) ra cùng t_veto 0,7, face_conf 0,7 (V-C1 0,74%, V-C3 0,37%). Video3-6 (`stepM2/dev36`): mũ Có
+đúng 2.916 → 2.921, Có→CXĐ 202 → 197, báo Có sai 23 → 23, báo thiếu oan 11 → 11; PPE khác, sự kiện giống hệt. **Đạt** →
+bật (`weights_by_ppe.helmet` bản 5, `geometry.head.s` 1,0, `thresholds.helmet.t_pos` 0,94). Luật D giữ nguyên.
+
+## Cấu hình cuối 3 (đóng băng 28/11/2026)
+
+Bản cuối 2 (`28ad782`) + V3 (áo theo vai) + M1 (mũ vào zoom) + M2' (bộ phân loại đầu bản 5). G1 không bật. Sau mốc này
+chạy một lần: event_eval (RQ3), holdout và kiem_thu_gan 9-17 (kiểm tra sau sửa, không mù), ablation video4-6 (chấm E
+đã sửa), tốc độ (07). Không sửa code, cấu hình trong lúc chạy.
