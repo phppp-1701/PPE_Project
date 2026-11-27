@@ -301,3 +301,12 @@ khung → không chạy (cùng lý do).
 `detector.zoom.carry: true`: ở khung không chạy zoom, hộp zoom của khung zoom gần nhất được mang sang cho người lớn
 hiện tại khớp người cũ (IoU hộp người >= 0,5, mức ghép người của spec), dời theo độ dịch tâm hộp người, giữ conf, rồi
 gộp NMS như khung có zoom. Biến thể **S2** = Sc + carry (zoom N=2, phân loại N=2). Tiêu chí (1), (2) như S.
+
+## A1 — người quá nhỏ không kết luận Thiếu găng/kính/ủng (ghi trước khi tính)
+
+Nguyên tắc KT1: chỉ kết luận Thiếu khi detector có khả năng thấy món đó. Trên val (capture c6_ft + zoom), mỗi hộp nhãn
+găng/kính/ủng gán cho hộp người nhãn chứa tâm; chiều cao người quy về cỡ đầu vào 960; "bắt được" = có dự đoán cùng lớp,
+conf >= ngưỡng pipeline, IoU >= 0,5. Chia theo dải chiều cao (bước 32 px); `min_person_missing_px[ppe]` = cận dưới của dải
+nhỏ nhất mà từ dải đó trở lên mọi dải (n >= 20) có recall >= 0,5. Người thấp hơn: món đó không kết luận Thiếu (CXĐ, lý do
+`nguoi_qua_nho`). Tiêu chí video3-6: Thiếu đúng giảm không quá 2% nhãn Thiếu; báo thiếu oan không tăng; PPE khác, sự kiện
+không tăng.

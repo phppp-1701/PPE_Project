@@ -92,6 +92,9 @@ class Compliance:
         self.any_have = bool(ah)
         # G1b: {min_conf}: tay Có phải có hộp găng detector conf >= min_conf (chọn trên val, g1b_gloves_conf_val.json)
         self.any_have_conf = ah.get("min_conf") if isinstance(ah, dict) else None
+        # A1: người thấp hơn mức này (px ở cỡ đầu vào detector) không kết luận Thiếu món đó (a1_person_height_val.json)
+        self.min_missing_px = cfg.get("compliance", {}).get("min_person_missing_px") or {}
+        self.det_imgsz = cfg.get("detector", {}).get("imgsz")
         self.last_have = {}     # (track_id, ppe, side) -> t lần cuối thấy Có
         pc = cfg.get("part_cls") or {}
         self.part = pc if pc.get("enabled") and self.pose else None   # bộ phân loại bộ phận (parts.py), cần pose
@@ -327,6 +330,12 @@ class Compliance:
             have = track.confident and (has or vote == "pos")
             missing = (vote == "neg" and not has and observable and not contested and not recently_have
                        and not no_missing)
+        too_small = False
+        mp = self.min_missing_px.get(name)
+        if mp and self.det_imgsz:
+            hpx = (track.xyxy[3] - track.xyxy[1]) * self.det_imgsz / max(frame_box[2], frame_box[3])
+            if hpx < mp:
+                missing, too_small = False, True     # A1: detector khó thấy món này ở người cỡ này
         if conflict:
             have = missing = False          # bước C2: detector và bộ phân loại mâu thuẫn -> Chưa xác định
         held = None
@@ -355,6 +364,8 @@ class Compliance:
                        else "qua_nho" if visible < self.area_min[name] else "cong_khung_xuong" if not kp_ok
                        else "quay_lung" if back and name == "goggles" else "mat_ca_sat_day" if ankle_bottom
                        else "khong_quan_sat")
+            elif too_small:
+                why = "nguoi_qua_nho"
             elif conflict:
                 why = "mau_thuan_C2"
             elif contested:
