@@ -216,3 +216,21 @@ kiem_thu_gan 9-17 (chỉ đo): mũ Có đúng 1.756 → 1.823, Có→CXĐ 346 �
 
 **RQ4 — tốc độ** (`final4/benchmark`, sau restart, video3-6, 3 lượt): 17,64 ± 0,35 FPS xử lý, **16,38 ± 0,31 FPS gồm giải
 mã**, trễ TB 56,7 ms, P95 107,3 ms (bản cuối 2 cùng lượt: 18,14 / 16,78). Bộ phân loại 11,9 → 13,3 ms (mũ thêm vào zoom).
+
+## Phân tích điểm yếu sau đánh giá cuối 3 (28/11/2026, chỉ đọc kết quả đã có, không chỉnh gì)
+
+- **Tốc độ theo video** (`final4/benchmark/benchmark.json`, FPS gồm giải mã, TB 3 lượt): video3 19,81; video4 10,45;
+  video5 11,92; video6 12,87. Số 16,38 là gộp theo khung, video3 chiếm 1.950/2.724 khung. Cảnh gần, 2-3 người lớn trong
+  khung (zoom + pose + bộ phân loại cho từng người) dưới 15 FPS. P95 81,8-117,2 ms.
+- **Mũ vải / mũ lưỡi trai nhận là mũ bảo hộ** (e1: track 1 Có 91 khung, track 2 Có 68 khung, không khung Thiếu nào; nhãn
+  và người kiểm định: thiếu mũ) → sự kiện e1 chỉ có áo, bỏ sót vi phạm mũ.
+- **Mũ báo Có sai tăng ở h9** (34 → 51; h9 đầu sát camera, nhãn Thiếu 590 khung); phần tăng Có đúng ở h1 (+25), h7 (+16),
+  h8 (+10).
+- **Hộp người sai** (e9: track 2, 6 là bình khí/rèm hàn bị nhận là người, sinh sự kiện "ngoài nhãn").
+- **Đổi mã theo dõi với người lớn sát camera, mờ** (e7: người tiền cảnh mờ thành track 2, 3, 4 → 3 sự kiện thiếu áo; nhãn
+  để không sự kiện vì không nhìn rõ).
+- **Cảnh báo cho người rất nhỏ ở xa** (e3: 5 sự kiện cho người cao 4-9% khung, ngoài nhãn) — không kiểm chứng được.
+- **Thời điểm sự kiện so với nhãn bảo thủ** (e3 P1: hệ thống xác nhận thiếu găng lúc 0,23 s, nhãn đồng thuận chỉ bắt đầu
+  từ 5,0 s → tính 1 sai + 1 sót ở mức chặt).
+- **Món thiếu trong sự kiện chưa đủ** (e1 thiếu mũ, e3 thiếu kính không được báo; e5 người đủ mũ áo bị báo thiếu ủng, găng).
+- Tập đánh giá sự kiện nhỏ (10 sự kiện, KTC F1 [0,40; 0,95]), nhãn máy có kiểm định.
