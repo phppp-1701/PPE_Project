@@ -43,7 +43,8 @@ detector:
     conf_scale: 0.8
     nms_iou: 0.5
     half: true
-    every_n_frames: 1      # chạy zoom mỗi N khung; chọn bằng 07 (tốc độ) và video chỉnh tham số
+    carry: true            # S3 (28/11/2026, NGOẠI LỆ người dùng): khung không zoom mang hộp zoom của khung trước
+    every_n_frames: 2      # S3 (28/11/2026, NGOẠI LỆ); trước 1. chạy zoom mỗi N khung; chọn bằng 07 (tốc độ) và video chỉnh tham số
 
 # Danh sách PPE. Thêm loại mới (vd. giày) = thêm một mục ở đây, một vùng ở association.regions
 # và một mục ở compliance; không sửa code. `region`: tên vùng; `sides`: true = xét từng bên (trái/phải).
@@ -114,7 +115,7 @@ part_cls:
   # thấy CHV): t_veto x face_conf lưới 0,7/0,8/0,9, tổ hợp đầu tiên đạt V-C1 <= 2% (n >= 100) và V-C3 <= 5%:
   # V-C1 3/280 (1,07%), V-C3 2/280 (0,71%). Hồi quy 13 video (stepCD/c2_*): mũ báo Có sai 49 -> 2, độ chính xác 0,880 -> 0,900.
   veto_frontal:
-    helmet: {face_conf: 0.7, t_veto: 0.7}
+    helmet: {face_conf: 0.7, t_veto: 0.7, face_only: true}   # C3 (28/11/2026): chỉ cần thấy mặt; val helmet_veto3_val.json
   # Bước M1 (kế hoạch 2026-11-16_post_holdout_fixes mục 2; người dùng duyệt bật 16/11/2026 sau hồi quy 13 video ở
   # close_eval/stepM1): chọn trên val, 05e --boots-veto -> parts_cls/boots_veto_val.json (v4, bác bỏ nhầm 0/71).
   # Mọi chân có ảnh cắt đều có 1 - p >= t_veto thì bỏ hộp ủng của detector (dép, giày thường).
@@ -126,6 +127,7 @@ part_cls:
   # Thử [gloves] 14/11/2026 trên video 3-6: bỏ sót găng video3 326 -> 216 nhưng báo sai video3 155 -> 167, video4 0 -> 2
   # -> không đạt, không bật.
   observe_from_crop: []
+  every_n_frames: 3        # S3 (28/11/2026, NGOẠI LỆ): bộ phân loại mỗi 3 khung, khung bỏ qua dùng lại phiếu đã gộp
   vote_window_s: 1.0        # gộp phiếu: trung bình p trong khoảng này (giây). Claude đặt 13/11/2026, không chọn trên video
   # Mục tiêu độ chính xác khi chọn ngưỡng trên val (Claude đặt 13/11/2026, trước khi chạy 05e):
   # pos = p >= t_pos là Có đúng; neg = 1 - p >= t_neg là không có PPE đúng.
@@ -229,6 +231,7 @@ compliance:
   back_view: {kp_conf: 0.3, min_sep: 0.05, face_strong: 0.9, hold_s: 1.0}
   # Vừa thấy Có trong khoảng này (giây) thì PPE mất vài khung không bị kết luận Thiếu (Chưa xác định). Claude đặt.
   have_hold_s: {helmet: 1.0, vest: 1.0, gloves: 1.5, goggles: 2.0, boots: 1.5}
+  gloves_any_have: {min_conf: 0.9}   # G1b (28/11/2026): c_g chọn trên val (g1b_gloves_conf_val.json)
   # F2 nhớ PPE (docs/experiments/2026-11-25_close_range_fixes.md; bật 25/11/2026 theo NGOẠI LỆ người dùng, chỉ găng, kính,
   # ủng). Món vừa có hộp gán: hộp cùng lớp điểm >= hold_conf trùng vị trí nhớ (IoU >= hold_iou) làm mới bộ nhớ; không có thì
   # giữ Có tối đa have_hold_s (báo chậm tối đa 1,5-2 s). Phiếu neg, phủ quyết, mâu thuẫn chặn việc giữ. hold_conf =
@@ -261,6 +264,7 @@ display:
 
 events:
   evidence_dir: outputs/evidence     # ảnh minh chứng: <evidence_dir>/<session_id>/<event_id>_<n>.jpg
+  relink: {iou: 0.5, max_gap_s: 2.0}   # R1 (28/11/2026): nối sự kiện khi đổi mã theo dõi
 
 calibration:
   # Dùng bởi 05a_calibrate_val.py (chỉ trên val, không đụng test).

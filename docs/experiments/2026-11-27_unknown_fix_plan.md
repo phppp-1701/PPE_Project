@@ -330,3 +330,12 @@ video4 ủng CXĐ → Có đúng +23. **S3** (ghi trước khi chạy): S2 + ph�
   0,5 s video3 khung 89-103) → (2) **không đạt**. Sự kiện: số sự kiện giống; video3 #1 khác mốc trong `missing_history`.
   Chờ người dùng quyết định ngoại lệ.
 - **A1**: găng Thiếu đúng 1.676 → 1.578 (−4,7% > 2%) → không đạt, không bật.
+
+## Cấu hình cuối 4 (đóng băng 28/11/2026)
+
+Người dùng (28/11/2026): **bật S3 theo NGOẠI LỆ** (không đạt tiêu chí (2) ủng báo oan +14, một đoạn 0,5 s). Cấu hình cuối 4
+= cuối 3 (`5d7acec`) + S3 (zoom N=2 mang hộp, phân loại N=3) + C3 + R1 + G1b. Không bật: G1, A1, V, V2.
+
+Chạy một lần sau đóng băng (`close_eval/final5/run_all.sh`): video3-6 (so cuối 3), tốc độ (07, video3-6), ablation,
+holdout và kiem_thu_gan (kiểm tra, không mù), **event_eval chạy lần 2: KHÔNG MÙ** (các sửa C3, R1, A1 xuất phát từ lỗi đã
+thấy trên e1, e3, e7); số chính thức RQ3 vẫn là `event_eval/final4` (cấu hình cuối 3, chạy một lần).
