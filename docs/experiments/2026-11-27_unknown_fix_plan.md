@@ -152,3 +152,10 @@ Tiêu chí (khóa), video3-6 nhãn người (06b, mốc = cấu hình hiện t�
 Val (`c5_eval/m1_crop_helmet_val`): mũ ppe4 0,8985 → 0,8983 (−0,0002), val_new 0,708 → 0,723 (+0,015); lớp khác giữ nguyên.
 Video3-6 (`close_eval/stepM1z/dev36`): mũ Có đúng 2.914 → 2.916, báo thiếu oan 13 → 11, báo Có sai 23 → 23; PPE khác,
 sự kiện giống hệt. **Đạt** → bật `detector.zoom.classes: [1, 3, 4, 5]`. Không thêm lượt mô hình. G1 chạy trên nền đã có M1.
+
+### Kết quả G1 (28/11/2026): không đạt, không bật
+
+Video3-6 (`close_eval/stepG1/dev36`, nền có M1): găng Có đúng 754 → 866, Có→CXĐ 150 → 38, nhưng **báo Có sai 1 → 58**
+(video3 +30, video5 +27; mức cho phép +20) và 7 khung Có găng mới trên người không có nhãn. Nguyên nhân: người tay trần có
+một tay bị detector nhận nhầm là găng, tay kia không quan sát được → G1 kết luận Có. Theo tiêu chí khóa: không đạt, không bật.
+Code giữ (khóa vắng = như cũ). Ghi Hạn chế: găng cần thấy cả hai tay.
