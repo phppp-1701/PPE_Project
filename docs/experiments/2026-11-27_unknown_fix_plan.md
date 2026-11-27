@@ -131,3 +131,18 @@ Tiêu chí (khóa):
 2. Video3-6 (06b, nhãn người): mũ báo Có sai không tăng, báo thiếu oan không tăng; mũ Có đúng + Thiếu đúng không giảm;
    các PPE khác không đổi; số sự kiện không tăng.
 Đạt cả hai → bật. Test không chạy lại (đã dùng một lần; zoom có mũ chưa có số test, ghi rõ).
+
+## G1 — găng: một tay Có, tay kia không có bằng chứng tay trần → Có (ghi trước khi code và chạy)
+
+Chẩn đoán (`diag_unknown`, video3-6 nhãn người): găng nhãn Có → CXĐ chủ yếu là một tay đã có hộp găng gán đúng (`gan_minh`)
+còn tay kia CXĐ (bộ phân loại phân vân 54, ngoài khung 22, tranh chấp 10). Luật gộp hai tay hiện tại: có tay Thiếu → Thiếu;
+mọi tay Có → Có; còn lại CXĐ. Nhãn Thiếu → CXĐ chủ yếu không thấy cổ tay (176) hoặc bị che: đúng là không quan sát được,
+không sửa.
+
+G1 (`compliance.gloves_any_have: true`): gộp hai tay — có tay Thiếu → Thiếu (như cũ); ngược lại có ít nhất một tay Có → Có;
+còn lại CXĐ. Rủi ro: người chỉ đeo một găng, tay trần không nhìn rõ → báo Có sai.
+
+Tiêu chí (khóa), video3-6 nhãn người (06b, mốc = cấu hình hiện tại):
+1. Găng Có đúng tăng.
+2. Găng báo Có sai tăng không quá 1% số khung nhãn Thiếu găng (2.072 → tối đa +20 khung); báo thiếu oan không tăng.
+3. Các PPE khác không đổi; số sự kiện không tăng.
