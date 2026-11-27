@@ -159,3 +159,17 @@ Video3-6 (`close_eval/stepG1/dev36`, nền có M1): găng Có đúng 754 → 866
 (video3 +30, video5 +27; mức cho phép +20) và 7 khung Có găng mới trên người không có nhãn. Nguyên nhân: người tay trần có
 một tay bị detector nhận nhầm là găng, tay kia không quan sát được → G1 kết luận Có. Theo tiêu chí khóa: không đạt, không bật.
 Code giữ (khóa vắng = như cũ). Ghi Hạn chế: găng cần thấy cả hai tay.
+
+## M2' — bộ phân loại vùng đầu bản 5 cho mũ, giữ luật D (ghi trước khi chạy, 28/11/2026)
+
+M2 (train lại bộ phân loại đầu với ảnh nhìn từ sau) đã làm 16/11 (`2026-11-16_post_holdout_fixes.md`, bản 5): mũ nhìn từ
+sau cho là có mũ 87,4% → 94,0% (sáng), 67,6% → 91,9% (tối) trên tập kiểm riêng; **không đạt V-B1** (mũ nhìn từ sau bị cho
+là không mũ 4,6% > 2%) nên không bật. V-B1 bảo vệ việc *báo Thiếu từ phía sau*; luật D vẫn chặn việc đó. Nên M2': đổi
+`part_cls.weights_by_ppe.helmet` sang bản 5, **giữ D**; bản 5 chỉ giúp thêm "Có" khi nhìn từ sau, và ở phía trước (C2).
+
+Ngưỡng: chọn lại trên val cho bản 5 bằng `05e --weights <v5> --out val_select_v5.json` (cùng luật chọn như v4: t_pos,
+t_neg theo `precision_target`); C2 (`veto_frontal.helmet`) chọn lại bằng `05e --helmet-veto2` với bản 5 nếu khác v4.
+Không chọn trên video.
+
+Tiêu chí (khóa): (1) val: V-B2, V-B3 bản 5 đạt (đã đo 16/11: đạt); (2) video3-6 (06b, nhãn người, nền hiện tại M1+V3):
+mũ báo Có sai không tăng, báo thiếu oan không tăng, mũ Có đúng không giảm; PPE khác không đổi; số sự kiện không tăng.
