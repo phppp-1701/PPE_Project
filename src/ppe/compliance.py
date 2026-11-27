@@ -148,9 +148,18 @@ class Compliance:
     def part_ps(self, name, track, side):
         """p có PPE của bộ phân loại cho (người, PPE, bên), gộp theo thời gian (vote_window_s). Ủng: mọi chân.
         Mỗi khung gọi một lần cho mỗi (người, PPE, bên), vì mỗi lần gọi thêm p vào lịch sử."""
-        got = getattr(track, "extra", {}).get("parts", {})
+        ex = getattr(track, "extra", {})
+        got = ex.get("parts", {})
         ps = []
         win = self.part.get("vote_window_s") or 0
+        if ex.get("parts_skip") and self.now is not None and win > 0:
+            # Bước S (part_cls.every_n_frames): khung không chạy bộ phân loại -> dùng lại phiếu đã gộp, không thêm phiếu.
+            for (tid, n, s), h in self.p_hist.items():
+                if tid == track.track_id and n == name and (name == "boots" or s == side):
+                    h[:] = [(t, q) for t, q in h if self.now - t <= win]
+                    if h:
+                        ps.append(sum(q for _, q in h) / len(h))
+            return ps
         for (n, s), p in got.items():
             if n != name or (name != "boots" and s != side):
                 continue

@@ -234,3 +234,20 @@ mã**, trễ TB 56,7 ms, P95 107,3 ms (bản cuối 2 cùng lượt: 18,14 / 16,
   từ 5,0 s → tính 1 sai + 1 sót ở mức chặt).
 - **Món thiếu trong sự kiện chưa đủ** (e1 thiếu mũ, e3 thiếu kính không được báo; e5 người đủ mũ áo bị báo thiếu ủng, găng).
 - Tập đánh giá sự kiện nhỏ (10 sự kiện, KTC F1 [0,40; 0,95]), nhãn máy có kiểm định.
+
+# Đợt 3 (người dùng giao 28/11/2026: "sửa các lỗi kỹ thuật hiện có thể sửa được, ngay lập tức")
+
+Sửa được ngay (không cần train): (1) tốc độ cảnh gần. Không sửa được trong thời gian còn lại (cần dữ liệu, train lại):
+mũ vải nhận là mũ bảo hộ, mũ Có sai khi đầu sát camera, hộp người sai trên vật thể, găng cần hai tay → ghi Hạn chế.
+(Cỡ người tối thiểu để cảnh báo: chưa có video chỉnh tham số có nhãn người nhỏ để chọn ngưỡng → không làm.)
+
+## S — tốc độ cảnh gần (ghi trước khi code và chạy)
+
+Biến thể: (a) `part_cls.every_n_frames: 2` (mới: khung bỏ qua dùng lại phiếu đã gộp trong `vote_window_s`, không thêm
+phiếu mới); (b) `detector.zoom.every_n_frames: 2` (đã có; từ 25/11 có nhớ PPE F2 giữ hộp găng/kính/ủng giữa các khung);
+(c) cả hai. Không đổi tham số khác.
+
+Tiêu chí (khóa): (1) tốc độ (07, video4-6, 3 lượt): FPS gồm giải mã TB **≥ 15 ở cả video4, 5, 6**; (2) video3-6 (06b, nhãn
+người, so với cấu hình cuối 3): mỗi PPE, Có đúng và Thiếu đúng giảm không quá 2% số khung nhãn tương ứng; báo Có sai và
+báo thiếu oan (mỗi PPE) không tăng quá 1% số khung nhãn tương ứng; số sự kiện mỗi video không đổi. Chọn biến thể đạt cả hai
+theo thứ tự ưu tiên a → b → c (ít thay đổi nhất trước). Không biến thể nào đạt → giữ nguyên, ghi Hạn chế.

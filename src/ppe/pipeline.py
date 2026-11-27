@@ -32,6 +32,10 @@ class Pipeline:
         self.pose = PoseEstimator(self.cfg, ROOT) if use_pose else None
         use_parts = use_pose and self.stage >= 3 and (self.cfg.get("part_cls") or {}).get("enabled")
         self.parts = PartClassifier(self.cfg, ROOT) if use_parts else None
+        # Bước S (docs/experiments/2026-11-27_unknown_fix_plan.md): chạy bộ phân loại mỗi N khung; khung bỏ qua dùng lại phiếu
+        # đã gộp trong vote_window_s (compliance.part_ps). Vắng khóa: mỗi khung.
+        self.parts_every = int((self.cfg.get("part_cls") or {}).get("every_n_frames") or 1)
+        self._parts_k = -1
         self.associator = Associator(self.cfg) if self.stage >= 2 else None
         self.compliance = Compliance(self.cfg) if self.stage >= 3 else None
         hold = (self.cfg.get("display") or {}).get("hold_s")          # A2: chỉ để vẽ
@@ -58,7 +62,14 @@ class Pipeline:
         if self.pose:
             timed("pose", self.pose, frame, out["tracks"])
         if self.parts:
-            timed("parts", self.parts, frame, out["tracks"])
+            self._parts_k += 1
+            run = self._parts_k % self.parts_every == 0
+            for tr in out["tracks"]:
+                tr.extra["parts_skip"] = not run
+                if not run:
+                    tr.extra.pop("parts", None)
+            if run:
+                timed("parts", self.parts, frame, out["tracks"])
         if self.stage >= 2:
             out["assoc"] = timed("association", self.associator, out["tracks"], out["ppe"], frame.shape)
         if self.stage >= 3:
