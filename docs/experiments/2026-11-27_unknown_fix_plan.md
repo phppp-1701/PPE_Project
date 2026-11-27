@@ -53,6 +53,20 @@ Tiêu chí V2 (khóa): như tiêu chí 1-4 ở trên trên video3-6 (nhãn ngư�
 không tăng (chặn gán áo cho người không có trong nhãn). Chưa đo V3b trên val (chưa có chế độ 05a cho V2; ghi rõ là giới hạn).
 Đạt → bật, chạy lại holdout ("kiểm tra sau sửa, không mù") và 9-17 (chỉ báo cáo).
 
-## Kết quả V2
+## Kết quả V2 (27/11/2026), `outputs/results/close_eval/stepV/dev36_V2/`
 
-(điền sau khi chạy)
+| Áo, video3-6 | base | V2 |
+|---|---|---|
+| Có đúng / 2.630 | 2.430 | **2.506** |
+| Thiếu đúng / 1.043 | 1.002 | 1.001 |
+| Báo thiếu oan | 48 | 47 |
+| Báo Có sai | 3 | **4** |
+| Có → CXĐ | 114 | **39** |
+
+Theo video: video4 Có→CXĐ 34 → 5, video5 66 → 20, video3 +1 Có đúng, video6 không đổi. Mũ, găng, kính, ủng giống hệt.
+Sự kiện: số sự kiện giống ở cả 4 video; video3 #5 chỉ lệch mốc bỏ mục áo trong `missing_history` 39,840 → 39,806 s.
+Có mới trên người không có nhãn: 0.
+
+Áp tiêu chí: (1) đạt; (2) **không đạt**: báo Có sai 3 → 4 (một khung, video3 f1152, nhãn người 5 không áo nhận Có;
+cùng khung người 6 có áo từ Thiếu oan thành Có đúng; đây cũng là khung đã làm B1 không đạt 15/11); báo thiếu oan đạt;
+(3) đạt; (4) đạt; (5) đạt. → Theo tiêu chí đã khóa: **không đạt**, chờ người dùng quyết định (ngoại lệ hay không).
