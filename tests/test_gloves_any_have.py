@@ -28,3 +28,13 @@ def test_missing_still_wins(test_cfg):
 
 def test_both_unknown_stays_unknown(test_cfg):
     assert _state(test_cfg, UNKNOWN, UNKNOWN, True) == UNKNOWN
+
+
+def test_g1b_needs_confident_glove(test_cfg):
+    cfg = copy.deepcopy(test_cfg)
+    cfg.setdefault("compliance", {})["gloves_any_have"] = {"min_conf": 0.9}
+    c = Compliance(cfg)
+    for conf, want in ((0.95, HAVE), (0.5, UNKNOWN)):
+        c.side_state = lambda name, t, side, *a, conf=conf, **k: (
+            (HAVE, {"conf": conf}) if side == "left" else (UNKNOWN, {"conf": 0.0}))
+        assert c([person(1, 0, 0, 100, 300)], Association(), (500, 500, 3), ["gloves"])[1]["gloves"]["state"] == want

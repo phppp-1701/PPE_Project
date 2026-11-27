@@ -273,3 +273,19 @@ C2 chỉ xét khi thấy mũi, hai mắt và hai vai không ngược; người s
 không thấy vai vẫn xét. Chọn t_veto x face_conf trên val bằng `05e --helmet-veto3` (cùng luật, cùng tiêu chí V-C1 <= 2%
 với >= 100 hộp, V-C3 <= 5% như C2, bộ phân loại bản 5). Tiêu chí video3-6 (06b): mũ báo Có sai không tăng, báo thiếu oan
 không tăng, mũ Có đúng giảm không quá 1% số khung nhãn Có; PPE khác không đổi; số sự kiện không tăng.
+
+## R1 — nối sự kiện khi đổi mã theo dõi (ghi trước khi chạy)
+
+`events.relink {iou: 0.5, max_gap_s: 2.0}`: người mới được xác nhận vi phạm, nếu có sự kiện đang mở của người đã vắng mặt
+(absent) không quá 2 s và hộp cuối của người đó IoU >= 0,5 với hộp người mới → chuyển sự kiện sang người mới
+(`relinked_from`), không tạo sự kiện mới. 0,5 = mức ghép người của spec 7.4; 2 s = khoảng vắng coi là liền của nhãn
+sự kiện. Không chọn trên dữ liệu. Áp dụng cả trong 06 (cấu hình E).
+
+Tiêu chí (khóa): video3-6 (06b) số sự kiện mỗi video không tăng; ablation 06 (video4-6) E: TP không giảm, cảnh báo sai
+không tăng.
+
+## G1b — găng một tay Có chắc chắn (ghi trước khi chạy)
+
+Như G1 nhưng tay Có phải có hộp găng của detector với conf >= c_g, c_g = mức conf nhỏ nhất mà Precision găng trên val
+(ppe4 val, capture c6_ft + zoom, IoU 0,5) >= 0,95. Tiêu chí như G1 (găng Có đúng tăng; báo Có sai tăng không quá 1% số
+khung nhãn Thiếu; báo thiếu oan không tăng; PPE khác, số sự kiện không đổi).

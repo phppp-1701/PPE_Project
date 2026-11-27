@@ -1,0 +1,93 @@
+{
+ "capture": "outputs/results/c5_eval/c8lab_c6_ft_crop_val",
+ "iou": 0.5,
+ "gt_gloves": 880,
+ "grid": [
+  {
+   "conf": 0.3,
+   "n": 946,
+   "precision": 0.593,
+   "recall": 0.6375
+  },
+  {
+   "conf": 0.35,
+   "n": 885,
+   "precision": 0.6237,
+   "recall": 0.6273
+  },
+  {
+   "conf": 0.4,
+   "n": 816,
+   "precision": 0.663,
+   "recall": 0.6148
+  },
+  {
+   "conf": 0.45,
+   "n": 758,
+   "precision": 0.6926,
+   "recall": 0.5966
+  },
+  {
+   "conf": 0.5,
+   "n": 708,
+   "precision": 0.7232,
+   "recall": 0.5818
+  },
+  {
+   "conf": 0.55,
+   "n": 653,
+   "precision": 0.7611,
+   "recall": 0.5648
+  },
+  {
+   "conf": 0.6,
+   "n": 596,
+   "precision": 0.7869,
+   "recall": 0.533
+  },
+  {
+   "conf": 0.65,
+   "n": 526,
+   "precision": 0.8308,
+   "recall": 0.4966
+  },
+  {
+   "conf": 0.7,
+   "n": 465,
+   "precision": 0.8581,
+   "recall": 0.4534
+  },
+  {
+   "conf": 0.75,
+   "n": 404,
+   "precision": 0.8861,
+   "recall": 0.4068
+  },
+  {
+   "conf": 0.8,
+   "n": 337,
+   "precision": 0.911,
+   "recall": 0.3489
+  },
+  {
+   "conf": 0.85,
+   "n": 170,
+   "precision": 0.9,
+   "recall": 0.1739
+  },
+  {
+   "conf": 0.9,
+   "n": 69,
+   "precision": 0.9565,
+   "recall": 0.075
+  },
+  {
+   "conf": 0.95,
+   "n": 3,
+   "precision": 1.0,
+   "recall": 0.0034
+  }
+ ],
+ "rule": "conf nhỏ nhất có precision >= 0,95",
+ "c_g": 0.9
+}

@@ -221,7 +221,7 @@ def run_ablation_for_video(video_path, cfg, gt_events):
     temporal_e = TemporalConfirmer(cfg)
     events_created = []
     cur = {}        # hộp người đang được update: sự kiện "created" phát ra trong update() của chính người này
-    event_mgr = EventManager("video", video_name, required_ppe,
+    event_mgr = EventManager("video", video_name, required_ppe, relink=(cfg.get("events") or {}).get("relink"),
                              on_change=lambda kind, ev: events_created.append((ev, cur.get("box"), cur.get("idx")))
                              if kind == "created" else None)
     for f in cached_frames:

@@ -12,7 +12,8 @@ ACTIVE, PENDING, CLOSED = "active", "pending_observation", "closed"
 
 
 class EventManager:
-    def __init__(self, source_id, session_id, required_ppe, evidence_dir=None, policy_version=1, on_change=None):
+    def __init__(self, source_id, session_id, required_ppe, evidence_dir=None, policy_version=1, on_change=None,
+                 relink=None):
         self.source_id, self.session_id = source_id, session_id
         self.required = list(required_ppe)
         self.evidence_dir = Path(evidence_dir) / session_id if evidence_dir else None
@@ -20,6 +21,11 @@ class EventManager:
         self.on_change = on_change              # hàm nhận (loại thay đổi, bản sao sự kiện), vd. ghi file / gửi backend
         self.open = {}                          # track_id -> sự kiện đang mở
         self.closed = []
+        # R1 (docs/experiments/2026-11-27_unknown_fix_plan.md): {iou, max_gap_s}. Người mới được xác nhận vi phạm ở đúng chỗ
+        # một người có sự kiện đang chờ quan sát (IoU hộp cuối >= iou, vắng <= max_gap_s) -> nối vào sự kiện đó (đổi mã
+        # theo dõi), không tạo sự kiện mới. None: như cũ.
+        self.relink = relink
+        self._gone = {}                         # track_id có sự kiện mở -> t lần đầu vắng mặt (absent)
 
     def _emit(self, kind, ev):
         ev["history"].append({"t": ev["last_change_time"], "change": kind, "missing_items": list(ev["missing_items"])})
@@ -45,7 +51,10 @@ class EventManager:
     def update(self, t, track_id, checks, frame=None, box=None):
         """checks: {ppe: temporal.Check} của người này ở thời điểm t (chỉ gọi khi người có mặt ở khung)."""
         confirmed = [p for p in self.required if checks[p].missing_confirmed]
+        self._gone.pop(track_id, None)
         ev = self.open.get(track_id)
+        if ev is None and confirmed and self.relink and box is not None:
+            ev = self._relink(t, track_id, box)
         if ev is None:
             if confirmed:
                 starts = [checks[p].since for p in confirmed if checks[p].since is not None]
@@ -55,11 +64,15 @@ class EventManager:
                           close_reason=None, evidence_refs=[], policy_version=self.policy_version,
                           history=[], last_change_time=t)
                 self.open[track_id] = ev
+                if box is not None:
+                    ev["last_box"] = [float(v) for v in box]
                 self._evidence(ev, frame, box, t)
                 self._emit("created", ev)
             return ev
 
         changed = []
+        if box is not None:
+            ev["last_box"] = [float(v) for v in box]
         if any(checks[p].valid_now for p in self.required):
             ev["last_seen_time"] = t
             if ev["event_state"] == PENDING:
@@ -83,9 +96,34 @@ class EventManager:
             self._emit("+".join(changed), ev)
         return ev
 
+    def _relink(self, t, track_id, box):
+        best = None
+        for tid, ev in self.open.items():
+            b = ev.get("last_box")
+            gone = self._gone.get(tid)
+            if tid == track_id or gone is None or b is None or t - gone > self.relink["max_gap_s"]:
+                continue
+            ix = max(0.0, min(b[2], box[2]) - max(b[0], box[0]))
+            iy = max(0.0, min(b[3], box[3]) - max(b[1], box[1]))
+            i = ix * iy
+            u = (b[2] - b[0]) * (b[3] - b[1]) + (box[2] - box[0]) * (box[3] - box[1]) - i
+            iou = i / u if u > 0 else 0.0
+            if iou >= self.relink["iou"] and (best is None or iou > best[0]):
+                best = (iou, tid)
+        if best is None:
+            return None
+        ev = self.open.pop(best[1])
+        self._gone.pop(best[1], None)
+        ev.setdefault("relinked_from", []).append(ev["track_id"])
+        ev["track_id"] = track_id
+        self.open[track_id] = ev
+        return ev
+
     def absent(self, t, present_ids):
         """Người có sự kiện đang mở nhưng không xuất hiện ở khung này -> chờ quan sát (giữ kết quả gần nhất)."""
         for tid, ev in self.open.items():
+            if tid not in present_ids:
+                self._gone.setdefault(tid, t)
             if tid not in present_ids and ev["event_state"] == ACTIVE:
                 ev["event_state"] = PENDING
                 ev["last_change_time"] = t

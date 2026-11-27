@@ -88,7 +88,10 @@ class Compliance:
         self.gate = cfg.get("compliance", {}).get("keypoint_gate") if self.pose else None
         self.hold_s = cfg.get("compliance", {}).get("have_hold_s") or {}
         # G1 (docs/experiments/2026-11-27_unknown_fix_plan.md): găng có một tay Có và không tay nào Thiếu -> Có.
-        self.any_have = bool(cfg.get("compliance", {}).get("gloves_any_have"))
+        ah = cfg.get("compliance", {}).get("gloves_any_have")
+        self.any_have = bool(ah)
+        # G1b: {min_conf}: tay Có phải có hộp găng detector conf >= min_conf (chọn trên val, g1b_gloves_conf_val.json)
+        self.any_have_conf = ah.get("min_conf") if isinstance(ah, dict) else None
         self.last_have = {}     # (track_id, ppe, side) -> t lần cuối thấy Có
         pc = cfg.get("part_cls") or {}
         self.part = pc if pc.get("enabled") and self.pose else None   # bộ phân loại bộ phận (parts.py), cần pose
@@ -365,6 +368,8 @@ class Compliance:
             else:
                 why = "khac"
             extra["why"] = why
+        boxes = assoc.owned.get(track.track_id, {}).get((name, side)) or []
+        extra["conf"] = max((d.conf for d in boxes), default=0.0)
         return state, dict(v=round(v, 3), o=round(o, 3), area=round(visible), observable=observable,
                            has=has, contested=contested, vote=vote, c2=c2, **extra)
 
@@ -387,7 +392,9 @@ class Compliance:
                 states = [st for st, _ in per.values()]
                 if MISSING in states:          # găng: một tay nhìn rõ mà không có găng -> Thiếu
                     state = MISSING
-                elif all(st == HAVE for st in states) or (self.any_have and HAVE in states):
+                elif all(st == HAVE for st in states) or (self.any_have and any(
+                        st == HAVE and (self.any_have_conf is None or d.get("conf", 0.0) >= self.any_have_conf)
+                        for st, d in per.values())):
                     state = HAVE
                 else:
                     state = UNKNOWN
