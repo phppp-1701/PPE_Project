@@ -193,7 +193,7 @@ def test_no_keys_same_as_v4(test_cfg):
 def test_current_config_d_and_c2_on():
     """Cấu hình đang dùng (16/11/2026, người dùng duyệt): D bật đúng quy ước; C2 bật với tham số chọn trên val."""
     cfg = load_config()
-    assert cfg["part_cls"]["veto_frontal"] == {"helmet": {"face_conf": 0.7, "t_veto": 0.7}}
+    assert cfg["part_cls"]["veto_frontal"] == {"helmet": {"face_conf": 0.7, "t_veto": 0.7, "face_only": True}}   # C3 28/11/2026
     assert cfg["compliance"]["back_view"] == BV
     # Bước F (16/11/2026): F1 bật; F2, F3 tắt (không đạt V3b trên val)
     assert cfg["association"]["eye_anchor"] == {"kp_conf": 0.5, "k_eye": 1.776}

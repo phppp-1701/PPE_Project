@@ -109,10 +109,15 @@ def test_pose_clasped_hands_single_glove_box_marks_other_wrist_contested(test_cf
     """Khi hai cổ tay sát nhau (chắp tay), 1 khung găng tay nhỏ nằm trong cả 2 elip:
     tay gần hơn nhận găng, tay còn lại được đánh dấu contested -> UNKNOWN thay vì báo sai MISSING."""
     p = with_wrists((195, 500, 0.9), (215, 500, 0.9))
-    _, s = run(pose_cfg(test_cfg), [p], [det(3, 190, 490, 210, 510)])
+    cfg = pose_cfg(test_cfg)
+    cfg["compliance"].pop("gloves_any_have", None)   # luật gộp hai tay gốc (không G1b)
+    _, s = run(cfg, [p], [det(3, 190, 490, 210, 510)])
     assert s[1]["gloves"]["sides"]["left"][0] == HAVE
     assert s[1]["gloves"]["sides"]["right"][0] == UNKNOWN
     assert s[1]["gloves"]["state"] == UNKNOWN
+    cfg["compliance"]["gloves_any_have"] = {"min_conf": 0.9}   # G1b (28/11/2026): một tay găng chắc chắn -> Có
+    _, s = run(cfg, [p], [det(3, 190, 490, 210, 510)])
+    assert s[1]["gloves"]["state"] == HAVE
 
 
 def test_pose_clasped_hands_wide_glove_box_covers_both_wrists(test_cfg):
