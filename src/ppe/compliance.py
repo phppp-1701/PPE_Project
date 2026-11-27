@@ -227,7 +227,8 @@ class Compliance:
                         self.last_have[key] = self.now
                     return HAVE, dict(v=0.0, o=0.0, area=0, observable=False, has=False, contested=False, vote=None,
                                       c2=None, held=hold[0], held_box=hold[1])
-                return UNKNOWN, dict(v=0.0, o=0.0, area=0, observable=False, has=False, contested=False)
+                return UNKNOWN, dict(v=0.0, o=0.0, area=0, observable=False, has=False, contested=False,
+                                     why="khong_thay_co_tay")
             r = wrist_box(track.xyxy, q, self.pose)
         else:
             r = region_box(track.xyxy, self.regions[self.ppe[name]["region"]], side)
@@ -237,12 +238,15 @@ class Compliance:
         o = occluded_fraction(r, others)
         observable = (v >= self.tau_in[name] and o <= self.tau_occ[name] and visible >= self.area_min[name]
                       and track.confident)
+        kp_ok = True
         if observable and not self.keypoint_visible(name, track, frame_box):
             observable = False
+            kp_ok = False
         back = name in ("helmet", "goggles") and self.back_view(track)      # bước D
         if back and name == "goggles":
             observable = False          # quay lưng: không thấy mắt -> kính Chưa xác định
         has = bool(assoc.owned.get(track.track_id, {}).get((name, side)))
+        ankle_bottom = False
         if name == "boots" and not has:
             ankles = getattr(track, "extra", {}).get("ankles")
             if ankles and ankles["conf"] >= 0.5:
@@ -250,6 +254,7 @@ class Compliance:
                 person_h = track.xyxy[3] - track.xyxy[1]
                 if dist_to_bottom < 0.065 * person_h:
                     observable = False
+                    ankle_bottom = True
         contested = (name, side) in assoc.contested.get(track.track_id, set())
         key = (track.track_id, name, side)
         recently_have = self.now is not None and key in self.last_have and self.now - self.last_have[key] <= self.hold_s.get(name, 0)
@@ -316,6 +321,28 @@ class Compliance:
         else:
             state = UNKNOWN
         extra = dict(held=held[0], held_box=held[1]) if held else {}
+        if state == UNKNOWN:
+            # Lý do Chưa xác định (chỉ để chẩn đoán, không đổi trạng thái), theo thứ tự điều kiện ở trên.
+            if not track.confident:
+                why = "track_chua_chac"
+            elif not observable:
+                why = ("vung_ngoai_khung" if v < self.tau_in[name] else "bi_che" if o > self.tau_occ[name]
+                       else "qua_nho" if visible < self.area_min[name] else "cong_khung_xuong" if not kp_ok
+                       else "quay_lung" if back and name == "goggles" else "mat_ca_sat_day" if ankle_bottom
+                       else "khong_quan_sat")
+            elif conflict:
+                why = "mau_thuan_C2"
+            elif contested:
+                why = "tranh_chap"
+            elif no_missing:
+                why = "quay_lung_D"
+            elif recently_have:
+                why = "vua_thay_co"
+            elif covered and vote != "neg":
+                why = "phan_loai_khong_chac"
+            else:
+                why = "khac"
+            extra["why"] = why
         return state, dict(v=round(v, 3), o=round(o, 3), area=round(visible), observable=observable,
                            has=has, contested=contested, vote=vote, c2=c2, **extra)
 

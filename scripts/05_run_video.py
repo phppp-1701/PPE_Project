@@ -283,6 +283,8 @@ def main():
     ap.add_argument("--draw-regions", action="store_true", help="vẽ vùng cơ thể của từng người")
     ap.add_argument("--api-url", default="http://127.0.0.1:8000/api", help="địa chỉ Backend API để đẩy sự kiện trực tiếp")
     ap.add_argument("--config", help="file cấu hình (mặc định configs/pipeline.yaml)")
+    ap.add_argument("--reasons", action="store_true",
+                    help="ghi thêm reasons.csv: lý do Chưa xác định từng PPE, từng bên (chỉ để chẩn đoán)")
     args = ap.parse_args()
     cfg_in = load_config(args.config) if args.config else None
 
@@ -337,6 +339,12 @@ def main():
     f_csv = open(out_dir / "frames.csv", "w", newline="", encoding="utf-8")
     wr = csv.writer(f_csv)
     wr.writerow(["frame", "t", "track_id", "x1", "y1", "x2", "y2", "confident"] + names + ["missing_ppe"])
+    f_rs = open(out_dir / "reasons.csv", "w", newline="", encoding="utf-8") if args.reasons else None
+    wr_rs = csv.writer(f_rs) if f_rs else None
+    if wr_rs:
+        # nearby: số hộp PPE cùng lớp (khung này) có tâm nằm trong hộp người, để tách "detector không thấy" với "không gán được"
+        # near_status: số phận các hộp đó (gan_minh / gan_khac / outside / far / contested)
+        wr_rs.writerow(["frame", "track_id", "ppe", "side", "state", "why", "has", "vote", "nearby", "near_status"])
     timings, i, start = [], 0, time.perf_counter()
     while True:
         ok, frame = cap.read()
@@ -350,6 +358,21 @@ def main():
             row = [st[n]["state"] if n in st else "" for n in names]
             wr.writerow([i, round(t, 3), tr.track_id, *np.round(tr.xyxy, 1), int(tr.confident), *row,
                          ";".join(n for n in names if st.get(n, {}).get("state") == MISSING)])
+            if wr_rs:
+                x1, y1, x2, y2 = tr.xyxy
+                asc = out.get("assoc")
+                rej = {id(d): why for _, d, why, _ in (asc.rejected if asc else [])}
+                mine = {id(d) for (_, _), ds in (asc.owned.get(tr.track_id, {}) if asc else {}).items() for d in ds}
+                for n in names:
+                    if n not in st:
+                        continue
+                    cls = cfg["ppe"][n]["cls"]
+                    nd = [d for d in out.get("ppe", []) if d.cls == cls
+                          and x1 <= d.center[0] <= x2 and y1 <= d.center[1] <= y2]
+                    ns = ";".join(sorted({"gan_minh" if id(d) in mine else rej.get(id(d), "gan_khac") for d in nd}))
+                    for side, (s_, det) in st[n]["sides"].items():
+                        wr_rs.writerow([i, tr.track_id, n, side or "", s_, det.get("why", ""), int(bool(det.get("has"))),
+                                        det.get("vote") or "", len(nd), ns])
         if writer:
             writer.write(draw(frame, out, cfg, args.draw_regions))
         i += 1
@@ -362,6 +385,8 @@ def main():
     if writer:
         writer.release()
     f_csv.close()
+    if f_rs:
+        f_rs.close()
     ev_file.close()
 
     steps = sorted({k for t in timings for k in t})
