@@ -1,0 +1,444 @@
+{
+  "ho_so": {
+    "thoi_diem": "2026-11-28T00:52:23",
+    "commit_nen": "b9bc310196ad20d27e6b4e44c6979e1a516c46c2",
+    "file_dang_sua": [
+      "M scripts/05e_select_part_cls.py",
+      "?? outputs/results/c5_eval/final_c6_ft_test/",
+      "?? outputs/results/c5_eval/m1_crop_helmet_val.json",
+      "?? outputs/results/close_eval/final2/close_probe/video18/",
+      "?? outputs/results/close_eval/final2/close_probe/video19/",
+      "?? outputs/results/close_eval/final2/close_probe/video20/",
+      "?? outputs/results/close_eval/final2/close_probe/video21/",
+      "?? outputs/results/close_eval/final2/close_probe/video22/",
+      "?? outputs/results/close_eval/final2/close_probe/video23/",
+      "?? outputs/results/close_eval/final2/close_probe/video24/",
+      "?? outputs/results/close_eval/final2/close_probe/video25/",
+      "?? outputs/results/close_eval/final2/close_probe/video26/",
+      "?? outputs/results/close_eval/final2/close_probe/video27/",
+      "?? outputs/results/close_eval/stepA2/states_current/video3/",
+      "?? outputs/results/close_eval/stepA2/states_current/video4/",
+      "?? outputs/results/close_eval/stepA2/states_current/video5/",
+      "?? outputs/results/close_eval/stepA2/states_current/video6/",
+      "?? outputs/results/close_eval/stepF2/flicker_F2/video3/",
+      "?? outputs/results/close_eval/stepF2/flicker_F2/video4/",
+      "?? outputs/results/close_eval/stepF2/flicker_F2/video5/",
+      "?? outputs/results/close_eval/stepF2/flicker_F2/video6/",
+      "?? outputs/results/close_eval/stepF2/flicker_base/video3/",
+      "?? outputs/results/close_eval/stepF2/flicker_base/video4/",
+      "?? outputs/results/close_eval/stepF2/flicker_base/video5/",
+      "?? outputs/results/close_eval/stepF2/flicker_base/video6/",
+      "?? outputs/results/parts_cls/val_select_v5.json",
+      "?? scripts/06e_event_eval.py"
+    ],
+    "sha256": {
+      "helmet_weights": "7c66ae83a326a64d23bdeaf8751dcbbb2650d9fe6ae7f320d36d2b02e38e9d31",
+      "pose_weights": "869e83fcdffdc7371fa4e34cd8e51c838cc729571d1635e5141e3075e9319dc0",
+      "preds_cache": "30e0f6790b29a7a1323100c6a75605e84e967fcf328624cbbdd31959e39461cc",
+      "items": "d795d428b7386632ad30ecb0c1880bec564e9228274de2660f06a83371afb2eb"
+    },
+    "ro_ri": "Bộ phân loại chưa từng thấy ảnh CHV (data/ppe6/parts/train: 0 ảnh chv); CHV val không có group_id ở train/test; không dùng test, Pictor, holdout, video."
+  },
+  "thiet_lap": {
+    "t_veto": [
+      0.7,
+      0.8,
+      0.9
+    ],
+    "face_conf": [
+      0.7,
+      0.8,
+      0.9
+    ],
+    "V_C1_max": 0.02,
+    "V_C3_max": 0.05,
+    "min_n": 100,
+    "t_neg": 0.5,
+    "kp_conf": 0.5,
+    "geometry_head": {
+      "k": 0.2,
+      "s": 1.0
+    },
+    "back_view": {
+      "kp_conf": 0.3,
+      "min_sep": 0.05,
+      "face_strong": 0.9,
+      "hold_s": 1.0
+    },
+    "conf_helmet": 0.34,
+    "thu_tu_chon": "t_veto tăng, rồi face_conf tăng; tổ hợp đầu tiên đạt"
+  },
+  "do_phu": {
+    "03y/helmet": {
+      "cat_duoc": 116,
+      "tong": 215
+    },
+    "03y/no_helmet": {
+      "cat_duoc": 896,
+      "tong": 1131
+    },
+    "chv/helmet": {
+      "cat_duoc": 348,
+      "tong": 494
+    }
+  },
+  "cache_thieu": 0,
+  "luoi": [
+    {
+      "t_veto": 0.7,
+      "face_conf": 0.7,
+      "n_mu_nhin_thang": 271,
+      "V_C1": {
+        "thieu_sai": 2,
+        "ti_le": 0.0074
+      },
+      "V_C3": {
+        "co_thanh_cxd": 1,
+        "ti_le": 0.0037
+      },
+      "theo_tap": {
+        "03y": {
+          "n": 64,
+          "thieu": 1,
+          "cxd": 0
+        },
+        "chv": {
+          "n": 207,
+          "thieu": 1,
+          "cxd": 1
+        }
+      },
+      "mu_co_hop_detector": {
+        "n": 267,
+        "thieu": 1,
+        "cxd": 0
+      },
+      "V_C2": {
+        "n_khong_mu": 539,
+        "thieu": 520,
+        "cxd": 7,
+        "hop_mu_detector_tren_dau_khong_mu": 3,
+        "fp_thanh_thieu": 1,
+        "fp_thanh_cxd": 0
+      },
+      "dat": true
+    },
+    {
+      "t_veto": 0.7,
+      "face_conf": 0.8,
+      "n_mu_nhin_thang": 245,
+      "V_C1": {
+        "thieu_sai": 1,
+        "ti_le": 0.0041
+      },
+      "V_C3": {
+        "co_thanh_cxd": 0,
+        "ti_le": 0.0
+      },
+      "theo_tap": {
+        "03y": {
+          "n": 54,
+          "thieu": 1,
+          "cxd": 0
+        },
+        "chv": {
+          "n": 191,
+          "thieu": 0,
+          "cxd": 0
+        }
+      },
+      "mu_co_hop_detector": {
+        "n": 243,
+        "thieu": 0,
+        "cxd": 0
+      },
+      "V_C2": {
+        "n_khong_mu": 478,
+        "thieu": 461,
+        "cxd": 7,
+        "hop_mu_detector_tren_dau_khong_mu": 3,
+        "fp_thanh_thieu": 1,
+        "fp_thanh_cxd": 0
+      },
+      "dat": true
+    },
+    {
+      "t_veto": 0.7,
+      "face_conf": 0.9,
+      "n_mu_nhin_thang": 199,
+      "V_C1": {
+        "thieu_sai": 1,
+        "ti_le": 0.005
+      },
+      "V_C3": {
+        "co_thanh_cxd": 0,
+        "ti_le": 0.0
+      },
+      "theo_tap": {
+        "03y": {
+          "n": 39,
+          "thieu": 1,
+          "cxd": 0
+        },
+        "chv": {
+          "n": 160,
+          "thieu": 0,
+          "cxd": 0
+        }
+      },
+      "mu_co_hop_detector": {
+        "n": 198,
+        "thieu": 0,
+        "cxd": 0
+      },
+      "V_C2": {
+        "n_khong_mu": 361,
+        "thieu": 349,
+        "cxd": 3,
+        "hop_mu_detector_tren_dau_khong_mu": 3,
+        "fp_thanh_thieu": 1,
+        "fp_thanh_cxd": 0
+      },
+      "dat": true
+    },
+    {
+      "t_veto": 0.8,
+      "face_conf": 0.7,
+      "n_mu_nhin_thang": 271,
+      "V_C1": {
+        "thieu_sai": 1,
+        "ti_le": 0.0037
+      },
+      "V_C3": {
+        "co_thanh_cxd": 2,
+        "ti_le": 0.0074
+      },
+      "theo_tap": {
+        "03y": {
+          "n": 64,
+          "thieu": 0,
+          "cxd": 1
+        },
+        "chv": {
+          "n": 207,
+          "thieu": 1,
+          "cxd": 1
+        }
+      },
+      "mu_co_hop_detector": {
+        "n": 267,
+        "thieu": 1,
+        "cxd": 0
+      },
+      "V_C2": {
+        "n_khong_mu": 539,
+        "thieu": 518,
+        "cxd": 9,
+        "hop_mu_detector_tren_dau_khong_mu": 3,
+        "fp_thanh_thieu": 0,
+        "fp_thanh_cxd": 1
+      },
+      "dat": true
+    },
+    {
+      "t_veto": 0.8,
+      "face_conf": 0.8,
+      "n_mu_nhin_thang": 245,
+      "V_C1": {
+        "thieu_sai": 0,
+        "ti_le": 0.0
+      },
+      "V_C3": {
+        "co_thanh_cxd": 1,
+        "ti_le": 0.0041
+      },
+      "theo_tap": {
+        "03y": {
+          "n": 54,
+          "thieu": 0,
+          "cxd": 1
+        },
+        "chv": {
+          "n": 191,
+          "thieu": 0,
+          "cxd": 0
+        }
+      },
+      "mu_co_hop_detector": {
+        "n": 243,
+        "thieu": 0,
+        "cxd": 0
+      },
+      "V_C2": {
+        "n_khong_mu": 478,
+        "thieu": 459,
+        "cxd": 9,
+        "hop_mu_detector_tren_dau_khong_mu": 3,
+        "fp_thanh_thieu": 0,
+        "fp_thanh_cxd": 1
+      },
+      "dat": true
+    },
+    {
+      "t_veto": 0.8,
+      "face_conf": 0.9,
+      "n_mu_nhin_thang": 199,
+      "V_C1": {
+        "thieu_sai": 0,
+        "ti_le": 0.0
+      },
+      "V_C3": {
+        "co_thanh_cxd": 1,
+        "ti_le": 0.005
+      },
+      "theo_tap": {
+        "03y": {
+          "n": 39,
+          "thieu": 0,
+          "cxd": 1
+        },
+        "chv": {
+          "n": 160,
+          "thieu": 0,
+          "cxd": 0
+        }
+      },
+      "mu_co_hop_detector": {
+        "n": 198,
+        "thieu": 0,
+        "cxd": 0
+      },
+      "V_C2": {
+        "n_khong_mu": 361,
+        "thieu": 347,
+        "cxd": 5,
+        "hop_mu_detector_tren_dau_khong_mu": 3,
+        "fp_thanh_thieu": 0,
+        "fp_thanh_cxd": 1
+      },
+      "dat": true
+    },
+    {
+      "t_veto": 0.9,
+      "face_conf": 0.7,
+      "n_mu_nhin_thang": 271,
+      "V_C1": {
+        "thieu_sai": 1,
+        "ti_le": 0.0037
+      },
+      "V_C3": {
+        "co_thanh_cxd": 2,
+        "ti_le": 0.0074
+      },
+      "theo_tap": {
+        "03y": {
+          "n": 64,
+          "thieu": 0,
+          "cxd": 1
+        },
+        "chv": {
+          "n": 207,
+          "thieu": 1,
+          "cxd": 1
+        }
+      },
+      "mu_co_hop_detector": {
+        "n": 267,
+        "thieu": 1,
+        "cxd": 0
+      },
+      "V_C2": {
+        "n_khong_mu": 539,
+        "thieu": 512,
+        "cxd": 15,
+        "hop_mu_detector_tren_dau_khong_mu": 3,
+        "fp_thanh_thieu": 0,
+        "fp_thanh_cxd": 1
+      },
+      "dat": true
+    },
+    {
+      "t_veto": 0.9,
+      "face_conf": 0.8,
+      "n_mu_nhin_thang": 245,
+      "V_C1": {
+        "thieu_sai": 0,
+        "ti_le": 0.0
+      },
+      "V_C3": {
+        "co_thanh_cxd": 1,
+        "ti_le": 0.0041
+      },
+      "theo_tap": {
+        "03y": {
+          "n": 54,
+          "thieu": 0,
+          "cxd": 1
+        },
+        "chv": {
+          "n": 191,
+          "thieu": 0,
+          "cxd": 0
+        }
+      },
+      "mu_co_hop_detector": {
+        "n": 243,
+        "thieu": 0,
+        "cxd": 0
+      },
+      "V_C2": {
+        "n_khong_mu": 478,
+        "thieu": 455,
+        "cxd": 13,
+        "hop_mu_detector_tren_dau_khong_mu": 3,
+        "fp_thanh_thieu": 0,
+        "fp_thanh_cxd": 1
+      },
+      "dat": true
+    },
+    {
+      "t_veto": 0.9,
+      "face_conf": 0.9,
+      "n_mu_nhin_thang": 199,
+      "V_C1": {
+        "thieu_sai": 0,
+        "ti_le": 0.0
+      },
+      "V_C3": {
+        "co_thanh_cxd": 1,
+        "ti_le": 0.005
+      },
+      "theo_tap": {
+        "03y": {
+          "n": 39,
+          "thieu": 0,
+          "cxd": 1
+        },
+        "chv": {
+          "n": 160,
+          "thieu": 0,
+          "cxd": 0
+        }
+      },
+      "mu_co_hop_detector": {
+        "n": 198,
+        "thieu": 0,
+        "cxd": 0
+      },
+      "V_C2": {
+        "n_khong_mu": 361,
+        "thieu": 344,
+        "cxd": 8,
+        "hop_mu_detector_tren_dau_khong_mu": 3,
+        "fp_thanh_thieu": 0,
+        "fp_thanh_cxd": 1
+      },
+      "dat": true
+    }
+  ],
+  "chon": {
+    "t_veto": 0.7,
+    "face_conf": 0.7
+  },
+  "C2_dat": true
+}

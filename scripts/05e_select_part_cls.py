@@ -700,6 +700,7 @@ def helmet_check_eval(cfg, weights_list, out_name):
 def main():
     sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
     ap = argparse.ArgumentParser()
+    ap.add_argument("--config", default=None, help="cấu hình chuỗi xử lý khác configs/pipeline.yaml (M2' 28/11/2026)")
     ap.add_argument("--weights", default=None, help="trọng số bộ phân loại; mặc định part_cls.weights")
     ap.add_argument("--out", default="val_select.json", help="tên file kết quả trong outputs/results/parts_cls/")
     ap.add_argument("--helmet-veto", action="store_true", help="bước C, D: V-C1, V-C2, kiểm quay lưng (helmet_veto_val.json)")
@@ -716,7 +717,7 @@ def main():
     OUT = OUT_DIR / args.out
     from ultralytics import YOLO
 
-    cfg = load_config()
+    cfg = load_config(args.config) if args.config else load_config()
     if args.boots_veto:
         boots_veto_eval(cfg, "boots_veto_val.json")
         return
@@ -749,7 +750,7 @@ def main():
         helmet_veto_eval(cfg, items, person_model, pose, "helmet_veto_val.json")
         return
     if args.helmet_veto2:
-        helmet_veto2_eval(cfg, items, person_model, pose, "helmet_veto2_val.json")
+        helmet_veto2_eval(cfg, items, person_model, pose, args.out if args.out != "val_select.json" else "helmet_veto2_val.json")
         return
     if args.helmet_backview:
         helmet_backview_eval(cfg, items, person_model, pose, args.helmet_backview, "helmet_backview_val.json")
