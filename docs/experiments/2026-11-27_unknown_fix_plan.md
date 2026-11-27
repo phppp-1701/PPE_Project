@@ -310,3 +310,15 @@ conf >= ngưỡng pipeline, IoU >= 0,5. Chia theo dải chiều cao (bước 32 
 nhỏ nhất mà từ dải đó trở lên mọi dải (n >= 20) có recall >= 0,5. Người thấp hơn: món đó không kết luận Thiếu (CXĐ, lý do
 `nguoi_qua_nho`). Tiêu chí video3-6: Thiếu đúng giảm không quá 2% nhãn Thiếu; báo thiếu oan không tăng; PPE khác, sự kiện
 không tăng.
+
+### Kết quả lượt 3 (28/11/2026; `round3/dev36`, `stepS/benchmark_S2`, `stepR/ablation_R1.json`)
+
+| | Kết quả video3-6 | Tiêu chí |
+|---|---|---|
+| C3 | mọi PPE, sự kiện giống hệt (video3-6 không có ca đầu sát camera) | đạt (không xấu đi) → bật |
+| R1 | sự kiện giống hệt; ablation E giữ F1 0,870 | đạt → bật |
+| G1b | găng Có đúng 754 → 768, báo Có sai 1 → 1 | đạt → bật |
+| S2 | FPS gồm giải mã video4 14,97 / video5 15,91 / video6 17,21; ủng báo thiếu oan 61 → 75 | **không đạt** (1) thiếu 0,03 FPS, (2) +14 > 8 |
+
+S2: toàn bộ +14 ủng báo oan là một đoạn 15 khung liên tiếp (video3 khung 89-103, một người, ~0,5 s), sự kiện không đổi;
+video4 ủng CXĐ → Có đúng +23. **S3** (ghi trước khi chạy): S2 + phân loại N=3; cùng tiêu chí.
