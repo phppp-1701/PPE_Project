@@ -53,6 +53,16 @@ def frontal_strict(kps, face_conf, kp_conf):
     return kps[5][0] > kps[6][0]
 
 
+def frontal_face(kps, face_conf, kp_conf):
+    """Bước C3 (docs/experiments/2026-11-27_unknown_fix_plan.md): thấy mặt rõ. Mũi (0), hai mắt (1, 2) >= face_conf; nếu
+    thấy hai vai (>= kp_conf) thì vai không ngược. Khác C: không bắt buộc thấy vai (người sát camera bị cắt vai)."""
+    if not kps or any(kps[i][2] < face_conf for i in (0, 1, 2)):
+        return False
+    if kps[5][2] >= kp_conf and kps[6][2] >= kp_conf:
+        return kps[5][0] > kps[6][0]
+    return True
+
+
 def back_view_now(kps, xyxy, bv):
     """Bước D, một khung: hai vai >= bv["kp_conf"] và ngược (x5 < x6), cách nhau theo ngang >= bv["min_sep"] x rộng
     hộp người, và không "mặt rõ" (mũi, hai mắt đều >= bv["face_strong"]). Quy ước heuristic, không chọn trên val."""
@@ -291,7 +301,8 @@ class Compliance:
                 c2 = "veto"
         vf = self.veto_frontal.get(name)
         if (covered and vote == "neg" and vf and not back and has
-                and frontal_strict(getattr(track, "extra", {}).get("kps"), vf["face_conf"], self.part["kp_conf"])):
+                and (frontal_face if vf.get("face_only") else frontal_strict)(
+                    getattr(track, "extra", {}).get("kps"), vf["face_conf"], self.part["kp_conf"])):
             # Bước C: nhìn thẳng chắc, detector có hộp mà bộ phân loại không thấy mũ (vd đầu trọc).
             # Không có t_veto (C): phủ quyết. Có t_veto (C2): rất chắc (1 - p >= t_veto) -> phủ quyết (Thiếu);
             # phân vân (t_neg <= 1 - p < t_veto) -> mâu thuẫn -> Chưa xác định (không Có).

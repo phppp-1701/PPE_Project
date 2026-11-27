@@ -251,3 +251,25 @@ Tiêu chí (khóa): (1) tốc độ (07, video4-6, 3 lượt): FPS gồm giải 
 người, so với cấu hình cuối 3): mỗi PPE, Có đúng và Thiếu đúng giảm không quá 2% số khung nhãn tương ứng; báo Có sai và
 báo thiếu oan (mỗi PPE) không tăng quá 1% số khung nhãn tương ứng; số sự kiện mỗi video không đổi. Chọn biến thể đạt cả hai
 theo thứ tự ưu tiên a → b → c (ít thay đổi nhất trước). Không biến thể nào đạt → giữ nguyên, ghi Hạn chế.
+
+### Kết quả tốc độ S (28/11/2026, `stepS/benchmark`, video4-6, 3 lượt, FPS gồm giải mã TB)
+
+| | video4 | video5 | video6 |
+|---|---|---|---|
+| base (cấu hình cuối 3) | 10,44 | 12,05 | 12,83 |
+| Sa (phân loại N=2) | 11,90 | 13,89 | 14,44 |
+| Sb (zoom N=2) | 12,79 | 13,93 | 15,08 |
+| Sc (cả hai) | 14,84 | 16,36 | 17,32 |
+
+Không biến thể nào đạt tiêu chí (1) ở cả ba video (Sc thiếu 0,16 FPS ở video4). Người dùng (28/11/2026): "fix cho bằng
+được, không ghi hạn chế". Thêm hai biến thể, **ghi trước khi đo**, cùng tiêu chí (1), (2): **Sd** zoom N=3 + phân loại N=2;
+**Se** zoom N=2 + phân loại N=3. Chọn biến thể đạt cả hai tiêu chí, ưu tiên Sc (nếu chất lượng tốt hơn khi đã có Sd/Se
+không đạt tốc độ thì không chọn Sc), rồi Sd, Se.
+
+## C3 — phủ quyết hộp mũ khi thấy mặt, không cần vai (ghi trước khi chạy)
+
+C2 chỉ xét khi thấy mũi, hai mắt và hai vai không ngược; người sát camera bị cắt vai nên không được xét (h9: mũ Có sai
+34 → 51 sau M1/M2'). C3 (`veto_frontal.helmet.face_only: true`): mũi, hai mắt >= face_conf; thấy hai vai thì không ngược;
+không thấy vai vẫn xét. Chọn t_veto x face_conf trên val bằng `05e --helmet-veto3` (cùng luật, cùng tiêu chí V-C1 <= 2%
+với >= 100 hộp, V-C3 <= 5% như C2, bộ phân loại bản 5). Tiêu chí video3-6 (06b): mũ báo Có sai không tăng, báo thiếu oan
+không tăng, mũ Có đúng giảm không quá 1% số khung nhãn Có; PPE khác không đổi; số sự kiện không tăng.

@@ -249,7 +249,7 @@ def helmet_veto_eval(cfg, items, person_model, pose, out_name):
     print("Ghi", OUT.relative_to(ROOT), "(chưa ghi cấu hình)")
 
 
-def helmet_veto2_eval(cfg, items, person_model, pose, out_name):
+def helmet_veto2_eval(cfg, items, person_model, pose, out_name, face_only=False):
     """Bước C2 trên val (kế hoạch ppe6 mục C2, 16/11/2026). Không đụng test, Pictor, holdout, video.
 
     Tập: (1) hộp mũ / không mũ val của 03y (như C); (2) hộp mũ (lớp 1) của ảnh CHV thuộc ppe4 val (bộ phân loại chưa từng
@@ -264,7 +264,8 @@ def helmet_veto2_eval(cfg, items, person_model, pose, out_name):
 
     from ultralytics import YOLO
 
-    from ppe.compliance import back_view_now, frontal_strict
+    from ppe.compliance import back_view_now, frontal_face, frontal_strict
+    view = frontal_face if face_only else frontal_strict   # C3: chỉ cần thấy mặt (28/11/2026)
     from ppe.parts import anchors, head_box
 
     T_VETO, FACE, V1_MAX, V3_MAX, MIN_N = (0.7, 0.8, 0.9), (0.7, 0.8, 0.9), 0.02, 0.05, 100   # người dùng duyệt 16/11
@@ -340,7 +341,7 @@ def helmet_veto2_eval(cfg, items, person_model, pose, out_name):
             crops.append(cr)
             meta.append(dict(img=img, set=key[0], y=int(cls == "helmet"), bx=[float(v) for v in bx],
                              back=bool(back_view_now(kps, box, bv)),
-                             frontal={str(f): bool(frontal_strict(kps, f, pc["kp_conf"])) for f in FACE}))
+                             frontal={str(f): bool(view(kps, f, pc["kp_conf"])) for f in FACE}))
         if crops:
             for r, rr in zip(meta, clf.predict(crops, imgsz=pc["imgsz"], device=cfg["detector"]["device"], verbose=False)):
                 r["p"] = ppe_prob(rr.probs.data.cpu().numpy(), names, "helmet")
@@ -416,7 +417,7 @@ def helmet_veto2_eval(cfg, items, person_model, pose, out_name):
         C2_dat=chosen is not None)
     OUT = OUT_DIR / out_name
     OUT.write_text(json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8")
-    (OUT_DIR / "helmet_veto2_val_records.json").write_text(json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
+    (OUT_DIR / out_name.replace(".json", "_records.json")).write_text(json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
     for g in grid:
         print(g["t_veto"], g["face_conf"], "n", g["n_mu_nhin_thang"], "V-C1", g["V_C1"], "V-C3", g["V_C3"],
               "tập", g["theo_tap"], "V-C2", g["V_C2"], "ĐẠT" if g["dat"] else "")
@@ -704,6 +705,7 @@ def main():
     ap.add_argument("--weights", default=None, help="trọng số bộ phân loại; mặc định part_cls.weights")
     ap.add_argument("--out", default="val_select.json", help="tên file kết quả trong outputs/results/parts_cls/")
     ap.add_argument("--helmet-veto", action="store_true", help="bước C, D: V-C1, V-C2, kiểm quay lưng (helmet_veto_val.json)")
+    ap.add_argument("--helmet-veto3", action="store_true", help="bước C3: như C2, chỉ cần thấy mặt (helmet_veto3_val.json)")
     ap.add_argument("--helmet-veto2", action="store_true", help="bước C2: hai mức, thêm mũ CHV val (helmet_veto2_val.json)")
     ap.add_argument("--boots-veto", action="store_true", help="bước M1: bác bỏ hộp ủng (boots_veto_val.json)")
     ap.add_argument("--goggles-veto-conf", action="store_true", help="F3: veto_max_conf cho kính (goggles_veto_conf_val.json)")
@@ -748,6 +750,9 @@ def main():
     pose = PoseEstimator(cfg, ROOT)
     if args.helmet_veto:
         helmet_veto_eval(cfg, items, person_model, pose, "helmet_veto_val.json")
+        return
+    if args.helmet_veto3:
+        helmet_veto2_eval(cfg, items, person_model, pose, args.out if args.out != "val_select.json" else "helmet_veto3_val.json", face_only=True)
         return
     if args.helmet_veto2:
         helmet_veto2_eval(cfg, items, person_model, pose, args.out if args.out != "val_select.json" else "helmet_veto2_val.json")
