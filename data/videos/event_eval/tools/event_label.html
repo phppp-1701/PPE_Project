@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gán nhãn sự kiện</title>
+<style>
+  :root { --bg:#f6f6f4; --fg:#1d1d1b; --mut:#6b6b66; --line:#d9d9d4; --acc:#1f6feb; --warn:#b42318; --card:#fff; }
+  body { margin:0; font:14px/1.45 system-ui, sans-serif; background:var(--bg); color:var(--fg); }
+  header { padding:10px 16px; border-bottom:1px solid var(--line); background:var(--card); }
+  h1 { font-size:17px; margin:0 0 4px; }
+  details { margin-top:4px; } summary { cursor:pointer; color:var(--acc); }
+  .rules { max-width:900px; color:var(--fg); } .rules li { margin:2px 0; }
+  main { display:grid; grid-template-columns:minmax(0,1fr) 380px; gap:12px; padding:12px 16px; }
+  @media (max-width:1000px){ main { grid-template-columns:1fr; } }
+  .stage { position:relative; background:#000; }
+  video { width:100%; display:block; } canvas { position:absolute; inset:0; width:100%; height:100%; cursor:crosshair; }
+  .bar { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:8px 0; }
+  button, select, input[type=text] { font:inherit; padding:4px 8px; border:1px solid var(--line); border-radius:6px; background:var(--card); }
+  button.pri { background:var(--acc); color:#fff; border-color:var(--acc); }
+  button.on { outline:2px solid var(--acc); }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:10px; margin-bottom:10px; }
+  .card h2 { font-size:14px; margin:0 0 6px; }
+  .mut { color:var(--mut); } .warn { color:var(--warn); }
+  table { width:100%; border-collapse:collapse; font-size:13px; } td, th { border-bottom:1px solid var(--line); padding:3px 4px; text-align:left; vertical-align:top; }
+  .t { font-variant-numeric:tabular-nums; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Gán nhãn sự kiện vi phạm PPE (tập event_eval)</h1>
+  <div class="mut">Người dùng gán. Không mở kết quả của hệ thống khi đang gán. Mỗi video lưu một file <b>eN_events.json</b> vào <b>data/videos/event_eval/labels/</b>.</div>
+  <details open><summary>Quy tắc gán (đọc trước)</summary>
+  <ol class="rules">
+    <li>Chọn video, chọn <b>PPE bắt buộc</b> theo bối cảnh (ví dụ công trường: mũ + áo; xưởng hàn: găng + kính...). Mặc định cả 5 món.</li>
+    <li><b>Người</b>: bấm "Thêm người", rồi kéo chuột vẽ hộp bao toàn bộ người đó (như hộp người thường thấy). Khi người di chuyển, tua tới thời điểm khác và bấm "Vẽ hộp tại đây" để thêm hộp (mỗi khoảng 1-2 giây nếu đi lại; đứng yên thì 1-2 hộp là đủ). Hộp vẽ ở đầu và cuối thời gian người đó có mặt.</li>
+    <li><b>Sự kiện</b> = một người + một đợt vi phạm liên tục. <b>Bắt đầu</b>: lần đầu bạn <b>nhìn rõ</b> người đó thiếu ít nhất một món bắt buộc (bộ phận cơ thể nhìn thấy mà không có PPE). <b>Kết thúc</b>: lúc mọi món bắt buộc được nhìn thấy đầy đủ, hoặc người rời khung, hoặc hết video.</li>
+    <li>Ghi <b>các món thiếu</b> trong đợt đó. Không chắc (bị che, quá nhỏ, quá tối) thì <b>không</b> tính món đó là thiếu.</li>
+    <li>Mũ lưỡi trai, mũ len, mặt nạ hàn không phải mũ bảo hộ. Kính thường, kính râm không phải kính bảo hộ. Giày thường không phải ủng/giày bảo hộ.</li>
+    <li>Người khuất tạm dưới 2 giây rồi lại thấy vẫn thiếu: vẫn là cùng một sự kiện. Rời khung rồi quay lại: thêm người mới, sự kiện mới.</li>
+    <li>Người đủ PPE suốt video: vẫn thêm người (vẽ hộp) nhưng không có sự kiện. Video không có vi phạm nào cũng lưu file.</li>
+  </ol></details>
+</header>
+<main>
+  <section>
+    <div class="bar">
+      <input type="file" id="file" accept="video/mp4">
+      <span id="vname" class="mut">Chưa chọn video</span>
+    </div>
+    <div class="stage"><video id="v" preload="auto" muted></video><canvas id="c"></canvas></div>
+    <div class="bar">
+      <button id="play">▶ / ❚❚ (Space)</button>
+      <button data-step="-1">−1 s</button><button data-step="-0.2">−0,2 s</button>
+      <button data-step="0.2">+0,2 s</button><button data-step="1">+1 s</button>
+      <select id="rate"><option>0.25</option><option>0.5</option><option selected>1</option></select>
+      <span class="t" id="time">0,00 / 0,00 s</span>
+    </div>
+    <input type="range" id="seek" min="0" max="1000" value="0" style="width:100%">
+  </section>
+  <aside>
+    <div class="card"><h2>PPE bắt buộc của video</h2><div id="req"></div></div>
+    <div class="card"><h2>Người</h2>
+      <div class="bar"><button id="addP" class="pri">Thêm người</button><button id="boxP">Vẽ hộp tại đây cho người đang chọn</button></div>
+      <div id="drawHint" class="warn"></div>
+      <table><thead><tr><th>Người</th><th>Ghi chú</th><th>Hộp</th><th></th></tr></thead><tbody id="plist"></tbody></table>
+    </div>
+    <div class="card"><h2>Sự kiện</h2>
+      <div class="bar">Người <select id="eP"></select></div>
+      <div class="bar" id="eM"></div>
+      <div class="bar"><button id="eS">Bắt đầu = bây giờ</button><span class="t" id="eSv">–</span>
+        <button id="eE">Kết thúc = bây giờ</button><span class="t" id="eEv">–</span>
+        <button id="eEnd">Kết thúc = hết video</button></div>
+      <div class="bar"><input type="text" id="eN" placeholder="ghi chú (tuỳ chọn)" style="flex:1"><button id="eAdd" class="pri">Thêm sự kiện</button></div>
+      <table><thead><tr><th>Người</th><th>Thiếu</th><th>Bắt đầu</th><th>Kết thúc</th><th></th></tr></thead><tbody id="elist"></tbody></table>
+    </div>
+    <div class="card"><h2>Lưu</h2>
+      <div class="bar"><input type="text" id="who" placeholder="tên người gán" style="flex:1"></div>
+      <div class="bar"><button id="save" class="pri">Tải file JSON</button><label class="mut">Mở lại: <input type="file" id="load" accept="application/json"></label></div>
+      <div class="mut" id="msg">Tự lưu tạm trong trình duyệt; vẫn phải bấm "Tải file JSON".</div>
+    </div>
+  </aside>
+</main>
+<script>
+const PPE = [["helmet","mũ"],["vest","áo phản quang"],["gloves","găng"],["goggles","kính"],["boots","ủng/giày bảo hộ"]];
+const v = document.getElementById("v"), cv = document.getElementById("c"), ctx = cv.getContext("2d");
+let S = null, sel = null, drawing = null, pendingBox = false, eS = null, eE = null;
+const fmt = x => (x == null ? "–" : x.toFixed(2).replace(".", ","));
+const blank = name => ({video: name, width: 0, height: 0, duration: 0, required_ppe: PPE.map(p => p[0]), persons: [], events: [], labeler: "", status: "human_labeled", rules_version: "2026-11-28"});
+function store() { try { localStorage.setItem("evlab:" + S.video, JSON.stringify(S)); } catch (e) {} }
+function restore(name) { try { const s = localStorage.getItem("evlab:" + name); return s ? JSON.parse(s) : null; } catch (e) { return null; } }
+
+document.getElementById("file").onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  v.src = URL.createObjectURL(f); document.getElementById("vname").textContent = f.name;
+  S = restore(f.name) || blank(f.name); sel = null; render();
+};
+v.onloadedmetadata = () => { S.width = v.videoWidth; S.height = v.videoHeight; S.duration = v.duration; cv.width = v.videoWidth; cv.height = v.videoHeight; store(); draw(); };
+v.ontimeupdate = () => { document.getElementById("time").textContent = fmt(v.currentTime) + " / " + fmt(v.duration) + " s"; document.getElementById("seek").value = v.duration ? 1000 * v.currentTime / v.duration : 0; draw(); };
+document.getElementById("seek").oninput = e => { if (v.duration) v.currentTime = v.duration * e.target.value / 1000; };
+document.getElementById("play").onclick = () => v.paused ? v.play() : v.pause();
+document.querySelectorAll("[data-step]").forEach(b => b.onclick = () => { v.pause(); v.currentTime = Math.max(0, Math.min(v.duration, v.currentTime + +b.dataset.step)); });
+document.getElementById("rate").onchange = e => v.playbackRate = +e.target.value;
+document.addEventListener("keydown", e => { if (e.target.tagName === "INPUT") return; if (e.code === "Space") { e.preventDefault(); v.paused ? v.play() : v.pause(); } });
+
+function boxAt(p, t) {   // hộp nội suy tuyến tính giữa các hộp khóa; ngoài khoảng: hộp gần nhất trong 1 s
+  const b = [...p.boxes].sort((a, c) => a.t - c.t); if (!b.length) return null;
+  if (t <= b[0].t) return t >= b[0].t - 1 ? b[0] : null;
+  if (t >= b[b.length - 1].t) return t <= b[b.length - 1].t + 1 ? b[b.length - 1] : null;
+  for (let i = 0; i < b.length - 1; i++) if (t >= b[i].t && t <= b[i + 1].t) {
+    const r = (t - b[i].t) / Math.max(b[i + 1].t - b[i].t, 1e-6), k = ["x1", "y1", "x2", "y2"];
+    const o = {t}; k.forEach(q => o[q] = b[i][q] + r * (b[i + 1][q] - b[i][q])); return o; }
+  return null;
+}
+function draw() {
+  ctx.clearRect(0, 0, cv.width, cv.height); if (!S) return;
+  const lw = Math.max(2, cv.width / 400); ctx.lineWidth = lw; ctx.font = (cv.width / 45) + "px system-ui";
+  S.persons.forEach(p => { const b = boxAt(p, v.currentTime); if (!b) return;
+    ctx.strokeStyle = p.id === sel ? "#1f6feb" : "#ffd400"; ctx.strokeRect(b.x1, b.y1, b.x2 - b.x1, b.y2 - b.y1);
+    ctx.fillStyle = ctx.strokeStyle; ctx.fillText(p.id, b.x1 + 4, b.y1 + cv.width / 40); });
+  if (drawing) { ctx.strokeStyle = "#ff3b30"; ctx.strokeRect(drawing.x1, drawing.y1, drawing.x2 - drawing.x1, drawing.y2 - drawing.y1); }
+}
+function pt(e) { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) * cv.width / r.width, (e.clientY - r.top) * cv.height / r.height]; }
+cv.onmousedown = e => { if (!pendingBox) return; v.pause(); const [x, y] = pt(e); drawing = {x1: x, y1: y, x2: x, y2: y}; };
+cv.onmousemove = e => { if (!drawing) return; const [x, y] = pt(e); drawing.x2 = x; drawing.y2 = y; draw(); };
+cv.onmouseup = () => { if (!drawing) return; const d = drawing; drawing = null; pendingBox = false;
+  const b = {t: +v.currentTime.toFixed(3), x1: Math.round(Math.min(d.x1, d.x2)), y1: Math.round(Math.min(d.y1, d.y2)), x2: Math.round(Math.max(d.x1, d.x2)), y2: Math.round(Math.max(d.y1, d.y2))};
+  if (b.x2 - b.x1 < 5 || b.y2 - b.y1 < 5) { render(); return; }
+  S.persons.find(p => p.id === sel).boxes.push(b); store(); render(); };
+
+document.getElementById("addP").onclick = () => { if (!S) return; const id = "P" + (S.persons.length + 1); S.persons.push({id, note: "", boxes: []}); sel = id; pendingBox = true; store(); render(); };
+document.getElementById("boxP").onclick = () => { if (!S || !sel) return; pendingBox = true; render(); };
+
+function render() {
+  if (!S) return;
+  document.getElementById("drawHint").textContent = pendingBox ? "Kéo chuột trên video để vẽ hộp cho " + sel + " tại " + fmt(v.currentTime) + " s" : "";
+  document.getElementById("req").innerHTML = PPE.map(([k, n]) => `<label><input type="checkbox" data-req="${k}" ${S.required_ppe.includes(k) ? "checked" : ""}> ${n}</label> `).join("");
+  document.querySelectorAll("[data-req]").forEach(c => c.onchange = () => { S.required_ppe = PPE.map(p => p[0]).filter(k => document.querySelector(`[data-req=${k}]`).checked); store(); render(); });
+  document.getElementById("plist").innerHTML = S.persons.map(p => `<tr><td><button class="${p.id === sel ? "on" : ""}" data-sel="${p.id}">${p.id}</button></td>
+    <td><input type="text" data-note="${p.id}" value="${p.note.replace(/"/g, "&quot;")}" placeholder="vd áo xanh, bên trái"></td>
+    <td class="t">${p.boxes.length} (${p.boxes.map(b => fmt(b.t)).join(", ")})</td><td><button data-delp="${p.id}">Xóa</button></td></tr>`).join("");
+  document.querySelectorAll("[data-sel]").forEach(b => b.onclick = () => { sel = b.dataset.sel; render(); });
+  document.querySelectorAll("[data-note]").forEach(i => i.onchange = () => { S.persons.find(p => p.id === i.dataset.note).note = i.value; store(); });
+  document.querySelectorAll("[data-delp]").forEach(b => b.onclick = () => { if (!confirm("Xóa " + b.dataset.delp + " và các sự kiện của người này?")) return;
+    S.persons = S.persons.filter(p => p.id !== b.dataset.delp); S.events = S.events.filter(e => e.person !== b.dataset.delp); store(); render(); });
+  const eP = document.getElementById("eP"); const cur = eP.value;
+  eP.innerHTML = S.persons.map(p => `<option ${p.id === (cur || sel) ? "selected" : ""}>${p.id}</option>`).join("");
+  document.getElementById("eM").innerHTML = "Thiếu: " + PPE.filter(([k]) => S.required_ppe.includes(k)).map(([k, n]) => `<label><input type="checkbox" data-miss="${k}"> ${n}</label>`).join(" ");
+  document.getElementById("eSv").textContent = fmt(eS); document.getElementById("eEv").textContent = fmt(eE);
+  document.getElementById("elist").innerHTML = S.events.map((e, i) => `<tr><td>${e.person}</td><td>${e.missing.join(", ")}</td><td class="t">${fmt(e.start)}</td><td class="t">${fmt(e.end)}${e.until_end ? " (hết video)" : ""}</td>
+    <td><button data-go="${e.start}">Xem</button> <button data-dele="${i}">Xóa</button></td></tr>`).join("");
+  document.querySelectorAll("[data-go]").forEach(b => b.onclick = () => { v.currentTime = +b.dataset.go; });
+  document.querySelectorAll("[data-dele]").forEach(b => b.onclick = () => { S.events.splice(+b.dataset.dele, 1); store(); render(); });
+  document.getElementById("who").value = S.labeler || "";
+  draw();
+}
+document.getElementById("eS").onclick = () => { eS = +v.currentTime.toFixed(3); render(); };
+document.getElementById("eE").onclick = () => { eE = +v.currentTime.toFixed(3); S._untilEnd = false; render(); };
+document.getElementById("eEnd").onclick = () => { eE = +v.duration.toFixed(3); S._untilEnd = true; render(); };
+document.getElementById("eAdd").onclick = () => {
+  const person = document.getElementById("eP").value, missing = [...document.querySelectorAll("[data-miss]:checked")].map(c => c.dataset.miss);
+  if (!person || !missing.length || eS == null || eE == null || eE <= eS) { alert("Cần chọn người, ít nhất một món thiếu, bắt đầu < kết thúc."); return; }
+  const p = S.persons.find(q => q.id === person); if (!boxAt(p, eS)) { alert("Người " + person + " chưa có hộp gần thời điểm bắt đầu (±1 s). Hãy vẽ hộp tại thời điểm bắt đầu."); return; }
+  S.events.push({person, missing, start: eS, end: eE, until_end: !!S._untilEnd, note: document.getElementById("eN").value});
+  eS = eE = null; S._untilEnd = false; document.getElementById("eN").value = ""; store(); render(); };
+document.getElementById("who").onchange = e => { S.labeler = e.target.value; store(); };
+document.getElementById("save").onclick = () => {
+  if (!S) return; if (!S.labeler) { alert("Nhập tên người gán trước khi lưu."); return; }
+  const out = {...S, saved_at: new Date().toISOString()}; delete out._untilEnd;
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(out, null, 1)], {type: "application/json"}));
+  a.download = S.video.replace(/\.mp4$/i, "") + "_events.json"; a.click();
+  document.getElementById("msg").textContent = "Đã tải " + a.download + ". Chép vào data/videos/event_eval/labels/."; };
+document.getElementById("load").onchange = e => { const f = e.target.files[0]; if (!f) return;
+  f.text().then(t => { const o = JSON.parse(t); if (S && o.video !== S.video) { alert("File nhãn của " + o.video + ", video đang mở là " + S.video); return; } S = o; store(); render(); }); };
+</script>
+</body>
+</html>
