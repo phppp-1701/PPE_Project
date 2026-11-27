@@ -39,7 +39,7 @@ detector:
     pad: 0.15
     imgsz: 640
     min_side_ratio: 0.6
-    classes: [3, 4, 5]
+    classes: [1, 3, 4, 5]   # M1 (27/11/2026, đạt tiêu chí val + video3-6): thêm mũ; trước [3, 4, 5]
     conf_scale: 0.8
     nms_iou: 0.5
     half: true

@@ -146,3 +146,9 @@ Tiêu chí (khóa), video3-6 nhãn người (06b, mốc = cấu hình hiện t�
 1. Găng Có đúng tăng.
 2. Găng báo Có sai tăng không quá 1% số khung nhãn Thiếu găng (2.072 → tối đa +20 khung); báo thiếu oan không tăng.
 3. Các PPE khác không đổi; số sự kiện không tăng.
+
+### Kết quả M1 (28/11/2026)
+
+Val (`c5_eval/m1_crop_helmet_val`): mũ ppe4 0,8985 → 0,8983 (−0,0002), val_new 0,708 → 0,723 (+0,015); lớp khác giữ nguyên.
+Video3-6 (`close_eval/stepM1z/dev36`): mũ Có đúng 2.914 → 2.916, báo thiếu oan 13 → 11, báo Có sai 23 → 23; PPE khác,
+sự kiện giống hệt. **Đạt** → bật `detector.zoom.classes: [1, 3, 4, 5]`. Không thêm lượt mô hình. G1 chạy trên nền đã có M1.

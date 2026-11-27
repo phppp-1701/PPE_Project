@@ -31,3 +31,20 @@ Mỗi sự kiện: một người, một món PPE bắt buộc, khoảng thời 
 nhìn thấy được. Người được đánh dấu bằng một cú bấm vào người ở khung bắt đầu (tọa độ dùng để ghép với người của hệ
 thống). PPE bắt buộc của từng video do người dùng chọn khi gán (theo bối cảnh, ví dụ mũ + áo ở công trường).
 Quy tắc chi tiết ở đầu trang `tools/event_label.html`.
+
+## Đổi cách gán nhãn (người dùng quyết định 28/11/2026)
+
+Người dùng không gán tay (tốn thời gian), chọn: **nhãn máy hai lượt + người kiểm định mẫu sự kiện** (như holdout), và
+thêm số phụ từ nhãn khung có sẵn của holdout. `tools/event_label.html` giữ lại nhưng không dùng.
+
+- Hộp người: `tools/machine_label.py tracks` (yolo11s.pt gốc COCO + ByteTrack của Ultralytics, không phải mô hình đề tài).
+- Thuộc tính PPE theo thời gian: Claude gán hai lượt khác cách nhìn (A: cả khung mỗi 0,5 s; B: ảnh cắt từng người mỗi
+  1/3 s, lệch 1/6 s). Hai lượt khác nhau → `chua_xac_dinh`. Trạng thái `machine_consensus`.
+- Sự kiện chuẩn suy từ nhãn đồng thuận theo spec 7.4 (PPE bắt buộc: cả 5 món như cấu hình mặc định): bắt đầu khi lần
+  đầu có món Thiếu; kết thúc khi mọi món là Có, hoặc người rời khung quá 2 s, hoặc hết video (chưa xác minh).
+- Người dùng kiểm định mẫu: bấm Đúng/Sai trên từng sự kiện chuẩn (ảnh minh họa). Báo cáo: "nhãn máy hai lượt, có kiểm
+  định mẫu của người".
+
+**Loại trước mọi dự đoán (28/11/2026):** e2 (khoảng 6 người nhỏ ở xa trên giàn) và e4 (khoảng 15 người đổ bê tông) vượt
+"1-4 người" của tiêu chí 4, như h6 của holdout. **Còn 7 video** (e1, e3, e5, e6, e7, e8, e9), dưới mức 8 của tiêu chí 6:
+không còn ứng viên đạt trong hai đợt tìm (khoảng 120 kết quả Pexels), báo người dùng, dùng 7 video và ghi là sai lệch.
