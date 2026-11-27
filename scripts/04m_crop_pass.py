@@ -125,6 +125,7 @@ def main():
     ap.add_argument("--split", choices=["val", "test"])
     ap.add_argument("--weights")
     ap.add_argument("--out")
+    ap.add_argument("--classes", type=int, nargs="+", help="ghi đè crop_pass.classes (M1 27/11/2026: thử thêm mũ)")
     args = ap.parse_args()
     sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
     z = np.load(Path(args.capture) / "capture.npz", allow_pickle=False)
@@ -141,6 +142,8 @@ def main():
     if not (args.split and args.weights and args.out):
         sys.exit("Cần --split, --weights, --out (hoặc --check)")
     cfg = yaml.safe_load((ROOT / "configs" / "ppe6.yaml").read_text(encoding="utf-8"))["crop_pass"]
+    if args.classes:
+        cfg["classes"] = args.classes
     import cv2
     from ultralytics import YOLO
 

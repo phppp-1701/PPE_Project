@@ -110,3 +110,24 @@ Có sai 0 → 0, CXĐ 213 → 185; video15 bớt một sự kiện thiếu áo b
 mới trên người không có nhãn (chưa xem). Các PPE khác giống hệt.
 
 Chưa đo lại tốc độ (V3 chỉ thêm phép so hình học cho áo, không thêm mô hình). Mũ: ghi Hạn chế (gốc ở detector).
+
+# Đợt 2 (người dùng giao 27/11/2026: nâng RQ2 mũ, găng; giải quyết RQ3; chọn làm cả 0-6 kể cả M2)
+
+## Bước 0 (xong): sửa phép chấm E trong `06_evaluate_ablation.py`
+
+E trước đây chỉ so món PPE (không xét người, thời gian) trong khi A-D xét người - PPE - khoảng thời gian. Sửa: E dùng
+cùng `evaluate_alerts` với A-D (người của sự kiện lấy từ hộp người lúc sự kiện được tạo). `final3/ablation.json` (cấu
+hình có V3): E 11 cảnh báo, TP 10, sai 1, trùng 0, FN 2, P 0,909, R 0,833, **Event F1 0,870** (chấm cũ 0,957). Video4:
+một cảnh báo gán nhầm người, hai vi phạm bị sót.
+
+## M1 — mũ vào lượt zoom (ghi trước khi chạy)
+
+Thêm lớp 1 (mũ) vào `detector.zoom.classes` (và `crop_pass.classes` khi chấm val). Không thêm lượt mô hình (crop đã dò
+mọi lớp rồi lọc). Tham số zoom khác giữ nguyên.
+
+Tiêu chí (khóa):
+1. Val (04m `--classes 1 3 4 5` so với `3 4 5`, chấm 04j): mũ mAP50 trên ppe4 val không giảm quá 0,005; mũ trên val_new
+   không giảm quá 0,02 (ít hộp); các lớp khác giữ nguyên.
+2. Video3-6 (06b, nhãn người): mũ báo Có sai không tăng, báo thiếu oan không tăng; mũ Có đúng + Thiếu đúng không giảm;
+   các PPE khác không đổi; số sự kiện không tăng.
+Đạt cả hai → bật. Test không chạy lại (đã dùng một lần; zoom có mũ chưa có số test, ghi rõ).
