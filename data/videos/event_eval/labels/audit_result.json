@@ -1,0 +1,66 @@
+{
+ "auditor": "Hoàng Phương",
+ "saved_at": "2026-11-27T17:40:21.374Z",
+ "items": [
+  {
+   "id": "e1_P1_0.0",
+   "verdict": "dung",
+   "note": "thiếu cả găng, ủng/ giày bảo hộ và kính bảo hộ"
+  },
+  {
+   "id": "e1_P2_0.0",
+   "verdict": "dung",
+   "note": "thiếu cả găng, ủng/ giày bảo hộ và kính bảo hộ"
+  },
+  {
+   "id": "e3_P1_5.0",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "e3_P2_0.0",
+   "verdict": "dung",
+   "note": "thiếu cả găng"
+  },
+  {
+   "id": "e5_P1_none",
+   "verdict": "khong_chac",
+   "note": "người trong khung vàng ở hình đầu tiên thì thấy được áo phản quang, ở hình thứ hai thì thấy được cả mũ, còn hình thứ 3 thì không thấy"
+  },
+  {
+   "id": "e5_P2_0.0",
+   "verdict": "dung",
+   "note": "thiếu cả găng"
+  },
+  {
+   "id": "e6_P1_0.0",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "e6_P2_0.0",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "e7_P1_0.0",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "e7_P2_none",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "e8_P1_0.0",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "e9_P1_0.0",
+   "verdict": "dung",
+   "note": "thiếu cả găng tay và kính bảo hộ"
+  }
+ ]
+}
