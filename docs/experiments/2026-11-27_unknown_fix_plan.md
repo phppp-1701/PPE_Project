@@ -70,3 +70,14 @@ Có mới trên người không có nhãn: 0.
 Áp tiêu chí: (1) đạt; (2) **không đạt**: báo Có sai 3 → 4 (một khung, video3 f1152, nhãn người 5 không áo nhận Có;
 cùng khung người 6 có áo từ Thiếu oan thành Có đúng; đây cũng là khung đã làm B1 không đạt 15/11); báo thiếu oan đạt;
 (3) đạt; (4) đạt; (5) đạt. → Theo tiêu chí đã khóa: **không đạt**, chờ người dùng quyết định (ngoại lệ hay không).
+
+Người dùng (27/11/2026): không bật V2, "phân tích và tìm phương án khác để cải thiện".
+
+## V3 — V2 thêm cổng cỡ áo (ghi trước khi code và chạy)
+
+Phân tích (scratchpad, chỉ đọc, video3-5 chỉnh tham số): f1152 video3 hộp người 5 gộp hai người (người trước không áo,
+người sau có áo không được phát hiện riêng); hai "vai" thuộc hai người nên sw phình: rộng áo / sw 0,90, sw / rộng hộp
+người 0,67. 79 áo V2 ghép đúng (video4, 5): rộng áo / sw 1,46-2,90 (p5-p95), sw / rộng hộp 0,24-0,41.
+
+V3: như V2, chỉ dùng vùng theo vai khi rộng hộp áo >= `s_min` x sw, `s_min` 1,116 = cổng cỡ áo G5 của B2 chọn trên val
+15/11/2026 (`pipeline_calib_val/torso_strict.json`). Không chọn ngưỡng mới. Tiêu chí: như V2 (1-5), video3-6.

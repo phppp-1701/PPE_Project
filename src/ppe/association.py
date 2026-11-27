@@ -106,7 +106,8 @@ def torso_strict_box(track, ts, old_box, frame_shape):
 
 def torso_shift_box(track, ts, old_box):
     """Bước V2: vùng thân dời theo hai vai. Ngang [mx - kx*sw, mx + kx*sw], dọc như vùng cũ, cắt theo hộp người.
-    None khi không qua shoulder_geometry (hai vai >= kp_conf, vai trong hộp, hông thấp hơn vai)."""
+    Trả về mảng (x1, y1, x2, y2, sw); None khi không qua shoulder_geometry (hai vai >= kp_conf, vai trong hộp, hông thấp
+    hơn vai)."""
     g = shoulder_geometry(track, ts["kp_conf"])
     if g is None:
         return None
@@ -114,7 +115,7 @@ def torso_shift_box(track, ts, old_box):
     r = [max(g["mx"] - ts["kx"] * g["sw"], x1), old_box[1], min(g["mx"] + ts["kx"] * g["sw"], x2), old_box[3]]
     if r[2] <= r[0] or r[3] <= r[1]:
         return None
-    return np.array(r, dtype=float)
+    return np.array(r + [g["sw"]], dtype=float)
 
 
 def shoulder_geometry(track, kp_conf):
@@ -332,7 +333,9 @@ class Associator:
                             d = ds if d is None else min(d, ds)
                 if self.torso_shift and name == "vest" and p["region"] == "torso" and side is None:   # bước V2
                     rs = torso_shift_box(t, self.torso_shift, r)
-                    if rs is not None and rs[0] <= c[0] <= rs[2] and rs[1] <= c[1] <= rs[3]:
+                    ok_size = rs is not None and ("s_min" not in self.torso_shift or       # V3: cổng cỡ áo (như G5 B2)
+                                                  det.xyxy[2] - det.xyxy[0] >= self.torso_shift["s_min"] * rs[4])
+                    if ok_size and rs[0] <= c[0] <= rs[2] and rs[1] <= c[1] <= rs[3]:
                         ds = norm_distance(c, t.xyxy, rs)
                         d = ds if d is None else min(d, ds)
                 if self.eye_anchor and name == "goggles" and side is None:                         # bước F1

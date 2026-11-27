@@ -53,3 +53,13 @@ def test_shift_keeps_old_region(test_cfg):
     res = Associator(_cfg(test_cfg))([_wide_person()], [vest], (2000, 1000, 3))
     old = Associator(_cfg(test_cfg, shift=False))([_wide_person()], [vest], (2000, 1000, 3))
     assert bool(res.owned.get(1, {}).get(("vest", None))) == bool(old.owned.get(1, {}).get(("vest", None)))
+
+
+def test_size_gate_blocks_narrow_vest(test_cfg):
+    """V3: áo hẹp hơn s_min x sw (vai của hai người gộp một hộp) không ghép qua vùng theo vai."""
+    cfg = _cfg(test_cfg)
+    cfg["association"]["torso_shift"]["s_min"] = 1.116
+    narrow = det(VEST, 80, 600, 120, 1100)           # rộng 40 < 1,116 x 80
+    wide = det(VEST, 50, 600, 150, 1100)             # rộng 100 >= 89,3
+    assert not Associator(cfg)([_wide_person()], [narrow], (2000, 1000, 3)).owned.get(1, {}).get(("vest", None))
+    assert Associator(cfg)([_wide_person()], [wide], (2000, 1000, 3)).owned[1][("vest", None)] == [wide]
