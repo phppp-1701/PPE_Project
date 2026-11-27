@@ -289,3 +289,15 @@ không tăng.
 Như G1 nhưng tay Có phải có hộp găng của detector với conf >= c_g, c_g = mức conf nhỏ nhất mà Precision găng trên val
 (ppe4 val, capture c6_ft + zoom, IoU 0,5) >= 0,95. Tiêu chí như G1 (găng Có đúng tăng; báo Có sai tăng không quá 1% số
 khung nhãn Thiếu; báo thiếu oan không tăng; PPE khác, số sự kiện không đổi).
+
+### Kết quả chất lượng S (video3-6, `stepS/dev36`)
+
+Sa: đạt tiêu chí (2) (kính Có đúng 367 → 381; mọi PPE khác giữ trong mức). Sb, Sc: **ủng báo thiếu oan 61 → 76** (+15 >
+1% của 832 nhãn Có = 8) → không đạt (2). Zoom cách khung làm mất hộp ủng ở khung không zoom. Sd, Se đều có zoom cách
+khung → không chạy (cùng lý do).
+
+## S2 — zoom cách khung có mang hộp sang (ghi trước khi code và chạy)
+
+`detector.zoom.carry: true`: ở khung không chạy zoom, hộp zoom của khung zoom gần nhất được mang sang cho người lớn
+hiện tại khớp người cũ (IoU hộp người >= 0,5, mức ghép người của spec), dời theo độ dịch tâm hộp người, giữ conf, rồi
+gộp NMS như khung có zoom. Biến thể **S2** = Sc + carry (zoom N=2, phân loại N=2). Tiêu chí (1), (2) như S.

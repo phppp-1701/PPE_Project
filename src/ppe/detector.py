@@ -18,6 +18,14 @@ import numpy as np
 from . import Det, require
 
 
+def _iou(a, b):
+    ix = max(0.0, min(a[2], b[2]) - max(a[0], b[0]))
+    iy = max(0.0, min(a[3], b[3]) - max(a[1], b[1]))
+    i = ix * iy
+    u = (a[2] - a[0]) * (a[3] - a[1]) + (b[2] - b[0]) * (b[3] - b[1]) - i
+    return i / u if u > 0 else 0.0
+
+
 def letterbox_square(img, size):
     """Thu ảnh về cạnh dài `size`, đệm xám (114) thành vuông size x size. Trả về (ảnh, tỉ lệ, dx, dy).
 
@@ -70,6 +78,7 @@ class Detector:
         if self.zoom_model is not None:   # lần dò đầu (và mỗi cỡ lô mới) mất khoảng 1,8 giây: khởi động trước, dò từng ảnh
             self._zoom_predict(np.zeros((self.zoom["imgsz"], self.zoom["imgsz"], 3), dtype=np.uint8), 0.5)
         self.frame_idx = -1
+        self._zoom_mem = []                    # S2: [(hộp người, [Det zoom])] của khung zoom gần nhất
         # F2 (2026-11-25_close_range_fixes): hộp PPE điểm thấp (hold_conf <= điểm < ngưỡng lớp) cho bước nhớ PPE.
         mem = (cfg.get("compliance") or {}).get("ppe_memory")
         self.hold_conf = mem["hold_conf"] if mem else None
@@ -139,20 +148,38 @@ class Detector:
     def _zoom_ppe(self, frame, persons, ppe):
         """C9: dò lại lớp `zoom.classes` trên ảnh cắt của người lớn, gộp với `ppe` (đã lọc conf) bằng NMS theo lớp."""
         h, w = frame.shape[:2]
-        crops, offs = [], []
+        crops, offs, boxes_used = [], [], []
         for p in persons:
             x1, y1, x2, y2 = self._zoom_box(p, w, h)
             if max(x2 - x1, y2 - y1) >= self.zoom["min_side_ratio"] * self.zoom["imgsz"]:
                 sq, r, dx, dy = letterbox_square(frame[y1:y2, x1:x2], self.zoom["imgsz"])
                 crops.append(sq)
                 offs.append((r, dx, dy, x1, y1))
+                boxes_used.append(np.array(p.xyxy, dtype=float))
         if not crops:
+            self._zoom_mem = []
             return ppe
         scale = self.zoom["conf_scale"]
         min_conf = min(self.conf[n] for n in self.zoom_names.values()) / scale
         res = [self._zoom_predict(c, min_conf) for c in crops]
-        add = [Det(c, unletterbox(b, *off), s * scale) for off, r in zip(offs, res) for c, b, s in self._boxes(r)
-               if c in self.zoom_names and s * scale >= self.conf[self.zoom_names[c]]]
+        per = [[Det(c, unletterbox(b, *off), s * scale) for c, b, s in self._boxes(r)
+                if c in self.zoom_names and s * scale >= self.conf[self.zoom_names[c]]] for off, r in zip(offs, res)]
+        self._zoom_mem = list(zip(boxes_used, per))            # S2: hộp zoom theo từng người, mang sang khung sau
+        return self._zoom_merge(ppe, [d for ds in per for d in ds])
+
+    def _zoom_carry(self, persons, ppe):
+        """S2: khung không zoom: mang hộp zoom của người cũ khớp (IoU >= 0,5) sang người hiện tại, dời theo tâm hộp người."""
+        add = []
+        for p in persons:
+            best = max(self._zoom_mem, key=lambda m: _iou(m[0], p.xyxy), default=None)
+            if best is None or _iou(best[0], p.xyxy) < 0.5:
+                continue
+            dx = (p.xyxy[0] + p.xyxy[2] - best[0][0] - best[0][2]) / 2
+            dy = (p.xyxy[1] + p.xyxy[3] - best[0][1] - best[0][3]) / 2
+            add += [Det(d.cls, d.xyxy + np.array([dx, dy, dx, dy], dtype=d.xyxy.dtype), d.conf) for d in best[1]]
+        return self._zoom_merge(ppe, add)
+
+    def _zoom_merge(self, ppe, add):
         if not add:
             return ppe
         import torch
@@ -211,4 +238,13 @@ class Detector:
                 large = confident
             if large:
                 ppe = self._zoom_ppe(frame, large, ppe)
+            else:
+                self._zoom_mem = []
+        elif self.zoom is not None and self.zoom.get("carry") and self._zoom_mem:
+            if self.source == "auto":
+                scale = self.imgsz / max(frame.shape[:2])
+                large = [p for p in confident if (p.xyxy[3] - p.xyxy[1]) * scale >= self.crop["max_person_px"]]
+            else:
+                large = confident
+            ppe = self._zoom_carry(large, ppe)
         return persons, ppe
