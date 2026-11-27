@@ -1,0 +1,343 @@
+{
+ "config": "configs/pipeline.yaml",
+ "label_note": "nhãn máy hai lượt (Claude), người dùng kiểm định 12/12 thẻ (11 Đúng, 1 Không chắc)",
+ "baseline_note": "theo khung = cùng trạng thái của hệ thống, mỗi khung-người có Thiếu là một cảnh báo (không phải A của 06)",
+ "per_video": {
+  "e1": {
+   "strict": {
+    "E": {
+     "tp": 2,
+     "dup": 0,
+     "false": 0,
+     "outside": 0,
+     "fn": 0,
+     "mean_latency_s": 0.56
+    },
+    "frame": {
+     "tp": 2,
+     "dup": 800,
+     "false": 0,
+     "outside": 0,
+     "fn": 0,
+     "mean_latency_s": 0.0
+    }
+   },
+   "audit": {
+    "E": {
+     "tp": 2,
+     "dup": 0,
+     "false": 0,
+     "outside": 0,
+     "fn": 0,
+     "mean_latency_s": 0.56
+    },
+    "frame": {
+     "tp": 2,
+     "dup": 800,
+     "false": 0,
+     "outside": 0,
+     "fn": 0,
+     "mean_latency_s": 0.0
+    }
+   }
+  },
+  "e3": {
+   "strict": {
+    "E": {
+     "tp": 0,
+     "dup": 0,
+     "false": 2,
+     "outside": 5,
+     "fn": 2,
+     "mean_latency_s": null
+    },
+    "frame": {
+     "tp": 1,
+     "dup": 142,
+     "false": 379,
+     "outside": 1087,
+     "fn": 1,
+     "mean_latency_s": 0.272
+    }
+   },
+   "audit": {
+    "E": {
+     "tp": 1,
+     "dup": 0,
+     "false": 1,
+     "outside": 5,
+     "fn": 1,
+     "mean_latency_s": 0.234
+    },
+    "frame": {
+     "tp": 2,
+     "dup": 450,
+     "false": 70,
+     "outside": 1087,
+     "fn": 0,
+     "mean_latency_s": 0.136
+    }
+   }
+  },
+  "e5": {
+   "strict": {
+    "E": {
+     "tp": 1,
+     "dup": 0,
+     "false": 1,
+     "outside": 0,
+     "fn": 0,
+     "mean_latency_s": 0.584
+    },
+    "frame": {
+     "tp": 1,
+     "dup": 485,
+     "false": 73,
+     "outside": 76,
+     "fn": 0,
+     "mean_latency_s": 0.0
+    }
+   },
+   "audit": {
+    "E": {
+     "tp": 1,
+     "dup": 0,
+     "false": 1,
+     "outside": 0,
+     "fn": 0,
+     "mean_latency_s": 0.584
+    },
+    "frame": {
+     "tp": 1,
+     "dup": 485,
+     "false": 73,
+     "outside": 76,
+     "fn": 0,
+     "mean_latency_s": 0.0
+    }
+   }
+  },
+  "e6": {
+   "strict": {
+    "E": {
+     "tp": 2,
+     "dup": 0,
+     "false": 0,
+     "outside": 0,
+     "fn": 0,
+     "mean_latency_s": 0.56
+    },
+    "frame": {
+     "tp": 2,
+     "dup": 679,
+     "false": 0,
+     "outside": 14,
+     "fn": 0,
+     "mean_latency_s": 0.0
+    }
+   },
+   "audit": {
+    "E": {
+     "tp": 2,
+     "dup": 0,
+     "false": 0,
+     "outside": 0,
+     "fn": 0,
+     "mean_latency_s": 0.56
+    },
+    "frame": {
+     "tp": 2,
+     "dup": 679,
+     "false": 0,
+     "outside": 14,
+     "fn": 0,
+     "mean_latency_s": 0.0
+    }
+   }
+  },
+  "e7": {
+   "strict": {
+    "E": {
+     "tp": 1,
+     "dup": 0,
+     "false": 2,
+     "outside": 1,
+     "fn": 0,
+     "mean_latency_s": 0.56
+    },
+    "frame": {
+     "tp": 1,
+     "dup": 928,
+     "false": 225,
+     "outside": 57,
+     "fn": 0,
+     "mean_latency_s": 0.0
+    }
+   },
+   "audit": {
+    "E": {
+     "tp": 1,
+     "dup": 0,
+     "false": 2,
+     "outside": 1,
+     "fn": 0,
+     "mean_latency_s": 0.56
+    },
+    "frame": {
+     "tp": 1,
+     "dup": 928,
+     "false": 225,
+     "outside": 57,
+     "fn": 0,
+     "mean_latency_s": 0.0
+    }
+   }
+  },
+  "e8": {
+   "strict": {
+    "E": {
+     "tp": 1,
+     "dup": 0,
+     "false": 0,
+     "outside": 0,
+     "fn": 0,
+     "mean_latency_s": 0.56
+    },
+    "frame": {
+     "tp": 1,
+     "dup": 671,
+     "false": 0,
+     "outside": 0,
+     "fn": 0,
+     "mean_latency_s": 0.0
+    }
+   },
+   "audit": {
+    "E": {
+     "tp": 1,
+     "dup": 0,
+     "false": 0,
+     "outside": 0,
+     "fn": 0,
+     "mean_latency_s": 0.56
+    },
+    "frame": {
+     "tp": 1,
+     "dup": 671,
+     "false": 0,
+     "outside": 0,
+     "fn": 0,
+     "mean_latency_s": 0.0
+    }
+   }
+  },
+  "e9": {
+   "strict": {
+    "E": {
+     "tp": 1,
+     "dup": 0,
+     "false": 0,
+     "outside": 2,
+     "fn": 0,
+     "mean_latency_s": 1.18
+    },
+    "frame": {
+     "tp": 1,
+     "dup": 736,
+     "false": 0,
+     "outside": 83,
+     "fn": 0,
+     "mean_latency_s": 0.0
+    }
+   },
+   "audit": {
+    "E": {
+     "tp": 1,
+     "dup": 0,
+     "false": 0,
+     "outside": 2,
+     "fn": 0,
+     "mean_latency_s": 1.18
+    },
+    "frame": {
+     "tp": 1,
+     "dup": 736,
+     "false": 0,
+     "outside": 83,
+     "fn": 0,
+     "mean_latency_s": 0.0
+    }
+   }
+  }
+ },
+ "summary": {
+  "strict_E": {
+   "tp": 8,
+   "dup": 0,
+   "false": 5,
+   "outside": 8,
+   "fn": 2,
+   "alerts": 21,
+   "precision": 0.615,
+   "recall": 0.8,
+   "f1": 0.696,
+   "mean_latency_s": 0.64
+  },
+  "strict_frame": {
+   "tp": 9,
+   "dup": 4441,
+   "false": 677,
+   "outside": 1317,
+   "fn": 1,
+   "alerts": 6444,
+   "precision": 0.002,
+   "recall": 0.9,
+   "f1": 0.004,
+   "mean_latency_s": 0.03
+  },
+  "strict_ci95": {
+   "E_f1": [
+    0.4,
+    0.952
+   ],
+   "diff_E_minus_frame": [
+    0.397,
+    0.948
+   ]
+  },
+  "audit_E": {
+   "tp": 9,
+   "dup": 0,
+   "false": 4,
+   "outside": 8,
+   "fn": 1,
+   "alerts": 21,
+   "precision": 0.692,
+   "recall": 0.9,
+   "f1": 0.783,
+   "mean_latency_s": 0.595
+  },
+  "audit_frame": {
+   "tp": 10,
+   "dup": 4749,
+   "false": 368,
+   "outside": 1317,
+   "fn": 0,
+   "alerts": 6444,
+   "precision": 0.002,
+   "recall": 1.0,
+   "f1": 0.004,
+   "mean_latency_s": 0.027
+  },
+  "audit_ci95": {
+   "E_f1": [
+    0.609,
+    1.0
+   ],
+   "diff_E_minus_frame": [
+    0.605,
+    0.995
+   ]
+  }
+ }
+}

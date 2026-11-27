@@ -339,3 +339,22 @@ Người dùng (28/11/2026): **bật S3 theo NGOẠI LỆ** (không đạt tiêu
 Chạy một lần sau đóng băng (`close_eval/final5/run_all.sh`): video3-6 (so cuối 3), tốc độ (07, video3-6), ablation,
 holdout và kiem_thu_gan (kiểm tra, không mù), **event_eval chạy lần 2: KHÔNG MÙ** (các sửa C3, R1, A1 xuất phát từ lỗi đã
 thấy trên e1, e3, e7); số chính thức RQ3 vẫn là `event_eval/final4` (cấu hình cuối 3, chạy một lần).
+
+## Kết quả đánh giá cuối 4 (28/11/2026, `close_eval/final5/`, cấu hình `2f373a9` + test cập nhật)
+
+**Tốc độ** (07, video3-6, 3 lượt, cùng lượt đo với cuối 3): FPS gồm giải mã gộp **24,78** (cuối 3: 18,38), xử lý 27,40;
+trễ TB 36,5 ms, P95 83,2 ms. Theo video: video3 28,74; video4 **17,22**; video5 **18,98**; video6 **20,06** (cuối 3: 22,33 /
+11,65 / 13,29 / 14,29). Mọi video ≥ 15. (Lượt đo này máy nhanh hơn lượt `final4` khoảng 10%; so sánh trong cùng lượt.)
+
+**Video3-6** (`final5/dev36`): găng Có đúng 754 → 772, kính 367 → 387, ủng Có đúng 651 → 661 và báo thiếu oan 61 → 75
+(ngoại lệ S3), mũ báo thiếu oan 11 → 12; áo không đổi; sự kiện: số sự kiện giống.
+**Ablation video4-6**: E F1 0,870 (như cuối 3).
+
+**RQ3 event_eval chạy lần 2 (KHÔNG MÙ)**: giống hệt lần 1 (chặt 0,696, theo kiểm định 0,783; theo khung 0,004). R1, C3 không
+đổi kết quả trên tập này (khoảng đổi mã ở e7 dài hơn 2 s; người e1 không thấy rõ mặt).
+**Holdout sự kiện** (không mù): E F1 0,667 (như cuối 3).
+
+**Holdout trạng thái** (kiểm tra, không mù; `final5/holdout_check`): mũ Có đúng 1.755 → 1.773, Có sai 56 → 57; găng Có đúng
+109 → 126, Thiếu đúng 225 → 268, Có sai 3 → 1; kính Có đúng 423 → 432, báo thiếu oan 115 → 121; áo không đổi;
+**ủng Thiếu đúng 121 → 75** (Thiếu → CXĐ 18 → 61, Có sai 0 → 3) — xấu đi do S3 (zoom cách khung), không thấy trên video3-6.
+Không chẩn đoán, không chỉnh theo holdout (quy tắc). kiem_thu_gan 9-17: gần như không đổi.
