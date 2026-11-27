@@ -186,3 +186,33 @@ bật (`weights_by_ppe.helmet` bản 5, `geometry.head.s` 1,0, `thresholds.helme
 Bản cuối 2 (`28ad782`) + V3 (áo theo vai) + M1 (mũ vào zoom) + M2' (bộ phân loại đầu bản 5). G1 không bật. Sau mốc này
 chạy một lần: event_eval (RQ3), holdout và kiem_thu_gan 9-17 (kiểm tra sau sửa, không mù), ablation video4-6 (chấm E
 đã sửa), tốc độ (07). Không sửa code, cấu hình trong lúc chạy.
+
+## Kết quả đánh giá cuối 3 (28/11/2026, cấu hình `5d7acec`, chạy một lần; máy restart giữa chừng: event_eval và holdout đã
+xong trước, phần còn lại chạy tiếp bằng `final4/run_rest.sh`, chưa xem kết quả nào trước khi chạy xong)
+
+**RQ3 — tập độc lập event_eval** (`outputs/results/event_eval/final4/event_eval.json`; 7 video, 10 sự kiện chuẩn, nhãn máy
+hai lượt, người dùng kiểm định 11 Đúng / 0 Sai / 1 Không chắc):
+
+| | Cảnh báo | TP | Sai | Trùng | Ngoài nhãn | FN | P | R | **Event F1** | Trễ TB |
+|---|---|---|---|---|---|---|---|---|---|---|
+| E, chặt | 21 | 8 | 5 | 0 | 8 | 2 | 0,615 | 0,80 | **0,696** | 0,64 s |
+| E, theo kiểm định | 21 | 9 | 4 | 0 | 8 | 1 | 0,692 | 0,90 | **0,783** | 0,60 s |
+| Theo khung, chặt | 6.508 | 9 | 663 | 4.445 | 1.391 | 1 | 0,002 | 0,90 | 0,004 | |
+
+KTC 95% (bootstrap theo video): E F1 chặt [0,400; 0,952], hiệu E − theo khung [0,397; 0,948] (không chứa 0); theo kiểm
+định E F1 [0,609; 1,000]. Recall E thấp hơn theo khung 10 điểm (một sự kiện trên 10). Lỗi tập trung ở e3 (0 TP chặt: hai
+người nhìn từ sau, sự kiện chuẩn chỉ có kính/găng) và e7 (2 cảnh báo cho người tiền cảnh mờ mà nhãn để không sự kiện).
+"Ngoài nhãn" = cảnh báo trên người không ghép được hộp nhãn (không tính sai, báo riêng).
+
+**RQ3 số phụ — holdout** (`final4/holdout_events.json`, không mù, nhãn máy chưa kiểm định, 7 sự kiện suy từ nhãn khung):
+E F1 0,667 (P 0,625, R 0,714) [0,286; 0,933]; theo khung 0,005; hiệu [0,281; 0,929].
+
+**Ablation video4-6** (chấm E đã sửa): E F1 0,870 (P 0,909, R 0,833), A 0,0045 — như `final3`.
+
+**RQ2 — holdout, kiểm tra sau sửa, không mù** (`final4/holdout_check`): mũ Có đúng 1.704 → 1.755, Có→CXĐ 655 → 609,
+báo thiếu oan 26 → 21, **báo Có sai 39 → 56**, Thiếu→CXĐ 714 → 697; áo như V3 (0,775); găng, kính, ủng không đổi.
+Mũ: độ đúng 0,556 → 0,571, Coverage 0,576 → 0,595, đúng khi đã kết luận 0,965 → 0,960.
+kiem_thu_gan 9-17 (chỉ đo): mũ Có đúng 1.756 → 1.823, Có→CXĐ 346 → 279, Thiếu đúng 689 → 681, Có sai 1 → 2; áo như V3.
+
+**RQ4 — tốc độ** (`final4/benchmark`, sau restart, video3-6, 3 lượt): 17,64 ± 0,35 FPS xử lý, **16,38 ± 0,31 FPS gồm giải
+mã**, trễ TB 56,7 ms, P95 107,3 ms (bản cuối 2 cùng lượt: 18,14 / 16,78). Bộ phân loại 11,9 → 13,3 ms (mũ thêm vào zoom).

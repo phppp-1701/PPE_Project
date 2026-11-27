@@ -1,0 +1,176 @@
+{
+ "note": "holdout: KIỂM TRA, KHÔNG MÙ; nhãn máy hai lượt chưa người kiểm định; sự kiện suy từ nhãn khung (spec 7.4)",
+ "run": "outputs/results/close_eval/final4/holdout_check/final4",
+ "summary": {
+  "E": {
+   "tp": 5,
+   "dup": 0,
+   "false": 3,
+   "outside": 4,
+   "fn": 2,
+   "precision": 0.625,
+   "recall": 0.714,
+   "f1": 0.667,
+   "mean_latency_s": 0.475
+  },
+  "frame": {
+   "tp": 7,
+   "dup": 1483,
+   "false": 1258,
+   "outside": 163,
+   "fn": 0,
+   "precision": 0.003,
+   "recall": 1.0,
+   "f1": 0.005,
+   "mean_latency_s": 0.038
+  },
+  "ci95": {
+   "E_f1": [
+    0.286,
+    0.933
+   ],
+   "diff_E_minus_frame": [
+    0.281,
+    0.929
+   ]
+  }
+ },
+ "per_video": {
+  "h1": {
+   "gt": 1,
+   "E": {
+    "tp": 1,
+    "dup": 0,
+    "false": 0,
+    "outside": 3,
+    "fn": 0
+   },
+   "frame": {
+    "tp": 1,
+    "dup": 391,
+    "false": 0,
+    "outside": 135,
+    "fn": 0
+   }
+  },
+  "h2": {
+   "gt": 1,
+   "E": {
+    "tp": 1,
+    "dup": 0,
+    "false": 0,
+    "outside": 1,
+    "fn": 0
+   },
+   "frame": {
+    "tp": 1,
+    "dup": 120,
+    "false": 6,
+    "outside": 25,
+    "fn": 0
+   }
+  },
+  "h3": {
+   "gt": 1,
+   "E": {
+    "tp": 1,
+    "dup": 0,
+    "false": 0,
+    "outside": 0,
+    "fn": 0
+   },
+   "frame": {
+    "tp": 1,
+    "dup": 458,
+    "false": 0,
+    "outside": 0,
+    "fn": 0
+   }
+  },
+  "h4": {
+   "gt": 1,
+   "E": {
+    "tp": 0,
+    "dup": 0,
+    "false": 1,
+    "outside": 0,
+    "fn": 1
+   },
+   "frame": {
+    "tp": 1,
+    "dup": 1,
+    "false": 168,
+    "outside": 0,
+    "fn": 0
+   }
+  },
+  "h5": {
+   "gt": 0,
+   "E": {
+    "tp": 0,
+    "dup": 0,
+    "false": 1,
+    "outside": 0,
+    "fn": 0
+   },
+   "frame": {
+    "tp": 0,
+    "dup": 0,
+    "false": 438,
+    "outside": 0,
+    "fn": 0
+   }
+  },
+  "h7": {
+   "gt": 1,
+   "E": {
+    "tp": 0,
+    "dup": 0,
+    "false": 1,
+    "outside": 0,
+    "fn": 1
+   },
+   "frame": {
+    "tp": 1,
+    "dup": 81,
+    "false": 141,
+    "outside": 0,
+    "fn": 0
+   }
+  },
+  "h8": {
+   "gt": 1,
+   "E": {
+    "tp": 1,
+    "dup": 0,
+    "false": 0,
+    "outside": 0,
+    "fn": 0
+   },
+   "frame": {
+    "tp": 1,
+    "dup": 348,
+    "false": 0,
+    "outside": 0,
+    "fn": 0
+   }
+  },
+  "h9": {
+   "gt": 1,
+   "E": {
+    "tp": 1,
+    "dup": 0,
+    "false": 0,
+    "outside": 0,
+    "fn": 0
+   },
+   "frame": {
+    "tp": 1,
+    "dup": 84,
+    "false": 505,
+    "outside": 3,
+    "fn": 0
+   }
+  }
+ }
+}
