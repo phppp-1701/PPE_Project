@@ -35,6 +35,24 @@ Hồi quy video3-6 (nhãn người, `06b evaluate`, mốc = `configs/pipeline.ya
 Đạt cả 4 → bật V trong `configs/pipeline.yaml`, chạy lại holdout (ghi "kiểm tra sau sửa, không mù"; số chính thức vẫn
 16/11) và `kiem_thu_gan` 9-17 (chỉ báo cáo). Không đạt → không bật, ghi Hạn chế.
 
-## Kết quả
+## Kết quả V (27/11/2026): không đổi gì
+
+`outputs/results/close_eval/stepV/dev36/`: mọi số, mọi PPE, mọi sự kiện video3-6 giống hệt bản hiện tại → không bật.
+Thăm dò (scratchpad, video3-5, chỉ đọc): hộp áo bị loại `outside` đều do **lệch ngang** (u trung vị 0,29 video4; 0,73
+video5; 0,76 video3; vùng thân x 0,309-0,665), chiều dọc đúng. Xem ảnh: hộp người bị **tay dang ra** kéo rộng (bắt tay,
+ngồi xổm vươn tay), vùng thân theo tỉ lệ nằm giữa hộp nên lệch khỏi thân thật. B2 cố ý không nới ngang nên không có tác dụng.
+
+## V2 — vùng thân đặt theo hai vai (ghi trước khi code và chạy)
+
+`association.torso_shift {kp_conf, kx}`: khi `shoulder_geometry` (hai vai >= kp_conf, vai trong hộp người, hông thấp hơn
+vai nếu thấy) hợp lệ, thêm vùng R: ngang [mx - kx·sw, mx + kx·sw] (mx trung điểm vai, sw bề rộng vai), dọc giữ như vùng
+thân cũ, cắt theo hộp người; tâm áo trong vùng cũ hoặc R đều là ứng viên (khoảng cách chuẩn hóa nhỏ hơn được lấy). Tham số:
+`kp_conf 0.5`, `kx 1.259` (= `kx` của B2/F2 chọn trên val 15-16/11/2026). Không chọn tham số mới.
+
+Tiêu chí V2 (khóa): như tiêu chí 1-4 ở trên trên video3-6 (nhãn người), thêm (5) "Có mới trên người không có nhãn" của áo
+không tăng (chặn gán áo cho người không có trong nhãn). Chưa đo V3b trên val (chưa có chế độ 05a cho V2; ghi rõ là giới hạn).
+Đạt → bật, chạy lại holdout ("kiểm tra sau sửa, không mù") và 9-17 (chỉ báo cáo).
+
+## Kết quả V2
 
 (điền sau khi chạy)

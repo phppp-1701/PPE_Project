@@ -104,6 +104,19 @@ def torso_strict_box(track, ts, old_box, frame_shape):
     return np.array(r, dtype=float), sw
 
 
+def torso_shift_box(track, ts, old_box):
+    """Bước V2: vùng thân dời theo hai vai. Ngang [mx - kx*sw, mx + kx*sw], dọc như vùng cũ, cắt theo hộp người.
+    None khi không qua shoulder_geometry (hai vai >= kp_conf, vai trong hộp, hông thấp hơn vai)."""
+    g = shoulder_geometry(track, ts["kp_conf"])
+    if g is None:
+        return None
+    x1, _, x2, _ = track.xyxy
+    r = [max(g["mx"] - ts["kx"] * g["sw"], x1), old_box[1], min(g["mx"] + ts["kx"] * g["sw"], x2), old_box[3]]
+    if r[2] <= r[0] or r[3] <= r[1]:
+        return None
+    return np.array(r, dtype=float)
+
+
 def shoulder_geometry(track, kp_conf):
     """Cổng G2, G3(a)(c)(d) của B2 (dùng chung cho chuỗi xử lý và 05a --torso-strict).
 
@@ -234,6 +247,10 @@ class Associator:
         self.inside_margin = (cfg.get("calibration") or {}).get("inside_margin", 0.1)
         self.wrist_anchor = (require(cfg, "association", "wrist_anchor")
                              if self.pose and cfg["association"].get("wrist_anchor") is not None else None)
+        # Bước V2 (docs/experiments/2026-11-27_unknown_fix_plan.md): vùng thân đặt theo hai vai (người dang tay làm hộp
+        # người rộng, vùng thân theo tỉ lệ lệch khỏi thân). Vắng khóa -> như cũ.
+        self.torso_shift = (require(cfg, "association", "torso_shift")
+                            if self.pose and cfg["association"].get("torso_shift") is not None else None)
 
     def limit(self, name):
         """Khoảng cách tối đa: 1 (biên elip) khi dùng cổ tay, còn lại `max_distance` (3.4)."""
@@ -313,6 +330,11 @@ class Associator:
                         if size_ok and rs[0] <= c[0] <= rs[2] and rs[1] <= c[1] <= rs[3]:
                             ds = norm_distance(c, t.xyxy, rs)
                             d = ds if d is None else min(d, ds)
+                if self.torso_shift and name == "vest" and p["region"] == "torso" and side is None:   # bước V2
+                    rs = torso_shift_box(t, self.torso_shift, r)
+                    if rs is not None and rs[0] <= c[0] <= rs[2] and rs[1] <= c[1] <= rs[3]:
+                        ds = norm_distance(c, t.xyxy, rs)
+                        d = ds if d is None else min(d, ds)
                 if self.eye_anchor and name == "goggles" and side is None:                         # bước F1
                     de = eye_anchor_distance(t, c, self.eye_anchor)
                     if de is not None:
