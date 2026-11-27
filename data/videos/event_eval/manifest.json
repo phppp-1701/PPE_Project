@@ -1,0 +1,26 @@
+{
+ "sealed": "2026-11-28",
+ "note": "niêm phong nhãn máy trước mọi dự đoán của hệ thống trên e1-e9; e2, e4 loại theo tiêu chí 4",
+ "videos": {
+  "e1.mp4": "f0cf0fb30413c55b3e721ad7ee0420728f5c3d232e4cd059828fa48f5858b56c",
+  "e3.mp4": "aa560d3dec518242b21ae493b3d890b2c5e3c875d9372bbfaed0e81204598925",
+  "e5.mp4": "35bb4c914c4e0430d0afbe6bd1dbdef57976ca41037d84ce14cc241d3a53dd49",
+  "e6.mp4": "0af46f1ed4433294dd6c9a550256526d0c8c46e2e834cf454e7e898e17f1b0c3",
+  "e7.mp4": "8d8fbb3314bea17d4adfb504679bd3061a6b5a3c176f97b223dda46f69698142",
+  "e8.mp4": "cb32220c6d19b9fbf29be613d02a0b2ac10b65f1b24efcdddec9c78cc98c7224",
+  "e9.mp4": "928ea84582f46af002aa80872b3488eb80298dc54d2fd35b77506a9c0d93678f"
+ },
+ "labels": {
+  "events_gt.json": "3ba32134a12e18aa494e4067486b8c88a4dcbc1c84b7bc26c38b2594a2fa45c6",
+  "agreement.json": "94cc8f5cf1ed2f7e478c7330c830fe3abf56f00d5f59565c0b020e78ad482f78",
+  "spec_A.json": "2f69edb44b6d6fd2d01d48e7f107d3b5e03dd7ee7de1c5625f94fa8b7fca738c",
+  "spec_B.json": "e0a0cc7a8a194d22afc0872edebdc0d5a9b6b67085b02eb5d75ae508fc32d1a8",
+  "e1_tracks.json": "8684aa28a2143f129c0ea156bd17743709b10c86636ed0462a24a637cbc9e5e9",
+  "e3_tracks.json": "1ece6243d32d58add68e2381afdc987039bdba9b3449fdd4cb0c88c8bf00de7d",
+  "e5_tracks.json": "ee030081f25ab00d61edd052c48e3bac8fdecef4916bce25e53e420ede0fbc85",
+  "e6_tracks.json": "8f555dff1ea041f11200ae882966fe945b089c7ff94b1c5d3a34b689bf06894b",
+  "e7_tracks.json": "f300ae45117b08a249fa27f94057937a748c7c1120c31c6c1f7a2f38e24383d3",
+  "e8_tracks.json": "119dae3eb96bc7a491fd1306f886b12b05c707ff3289f6a6983df06a85cfc705",
+  "e9_tracks.json": "d48c26c5f4e3d055397d75d950a0d7a934d4c296d154d21386185010dd68fd04"
+ }
+}

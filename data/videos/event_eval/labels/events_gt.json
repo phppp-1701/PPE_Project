@@ -1,0 +1,161 @@
+{
+ "status": "machine_consensus (Claude hai lượt), chờ người dùng kiểm định mẫu",
+ "required_ppe": [
+  "helmet",
+  "vest",
+  "gloves",
+  "goggles",
+  "boots"
+ ],
+ "rule": "spec 7.4; khoảng trống có mặt <= 2 s coi là liền",
+ "events": {
+  "e1": [
+   {
+    "person": "P1",
+    "tracks": [
+     "1"
+    ],
+    "start": 0.0,
+    "missing": [
+     "helmet",
+     "vest"
+    ],
+    "end": 16.0,
+    "until_end": true
+   },
+   {
+    "person": "P2",
+    "tracks": [
+     "2"
+    ],
+    "start": 0.0,
+    "missing": [
+     "helmet",
+     "vest"
+    ],
+    "end": 16.0,
+    "until_end": true
+   }
+  ],
+  "e3": [
+   {
+    "person": "P1",
+    "tracks": [
+     "1"
+    ],
+    "start": 5.0,
+    "missing": [
+     "gloves",
+     "goggles"
+    ],
+    "end": 10.01,
+    "until_end": false
+   },
+   {
+    "person": "P2",
+    "tracks": [
+     "2"
+    ],
+    "start": 0.0,
+    "missing": [
+     "goggles"
+    ],
+    "end": 8.64,
+    "until_end": false
+   }
+  ],
+  "e5": [
+   {
+    "person": "P2",
+    "tracks": [
+     "2",
+     "30"
+    ],
+    "start": 0.0,
+    "missing": [
+     "helmet"
+    ],
+    "end": 25.48,
+    "until_end": true
+   }
+  ],
+  "e6": [
+   {
+    "person": "P1",
+    "tracks": [
+     "1"
+    ],
+    "start": 0.0,
+    "missing": [
+     "goggles",
+     "helmet",
+     "vest"
+    ],
+    "end": 13.52,
+    "until_end": false
+   },
+   {
+    "person": "P2",
+    "tracks": [
+     "2"
+    ],
+    "start": 0.0,
+    "missing": [
+     "goggles",
+     "helmet",
+     "vest"
+    ],
+    "end": 14.4,
+    "until_end": false
+   }
+  ],
+  "e7": [
+   {
+    "person": "P1",
+    "tracks": [
+     "1"
+    ],
+    "start": 0.0,
+    "missing": [
+     "gloves",
+     "goggles",
+     "helmet",
+     "vest"
+    ],
+    "end": 39.48,
+    "until_end": true
+   }
+  ],
+  "e8": [
+   {
+    "person": "P1",
+    "tracks": [
+     "1"
+    ],
+    "start": 0.0,
+    "missing": [
+     "gloves",
+     "goggles",
+     "vest"
+    ],
+    "end": 26.84,
+    "until_end": true
+   }
+  ],
+  "e9": [
+   {
+    "person": "P1",
+    "tracks": [
+     "1"
+    ],
+    "start": 0.0,
+    "missing": [
+     "helmet",
+     "vest"
+    ],
+    "end": 15.96,
+    "until_end": true
+   }
+  ]
+ }
+}
