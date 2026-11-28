@@ -127,6 +127,7 @@ part_cls:
   # Thử [gloves] 14/11/2026 trên video 3-6: bỏ sót găng video3 326 -> 216 nhưng báo sai video3 155 -> 167, video4 0 -> 2
   # -> không đạt, không bật.
   observe_from_crop: []
+  run_on_new_track: true   # round5 P3 (28/11/2026): chạy bộ phân loại ngay khi có người mới (sửa lỗi ủng của S3)
   every_n_frames: 3        # S3 (28/11/2026, NGOẠI LỆ): bộ phân loại mỗi 3 khung, khung bỏ qua dùng lại phiếu đã gộp
   vote_window_s: 1.0        # gộp phiếu: trung bình p trong khoảng này (giây). Claude đặt 13/11/2026, không chọn trên video
   # Mục tiêu độ chính xác khi chọn ngưỡng trên val (Claude đặt 13/11/2026, trước khi chạy 05e):
