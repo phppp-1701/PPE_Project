@@ -29,7 +29,7 @@ def test_skip_frame_reuses_window_mean(test_cfg):
 def test_skip_frame_uses_only_last_run_sides(test_cfg):
     """P2: chân chỉ có trong lịch sử cũ (không có ở lần chạy gần nhất) không được dùng ở khung bỏ qua."""
     c = Compliance(copy.deepcopy(test_cfg))
-    c.part = {"vote_window_s": 1.0}
+    c.part = {"vote_window_s": 1.0, "skip_last_sides": True}
     t = person(1, 0, 0, 100, 300)
     c.now = 0.0
     t.extra["parts"] = {("boots", "15"): 0.9, ("boots", "16"): 0.1}

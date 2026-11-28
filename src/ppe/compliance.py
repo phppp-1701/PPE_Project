@@ -174,11 +174,18 @@ class Compliance:
         if ex.get("parts_skip") and self.now is not None and win > 0:
             # Bước S (part_cls.every_n_frames): khung không chạy bộ phân loại -> dùng lại phiếu đã gộp, không thêm phiếu.
             # P2 (round5): chỉ các bên của lần chạy gần nhất (không lấy chân/tay cũ hơn trong lịch sử).
-            for s_ in self.last_sides.get((track.track_id, name), ()):
-                h = self.p_hist.get((track.track_id, name, s_), [])
-                h[:] = [(t, q) for t, q in h if self.now - t <= win]
-                if h and (name == "boots" or s_ == side):
-                    ps.append(sum(q for _, q in h) / len(h))
+            if self.part.get("skip_last_sides"):          # khóa P2 (round5); vắng = như cuối 4
+                for s_ in self.last_sides.get((track.track_id, name), ()):
+                    h = self.p_hist.get((track.track_id, name, s_), [])
+                    h[:] = [(t, q) for t, q in h if self.now - t <= win]
+                    if h and (name == "boots" or s_ == side):
+                        ps.append(sum(q for _, q in h) / len(h))
+                return ps
+            for (tid, n, s_), h in self.p_hist.items():
+                if tid == track.track_id and n == name and (name == "boots" or s_ == side):
+                    h[:] = [(t, q) for t, q in h if self.now - t <= win]
+                    if h:
+                        ps.append(sum(q for _, q in h) / len(h))
             return ps
         if not ex.get("parts_skip"):
             self.last_sides[(track.track_id, name)] = {s for (n, s) in got if n == name}
