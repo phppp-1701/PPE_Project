@@ -79,6 +79,8 @@ class Detector:
             self._zoom_predict(np.zeros((self.zoom["imgsz"], self.zoom["imgsz"], 3), dtype=np.uint8), 0.5)
         self.frame_idx = -1
         self._zoom_mem = []                    # S2: [(hộp người, [Det zoom])] của khung zoom gần nhất
+        self.feet = d.get("feet_roi") if (d.get("feet_roi") or {}).get("enabled") else None   # round5 U1
+        self.feet_runs = 0
         # F2 (2026-11-25_close_range_fixes): hộp PPE điểm thấp (hold_conf <= điểm < ngưỡng lớp) cho bước nhớ PPE.
         mem = (cfg.get("compliance") or {}).get("ppe_memory")
         self.hold_conf = mem["hold_conf"] if mem else None
@@ -192,6 +194,43 @@ class Detector:
         cl = torch.tensor([d.cls for d in pool])
         keep = batched_nms(xy, sc, cl, self.zoom["nms_iou"]).numpy()
         return keep_other + [pool[i] for i in keep]
+
+    def feet_box(self, t, w, h):
+        """Round5 U1: vùng chân của người t (tọa độ khung gốc) hoặc None. Đỉnh = gối thấp nhất có keypoint >= kp_conf,
+        không có thì feet_top x chiều cao hộp người; đáy = đáy hộp người; nới pad theo cỡ vùng; cắt theo mép ảnh."""
+        f = self.feet
+        x1, y1, x2, y2 = t.xyxy
+        kps = getattr(t, "extra", {}).get("kps")
+        knees = [kps[i][1] for i in (13, 14) if kps and kps[i][2] >= f["kp_conf"] and y1 <= kps[i][1] <= y2] if kps else []
+        top = min(knees) if knees else y1 + f["feet_top"] * (y2 - y1)
+        bw, bh = x2 - x1, y2 - top
+        if bh <= 1:
+            return None
+        b = (int(max(0, x1 - f["pad"] * bw)), int(max(0, top - f["pad"] * bh)),
+             int(min(w, x2 + f["pad"] * bw)), int(min(h, y2 + f["pad"] * bh)))
+        return b if max(b[2] - b[0], b[3] - b[1]) >= f["min_px"] else None
+
+    def feet_ppe(self, frame, tracks, ppe):
+        """Round5 U1 (`detector.feet_roi`): dò lại ủng trên vùng chân của người tin cậy chưa có hộp ủng (theo dự đoán)
+        trong vùng; đổi hộp về khung gốc, gộp NMS theo lớp với hộp ủng sẵn có."""
+        h, w = frame.shape[:2]
+        cls = self.feet["cls"]
+        have = [d for d in ppe if d.cls == cls]
+        add = []
+        for t in tracks:
+            if not t.confident:
+                continue
+            b = self.feet_box(t, w, h)
+            if b is None or any(b[0] <= d.center[0] <= b[2] and b[1] <= d.center[1] <= b[3] for d in have):
+                continue                                     # chỉ chạy khi cần: vùng chân chưa có hộp ủng
+            sq, r, dx, dy = letterbox_square(frame[b[1]:b[3], b[0]:b[2]], self.feet["imgsz"])
+            res = self.zoom_model.predict(sq, imgsz=self.feet["imgsz"], conf=self.conf["boots"] / self.feet["conf_scale"],
+                                          iou=self.nms_iou, device=self.device, verbose=False,
+                                          quantize=16 if self.zoom["half"] else None)[0]
+            add += [Det(c, unletterbox(bx, r, dx, dy, b[0], b[1]), sc * self.feet["conf_scale"])
+                    for c, bx, sc in self._boxes(res) if c == cls and sc * self.feet["conf_scale"] >= self.conf["boots"]]
+            self.feet_runs += 1
+        return self._zoom_merge(ppe, add) if add else ppe
 
     def __call__(self, frame):
         """(danh sách hộp người kể cả conf thấp, danh sách hộp PPE đã lọc theo conf từng lớp)."""

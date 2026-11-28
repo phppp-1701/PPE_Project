@@ -71,6 +71,8 @@ class Pipeline:
                     tr.extra.pop("parts", None)
             if run:
                 timed("parts", self.parts, frame, out["tracks"])
+        if self.stage >= 2 and self.detector.feet is not None and self.detector.zoom_model is not None:
+            out["ppe"] = timed("feet_roi", self.detector.feet_ppe, frame, out["tracks"], out["ppe"])   # round5 U1
         if self.stage >= 2:
             out["assoc"] = timed("association", self.associator, out["tracks"], out["ppe"], frame.shape)
         if self.stage >= 3:
