@@ -100,6 +100,26 @@ def merge_image(pbox, pconf, pcls, extra, cfg):
     return b[o], s[o], c[o]
 
 
+def feet_crops(im, pbox, ratio_pad, cfg):
+    """Round5 U1: vùng chân = từ feet_top x chiều cao hộp người tới đáy hộp (không có keypoint trên val), nới pad mỗi
+    cạnh theo cỡ vùng chân, cắt theo mép ảnh. Bỏ vùng có cạnh dài < min_px (phóng to quá 2 lần không thêm chi tiết)."""
+    g, px, py = ratio_pad
+    h, w = im.shape[:2]
+    crops, offs = [], []
+    for b in pbox:
+        x1, y1, x2, y2 = (b - [px, py, px, py]) / g
+        y1 = y1 + cfg["feet_top"] * (y2 - y1)
+        bw, bh = x2 - x1, y2 - y1
+        x1, y1 = int(max(x1 - cfg["pad"] * bw, 0)), int(max(y1 - cfg["pad"] * bh, 0))
+        x2, y2 = int(min(x2 + cfg["pad"] * bw, w)), int(min(y2 + cfg["pad"] * bh, h))
+        if max(x2 - x1, y2 - y1) < cfg["min_px"]:
+            continue
+        sq, r, dx, dy = letterbox_square(im[y1:y2, x1:x2], cfg["imgsz"])
+        crops.append(sq)
+        offs.append((r, dx, dy, x1, y1))
+    return crops, offs
+
+
 def person_crops(im, pbox, ratio_pad, cfg):
     """Cắt vùng người (hộp canvas -> ảnh gốc, nới pad mỗi cạnh). Bỏ người có cạnh dài < min_side_ratio * imgsz."""
     g, px, py = ratio_pad
@@ -125,6 +145,8 @@ def main():
     ap.add_argument("--split", choices=["val", "test"])
     ap.add_argument("--weights")
     ap.add_argument("--out")
+    ap.add_argument("--feet", type=float, nargs=3, metavar=("PAD", "IMGSZ", "TOP"),
+                    help="round5 U1: dò ủng trên vùng chân (pad, imgsz, feet_top); --capture là capture đã có zoom")
     ap.add_argument("--classes", type=int, nargs="+", help="ghi đè crop_pass.classes (M1 27/11/2026: thử thêm mũ)")
     args = ap.parse_args()
     sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
@@ -144,6 +166,9 @@ def main():
     cfg = yaml.safe_load((ROOT / "configs" / "ppe6.yaml").read_text(encoding="utf-8"))["crop_pass"]
     if args.classes:
         cfg["classes"] = args.classes
+    if args.feet:
+        cfg.update(pad=args.feet[0], imgsz=int(args.feet[1]), feet_top=args.feet[2], classes=[5],
+                   min_px=int(args.feet[1]) // 2)
     import cv2
     from ultralytics import YOLO
 
@@ -159,7 +184,7 @@ def main():
             im = cv2.imread(str(img_dir / f))
             if im is None:
                 sys.exit(f"Không đọc được ảnh {img_dir / f}")
-            crops, offs = person_crops(im, persons, z["ratio_pad"][i], cfg)
+            crops, offs = (feet_crops if args.feet else person_crops)(im, persons, z["ratio_pad"][i], cfg)
             if crops:
                 g, px, py = z["ratio_pad"][i]
                 t1 = time.time()
