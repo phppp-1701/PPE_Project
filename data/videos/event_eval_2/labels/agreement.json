@@ -1,0 +1,27 @@
+{
+ "helmet": {
+  "n": 3045,
+  "agree": 1.0,
+  "kappa": 1.0
+ },
+ "vest": {
+  "n": 3045,
+  "agree": 1.0,
+  "kappa": 1.0
+ },
+ "gloves": {
+  "n": 3045,
+  "agree": 0.811,
+  "kappa": 0.697
+ },
+ "goggles": {
+  "n": 3045,
+  "agree": 0.948,
+  "kappa": 0.897
+ },
+ "boots": {
+  "n": 3045,
+  "agree": 0.962,
+  "kappa": 0.0
+ }
+}

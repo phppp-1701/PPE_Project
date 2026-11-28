@@ -6,12 +6,13 @@ gian, hộp người, món thiếu; người dùng bấm Đúng / Sai / Không c
 
 import base64
 import json
+import os
 from pathlib import Path
 
 import cv2
 
 ROOT = Path(__file__).resolve().parents[4]
-EV = ROOT / "data" / "videos" / "event_eval"
+EV = ROOT / "data" / "videos" / os.environ.get("EV_SET", "event_eval")   # EV_SET=event_eval_2
 L = EV / "labels"
 VN = {"helmet": "mũ bảo hộ", "vest": "áo phản quang", "gloves": "găng tay", "goggles": "kính bảo hộ", "boots": "ủng/giày bảo hộ"}
 

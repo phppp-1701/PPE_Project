@@ -1,0 +1,12 @@
+video_id,file,url_id,license,downloaded,resolution,fps,frames,duration_s,sha256,content
+f1,f1.mp4,pexels.com/video/10590044,Pexels License (https://www.pexels.com/license/),2026-11-28,1920x1080,30.0,587,19.6,7c10a2362b01172a04dc76003cfb37823c5cc70d2e44bb7ca95d529aa40ce535,"xưởng hàn, cận, tối, mặt nạ hàn"
+f2,f2.mp4,pexels.com/video/11887099,Pexels License (https://www.pexels.com/license/),2026-11-28,1920x1080,25.0,391,15.6,4ca5b916f3ccb486d8d124c5f24ea6776615e083961c1ebe0946cae89b88b243,"cắt plasma, mũ lưỡi trai, không áo"
+f3,f3.mp4,pexels.com/video/19497509,Pexels License (https://www.pexels.com/license/),2026-11-28,1920x1080,25.0,444,17.8,eee30536e815e12445ff9057d0bf42beefe1ed99a1454f69e656c4f1a32a443d,"sửa đường ray, 2 người áo PQ không mũ"
+f4,f4.mp4,pexels.com/video/6169113,Pexels License (https://www.pexels.com/license/),2026-11-28,1920x1080,25.0,436,17.4,2ba0e4e92322c9131a56b39f3d6036b28fcfccb4b5d0d91a30b5d7cbaa3cbc01,"dỡ hàng xe tải, 2 người không PPE"
+f5,f5.mp4,pexels.com/video/6719463,Pexels License (https://www.pexels.com/license/),2026-11-28,1920x1080,29.97,881,29.4,91431f24f9c5c4b29f891d29250fbed66cd0a60f076674aef4fe45d9c48bc2a1,"công nhân đường phố đủ mũ áo, bị rào che"
+f6,f6.mp4,pexels.com/video/7163092,Pexels License (https://www.pexels.com/license/),2026-11-28,1920x1080,24.0,758,31.6,0223da6fd38a396265c81475b981dcfe16dee5368ec6e2344ae4bd4a14e698f7,"thi công vỉa hè ~4 người, PPE lẫn lộn"
+f7,f7.mp4,pexels.com/video/4957773,Pexels License (https://www.pexels.com/license/),2026-11-28,1920x1080,25.0,293,11.7,d1c01c8cdae9417bdebbcbead2322199814b0b4febbaa65c34b0c04a12c762d2,"thợ mộc chụp tai, mũ lưỡi trai"
+f8,f8.mp4,pexels.com/video/5089237,Pexels License (https://www.pexels.com/license/),2026-11-28,506x960,25.0,604,24.2,562b0602cee3734d128b5c5280d20ce144f2016bbb6c1eb894a912b82b203feb,thợ xưởng không PPE (bản 960 px)
+f9,f9.mp4,pexels.com/video/5758671,Pexels License (https://www.pexels.com/license/),2026-11-28,1080x1920,29.97,906,30.2,4fb0fe7587241cf1d5838f82eeb449f75d7a1c0668303bf891c34d83e167736e,"đầu sát camera, không mũ (video dọc)"
+f10,f10.mp4,pexels.com/video/7492603,Pexels License (https://www.pexels.com/license/),2026-11-28,506x960,25.0,706,28.2,a53bca2f9a6c7ca76f2a6f3d979aa4b852501a00994b167facd5a36efb83919e,thợ mộc bước vào khung (bản 960 px)
+f11,f11.mp4,pexels.com/video/7647713,Pexels License (https://www.pexels.com/license/),2026-11-28,1920x1080,23.98,322,13.4,f3846c668f05bcf0a52e979d1143dc7602f08bea9f496ed928b003afd76e2a9b,"thợ ống nước trong nhà, không PPE"

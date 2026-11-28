@@ -22,3 +22,14 @@ không còn độc lập; tập này là tập độc lập duy nhất để k�
    và xa, trong nhà và ngoài trời; không chọn riêng theo mũ hay ủng.
 4. Chọn theo nội dung khung hình gốc (Claude xem 3 khung), không theo dự đoán của hệ thống.
 5. 8-12 video; không đủ thì dùng số đạt và báo đúng số lượng (video và sự kiện).
+
+## Kết quả chọn và gán nhãn (28/11/2026)
+
+~50 ứng viên Pexels (12 trang tìm, nhiều mã mới không tải được bản xem thử), xem khung gốc, chọn **11 video** (f1-f11,
+`sources.csv`): xưởng hàn, cắt plasma, sửa đường ray, dỡ hàng, công nhân đường phố (bị xe che, đội mũ để dưới đất), thi công
+vỉa hè, xưởng mộc (3), thợ đầu sát camera, thợ ống nước. Loại: cột điện (người quá nhỏ), gầm xe, ảnh chụp từ trên cao, tay
+không thấy người. f8, f10 chỉ có bản 960 px.
+Chỉ gán người chính (người nền nhỏ, người ở mép khung, track trên vật thể không gán; cảnh báo trên họ tính "ngoài nhãn").
+Hai lượt do cùng Claude gán (A cả khung, B ảnh cắt), trạng thái gán theo từng người cho cả video (không theo từng khoảng
+thời gian), nên đồng thuận mũ/áo 1,0 không nói lên độ khó; găng κ 0,70, kính 0,90. **17 sự kiện chuẩn** trên 11 video.
+Niêm phong `manifest.json` trước mọi dự đoán. Chờ người dùng kiểm định (`labels/audit.html`).

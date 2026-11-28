@@ -20,7 +20,7 @@ import numpy as np
 
 os.environ.setdefault("YOLO_AUTOINSTALL", "False")
 ROOT = Path(__file__).resolve().parents[4]
-EV = ROOT / "data" / "videos" / "event_eval"
+EV = ROOT / "data" / "videos" / os.environ.get("EV_SET", "event_eval")   # EV_SET=event_eval_2 cho tập thứ hai
 WORK = EV / "labels" / "work"
 
 

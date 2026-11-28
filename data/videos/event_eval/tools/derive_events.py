@@ -9,10 +9,11 @@ của sự kiện = các món có Thiếu trong khoảng đó. Ghi `labels/event
 """
 
 import json
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[4]
-L = ROOT / "data" / "videos" / "event_eval" / "labels"
+L = ROOT / "data" / "videos" / os.environ.get("EV_SET", "event_eval") / "labels"   # EV_SET=event_eval_2
 PPE = ("helmet", "vest", "gloves", "goggles", "boots")
 VALS = ("co", "thieu", "chua_xac_dinh")
 STEP, GAP = 0.1, 2.0

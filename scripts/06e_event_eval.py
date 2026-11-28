@@ -19,6 +19,7 @@ Chạy 05_run_video với một cấu hình trên các video (một lần), rồ
 import argparse
 import csv
 import json
+import os
 import subprocess
 import sys
 from collections import defaultdict
@@ -28,7 +29,7 @@ import numpy as np
 
 sys.stdout.reconfigure(encoding="utf-8")
 ROOT = Path(__file__).resolve().parents[1]
-EV = ROOT / "data" / "videos" / "event_eval"
+EV = ROOT / "data" / "videos" / os.environ.get("EV_SET", "event_eval")   # EV_SET=event_eval_2 cho tập thứ hai (round5)
 LAB = EV / "labels"
 VN = {"găng": "gloves", "ủng": "boots", "giày": "boots", "kính": "goggles", "mũ": "helmet", "áo": "vest"}
 

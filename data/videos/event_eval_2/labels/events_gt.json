@@ -1,0 +1,273 @@
+{
+ "status": "machine_consensus (Claude hai lượt), chờ người dùng kiểm định mẫu",
+ "required_ppe": [
+  "helmet",
+  "vest",
+  "gloves",
+  "goggles",
+  "boots"
+ ],
+ "rule": "spec 7.4; khoảng trống có mặt <= 2 s coi là liền",
+ "events": {
+  "f1": [
+   {
+    "person": "P1",
+    "tracks": [
+     "1",
+     "30"
+    ],
+    "start": 0.13,
+    "missing": [
+     "helmet",
+     "vest"
+    ],
+    "end": 6.0,
+    "until_end": false
+   },
+   {
+    "person": "P1",
+    "tracks": [
+     "1",
+     "30"
+    ],
+    "start": 11.2,
+    "missing": [
+     "helmet",
+     "vest"
+    ],
+    "end": 16.03,
+    "until_end": false
+   }
+  ],
+  "f2": [
+   {
+    "person": "P1",
+    "tracks": [
+     "1"
+    ],
+    "start": 0.0,
+    "missing": [
+     "helmet",
+     "vest"
+    ],
+    "end": 15.6,
+    "until_end": true
+   }
+  ],
+  "f3": [
+   {
+    "person": "P1",
+    "tracks": [
+     "1"
+    ],
+    "start": 0.0,
+    "missing": [
+     "helmet"
+    ],
+    "end": 17.72,
+    "until_end": true
+   },
+   {
+    "person": "P2",
+    "tracks": [
+     "2"
+    ],
+    "start": 0.0,
+    "missing": [
+     "helmet"
+    ],
+    "end": 17.72,
+    "until_end": true
+   }
+  ],
+  "f4": [
+   {
+    "person": "P1",
+    "tracks": [
+     "1"
+    ],
+    "start": 0.0,
+    "missing": [
+     "goggles",
+     "helmet",
+     "vest"
+    ],
+    "end": 16.72,
+    "until_end": false
+   },
+   {
+    "person": "P2",
+    "tracks": [
+     "2",
+     "3"
+    ],
+    "start": 0.0,
+    "missing": [
+     "goggles",
+     "helmet",
+     "vest"
+    ],
+    "end": 17.4,
+    "until_end": true
+   }
+  ],
+  "f5": [
+   {
+    "person": "P1",
+    "tracks": [
+     "3",
+     "25",
+     "30",
+     "52"
+    ],
+    "start": 1.5,
+    "missing": [
+     "helmet"
+    ],
+    "end": 3.3,
+    "until_end": false
+   },
+   {
+    "person": "P1",
+    "tracks": [
+     "3",
+     "25",
+     "30",
+     "52"
+    ],
+    "start": 10.71,
+    "missing": [
+     "helmet"
+    ],
+    "end": 18.69,
+    "until_end": false
+   },
+   {
+    "person": "P1",
+    "tracks": [
+     "3",
+     "25",
+     "30",
+     "52"
+    ],
+    "start": 22.96,
+    "missing": [
+     "helmet"
+    ],
+    "end": 24.56,
+    "until_end": false
+   }
+  ],
+  "f6": [
+   {
+    "person": "P1",
+    "tracks": [
+     "1"
+    ],
+    "start": 0.0,
+    "missing": [
+     "helmet"
+    ],
+    "end": 31.54,
+    "until_end": true
+   },
+   {
+    "person": "P2",
+    "tracks": [
+     "2"
+    ],
+    "start": 0.0,
+    "missing": [
+     "helmet"
+    ],
+    "end": 31.54,
+    "until_end": true
+   }
+  ],
+  "f7": [
+   {
+    "person": "P1",
+    "tracks": [
+     "1"
+    ],
+    "start": 0.0,
+    "missing": [
+     "gloves",
+     "goggles",
+     "helmet",
+     "vest"
+    ],
+    "end": 11.68,
+    "until_end": true
+   }
+  ],
+  "f8": [
+   {
+    "person": "P1",
+    "tracks": [
+     "1"
+    ],
+    "start": 0.0,
+    "missing": [
+     "goggles",
+     "helmet",
+     "vest"
+    ],
+    "end": 24.12,
+    "until_end": true
+   }
+  ],
+  "f9": [
+   {
+    "person": "P1",
+    "tracks": [
+     "1"
+    ],
+    "start": 0.0,
+    "missing": [
+     "gloves",
+     "goggles",
+     "helmet",
+     "vest"
+    ],
+    "end": 30.2,
+    "until_end": true
+   }
+  ],
+  "f10": [
+   {
+    "person": "P1",
+    "tracks": [
+     "2",
+     "3"
+    ],
+    "start": 6.04,
+    "missing": [
+     "gloves",
+     "goggles",
+     "helmet",
+     "vest"
+    ],
+    "end": 28.2,
+    "until_end": true
+   }
+  ],
+  "f11": [
+   {
+    "person": "P1",
+    "tracks": [
+     "1"
+    ],
+    "start": 0.0,
+    "missing": [
+     "gloves",
+     "goggles",
+     "helmet",
+     "vest"
+    ],
+    "end": 13.39,
+    "until_end": true
+   }
+  ]
+ }
+}
