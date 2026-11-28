@@ -33,3 +33,9 @@ Chỉ gán người chính (người nền nhỏ, người ở mép khung, track
 Hai lượt do cùng Claude gán (A cả khung, B ảnh cắt), trạng thái gán theo từng người cho cả video (không theo từng khoảng
 thời gian), nên đồng thuận mũ/áo 1,0 không nói lên độ khó; găng κ 0,70, kính 0,90. **17 sự kiện chuẩn** trên 11 video.
 Niêm phong `manifest.json` trước mọi dự đoán. Chờ người dùng kiểm định (`labels/audit.html`).
+
+## Kiểm định (28/11/2026, `labels/audit_result.json`)
+
+Người kiểm định: Đình Huy (thành viên nhóm), 18 thẻ (17 sự kiện chuẩn, 1 người không có sự kiện): **18 Đúng, 0 Sai, 0 Không
+chắc**, không ghi thêm món thiếu. Trạng thái nhãn: `machine_consensus`, `human_audited` toàn bộ thẻ. Quy tắc chấm như
+`event_eval` (06e, chặt và theo kiểm định; ở đây hai mức trùng nhau vì không có món ghi thêm).

@@ -1,0 +1,96 @@
+{
+ "auditor": "Đình Huy",
+ "saved_at": "2026-11-28T05:34:07.576Z",
+ "items": [
+  {
+   "id": "f1_P1_0.13",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "f1_P1_11.2",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "f2_P1_0.0",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "f3_P1_0.0",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "f3_P2_0.0",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "f4_P1_0.0",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "f4_P2_0.0",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "f5_P1_1.5",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "f5_P1_10.71",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "f5_P1_22.96",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "f6_P1_0.0",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "f6_P2_0.0",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "f6_P3_none",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "f7_P1_0.0",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "f8_P1_0.0",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "f9_P1_0.0",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "f10_P1_6.04",
+   "verdict": "dung",
+   "note": ""
+  },
+  {
+   "id": "f11_P1_0.0",
+   "verdict": "dung",
+   "note": ""
+  }
+ ]
+}
