@@ -38,3 +38,17 @@ def test_g1b_needs_confident_glove(test_cfg):
         c.side_state = lambda name, t, side, *a, conf=conf, **k: (
             (HAVE, {"conf": conf}) if side == "left" else (UNKNOWN, {"conf": 0.0}))
         assert c([person(1, 0, 0, 100, 300)], Association(), (500, 500, 3), ["gloves"])[1]["gloves"]["state"] == want
+
+
+def test_h1_low_conf_helmet_needs_classifier(test_cfg):
+    """H1': hộp mũ conf < c_lo mà bộ phân loại không phiếu pos -> không Có."""
+    from conftest import det
+    from ppe.association import Associator
+    cfg = copy.deepcopy(test_cfg)
+    cfg.setdefault("compliance", {})["helmet_low_conf"] = {"c_lo": 0.66}
+    c = Compliance(cfg)
+    p = person(1, 0, 0, 100, 300)
+    for conf, want_have in ((0.40, False), (0.80, True)):
+        a = Associator(cfg)([p], [det(1, 30, 0, 70, 40, conf=conf)], (500, 500, 3))
+        st = c([p], a, (500, 500, 3), ["helmet"])[1]["helmet"]["state"]
+        assert (st == HAVE) == want_have

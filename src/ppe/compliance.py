@@ -94,6 +94,8 @@ class Compliance:
         self.any_have_conf = ah.get("min_conf") if isinstance(ah, dict) else None
         # A1: người thấp hơn mức này (px ở cỡ đầu vào detector) không kết luận Thiếu món đó (a1_person_height_val.json)
         self.min_missing_px = cfg.get("compliance", {}).get("min_person_missing_px") or {}
+        # H1' (round5): hộp mũ conf < c_lo chỉ là Có khi bộ phân loại đầu phiếu pos; không thì CXĐ (không Thiếu).
+        self.helmet_low = (cfg.get("compliance", {}).get("helmet_low_conf") or {}).get("c_lo")
         self.det_imgsz = cfg.get("detector", {}).get("imgsz")
         self.last_have = {}     # (track_id, ppe, side) -> t lần cuối thấy Có
         pc = cfg.get("part_cls") or {}
@@ -323,6 +325,9 @@ class Compliance:
             else:
                 conflict = True
                 c2 = "conflict"
+        if (self.helmet_low and name == "helmet" and has and vote != "pos"
+                and max(d.conf for d in assoc.owned.get(track.track_id, {}).get((name, side), [])) < self.helmet_low):
+            has, conflict, c2 = False, True, "low_conf"     # H1': hộp mũ yếu, bộ phân loại không xác nhận
         no_missing = back and name == "helmet" and not has   # bước D: không tin phiếu neg từ phía sau
         if not covered or (vote is None and self.part.get("fallback_old_rule", True)):
             # Luật cũ: có hộp PPE gán hợp lệ là Có; vùng nhìn rõ mà không có hộp là Thiếu.
