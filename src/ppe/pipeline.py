@@ -36,6 +36,7 @@ class Pipeline:
         # đã gộp trong vote_window_s (compliance.part_ps). Vắng khóa: mỗi khung.
         self.parts_every = int((self.cfg.get("part_cls") or {}).get("every_n_frames") or 1)
         self._parts_k = -1
+        self._parts_seen = set()     # P3 (round5): track đã được bộ phân loại chạy ít nhất một lần
         self.associator = Associator(self.cfg) if self.stage >= 2 else None
         self.compliance = Compliance(self.cfg) if self.stage >= 3 else None
         hold = (self.cfg.get("display") or {}).get("hold_s")          # A2: chỉ để vẽ
@@ -64,7 +65,9 @@ class Pipeline:
             timed("pose", self.pose, frame, out["tracks"])
         if self.parts:
             self._parts_k += 1
-            run = self._parts_k % self.parts_every == 0
+            run = self._parts_k % self.parts_every == 0 or any(t.track_id not in self._parts_seen for t in out["tracks"])   # P3: người mới
+            if run:
+                self._parts_seen.update(t.track_id for t in out["tracks"])
             for tr in out["tracks"]:
                 tr.extra["parts_skip"] = not run
                 if not run:
