@@ -100,6 +100,7 @@ class Compliance:
         self.part = pc if pc.get("enabled") and self.pose else None   # bộ phân loại bộ phận (parts.py), cần pose
         self.p_hist = {}        # (track_id, ppe, bên) -> [(t, p)] trong vote_window_s giây gần nhất
         self.last_ps = []       # p (đã gộp) của lần part_vote gần nhất
+        self.last_sides = {}    # P2: (track, PPE) -> các bên có ảnh cắt ở lần chạy bộ phân loại gần nhất
         # Bước C: {ppe: {face_conf}}; vắng -> không phủ quyết theo hướng nhìn (như bản 4).
         self.veto_frontal = ((self.part or {}).get("veto_frontal") or {}) if self.part else {}
         # Bước D: {kp_conf, min_sep, face_strong, hold_s}; vắng -> không nhận quay lưng (như bản 4).
@@ -170,12 +171,15 @@ class Compliance:
         win = self.part.get("vote_window_s") or 0
         if ex.get("parts_skip") and self.now is not None and win > 0:
             # Bước S (part_cls.every_n_frames): khung không chạy bộ phân loại -> dùng lại phiếu đã gộp, không thêm phiếu.
-            for (tid, n, s), h in self.p_hist.items():
-                if tid == track.track_id and n == name and (name == "boots" or s == side):
-                    h[:] = [(t, q) for t, q in h if self.now - t <= win]
-                    if h:
-                        ps.append(sum(q for _, q in h) / len(h))
+            # P2 (round5): chỉ các bên của lần chạy gần nhất (không lấy chân/tay cũ hơn trong lịch sử).
+            for s_ in self.last_sides.get((track.track_id, name), ()):
+                h = self.p_hist.get((track.track_id, name, s_), [])
+                h[:] = [(t, q) for t, q in h if self.now - t <= win]
+                if h and (name == "boots" or s_ == side):
+                    ps.append(sum(q for _, q in h) / len(h))
             return ps
+        if not ex.get("parts_skip"):
+            self.last_sides[(track.track_id, name)] = {s for (n, s) in got if n == name}
         for (n, s), p in got.items():
             if n != name or (name != "boots" and s != side):
                 continue
